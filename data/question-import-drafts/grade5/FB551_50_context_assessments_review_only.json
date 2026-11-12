@@ -25,17 +25,21 @@
       "Örnek cevaplar anahtar çekirdekleridir; kabul edilen alternatifler uzman tarafından genişletilmelidir."
     ],
     "reviewGates": [
-      "EXPERT_SCIENCE_PEDAGOGY_RUBRIC",
-      "EXACT_PROGRAM_YEAR_CODE",
+      "INDEPENDENT_TEACHER_SCIENCE_PEDAGOGY_RUBRIC",
+      "TARGET_YEAR_COHORT_CHECK",
       "SEMANTIC_CROSS_POOL_ORIGINALITY",
-      "MEDIA_LAYOUT_RIGHTS",
-      "VERTICAL_CURRICULUM_MAP",
-      "HISTORICAL_EXAM_AUDIT",
+      "DIFFICULTY_CALIBRATION",
+      "FINAL_MEDIA_LAYOUT",
       "IMPORTER_TYPE_SUPPORT"
     ],
     "safety": "Öğretmen denetimi; ılık su, uygun düşük gerilimli pil ve güvenli modeller. Priz, doğrudan Güneş/lazer, sıcak yüzey, kırık/tehlikeli atık veya kişisel sağlık müdahalesi kullanılmaz.",
     "importerCompatibility": "REVIEW_ONLY_NOT_LEGACY_MC_IMPORT",
-    "generationMethod": "Authored context/answer matrix expanded deterministically; no agent jobs started."
+    "generationMethod": "Authored context/answer matrix expanded deterministically; no agent jobs started.",
+    "sourceProgramEdition": 2026,
+    "officialCurrentPdfCodePresenceVerified": true,
+    "targetAcademicYearApprovalVerified": false,
+    "verticalLinksStatus": "SOURCE_VERIFIED_EDITORIAL_RELATIONS_COHORT_CHECK_REQUIRED",
+    "historicalExamStatus": "IOKBS_2022_2026_BOUNDED_CONTENT_REVIEW"
   },
   "contexts": [
     {
@@ -157,13 +161,75 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.1",
+          "title": "Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.5.3",
+          "title": "Farklı moleküllere ait bilimsel model oluşturabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/432",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Farklı moleküllere ait bilimsel model oluşturabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Hâl değişimi gözleminden tanecik modeline; molekül modeline."
     },
     {
       "id": "ANX-FB551-002",
@@ -200,13 +266,75 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.1",
+          "title": "Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.5.3",
+          "title": "Farklı moleküllere ait bilimsel model oluşturabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/432",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Farklı moleküllere ait bilimsel model oluşturabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Hâl değişimi gözleminden tanecik modeline; molekül modeline."
     },
     {
       "id": "ANX-FB551-003",
@@ -243,13 +371,75 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.1",
+          "title": "Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.5.3",
+          "title": "Farklı moleküllere ait bilimsel model oluşturabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/432",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Farklı moleküllere ait bilimsel model oluşturabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Hâl değişimi gözleminden tanecik modeline; molekül modeline."
     },
     {
       "id": "ANX-FB551-004",
@@ -258,7 +448,7 @@
       "contextId": "FB551-C01",
       "title": "Kap değiştiren su — görev 4",
       "assessmentType": "OPEN_ENDED",
-      "stem": "Su başka kaba aktarılınca şekli değişiyor; miktar kaybı yok.\n\nVerilen yanlış çıkarımı düzelt; modelin sınırını belirt.",
+      "stem": "Su başka kaba aktarılınca şekli değişiyor; miktar kaybı yok.\n\nBu gözlemden hangi yanlış çıkarım yapılmamalı? Model kullanıyorsan bir temsil sınırı ekle.",
       "sampleAnswer": "Şekil değişimi madde kaybı değildir.",
       "solution": "Şekil değişimi madde kaybı değildir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
       "rubric": {
@@ -286,13 +476,75 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.1",
+          "title": "Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.5.3",
+          "title": "Farklı moleküllere ait bilimsel model oluşturabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/432",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Farklı moleküllere ait bilimsel model oluşturabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Hâl değişimi gözleminden tanecik modeline; molekül modeline."
     },
     {
       "id": "ANX-FB551-005",
@@ -332,13 +584,75 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.1",
+          "title": "Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.5.3",
+          "title": "Farklı moleküllere ait bilimsel model oluşturabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/432",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Farklı moleküllere ait bilimsel model oluşturabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Hâl değişimi gözleminden tanecik modeline; molekül modeline."
     },
     {
       "id": "ANX-FB551-006",
@@ -375,13 +689,75 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.1",
+          "title": "Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.5.3",
+          "title": "Farklı moleküllere ait bilimsel model oluşturabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/432",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Farklı moleküllere ait bilimsel model oluşturabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Hâl değişimi gözleminden tanecik modeline; molekül modeline."
     },
     {
       "id": "ANX-FB551-007",
@@ -418,13 +794,75 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.1",
+          "title": "Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.5.3",
+          "title": "Farklı moleküllere ait bilimsel model oluşturabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/432",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Farklı moleküllere ait bilimsel model oluşturabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Hâl değişimi gözleminden tanecik modeline; molekül modeline."
     },
     {
       "id": "ANX-FB551-008",
@@ -461,13 +899,75 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.1",
+          "title": "Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.5.3",
+          "title": "Farklı moleküllere ait bilimsel model oluşturabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/432",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Farklı moleküllere ait bilimsel model oluşturabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Hâl değişimi gözleminden tanecik modeline; molekül modeline."
     },
     {
       "id": "ANX-FB551-009",
@@ -476,7 +976,7 @@
       "contextId": "FB551-C02",
       "title": "Hava şırıngası — görev 4",
       "assessmentType": "OPEN_ENDED",
-      "stem": "İğnesiz kapalı şırıngadaki hava itmeyle daha küçük hacme sığıyor.\n\nVerilen yanlış çıkarımı düzelt; modelin sınırını belirt.",
+      "stem": "İğnesiz kapalı şırıngadaki hava itmeyle daha küçük hacme sığıyor.\n\nBu gözlemden hangi yanlış çıkarım yapılmamalı? Model kullanıyorsan bir temsil sınırı ekle.",
       "sampleAnswer": "Taneciklerin kendisi ezilmez.",
       "solution": "Taneciklerin kendisi ezilmez. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
       "rubric": {
@@ -504,13 +1004,75 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.1",
+          "title": "Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.5.3",
+          "title": "Farklı moleküllere ait bilimsel model oluşturabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/432",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Farklı moleküllere ait bilimsel model oluşturabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Hâl değişimi gözleminden tanecik modeline; molekül modeline."
     },
     {
       "id": "ANX-FB551-010",
@@ -550,13 +1112,75 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.1",
+          "title": "Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.5.3",
+          "title": "Farklı moleküllere ait bilimsel model oluşturabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/432",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Farklı moleküllere ait bilimsel model oluşturabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Hâl değişimi gözleminden tanecik modeline; molekül modeline."
     },
     {
       "id": "ANX-FB551-011",
@@ -593,13 +1217,75 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.1",
+          "title": "Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.5.3",
+          "title": "Farklı moleküllere ait bilimsel model oluşturabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/432",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Farklı moleküllere ait bilimsel model oluşturabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Hâl değişimi gözleminden tanecik modeline; molekül modeline."
     },
     {
       "id": "ANX-FB551-012",
@@ -636,13 +1322,75 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.1",
+          "title": "Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.5.3",
+          "title": "Farklı moleküllere ait bilimsel model oluşturabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/432",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Farklı moleküllere ait bilimsel model oluşturabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Hâl değişimi gözleminden tanecik modeline; molekül modeline."
     },
     {
       "id": "ANX-FB551-013",
@@ -679,13 +1427,75 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.1",
+          "title": "Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.5.3",
+          "title": "Farklı moleküllere ait bilimsel model oluşturabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/432",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Farklı moleküllere ait bilimsel model oluşturabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Hâl değişimi gözleminden tanecik modeline; molekül modeline."
     },
     {
       "id": "ANX-FB551-014",
@@ -694,7 +1504,7 @@
       "contextId": "FB551-C03",
       "title": "Taş örneği — görev 4",
       "assessmentType": "OPEN_ENDED",
-      "stem": "Taş aynı koşulda başka kaba konunca kendi şeklini koruyor.\n\nVerilen yanlış çıkarımı düzelt; modelin sınırını belirt.",
+      "stem": "Taş aynı koşulda başka kaba konunca kendi şeklini koruyor.\n\nBu gözlemden hangi yanlış çıkarım yapılmamalı? Model kullanıyorsan bir temsil sınırı ekle.",
       "sampleAnswer": "Katıda tanecikler hareketsiz değildir.",
       "solution": "Katıda tanecikler hareketsiz değildir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
       "rubric": {
@@ -722,13 +1532,75 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.1",
+          "title": "Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.5.3",
+          "title": "Farklı moleküllere ait bilimsel model oluşturabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/432",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Farklı moleküllere ait bilimsel model oluşturabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Hâl değişimi gözleminden tanecik modeline; molekül modeline."
     },
     {
       "id": "ANX-FB551-015",
@@ -768,13 +1640,75 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.1",
+          "title": "Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.5.3",
+          "title": "Farklı moleküllere ait bilimsel model oluşturabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/432",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Farklı moleküllere ait bilimsel model oluşturabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Hâl değişimi gözleminden tanecik modeline; molekül modeline."
     },
     {
       "id": "ANX-FB551-016",
@@ -811,13 +1745,75 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.1",
+          "title": "Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.5.3",
+          "title": "Farklı moleküllere ait bilimsel model oluşturabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/432",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Farklı moleküllere ait bilimsel model oluşturabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Hâl değişimi gözleminden tanecik modeline; molekül modeline."
     },
     {
       "id": "ANX-FB551-017",
@@ -854,13 +1850,75 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.1",
+          "title": "Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.5.3",
+          "title": "Farklı moleküllere ait bilimsel model oluşturabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/432",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Farklı moleküllere ait bilimsel model oluşturabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Hâl değişimi gözleminden tanecik modeline; molekül modeline."
     },
     {
       "id": "ANX-FB551-018",
@@ -897,13 +1955,75 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.1",
+          "title": "Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.5.3",
+          "title": "Farklı moleküllere ait bilimsel model oluşturabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/432",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Farklı moleküllere ait bilimsel model oluşturabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Hâl değişimi gözleminden tanecik modeline; molekül modeline."
     },
     {
       "id": "ANX-FB551-019",
@@ -912,7 +2032,7 @@
       "contextId": "FB551-C04",
       "title": "Kavanoza yayılan gaz — görev 4",
       "assessmentType": "OPEN_ENDED",
-      "stem": "Gaz bağlı iki hacme yayılıyor; öğrenci yarısının yok olduğunu söylüyor.\n\nVerilen yanlış çıkarımı düzelt; modelin sınırını belirt.",
+      "stem": "Gaz bağlı iki hacme yayılıyor; öğrenci yarısının yok olduğunu söylüyor.\n\nBu gözlemden hangi yanlış çıkarım yapılmamalı? Model kullanıyorsan bir temsil sınırı ekle.",
       "sampleAnswer": "Yayılma yok olma değildir.",
       "solution": "Yayılma yok olma değildir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
       "rubric": {
@@ -940,13 +2060,75 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.1",
+          "title": "Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.5.3",
+          "title": "Farklı moleküllere ait bilimsel model oluşturabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/432",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Farklı moleküllere ait bilimsel model oluşturabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Hâl değişimi gözleminden tanecik modeline; molekül modeline."
     },
     {
       "id": "ANX-FB551-020",
@@ -986,13 +2168,75 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.1",
+          "title": "Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.5.3",
+          "title": "Farklı moleküllere ait bilimsel model oluşturabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/432",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Farklı moleküllere ait bilimsel model oluşturabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Hâl değişimi gözleminden tanecik modeline; molekül modeline."
     },
     {
       "id": "ANX-FB551-021",
@@ -1029,13 +2273,75 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.1",
+          "title": "Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.5.3",
+          "title": "Farklı moleküllere ait bilimsel model oluşturabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/432",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Farklı moleküllere ait bilimsel model oluşturabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Hâl değişimi gözleminden tanecik modeline; molekül modeline."
     },
     {
       "id": "ANX-FB551-022",
@@ -1072,13 +2378,75 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.1",
+          "title": "Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.5.3",
+          "title": "Farklı moleküllere ait bilimsel model oluşturabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/432",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Farklı moleküllere ait bilimsel model oluşturabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Hâl değişimi gözleminden tanecik modeline; molekül modeline."
     },
     {
       "id": "ANX-FB551-023",
@@ -1115,13 +2483,75 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.1",
+          "title": "Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.5.3",
+          "title": "Farklı moleküllere ait bilimsel model oluşturabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/432",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Farklı moleküllere ait bilimsel model oluşturabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Hâl değişimi gözleminden tanecik modeline; molekül modeline."
     },
     {
       "id": "ANX-FB551-024",
@@ -1130,7 +2560,7 @@
       "contextId": "FB551-C05",
       "title": "Şeker taneleri — görev 4",
       "assessmentType": "OPEN_ENDED",
-      "stem": "Kuru şeker taneleri kaba dökülüyor; öğrenci akabildiği için sıvı sayıyor.\n\nVerilen yanlış çıkarımı düzelt; modelin sınırını belirt.",
+      "stem": "Kuru şeker taneleri kaba dökülüyor; öğrenci akabildiği için sıvı sayıyor.\n\nBu gözlemden hangi yanlış çıkarım yapılmamalı? Model kullanıyorsan bir temsil sınırı ekle.",
       "sampleAnswer": "Yığın şekli tek başına hâli belirlemez.",
       "solution": "Yığın şekli tek başına hâli belirlemez. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
       "rubric": {
@@ -1158,13 +2588,75 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.1",
+          "title": "Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.5.3",
+          "title": "Farklı moleküllere ait bilimsel model oluşturabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/432",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Farklı moleküllere ait bilimsel model oluşturabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Hâl değişimi gözleminden tanecik modeline; molekül modeline."
     },
     {
       "id": "ANX-FB551-025",
@@ -1204,13 +2696,75 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.1",
+          "title": "Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.5.3",
+          "title": "Farklı moleküllere ait bilimsel model oluşturabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/432",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Farklı moleküllere ait bilimsel model oluşturabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Hâl değişimi gözleminden tanecik modeline; molekül modeline."
     },
     {
       "id": "ANX-FB551-026",
@@ -1247,13 +2801,75 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.1",
+          "title": "Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.5.3",
+          "title": "Farklı moleküllere ait bilimsel model oluşturabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/432",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Farklı moleküllere ait bilimsel model oluşturabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Hâl değişimi gözleminden tanecik modeline; molekül modeline."
     },
     {
       "id": "ANX-FB551-027",
@@ -1290,13 +2906,75 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.1",
+          "title": "Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.5.3",
+          "title": "Farklı moleküllere ait bilimsel model oluşturabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/432",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Farklı moleküllere ait bilimsel model oluşturabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Hâl değişimi gözleminden tanecik modeline; molekül modeline."
     },
     {
       "id": "ANX-FB551-028",
@@ -1333,13 +3011,75 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.1",
+          "title": "Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.5.3",
+          "title": "Farklı moleküllere ait bilimsel model oluşturabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/432",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Farklı moleküllere ait bilimsel model oluşturabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Hâl değişimi gözleminden tanecik modeline; molekül modeline."
     },
     {
       "id": "ANX-FB551-029",
@@ -1348,7 +3088,7 @@
       "contextId": "FB551-C06",
       "title": "Sıvı şırıngası — görev 4",
       "assessmentType": "OPEN_ENDED",
-      "stem": "İğnesiz kapalı şırıngada suyun hacmi elle belirgin azaltılamıyor.\n\nVerilen yanlış çıkarımı düzelt; modelin sınırını belirt.",
+      "stem": "İğnesiz kapalı şırıngada suyun hacmi elle belirgin azaltılamıyor.\n\nBu gözlemden hangi yanlış çıkarım yapılmamalı? Model kullanıyorsan bir temsil sınırı ekle.",
       "sampleAnswer": "Boşluk hiç yok denmez.",
       "solution": "Boşluk hiç yok denmez. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
       "rubric": {
@@ -1376,13 +3116,75 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.1",
+          "title": "Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.5.3",
+          "title": "Farklı moleküllere ait bilimsel model oluşturabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/432",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Farklı moleküllere ait bilimsel model oluşturabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Hâl değişimi gözleminden tanecik modeline; molekül modeline."
     },
     {
       "id": "ANX-FB551-030",
@@ -1422,13 +3224,75 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.1",
+          "title": "Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.5.3",
+          "title": "Farklı moleküllere ait bilimsel model oluşturabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/432",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Farklı moleküllere ait bilimsel model oluşturabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Hâl değişimi gözleminden tanecik modeline; molekül modeline."
     },
     {
       "id": "ANX-FB551-031",
@@ -1465,13 +3329,75 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.1",
+          "title": "Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.5.3",
+          "title": "Farklı moleküllere ait bilimsel model oluşturabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/432",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Farklı moleküllere ait bilimsel model oluşturabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Hâl değişimi gözleminden tanecik modeline; molekül modeline."
     },
     {
       "id": "ANX-FB551-032",
@@ -1508,13 +3434,75 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.1",
+          "title": "Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.5.3",
+          "title": "Farklı moleküllere ait bilimsel model oluşturabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/432",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Farklı moleküllere ait bilimsel model oluşturabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Hâl değişimi gözleminden tanecik modeline; molekül modeline."
     },
     {
       "id": "ANX-FB551-033",
@@ -1551,13 +3539,75 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.1",
+          "title": "Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.5.3",
+          "title": "Farklı moleküllere ait bilimsel model oluşturabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/432",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Farklı moleküllere ait bilimsel model oluşturabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Hâl değişimi gözleminden tanecik modeline; molekül modeline."
     },
     {
       "id": "ANX-FB551-034",
@@ -1566,7 +3616,7 @@
       "contextId": "FB551-C07",
       "title": "Metal bilye — görev 4",
       "assessmentType": "OPEN_ENDED",
-      "stem": "Bilye soğukken de sıcak odada da katı; öğrenci yalnız sıcakta hareket var diyor.\n\nVerilen yanlış çıkarımı düzelt; modelin sınırını belirt.",
+      "stem": "Bilye soğukken de sıcak odada da katı; öğrenci yalnız sıcakta hareket var diyor.\n\nBu gözlemden hangi yanlış çıkarım yapılmamalı? Model kullanıyorsan bir temsil sınırı ekle.",
       "sampleAnswer": "Soğuk katıda da hareket vardır.",
       "solution": "Soğuk katıda da hareket vardır. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
       "rubric": {
@@ -1594,13 +3644,75 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.1",
+          "title": "Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.5.3",
+          "title": "Farklı moleküllere ait bilimsel model oluşturabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/432",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Farklı moleküllere ait bilimsel model oluşturabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Hâl değişimi gözleminden tanecik modeline; molekül modeline."
     },
     {
       "id": "ANX-FB551-035",
@@ -1640,13 +3752,75 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.1",
+          "title": "Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.5.3",
+          "title": "Farklı moleküllere ait bilimsel model oluşturabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/432",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Farklı moleküllere ait bilimsel model oluşturabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Hâl değişimi gözleminden tanecik modeline; molekül modeline."
     },
     {
       "id": "ANX-FB551-036",
@@ -1685,13 +3859,75 @@
       ],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.1",
+          "title": "Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.5.3",
+          "title": "Farklı moleküllere ait bilimsel model oluşturabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/432",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Farklı moleküllere ait bilimsel model oluşturabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Hâl değişimi gözleminden tanecik modeline; molekül modeline."
     },
     {
       "id": "ANX-FB551-037",
@@ -1730,13 +3966,75 @@
       ],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.1",
+          "title": "Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.5.3",
+          "title": "Farklı moleküllere ait bilimsel model oluşturabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/432",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Farklı moleküllere ait bilimsel model oluşturabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Hâl değişimi gözleminden tanecik modeline; molekül modeline."
     },
     {
       "id": "ANX-FB551-038",
@@ -1775,13 +4073,75 @@
       ],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.1",
+          "title": "Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.5.3",
+          "title": "Farklı moleküllere ait bilimsel model oluşturabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/432",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Farklı moleküllere ait bilimsel model oluşturabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Hâl değişimi gözleminden tanecik modeline; molekül modeline."
     },
     {
       "id": "ANX-FB551-039",
@@ -1790,7 +4150,7 @@
       "contextId": "FB551-C08",
       "title": "Buhar çizimi — görev 4",
       "assessmentType": "OPEN_ENDED",
-      "stem": "Gaz modeli tanecikleri birbirine değen sabit noktalarla çizilmiş.\n\nVerilen yanlış çıkarımı düzelt; modelin sınırını belirt.",
+      "stem": "Gaz modeli tanecikleri birbirine değen sabit noktalarla çizilmiş.\n\nBu gözlemden hangi yanlış çıkarım yapılmamalı? Model kullanıyorsan bir temsil sınırı ekle.",
       "sampleAnswer": "Sabit bitişik noktalar gazı uygun göstermez.",
       "solution": "Sabit bitişik noktalar gazı uygun göstermez. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
       "rubric": {
@@ -1820,13 +4180,75 @@
       ],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.1",
+          "title": "Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.5.3",
+          "title": "Farklı moleküllere ait bilimsel model oluşturabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/432",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Farklı moleküllere ait bilimsel model oluşturabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Hâl değişimi gözleminden tanecik modeline; molekül modeline."
     },
     {
       "id": "ANX-FB551-040",
@@ -1868,13 +4290,75 @@
       ],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.1",
+          "title": "Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.5.3",
+          "title": "Farklı moleküllere ait bilimsel model oluşturabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/432",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Farklı moleküllere ait bilimsel model oluşturabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Hâl değişimi gözleminden tanecik modeline; molekül modeline."
     },
     {
       "id": "ANX-FB551-041",
@@ -1911,13 +4395,75 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.1",
+          "title": "Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.5.3",
+          "title": "Farklı moleküllere ait bilimsel model oluşturabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/432",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Farklı moleküllere ait bilimsel model oluşturabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Hâl değişimi gözleminden tanecik modeline; molekül modeline."
     },
     {
       "id": "ANX-FB551-042",
@@ -1954,13 +4500,75 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.1",
+          "title": "Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.5.3",
+          "title": "Farklı moleküllere ait bilimsel model oluşturabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/432",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Farklı moleküllere ait bilimsel model oluşturabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Hâl değişimi gözleminden tanecik modeline; molekül modeline."
     },
     {
       "id": "ANX-FB551-043",
@@ -1997,13 +4605,75 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.1",
+          "title": "Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.5.3",
+          "title": "Farklı moleküllere ait bilimsel model oluşturabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/432",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Farklı moleküllere ait bilimsel model oluşturabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Hâl değişimi gözleminden tanecik modeline; molekül modeline."
     },
     {
       "id": "ANX-FB551-044",
@@ -2012,7 +4682,7 @@
       "contextId": "FB551-C09",
       "title": "Erime modeli — görev 4",
       "assessmentType": "OPEN_ENDED",
-      "stem": "Buz erirken taneciklerin tamamen kaybolduğu çiziliyor.\n\nVerilen yanlış çıkarımı düzelt; modelin sınırını belirt.",
+      "stem": "Buz erirken taneciklerin tamamen kaybolduğu çiziliyor.\n\nBu gözlemden hangi yanlış çıkarım yapılmamalı? Model kullanıyorsan bir temsil sınırı ekle.",
       "sampleAnswer": "Erime taneciklerin yok olması değildir.",
       "solution": "Erime taneciklerin yok olması değildir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
       "rubric": {
@@ -2040,13 +4710,75 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.1",
+          "title": "Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.5.3",
+          "title": "Farklı moleküllere ait bilimsel model oluşturabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/432",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Farklı moleküllere ait bilimsel model oluşturabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Hâl değişimi gözleminden tanecik modeline; molekül modeline."
     },
     {
       "id": "ANX-FB551-045",
@@ -2086,13 +4818,75 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.1",
+          "title": "Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.5.3",
+          "title": "Farklı moleküllere ait bilimsel model oluşturabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/432",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Farklı moleküllere ait bilimsel model oluşturabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Hâl değişimi gözleminden tanecik modeline; molekül modeline."
     },
     {
       "id": "ANX-FB551-046",
@@ -2129,13 +4923,75 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.1",
+          "title": "Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.5.3",
+          "title": "Farklı moleküllere ait bilimsel model oluşturabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/432",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Farklı moleküllere ait bilimsel model oluşturabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Hâl değişimi gözleminden tanecik modeline; molekül modeline."
     },
     {
       "id": "ANX-FB551-047",
@@ -2172,13 +5028,75 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.1",
+          "title": "Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.5.3",
+          "title": "Farklı moleküllere ait bilimsel model oluşturabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/432",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Farklı moleküllere ait bilimsel model oluşturabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Hâl değişimi gözleminden tanecik modeline; molekül modeline."
     },
     {
       "id": "ANX-FB551-048",
@@ -2215,13 +5133,75 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.1",
+          "title": "Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.5.3",
+          "title": "Farklı moleküllere ait bilimsel model oluşturabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/432",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Farklı moleküllere ait bilimsel model oluşturabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Hâl değişimi gözleminden tanecik modeline; molekül modeline."
     },
     {
       "id": "ANX-FB551-049",
@@ -2230,7 +5210,7 @@
       "contextId": "FB551-C10",
       "title": "Balon hacmi — görev 4",
       "assessmentType": "OPEN_ENDED",
-      "stem": "Balondaki hava daha büyük kaba aktarılıyor; gaz tanecikleri büyüdü deniyor.\n\nVerilen yanlış çıkarımı düzelt; modelin sınırını belirt.",
+      "stem": "Balondaki hava daha büyük kaba aktarılıyor; gaz tanecikleri büyüdü deniyor.\n\nBu gözlemden hangi yanlış çıkarım yapılmamalı? Model kullanıyorsan bir temsil sınırı ekle.",
       "sampleAnswer": "Tanecikler kap büyüdü diye şişmez.",
       "solution": "Tanecikler kap büyüdü diye şişmez. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
       "rubric": {
@@ -2258,13 +5238,75 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.1",
+          "title": "Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.5.3",
+          "title": "Farklı moleküllere ait bilimsel model oluşturabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/432",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Farklı moleküllere ait bilimsel model oluşturabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Hâl değişimi gözleminden tanecik modeline; molekül modeline."
     },
     {
       "id": "ANX-FB551-050",
@@ -2304,13 +5346,75 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.1",
+          "title": "Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.5.3",
+          "title": "Farklı moleküllere ait bilimsel model oluşturabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/432",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Farklı moleküllere ait bilimsel model oluşturabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Hâl değişimi gözleminden tanecik modeline; molekül modeline."
     }
   ]
 }

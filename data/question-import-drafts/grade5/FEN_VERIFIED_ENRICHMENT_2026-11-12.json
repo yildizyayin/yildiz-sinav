@@ -1,0 +1,1962 @@
+{
+  "checkedAt": "2026-11-12",
+  "sourceProgramEdition": 2026,
+  "academicYearCatalog": "2027-2028",
+  "targetAcademicYearApprovalVerified": false,
+  "studentTextsRequireCohortCheck": true,
+  "outcomes": {
+    "FB.5.1.1": {
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.1.2",
+          "title": "Bilgi kaynağının güvenilirliğini sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/352",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Bilgi kaynağının güvenilirliğini sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.1.4",
+          "title": "Yıldızların yaşamını açıklayarak yapılandırabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/416",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Yıldızların yaşamını açıklayarak yapılandırabilme” çalışmasına temel olur."
+        }
+      ],
+      "relationshipRationale": "Kaynak güvenilirliğinden Güneş hakkında bilgi toplamaya; yıldızların yaşamına hazırlık.",
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 4,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 1,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2023,
+            "scienceQuestionNumber": 1,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2023_09/04171811_5_SINIF_YOKBS.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2024,
+            "scienceQuestionNumber": 1,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2024_04/22174119_5_sinif_a_24.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 1,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      }
+    },
+    "FB.5.1.2": {
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.3.3",
+          "title": "Dünya’nın hareketlerini gözlemlerine dayanarak tahmin edebilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/359",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Dünya’nın hareketlerini gözlemlerine dayanarak tahmin edebilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.1.3",
+          "title": "Güneş ve Ay tutulması ile ilgili bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/409",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Güneş ve Ay tutulması ile ilgili bilimsel çıkarım yapabilme” çalışmasına temel olur."
+        }
+      ],
+      "relationshipRationale": "Gök cisimlerinin hareketlerinden Ay özelliklerine ve tutulmaların açıklanmasına.",
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 7,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 3,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 5,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2023,
+            "scienceQuestionNumber": 2,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2023_09/04171811_5_SINIF_YOKBS.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2023,
+            "scienceQuestionNumber": 3,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2023_09/04171811_5_SINIF_YOKBS.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2024,
+            "scienceQuestionNumber": 2,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2024_04/22174119_5_sinif_a_24.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 2,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 1,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      }
+    },
+    "FB.5.1.3": {
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.3.3",
+          "title": "Dünya’nın hareketlerini gözlemlerine dayanarak tahmin edebilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/359",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Dünya’nın hareketlerini gözlemlerine dayanarak tahmin edebilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.1.3",
+          "title": "Güneş ve Ay tutulması ile ilgili bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/409",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Güneş ve Ay tutulması ile ilgili bilimsel çıkarım yapabilme” çalışmasına temel olur."
+        }
+      ],
+      "relationshipRationale": "Hareket ve gözlem sıralarından Ay evrelerine; tutulma ile evreyi ayırt etmeye.",
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 6,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 4,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2023,
+            "scienceQuestionNumber": 4,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2023_09/04171811_5_SINIF_YOKBS.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2023,
+            "scienceQuestionNumber": 5,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2023_09/04171811_5_SINIF_YOKBS.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2024,
+            "scienceQuestionNumber": 4,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2024_04/22174119_5_sinif_a_24.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 4,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 2,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      }
+    },
+    "FB.5.1.4": {
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.3.3",
+          "title": "Dünya’nın hareketlerini gözlemlerine dayanarak tahmin edebilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/359",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Dünya’nın hareketlerini gözlemlerine dayanarak tahmin edebilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.1.2",
+          "title": "Güneş sistemi ile ilgili bilimsel model oluşturabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/409",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Güneş sistemi ile ilgili bilimsel model oluşturabilme” çalışmasına temel olur."
+        }
+      ],
+      "relationshipRationale": "Dünya hareketlerinden üç cisim modeline ve Güneş sistemi modeline.",
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 6,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 2,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2023,
+            "scienceQuestionNumber": 6,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2023_09/04171811_5_SINIF_YOKBS.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2024,
+            "scienceQuestionNumber": 3,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2024_04/22174119_5_sinif_a_24.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 3,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 3,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 4,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      }
+    },
+    "FB.5.2.1": {
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.1.1",
+          "title": "Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/352",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.2.1",
+          "title": "Bir cisme etki eden aynı doğrultudaki kuvvetler arasındaki ilişkileri açıklayarak bileşke kuvveti yapılandırabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/410",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Bir cisme etki eden aynı doğrultudaki kuvvetler arasındaki ilişkileri açıklayarak bileşke kuvveti yapılandırabilme” çalışmasına temel olur."
+        }
+      ],
+      "relationshipRationale": "Bilimsel gözlem ve ölçmeden kuvvet ölçmeye; bileşke kuvvete.",
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 6,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 6,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2023,
+            "scienceQuestionNumber": 7,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2023_09/04171811_5_SINIF_YOKBS.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2023,
+            "scienceQuestionNumber": 10,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2023_09/04171811_5_SINIF_YOKBS.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2024,
+            "scienceQuestionNumber": 5,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2024_04/22174119_5_sinif_a_24.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2024,
+            "scienceQuestionNumber": 6,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2024_04/22174119_5_sinif_a_24.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 7,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      }
+    },
+    "FB.5.2.2": {
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.1.1",
+          "title": "Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/352",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.2.2",
+          "title": "Dengelenmiş ve dengelenmemiş kuvvetlerin etkisi altındaki bir cismin hareketine yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/410",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Dengelenmiş ve dengelenmemiş kuvvetlerin etkisi altındaki bir cismin hareketine yönelik deney yapabilme” çalışmasına temel olur."
+        }
+      ],
+      "relationshipRationale": "Deneyim ve araç denemeden dinamometre tasarımına; kuvvet deneylerine.",
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 6,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 5,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 6,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      }
+    },
+    "FB.5.2.3": {
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.1.1",
+          "title": "Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/352",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.2.2",
+          "title": "Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/429",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme” çalışmasına temel olur."
+        }
+      ],
+      "relationshipRationale": "Ölçme ve karşılaştırmadan kütle–ağırlık ayrımına; enerji kavramlarına dolaylı temel.",
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      }
+    },
+    "FB.5.2.4": {
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.1.1",
+          "title": "Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/352",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.2.3",
+          "title": "Enerji dönüşümünden hareketle enerjinin korunduğuna tümevarımsal akıl yürütebilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/429",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Enerji dönüşümünden hareketle enerjinin korunduğuna tümevarımsal akıl yürütebilme” çalışmasına temel olur."
+        }
+      ],
+      "relationshipRationale": "Günlük gözlemden sürtünmeye; mekanik enerjinin dönüşümüne.",
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 8,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 7,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2023,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2023_09/04171811_5_SINIF_YOKBS.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2023,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2023_09/04171811_5_SINIF_YOKBS.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2023,
+            "scienceQuestionNumber": 11,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2023_09/04171811_5_SINIF_YOKBS.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2024,
+            "scienceQuestionNumber": 7,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2024_04/22174119_5_sinif_a_24.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 5,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 7,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      }
+    },
+    "FB.5.3.1": {
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.2.3",
+          "title": "Besinlerin işlevleri ile ilgili hipotez oluşturabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/356",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Besinlerin işlevleri ile ilgili hipotez oluşturabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.3.1",
+          "title": "Sindirim sistemini oluşturan yapı ve organların görevlerini model üzerinde gözlemleyebilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/430",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Sindirim sistemini oluşturan yapı ve organların görevlerini model üzerinde gözlemleyebilme” çalışmasına temel olur."
+        }
+      ],
+      "relationshipRationale": "Besinlerin işlevlerinden canlı yapısını incelemeye; sindirim sistemi modeline dolaylı temel.",
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 4,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 16,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 17,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 16,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 20,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      }
+    },
+    "FB.5.3.2": {
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.2.3",
+          "title": "Besinlerin işlevleri ile ilgili hipotez oluşturabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/356",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Besinlerin işlevleri ile ilgili hipotez oluşturabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.3.3",
+          "title": "Dolaşım sistemini oluşturan yapı ve organların görevlerini model üzerinde bilimsel olarak gözlemleyebilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/430",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Dolaşım sistemini oluşturan yapı ve organların görevlerini model üzerinde bilimsel olarak gözlemleyebilme” çalışmasına temel olur."
+        }
+      ],
+      "relationshipRationale": "Canlı işlevleriyle ilgili ön bilgiden hücre–organizma düzenine; dolaşım sistemine.",
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 1,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 17,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      }
+    },
+    "FB.5.3.3": {
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.1.2",
+          "title": "Bilgi kaynağının güvenilirliğini sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/352",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Bilgi kaynağının güvenilirliğini sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.3.1",
+          "title": "Sindirim sistemini oluşturan yapı ve organların görevlerini model üzerinde gözlemleyebilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/430",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Sindirim sistemini oluşturan yapı ve organların görevlerini model üzerinde gözlemleyebilme” çalışmasına temel olur."
+        }
+      ],
+      "relationshipRationale": "Güvenilir bilgi toplama becerisinden sistem yapılarına; farklı sistemleri karşılaştırmaya.",
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 18,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 19,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 18,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      }
+    },
+    "FB.5.3.4": {
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.1.2",
+          "title": "Bilgi kaynağının güvenilirliğini sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/352",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Bilgi kaynağının güvenilirliğini sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.3.9",
+          "title": "Denetleyici ve düzenleyici sistemlerin sağlığı için yapılması gerekenlerle ilgili bilgi toplayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/411",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Denetleyici ve düzenleyici sistemlerin sağlığı için yapılması gerekenlerle ilgili bilgi toplayabilme” çalışmasına temel olur."
+        }
+      ],
+      "relationshipRationale": "Sağlık bilgisinin kaynağını sorgulamadan sistem sağlığını araştırmaya.",
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 20,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 19,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      }
+    },
+    "FB.5.4.1": {
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.7.1",
+          "title": "Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/365",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.4.1",
+          "title": "Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/412",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme” çalışmasına temel olur."
+        }
+      ],
+      "relationshipRationale": "Görmede ışığın rolünden doğrusal yayılmaya; yansımaya.",
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 10,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      }
+    },
+    "FB.5.4.2": {
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.7.2",
+          "title": "Doğal ve yapay ışık kaynaklarını karşılaştırabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/365",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Doğal ve yapay ışık kaynaklarını karşılaştırabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.4.4",
+          "title": "Işığın madde ile etkileşimi sonucunda soğurulabileceğini bilimsel olarak gözlemleyebilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/412",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Işığın madde ile etkileşimi sonucunda soğurulabileceğini bilimsel olarak gözlemleyebilme” çalışmasına temel olur."
+        }
+      ],
+      "relationshipRationale": "Işık kaynaklarından madde–ışık etkileşimine; soğurulmaya.",
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 4,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 11,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2024,
+            "scienceQuestionNumber": 10,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2024_04/22174119_5_sinif_a_24.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 10,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 11,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      }
+    },
+    "FB.5.4.3": {
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.7.1",
+          "title": "Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/365",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.1.4",
+          "title": "Güneş ve Ay tutulması ile ilgili bilimsel model oluşturabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/409",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Güneş ve Ay tutulması ile ilgili bilimsel model oluşturabilme” çalışmasına temel olur."
+        }
+      ],
+      "relationshipRationale": "Işık ve görmeden tam gölgeye; tutulma modeline.",
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 4,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2024,
+            "scienceQuestionNumber": 11,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2024_04/22174119_5_sinif_a_24.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 11,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      }
+    },
+    "FB.5.5.1": {
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.1",
+          "title": "Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.5.3",
+          "title": "Farklı moleküllere ait bilimsel model oluşturabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/432",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Farklı moleküllere ait bilimsel model oluşturabilme” çalışmasına temel olur."
+        }
+      ],
+      "relationshipRationale": "Hâl değişimi gözleminden tanecik modeline; molekül modeline.",
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      }
+    },
+    "FB.5.5.2": {
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.2",
+          "title": "Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.5.1",
+          "title": "Isı etkisiyle maddelerin genleşip büzüleceğine yönelik bilimsel gözleme dayalı tahmin edebilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/413",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Isı etkisiyle maddelerin genleşip büzüleceğine yönelik bilimsel gözleme dayalı tahmin edebilme” çalışmasına temel olur."
+        }
+      ],
+      "relationshipRationale": "Isının etkisinden ısı–sıcaklık ayrımına; genleşme ve büzülmeye.",
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 5,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 17,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2023,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2023_09/04171811_5_SINIF_YOKBS.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2024,
+            "scienceQuestionNumber": 15,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2024_04/22174119_5_sinif_a_24.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      }
+    },
+    "FB.5.5.3": {
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.2",
+          "title": "Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.5.2",
+          "title": "Maddelerin erime, donma ve kaynama noktasını gösteren deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/413",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Maddelerin erime, donma ve kaynama noktasını gösteren deney yapabilme” çalışmasına temel olur."
+        }
+      ],
+      "relationshipRationale": "Isının etkisinden sıcaklık değişimine; hâl değişimi sıcaklıklarının incelenmesine.",
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 5,
+        "partialContentCount": 1,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 18,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2023,
+            "scienceQuestionNumber": 19,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2023_09/04171811_5_SINIF_YOKBS.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2024,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2024_04/22174119_5_sinif_a_24.pdf",
+            "matchExtent": "PARTIAL_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 15,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 15,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      }
+    },
+    "FB.5.5.4": {
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.1",
+          "title": "Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.5.2",
+          "title": "Maddelerin erime, donma ve kaynama noktasını gösteren deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/413",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Maddelerin erime, donma ve kaynama noktasını gösteren deney yapabilme” çalışmasına temel olur."
+        }
+      ],
+      "relationshipRationale": "Gözlenen hâl değişimlerinden deneyle incelemeye; ayırt edici sıcaklıklara.",
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 9,
+        "partialContentCount": 5,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 15,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 16,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "PARTIAL_CONTENT"
+          },
+          {
+            "year": 2023,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2023_09/04171811_5_SINIF_YOKBS.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2023,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2023_09/04171811_5_SINIF_YOKBS.pdf",
+            "matchExtent": "PARTIAL_CONTENT"
+          },
+          {
+            "year": 2023,
+            "scienceQuestionNumber": 15,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2023_09/04171811_5_SINIF_YOKBS.pdf",
+            "matchExtent": "PARTIAL_CONTENT"
+          },
+          {
+            "year": 2023,
+            "scienceQuestionNumber": 16,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2023_09/04171811_5_SINIF_YOKBS.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2024,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2024_04/22174119_5_sinif_a_24.pdf",
+            "matchExtent": "PARTIAL_CONTENT"
+          },
+          {
+            "year": 2024,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2024_04/22174119_5_sinif_a_24.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2024,
+            "scienceQuestionNumber": 16,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2024_04/22174119_5_sinif_a_24.pdf",
+            "matchExtent": "PARTIAL_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      }
+    },
+    "FB.5.5.5": {
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.2",
+          "title": "Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.7.3",
+          "title": "Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/415",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme” çalışmasına temel olur."
+        }
+      ],
+      "relationshipRationale": "Isının etkisinden yalıtım ve enerji kullanımına; yakıtların çevre etkilerine.",
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      }
+    },
+    "FB.5.5.6": {
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.2",
+          "title": "Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 8,
+          "code": "FB.8.6.10",
+          "title": "Elektrik enerjisinin bilinçli ve tasarruflu kullanılmasının önemini tartışabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/440",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 8. sınıftaki “Elektrik enerjisinin bilinçli ve tasarruflu kullanılmasının önemini tartışabilme” çalışmasına temel olur."
+        }
+      ],
+      "relationshipRationale": "Isının etkisinden yalıtım tasarımına; enerji tasarrufunu önemsemeye.",
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      }
+    },
+    "FB.5.6.1": {
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.1",
+          "title": "Maddelerin elektriği iletme durumlarını gösteren deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Maddelerin elektriği iletme durumlarını gösteren deney yapabilme” çalışmasına temel olur."
+        }
+      ],
+      "relationshipRationale": "Basit devre sorgulamasından sembollere; iletkenlik deneylerine.",
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 1,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      }
+    },
+    "FB.5.6.2": {
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 8,
+          "code": "FB.8.6.5",
+          "title": "Özgün bir aydınlatma aracı modeli oluşturabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/440",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 8. sınıftaki “Özgün bir aydınlatma aracı modeli oluşturabilme” çalışmasına temel olur."
+        }
+      ],
+      "relationshipRationale": "Basit devreden şemaya; aydınlatma aracı modeline.",
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      }
+    },
+    "FB.5.6.3": {
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.2",
+          "title": "Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme” çalışmasına temel olur."
+        }
+      ],
+      "relationshipRationale": "Devre sorgulamasından parlaklık değişkenlerine; kontrollü deneylere.",
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      }
+    },
+    "FB.5.7.1": {
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.8.1",
+          "title": "Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/366",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.7.2",
+          "title": "Kaynakların tasarruflu kullanımının önemini sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/434",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Kaynakların tasarruflu kullanımının önemini sorgulayabilme” çalışmasına temel olur."
+        }
+      ],
+      "relationshipRationale": "Sürdürülebilir yaşam alanından evsel atık ayrımına; kaynak tasarrufuna.",
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      }
+    },
+    "FB.5.7.2": {
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.8.1",
+          "title": "Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/366",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.7.2",
+          "title": "Kaynakların tasarruflu kullanımının önemini sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/434",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Kaynakların tasarruflu kullanımının önemini sorgulayabilme” çalışmasına temel olur."
+        }
+      ],
+      "relationshipRationale": "Yaşam alanını sorgulamadan atık yönetimine; kaynakların korunmasına.",
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      }
+    },
+    "FB.5.7.3": {
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.8.1",
+          "title": "Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/366",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.7.4",
+          "title": "Yakın çevresindeki veya ülkemizdeki bir çevre problemini çözebilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/415",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Yakın çevresindeki veya ülkemizdeki bir çevre problemini çözebilme” çalışmasına temel olur."
+        }
+      ],
+      "relationshipRationale": "Sürdürülebilir yaşamdan atık sorunu çözümüne; çevre sorunlarının tartışılmasına.",
+      "historicalExamEvidence": {
+        "verifiedCount": null,
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      }
+    }
+  }
+}

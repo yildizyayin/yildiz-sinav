@@ -25,17 +25,21 @@
       "Örnek cevaplar anahtar çekirdekleridir; kabul edilen alternatifler uzman tarafından genişletilmelidir."
     ],
     "reviewGates": [
-      "EXPERT_SCIENCE_PEDAGOGY_RUBRIC",
-      "EXACT_PROGRAM_YEAR_CODE",
+      "INDEPENDENT_TEACHER_SCIENCE_PEDAGOGY_RUBRIC",
+      "TARGET_YEAR_COHORT_CHECK",
       "SEMANTIC_CROSS_POOL_ORIGINALITY",
-      "MEDIA_LAYOUT_RIGHTS",
-      "VERTICAL_CURRICULUM_MAP",
-      "HISTORICAL_EXAM_AUDIT",
+      "DIFFICULTY_CALIBRATION",
+      "FINAL_MEDIA_LAYOUT",
       "IMPORTER_TYPE_SUPPORT"
     ],
     "safety": "Öğretmen denetimi; ılık su, uygun düşük gerilimli pil ve güvenli modeller. Priz, doğrudan Güneş/lazer, sıcak yüzey, kırık/tehlikeli atık veya kişisel sağlık müdahalesi kullanılmaz.",
     "importerCompatibility": "REVIEW_ONLY_NOT_LEGACY_MC_IMPORT",
-    "generationMethod": "Authored context/answer matrix expanded deterministically; no agent jobs started."
+    "generationMethod": "Authored context/answer matrix expanded deterministically; no agent jobs started.",
+    "sourceProgramEdition": 2026,
+    "officialCurrentPdfCodePresenceVerified": true,
+    "targetAcademicYearApprovalVerified": false,
+    "verticalLinksStatus": "SOURCE_VERIFIED_EDITORIAL_RELATIONS_COHORT_CHECK_REQUIRED",
+    "historicalExamStatus": "IOKBS_2022_2026_BOUNDED_CONTENT_REVIEW"
   },
   "contexts": [
     {
@@ -155,13 +159,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.2",
+          "title": "Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.7.3",
+          "title": "Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/415",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Isının etkisinden yalıtım ve enerji kullanımına; yakıtların çevre etkilerine."
     },
     {
       "id": "ANX-FB555-002",
@@ -198,13 +245,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.2",
+          "title": "Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.7.3",
+          "title": "Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/415",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Isının etkisinden yalıtım ve enerji kullanımına; yakıtların çevre etkilerine."
     },
     {
       "id": "ANX-FB555-003",
@@ -242,13 +332,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.2",
+          "title": "Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.7.3",
+          "title": "Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/415",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Isının etkisinden yalıtım ve enerji kullanımına; yakıtların çevre etkilerine."
     },
     {
       "id": "ANX-FB555-004",
@@ -286,13 +419,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.2",
+          "title": "Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.7.3",
+          "title": "Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/415",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Isının etkisinden yalıtım ve enerji kullanımına; yakıtların çevre etkilerine."
     },
     {
       "id": "ANX-FB555-005",
@@ -332,13 +508,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.2",
+          "title": "Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.7.3",
+          "title": "Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/415",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Isının etkisinden yalıtım ve enerji kullanımına; yakıtların çevre etkilerine."
     },
     {
       "id": "ANX-FB555-006",
@@ -375,13 +594,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.2",
+          "title": "Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.7.3",
+          "title": "Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/415",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Isının etkisinden yalıtım ve enerji kullanımına; yakıtların çevre etkilerine."
     },
     {
       "id": "ANX-FB555-007",
@@ -418,13 +680,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.2",
+          "title": "Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.7.3",
+          "title": "Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/415",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Isının etkisinden yalıtım ve enerji kullanımına; yakıtların çevre etkilerine."
     },
     {
       "id": "ANX-FB555-008",
@@ -462,13 +767,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.2",
+          "title": "Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.7.3",
+          "title": "Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/415",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Isının etkisinden yalıtım ve enerji kullanımına; yakıtların çevre etkilerine."
     },
     {
       "id": "ANX-FB555-009",
@@ -506,13 +854,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.2",
+          "title": "Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.7.3",
+          "title": "Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/415",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Isının etkisinden yalıtım ve enerji kullanımına; yakıtların çevre etkilerine."
     },
     {
       "id": "ANX-FB555-010",
@@ -552,13 +943,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.2",
+          "title": "Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.7.3",
+          "title": "Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/415",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Isının etkisinden yalıtım ve enerji kullanımına; yakıtların çevre etkilerine."
     },
     {
       "id": "ANX-FB555-011",
@@ -595,13 +1029,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.2",
+          "title": "Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.7.3",
+          "title": "Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/415",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Isının etkisinden yalıtım ve enerji kullanımına; yakıtların çevre etkilerine."
     },
     {
       "id": "ANX-FB555-012",
@@ -638,13 +1115,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.2",
+          "title": "Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.7.3",
+          "title": "Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/415",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Isının etkisinden yalıtım ve enerji kullanımına; yakıtların çevre etkilerine."
     },
     {
       "id": "ANX-FB555-013",
@@ -682,13 +1202,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.2",
+          "title": "Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.7.3",
+          "title": "Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/415",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Isının etkisinden yalıtım ve enerji kullanımına; yakıtların çevre etkilerine."
     },
     {
       "id": "ANX-FB555-014",
@@ -726,13 +1289,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.2",
+          "title": "Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.7.3",
+          "title": "Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/415",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Isının etkisinden yalıtım ve enerji kullanımına; yakıtların çevre etkilerine."
     },
     {
       "id": "ANX-FB555-015",
@@ -772,13 +1378,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.2",
+          "title": "Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.7.3",
+          "title": "Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/415",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Isının etkisinden yalıtım ve enerji kullanımına; yakıtların çevre etkilerine."
     },
     {
       "id": "ANX-FB555-016",
@@ -815,13 +1464,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.2",
+          "title": "Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.7.3",
+          "title": "Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/415",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Isının etkisinden yalıtım ve enerji kullanımına; yakıtların çevre etkilerine."
     },
     {
       "id": "ANX-FB555-017",
@@ -858,13 +1550,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.2",
+          "title": "Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.7.3",
+          "title": "Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/415",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Isının etkisinden yalıtım ve enerji kullanımına; yakıtların çevre etkilerine."
     },
     {
       "id": "ANX-FB555-018",
@@ -902,13 +1637,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.2",
+          "title": "Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.7.3",
+          "title": "Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/415",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Isının etkisinden yalıtım ve enerji kullanımına; yakıtların çevre etkilerine."
     },
     {
       "id": "ANX-FB555-019",
@@ -946,13 +1724,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.2",
+          "title": "Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.7.3",
+          "title": "Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/415",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Isının etkisinden yalıtım ve enerji kullanımına; yakıtların çevre etkilerine."
     },
     {
       "id": "ANX-FB555-020",
@@ -992,13 +1813,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.2",
+          "title": "Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.7.3",
+          "title": "Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/415",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Isının etkisinden yalıtım ve enerji kullanımına; yakıtların çevre etkilerine."
     },
     {
       "id": "ANX-FB555-021",
@@ -1035,13 +1899,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.2",
+          "title": "Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.7.3",
+          "title": "Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/415",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Isının etkisinden yalıtım ve enerji kullanımına; yakıtların çevre etkilerine."
     },
     {
       "id": "ANX-FB555-022",
@@ -1078,13 +1985,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.2",
+          "title": "Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.7.3",
+          "title": "Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/415",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Isının etkisinden yalıtım ve enerji kullanımına; yakıtların çevre etkilerine."
     },
     {
       "id": "ANX-FB555-023",
@@ -1122,13 +2072,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.2",
+          "title": "Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.7.3",
+          "title": "Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/415",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Isının etkisinden yalıtım ve enerji kullanımına; yakıtların çevre etkilerine."
     },
     {
       "id": "ANX-FB555-024",
@@ -1166,13 +2159,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.2",
+          "title": "Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.7.3",
+          "title": "Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/415",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Isının etkisinden yalıtım ve enerji kullanımına; yakıtların çevre etkilerine."
     },
     {
       "id": "ANX-FB555-025",
@@ -1212,13 +2248,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.2",
+          "title": "Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.7.3",
+          "title": "Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/415",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Isının etkisinden yalıtım ve enerji kullanımına; yakıtların çevre etkilerine."
     },
     {
       "id": "ANX-FB555-026",
@@ -1255,13 +2334,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.2",
+          "title": "Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.7.3",
+          "title": "Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/415",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Isının etkisinden yalıtım ve enerji kullanımına; yakıtların çevre etkilerine."
     },
     {
       "id": "ANX-FB555-027",
@@ -1298,13 +2420,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.2",
+          "title": "Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.7.3",
+          "title": "Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/415",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Isının etkisinden yalıtım ve enerji kullanımına; yakıtların çevre etkilerine."
     },
     {
       "id": "ANX-FB555-028",
@@ -1342,13 +2507,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.2",
+          "title": "Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.7.3",
+          "title": "Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/415",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Isının etkisinden yalıtım ve enerji kullanımına; yakıtların çevre etkilerine."
     },
     {
       "id": "ANX-FB555-029",
@@ -1386,13 +2594,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.2",
+          "title": "Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.7.3",
+          "title": "Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/415",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Isının etkisinden yalıtım ve enerji kullanımına; yakıtların çevre etkilerine."
     },
     {
       "id": "ANX-FB555-030",
@@ -1432,13 +2683,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.2",
+          "title": "Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.7.3",
+          "title": "Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/415",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Isının etkisinden yalıtım ve enerji kullanımına; yakıtların çevre etkilerine."
     },
     {
       "id": "ANX-FB555-031",
@@ -1475,13 +2769,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.2",
+          "title": "Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.7.3",
+          "title": "Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/415",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Isının etkisinden yalıtım ve enerji kullanımına; yakıtların çevre etkilerine."
     },
     {
       "id": "ANX-FB555-032",
@@ -1518,13 +2855,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.2",
+          "title": "Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.7.3",
+          "title": "Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/415",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Isının etkisinden yalıtım ve enerji kullanımına; yakıtların çevre etkilerine."
     },
     {
       "id": "ANX-FB555-033",
@@ -1562,13 +2942,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.2",
+          "title": "Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.7.3",
+          "title": "Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/415",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Isının etkisinden yalıtım ve enerji kullanımına; yakıtların çevre etkilerine."
     },
     {
       "id": "ANX-FB555-034",
@@ -1606,13 +3029,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.2",
+          "title": "Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.7.3",
+          "title": "Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/415",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Isının etkisinden yalıtım ve enerji kullanımına; yakıtların çevre etkilerine."
     },
     {
       "id": "ANX-FB555-035",
@@ -1652,13 +3118,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.2",
+          "title": "Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.7.3",
+          "title": "Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/415",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Isının etkisinden yalıtım ve enerji kullanımına; yakıtların çevre etkilerine."
     },
     {
       "id": "ANX-FB555-036",
@@ -1695,13 +3204,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.2",
+          "title": "Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.7.3",
+          "title": "Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/415",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Isının etkisinden yalıtım ve enerji kullanımına; yakıtların çevre etkilerine."
     },
     {
       "id": "ANX-FB555-037",
@@ -1738,13 +3290,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.2",
+          "title": "Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.7.3",
+          "title": "Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/415",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Isının etkisinden yalıtım ve enerji kullanımına; yakıtların çevre etkilerine."
     },
     {
       "id": "ANX-FB555-038",
@@ -1782,13 +3377,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.2",
+          "title": "Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.7.3",
+          "title": "Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/415",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Isının etkisinden yalıtım ve enerji kullanımına; yakıtların çevre etkilerine."
     },
     {
       "id": "ANX-FB555-039",
@@ -1826,13 +3464,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.2",
+          "title": "Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.7.3",
+          "title": "Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/415",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Isının etkisinden yalıtım ve enerji kullanımına; yakıtların çevre etkilerine."
     },
     {
       "id": "ANX-FB555-040",
@@ -1872,13 +3553,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.2",
+          "title": "Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.7.3",
+          "title": "Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/415",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Isının etkisinden yalıtım ve enerji kullanımına; yakıtların çevre etkilerine."
     },
     {
       "id": "ANX-FB555-041",
@@ -1915,13 +3639,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.2",
+          "title": "Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.7.3",
+          "title": "Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/415",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Isının etkisinden yalıtım ve enerji kullanımına; yakıtların çevre etkilerine."
     },
     {
       "id": "ANX-FB555-042",
@@ -1958,13 +3725,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.2",
+          "title": "Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.7.3",
+          "title": "Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/415",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Isının etkisinden yalıtım ve enerji kullanımına; yakıtların çevre etkilerine."
     },
     {
       "id": "ANX-FB555-043",
@@ -2002,13 +3812,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.2",
+          "title": "Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.7.3",
+          "title": "Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/415",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Isının etkisinden yalıtım ve enerji kullanımına; yakıtların çevre etkilerine."
     },
     {
       "id": "ANX-FB555-044",
@@ -2046,13 +3899,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.2",
+          "title": "Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.7.3",
+          "title": "Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/415",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Isının etkisinden yalıtım ve enerji kullanımına; yakıtların çevre etkilerine."
     },
     {
       "id": "ANX-FB555-045",
@@ -2092,13 +3988,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.2",
+          "title": "Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.7.3",
+          "title": "Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/415",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Isının etkisinden yalıtım ve enerji kullanımına; yakıtların çevre etkilerine."
     },
     {
       "id": "ANX-FB555-046",
@@ -2135,13 +4074,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.2",
+          "title": "Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.7.3",
+          "title": "Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/415",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Isının etkisinden yalıtım ve enerji kullanımına; yakıtların çevre etkilerine."
     },
     {
       "id": "ANX-FB555-047",
@@ -2178,13 +4160,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.2",
+          "title": "Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.7.3",
+          "title": "Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/415",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Isının etkisinden yalıtım ve enerji kullanımına; yakıtların çevre etkilerine."
     },
     {
       "id": "ANX-FB555-048",
@@ -2222,13 +4247,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.2",
+          "title": "Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.7.3",
+          "title": "Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/415",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Isının etkisinden yalıtım ve enerji kullanımına; yakıtların çevre etkilerine."
     },
     {
       "id": "ANX-FB555-049",
@@ -2266,13 +4334,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.2",
+          "title": "Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.7.3",
+          "title": "Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/415",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Isının etkisinden yalıtım ve enerji kullanımına; yakıtların çevre etkilerine."
     },
     {
       "id": "ANX-FB555-050",
@@ -2312,13 +4423,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.4.2",
+          "title": "Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.7.3",
+          "title": "Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/415",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Isının etkisinden yalıtım ve enerji kullanımına; yakıtların çevre etkilerine."
     }
   ]
 }

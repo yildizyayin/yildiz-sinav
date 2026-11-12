@@ -25,17 +25,21 @@
       "Örnek cevaplar anahtar çekirdekleridir; kabul edilen alternatifler uzman tarafından genişletilmelidir."
     ],
     "reviewGates": [
-      "EXPERT_SCIENCE_PEDAGOGY_RUBRIC",
-      "EXACT_PROGRAM_YEAR_CODE",
+      "INDEPENDENT_TEACHER_SCIENCE_PEDAGOGY_RUBRIC",
+      "TARGET_YEAR_COHORT_CHECK",
       "SEMANTIC_CROSS_POOL_ORIGINALITY",
-      "MEDIA_LAYOUT_RIGHTS",
-      "VERTICAL_CURRICULUM_MAP",
-      "HISTORICAL_EXAM_AUDIT",
+      "DIFFICULTY_CALIBRATION",
+      "FINAL_MEDIA_LAYOUT",
       "IMPORTER_TYPE_SUPPORT"
     ],
     "safety": "Öğretmen denetimi; ılık su, uygun düşük gerilimli pil ve güvenli modeller. Priz, doğrudan Güneş/lazer, sıcak yüzey, kırık/tehlikeli atık veya kişisel sağlık müdahalesi kullanılmaz.",
     "importerCompatibility": "REVIEW_ONLY_NOT_LEGACY_MC_IMPORT",
-    "generationMethod": "Authored context/answer matrix expanded deterministically; no agent jobs started."
+    "generationMethod": "Authored context/answer matrix expanded deterministically; no agent jobs started.",
+    "sourceProgramEdition": 2026,
+    "officialCurrentPdfCodePresenceVerified": true,
+    "targetAcademicYearApprovalVerified": false,
+    "verticalLinksStatus": "SOURCE_VERIFIED_EDITORIAL_RELATIONS_COHORT_CHECK_REQUIRED",
+    "historicalExamStatus": "IOKBS_2022_2026_BOUNDED_CONTENT_REVIEW"
   },
   "contexts": [
     {
@@ -160,13 +164,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.8.1",
+          "title": "Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/366",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.7.2",
+          "title": "Kaynakların tasarruflu kullanımının önemini sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/434",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Kaynakların tasarruflu kullanımının önemini sorgulayabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Yaşam alanını sorgulamadan atık yönetimine; kaynakların korunmasına."
     },
     {
       "id": "ANX-FB572-002",
@@ -203,13 +250,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.8.1",
+          "title": "Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/366",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.7.2",
+          "title": "Kaynakların tasarruflu kullanımının önemini sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/434",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Kaynakların tasarruflu kullanımının önemini sorgulayabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Yaşam alanını sorgulamadan atık yönetimine; kaynakların korunmasına."
     },
     {
       "id": "ANX-FB572-003",
@@ -246,13 +336,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.8.1",
+          "title": "Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/366",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.7.2",
+          "title": "Kaynakların tasarruflu kullanımının önemini sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/434",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Kaynakların tasarruflu kullanımının önemini sorgulayabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Yaşam alanını sorgulamadan atık yönetimine; kaynakların korunmasına."
     },
     {
       "id": "ANX-FB572-004",
@@ -289,13 +422,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.8.1",
+          "title": "Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/366",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.7.2",
+          "title": "Kaynakların tasarruflu kullanımının önemini sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/434",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Kaynakların tasarruflu kullanımının önemini sorgulayabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Yaşam alanını sorgulamadan atık yönetimine; kaynakların korunmasına."
     },
     {
       "id": "ANX-FB572-005",
@@ -334,13 +510,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.8.1",
+          "title": "Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/366",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.7.2",
+          "title": "Kaynakların tasarruflu kullanımının önemini sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/434",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Kaynakların tasarruflu kullanımının önemini sorgulayabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Yaşam alanını sorgulamadan atık yönetimine; kaynakların korunmasına."
     },
     {
       "id": "ANX-FB572-006",
@@ -377,13 +596,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.8.1",
+          "title": "Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/366",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.7.2",
+          "title": "Kaynakların tasarruflu kullanımının önemini sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/434",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Kaynakların tasarruflu kullanımının önemini sorgulayabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Yaşam alanını sorgulamadan atık yönetimine; kaynakların korunmasına."
     },
     {
       "id": "ANX-FB572-007",
@@ -420,13 +682,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.8.1",
+          "title": "Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/366",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.7.2",
+          "title": "Kaynakların tasarruflu kullanımının önemini sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/434",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Kaynakların tasarruflu kullanımının önemini sorgulayabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Yaşam alanını sorgulamadan atık yönetimine; kaynakların korunmasına."
     },
     {
       "id": "ANX-FB572-008",
@@ -463,13 +768,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.8.1",
+          "title": "Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/366",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.7.2",
+          "title": "Kaynakların tasarruflu kullanımının önemini sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/434",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Kaynakların tasarruflu kullanımının önemini sorgulayabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Yaşam alanını sorgulamadan atık yönetimine; kaynakların korunmasına."
     },
     {
       "id": "ANX-FB572-009",
@@ -506,13 +854,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.8.1",
+          "title": "Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/366",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.7.2",
+          "title": "Kaynakların tasarruflu kullanımının önemini sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/434",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Kaynakların tasarruflu kullanımının önemini sorgulayabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Yaşam alanını sorgulamadan atık yönetimine; kaynakların korunmasına."
     },
     {
       "id": "ANX-FB572-010",
@@ -551,13 +942,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.8.1",
+          "title": "Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/366",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.7.2",
+          "title": "Kaynakların tasarruflu kullanımının önemini sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/434",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Kaynakların tasarruflu kullanımının önemini sorgulayabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Yaşam alanını sorgulamadan atık yönetimine; kaynakların korunmasına."
     },
     {
       "id": "ANX-FB572-011",
@@ -594,13 +1028,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.8.1",
+          "title": "Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/366",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.7.2",
+          "title": "Kaynakların tasarruflu kullanımının önemini sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/434",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Kaynakların tasarruflu kullanımının önemini sorgulayabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Yaşam alanını sorgulamadan atık yönetimine; kaynakların korunmasına."
     },
     {
       "id": "ANX-FB572-012",
@@ -637,13 +1114,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.8.1",
+          "title": "Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/366",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.7.2",
+          "title": "Kaynakların tasarruflu kullanımının önemini sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/434",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Kaynakların tasarruflu kullanımının önemini sorgulayabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Yaşam alanını sorgulamadan atık yönetimine; kaynakların korunmasına."
     },
     {
       "id": "ANX-FB572-013",
@@ -680,13 +1200,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.8.1",
+          "title": "Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/366",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.7.2",
+          "title": "Kaynakların tasarruflu kullanımının önemini sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/434",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Kaynakların tasarruflu kullanımının önemini sorgulayabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Yaşam alanını sorgulamadan atık yönetimine; kaynakların korunmasına."
     },
     {
       "id": "ANX-FB572-014",
@@ -723,13 +1286,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.8.1",
+          "title": "Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/366",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.7.2",
+          "title": "Kaynakların tasarruflu kullanımının önemini sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/434",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Kaynakların tasarruflu kullanımının önemini sorgulayabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Yaşam alanını sorgulamadan atık yönetimine; kaynakların korunmasına."
     },
     {
       "id": "ANX-FB572-015",
@@ -768,13 +1374,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.8.1",
+          "title": "Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/366",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.7.2",
+          "title": "Kaynakların tasarruflu kullanımının önemini sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/434",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Kaynakların tasarruflu kullanımının önemini sorgulayabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Yaşam alanını sorgulamadan atık yönetimine; kaynakların korunmasına."
     },
     {
       "id": "ANX-FB572-016",
@@ -811,13 +1460,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.8.1",
+          "title": "Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/366",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.7.2",
+          "title": "Kaynakların tasarruflu kullanımının önemini sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/434",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Kaynakların tasarruflu kullanımının önemini sorgulayabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Yaşam alanını sorgulamadan atık yönetimine; kaynakların korunmasına."
     },
     {
       "id": "ANX-FB572-017",
@@ -854,13 +1546,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.8.1",
+          "title": "Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/366",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.7.2",
+          "title": "Kaynakların tasarruflu kullanımının önemini sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/434",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Kaynakların tasarruflu kullanımının önemini sorgulayabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Yaşam alanını sorgulamadan atık yönetimine; kaynakların korunmasına."
     },
     {
       "id": "ANX-FB572-018",
@@ -897,13 +1632,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.8.1",
+          "title": "Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/366",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.7.2",
+          "title": "Kaynakların tasarruflu kullanımının önemini sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/434",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Kaynakların tasarruflu kullanımının önemini sorgulayabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Yaşam alanını sorgulamadan atık yönetimine; kaynakların korunmasına."
     },
     {
       "id": "ANX-FB572-019",
@@ -940,13 +1718,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.8.1",
+          "title": "Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/366",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.7.2",
+          "title": "Kaynakların tasarruflu kullanımının önemini sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/434",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Kaynakların tasarruflu kullanımının önemini sorgulayabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Yaşam alanını sorgulamadan atık yönetimine; kaynakların korunmasına."
     },
     {
       "id": "ANX-FB572-020",
@@ -985,13 +1806,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.8.1",
+          "title": "Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/366",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.7.2",
+          "title": "Kaynakların tasarruflu kullanımının önemini sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/434",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Kaynakların tasarruflu kullanımının önemini sorgulayabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Yaşam alanını sorgulamadan atık yönetimine; kaynakların korunmasına."
     },
     {
       "id": "ANX-FB572-021",
@@ -1028,13 +1892,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.8.1",
+          "title": "Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/366",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.7.2",
+          "title": "Kaynakların tasarruflu kullanımının önemini sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/434",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Kaynakların tasarruflu kullanımının önemini sorgulayabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Yaşam alanını sorgulamadan atık yönetimine; kaynakların korunmasına."
     },
     {
       "id": "ANX-FB572-022",
@@ -1071,13 +1978,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.8.1",
+          "title": "Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/366",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.7.2",
+          "title": "Kaynakların tasarruflu kullanımının önemini sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/434",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Kaynakların tasarruflu kullanımının önemini sorgulayabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Yaşam alanını sorgulamadan atık yönetimine; kaynakların korunmasına."
     },
     {
       "id": "ANX-FB572-023",
@@ -1114,13 +2064,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.8.1",
+          "title": "Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/366",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.7.2",
+          "title": "Kaynakların tasarruflu kullanımının önemini sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/434",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Kaynakların tasarruflu kullanımının önemini sorgulayabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Yaşam alanını sorgulamadan atık yönetimine; kaynakların korunmasına."
     },
     {
       "id": "ANX-FB572-024",
@@ -1157,13 +2150,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.8.1",
+          "title": "Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/366",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.7.2",
+          "title": "Kaynakların tasarruflu kullanımının önemini sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/434",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Kaynakların tasarruflu kullanımının önemini sorgulayabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Yaşam alanını sorgulamadan atık yönetimine; kaynakların korunmasına."
     },
     {
       "id": "ANX-FB572-025",
@@ -1202,13 +2238,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.8.1",
+          "title": "Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/366",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.7.2",
+          "title": "Kaynakların tasarruflu kullanımının önemini sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/434",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Kaynakların tasarruflu kullanımının önemini sorgulayabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Yaşam alanını sorgulamadan atık yönetimine; kaynakların korunmasına."
     },
     {
       "id": "ANX-FB572-026",
@@ -1245,13 +2324,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.8.1",
+          "title": "Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/366",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.7.2",
+          "title": "Kaynakların tasarruflu kullanımının önemini sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/434",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Kaynakların tasarruflu kullanımının önemini sorgulayabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Yaşam alanını sorgulamadan atık yönetimine; kaynakların korunmasına."
     },
     {
       "id": "ANX-FB572-027",
@@ -1288,13 +2410,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.8.1",
+          "title": "Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/366",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.7.2",
+          "title": "Kaynakların tasarruflu kullanımının önemini sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/434",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Kaynakların tasarruflu kullanımının önemini sorgulayabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Yaşam alanını sorgulamadan atık yönetimine; kaynakların korunmasına."
     },
     {
       "id": "ANX-FB572-028",
@@ -1331,13 +2496,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.8.1",
+          "title": "Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/366",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.7.2",
+          "title": "Kaynakların tasarruflu kullanımının önemini sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/434",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Kaynakların tasarruflu kullanımının önemini sorgulayabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Yaşam alanını sorgulamadan atık yönetimine; kaynakların korunmasına."
     },
     {
       "id": "ANX-FB572-029",
@@ -1374,13 +2582,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.8.1",
+          "title": "Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/366",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.7.2",
+          "title": "Kaynakların tasarruflu kullanımının önemini sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/434",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Kaynakların tasarruflu kullanımının önemini sorgulayabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Yaşam alanını sorgulamadan atık yönetimine; kaynakların korunmasına."
     },
     {
       "id": "ANX-FB572-030",
@@ -1419,13 +2670,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.8.1",
+          "title": "Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/366",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.7.2",
+          "title": "Kaynakların tasarruflu kullanımının önemini sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/434",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Kaynakların tasarruflu kullanımının önemini sorgulayabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Yaşam alanını sorgulamadan atık yönetimine; kaynakların korunmasına."
     },
     {
       "id": "ANX-FB572-031",
@@ -1462,13 +2756,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.8.1",
+          "title": "Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/366",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.7.2",
+          "title": "Kaynakların tasarruflu kullanımının önemini sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/434",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Kaynakların tasarruflu kullanımının önemini sorgulayabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Yaşam alanını sorgulamadan atık yönetimine; kaynakların korunmasına."
     },
     {
       "id": "ANX-FB572-032",
@@ -1505,13 +2842,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.8.1",
+          "title": "Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/366",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.7.2",
+          "title": "Kaynakların tasarruflu kullanımının önemini sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/434",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Kaynakların tasarruflu kullanımının önemini sorgulayabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Yaşam alanını sorgulamadan atık yönetimine; kaynakların korunmasına."
     },
     {
       "id": "ANX-FB572-033",
@@ -1548,13 +2928,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.8.1",
+          "title": "Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/366",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.7.2",
+          "title": "Kaynakların tasarruflu kullanımının önemini sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/434",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Kaynakların tasarruflu kullanımının önemini sorgulayabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Yaşam alanını sorgulamadan atık yönetimine; kaynakların korunmasına."
     },
     {
       "id": "ANX-FB572-034",
@@ -1591,13 +3014,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.8.1",
+          "title": "Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/366",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.7.2",
+          "title": "Kaynakların tasarruflu kullanımının önemini sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/434",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Kaynakların tasarruflu kullanımının önemini sorgulayabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Yaşam alanını sorgulamadan atık yönetimine; kaynakların korunmasına."
     },
     {
       "id": "ANX-FB572-035",
@@ -1636,13 +3102,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.8.1",
+          "title": "Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/366",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.7.2",
+          "title": "Kaynakların tasarruflu kullanımının önemini sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/434",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Kaynakların tasarruflu kullanımının önemini sorgulayabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Yaşam alanını sorgulamadan atık yönetimine; kaynakların korunmasına."
     },
     {
       "id": "ANX-FB572-036",
@@ -1679,13 +3188,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.8.1",
+          "title": "Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/366",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.7.2",
+          "title": "Kaynakların tasarruflu kullanımının önemini sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/434",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Kaynakların tasarruflu kullanımının önemini sorgulayabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Yaşam alanını sorgulamadan atık yönetimine; kaynakların korunmasına."
     },
     {
       "id": "ANX-FB572-037",
@@ -1722,13 +3274,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.8.1",
+          "title": "Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/366",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.7.2",
+          "title": "Kaynakların tasarruflu kullanımının önemini sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/434",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Kaynakların tasarruflu kullanımının önemini sorgulayabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Yaşam alanını sorgulamadan atık yönetimine; kaynakların korunmasına."
     },
     {
       "id": "ANX-FB572-038",
@@ -1765,13 +3360,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.8.1",
+          "title": "Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/366",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.7.2",
+          "title": "Kaynakların tasarruflu kullanımının önemini sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/434",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Kaynakların tasarruflu kullanımının önemini sorgulayabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Yaşam alanını sorgulamadan atık yönetimine; kaynakların korunmasına."
     },
     {
       "id": "ANX-FB572-039",
@@ -1808,13 +3446,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.8.1",
+          "title": "Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/366",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.7.2",
+          "title": "Kaynakların tasarruflu kullanımının önemini sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/434",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Kaynakların tasarruflu kullanımının önemini sorgulayabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Yaşam alanını sorgulamadan atık yönetimine; kaynakların korunmasına."
     },
     {
       "id": "ANX-FB572-040",
@@ -1853,13 +3534,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.8.1",
+          "title": "Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/366",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.7.2",
+          "title": "Kaynakların tasarruflu kullanımının önemini sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/434",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Kaynakların tasarruflu kullanımının önemini sorgulayabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Yaşam alanını sorgulamadan atık yönetimine; kaynakların korunmasına."
     },
     {
       "id": "ANX-FB572-041",
@@ -1896,13 +3620,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.8.1",
+          "title": "Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/366",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.7.2",
+          "title": "Kaynakların tasarruflu kullanımının önemini sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/434",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Kaynakların tasarruflu kullanımının önemini sorgulayabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Yaşam alanını sorgulamadan atık yönetimine; kaynakların korunmasına."
     },
     {
       "id": "ANX-FB572-042",
@@ -1939,13 +3706,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.8.1",
+          "title": "Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/366",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.7.2",
+          "title": "Kaynakların tasarruflu kullanımının önemini sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/434",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Kaynakların tasarruflu kullanımının önemini sorgulayabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Yaşam alanını sorgulamadan atık yönetimine; kaynakların korunmasına."
     },
     {
       "id": "ANX-FB572-043",
@@ -1982,13 +3792,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.8.1",
+          "title": "Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/366",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.7.2",
+          "title": "Kaynakların tasarruflu kullanımının önemini sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/434",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Kaynakların tasarruflu kullanımının önemini sorgulayabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Yaşam alanını sorgulamadan atık yönetimine; kaynakların korunmasına."
     },
     {
       "id": "ANX-FB572-044",
@@ -2025,13 +3878,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.8.1",
+          "title": "Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/366",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.7.2",
+          "title": "Kaynakların tasarruflu kullanımının önemini sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/434",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Kaynakların tasarruflu kullanımının önemini sorgulayabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Yaşam alanını sorgulamadan atık yönetimine; kaynakların korunmasına."
     },
     {
       "id": "ANX-FB572-045",
@@ -2070,13 +3966,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.8.1",
+          "title": "Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/366",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.7.2",
+          "title": "Kaynakların tasarruflu kullanımının önemini sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/434",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Kaynakların tasarruflu kullanımının önemini sorgulayabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Yaşam alanını sorgulamadan atık yönetimine; kaynakların korunmasına."
     },
     {
       "id": "ANX-FB572-046",
@@ -2113,13 +4052,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.8.1",
+          "title": "Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/366",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.7.2",
+          "title": "Kaynakların tasarruflu kullanımının önemini sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/434",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Kaynakların tasarruflu kullanımının önemini sorgulayabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Yaşam alanını sorgulamadan atık yönetimine; kaynakların korunmasına."
     },
     {
       "id": "ANX-FB572-047",
@@ -2156,13 +4138,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.8.1",
+          "title": "Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/366",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.7.2",
+          "title": "Kaynakların tasarruflu kullanımının önemini sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/434",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Kaynakların tasarruflu kullanımının önemini sorgulayabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Yaşam alanını sorgulamadan atık yönetimine; kaynakların korunmasına."
     },
     {
       "id": "ANX-FB572-048",
@@ -2199,13 +4224,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.8.1",
+          "title": "Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/366",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.7.2",
+          "title": "Kaynakların tasarruflu kullanımının önemini sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/434",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Kaynakların tasarruflu kullanımının önemini sorgulayabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Yaşam alanını sorgulamadan atık yönetimine; kaynakların korunmasına."
     },
     {
       "id": "ANX-FB572-049",
@@ -2242,13 +4310,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.8.1",
+          "title": "Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/366",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.7.2",
+          "title": "Kaynakların tasarruflu kullanımının önemini sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/434",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Kaynakların tasarruflu kullanımının önemini sorgulayabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Yaşam alanını sorgulamadan atık yönetimine; kaynakların korunmasına."
     },
     {
       "id": "ANX-FB572-050",
@@ -2287,13 +4398,56 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.8.1",
+          "title": "Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/366",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.7.2",
+          "title": "Kaynakların tasarruflu kullanımının önemini sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/434",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Kaynakların tasarruflu kullanımının önemini sorgulayabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 0,
+        "partialContentCount": 0,
+        "questionReferences": [],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Yaşam alanını sorgulamadan atık yönetimine; kaynakların korunmasına."
     }
   ]
 }

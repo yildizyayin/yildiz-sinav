@@ -123,3 +123,8 @@ for unit in author['units']:
     out=B/f'{short}_50_context_assessments_review_only.json';out.write_text(json.dumps(pack,ensure_ascii=False,indent=2)+'\n');created.append(str(out))
 (B/'FEN_REMAINING_FILE_INDEX_2026-11-12.json').write_text(json.dumps({'files':created,'outcomes':len(created),'contexts':len(created)*10,'assessmentItems':len(created)*50,'includesFirstTwoOutcomeReplacements':True,'approved':0},ensure_ascii=False,indent=2)+'\n')
 print(json.dumps({'createdFiles':len(created),'items':len(created)*50,'sharedContexts':len(created)*10,'approved':0}))
+
+# Keep source-backed associations after every deterministic rebuild.
+if (B/"FEN_VERIFIED_ENRICHMENT_2026-11-12.json").exists():
+    import subprocess,sys
+    subprocess.run([sys.executable,"scripts/enrich-grade5-fen-drafts.py"],check=True)

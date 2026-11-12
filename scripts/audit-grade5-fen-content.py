@@ -36,7 +36,10 @@ for file in files:
             assert row['sampleAnswer']
             assert sum(c['maxScore'] for c in row['rubric']['criteria'])==row['rubric']['maxScore']==4
             assert row['historicalExamEvidence']['verifiedCount'] is None
-            assert not row['priorLearningLinks'] and not row['futureLearningLinks']
+            assert len(row['priorLearningLinks'])==len(row['futureLearningLinks'])==1
+            assert row['historicalExamEvidence']['scannedQuestions']==110
+            assert row['historicalExamEvidence']['futureAppearanceProbability'] is None
+            assert all(a['studentCompletionVerified'] is False for a in row['priorLearningLinks']+row['futureLearningLinks'])
         if '_50_context_assessments_' in file:
             new_rows.append(row);context_ids.add(row['contextId'])
     if '_50_context_assessments_' in file:
@@ -69,8 +72,8 @@ report={'checkedAt':'2026-11-12','outcomes':27,'items':1350,'types':dict(types),
     'Exact-text deduplication covers these 1350 Fen items only; semantic and full-pool originality remain open.',
     'First 100 MC drafts replaced in active quota by new context tasks; historical files retained, not double-counted.',
     'Expert curriculum/process/answer/rubric/age-level review and difficulty calibration remain open.',
-    'Official target academic year and PDF/web code-version equivalence remain open.',
-    'Vertical class links, historical exam scans and final media/layout checks remain open.',
+    'Current 2026 official PDF code presence confirmed for all 27 web outcomes; target 2027–2028 year/cohort approval remains unverified.',
+    'Vertical links are source-backed editorial relations, not official equivalences or verified student completion. Historical review covers only 2022–2026 İOKBS grade-5 A: 110 questions, 88 content relations; all-time/LGS/YKS counts and probabilities remain null. Final browser/media layout review remains open.',
     'No full application tests/build run: this is a content-only change.'],
     'perOutcome':[{ 'code':x['outcomeCode'],'title':x['outcomeTitle'],'count':len(by_code[x['outcomeCode']]),'sourceUrl':x['sourceUrl']} for x in fen]}
 (B/'FEN_FULL_STRUCTURAL_QA_2026-11-12.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n')
@@ -98,11 +101,20 @@ catalog += ['## Görseller','Gerçek mikrograf ~delta tarafından çekilmiştir 
 # Local review document. Answers collapse independently; source/context remains with each item.
 out=['<!doctype html><html lang="tr"><meta charset="utf-8"><title>ANUNEX Fen — taslak inceleme</title>',
  '<style>body{font:17px/1.6 system-ui,sans-serif;color:#193044;background:#f4f7fa;margin:0}main{max-width:1000px;margin:auto;padding:32px}header,article{background:white;border:1px solid #d9e1e8;border-radius:14px;padding:24px;margin:20px 0}h1,h2{line-height:1.25}small{color:#526574}img{max-width:100%;max-height:440px;object-fit:contain;display:block;margin:18px auto}pre{white-space:pre-wrap;font:inherit}summary{cursor:pointer}a{color:#135a83}nav a{display:inline-block;margin:5px 12px 5px 0}details{margin-top:12px}article{break-inside:avoid}@media print{body{background:white}main{max-width:none;padding:0}details>*{display:block}nav{display:none}}</style><main>',
- '<header><h1>ANUNEX · 5. sınıf Fen Bilimleri</h1><p>27 çıktı · 1.350 taslak içerik · öğretmen onaylı 0</p><p>İnceleme belgesi: yayıma veya doğrudan aktarıma hazır değildir. Yeni 25 çıktı paketinde 10 farklı bağlam × 5 alt görev kullanılır. İlk 100 eski MC taslak bu kapsamda yenilendi. Geçmiş sınav sayıları ve sınıflar arası eşleştirmeler doğrulanmadan doldurulmamıştır.</p><nav>']
+ '<header><h1>ANUNEX · 5. sınıf Fen Bilimleri</h1><p>27 çıktı · 1.350 taslak içerik · öğretmen onaylı 0</p><p>İnceleme belgesi: yayıma veya doğrudan aktarıma hazır değildir. Yeni 25 çıktı paketinde 10 farklı bağlam × 5 alt görev kullanılır. İlk 100 eski MC taslak bu kapsamda yenilendi. Sınıflar arası bağlantılar kaynaklı editoryal ilişkilerdir; öğrencinin bu konuyu işlediği doğrulanmamıştır. Geçmiş sayıları yalnız 2022–2026 İOKBS taramasını kapsar, resmî kazanım etiketi veya çıkma olasılığı değildir.</p><nav>']
 for x in fen:out.append(f'<a href="#{x["outcomeCode"]}">{x["outcomeCode"]}</a>')
 out.append('</nav></header>')
 for x in fen:
     code=x['outcomeCode'];out.append(f'<section id="{code}"><h2>{code} · {html.escape(x["outcomeTitle"])}</h2><p><a href="{x["sourceUrl"]}">Resmî MEB web kaynağı</a> · 50 taslak</p>')
+    extra=by_code[code][0]
+    out.append('<details><summary>Sınıflar arası bağlantılar ve geçmiş sınav kaydı</summary>')
+    for relation in extra['priorLearningLinks']+extra['futureLearningLinks']:
+        out.append('<p>'+html.escape(relation['studentText'])+' <a href="'+relation['sourceUrl']+'">'+relation['code']+' · MEB</a></p>')
+    hist=extra['historicalExamEvidence']
+    out.append('<p>2022–2026 İOKBS 5. sınıf A Fen: '+str(hist['contentRelatedCount'])+' içerik ilişkisi; '+str(hist['partialContentCount'])+' tanesi kısmi. Bu taramada 0 bulunması tüm arşivde 0 demek değildir. LGS/YKS ve gelecekte çıkma olasılığı hesaplanmadı.</p>')
+    for ref in hist['questionReferences']:
+        out.append('<a href="'+ref['sourceUrl']+'">'+str(ref['year'])+' · Fen '+str(ref['scienceQuestionNumber'])+'</a> · ')
+    out.append('</details>')
     for n,r in enumerate(by_code[code],1):
         out.append(f'<article><small>{code} · {n}/50 · {html.escape(r.get("assessmentType","MULTIPLE_CHOICE"))} · zorluk ön etiketi {r["difficultyLevel"]}</small><pre>{html.escape(r["stem"])}</pre>')
         assets=r.get('assetPaths',[]) or r.get('media',{}).get('assetPaths',[])

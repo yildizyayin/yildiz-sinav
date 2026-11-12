@@ -25,17 +25,21 @@
       "Örnek cevaplar anahtar çekirdekleridir; kabul edilen alternatifler uzman tarafından genişletilmelidir."
     ],
     "reviewGates": [
-      "EXPERT_SCIENCE_PEDAGOGY_RUBRIC",
-      "EXACT_PROGRAM_YEAR_CODE",
+      "INDEPENDENT_TEACHER_SCIENCE_PEDAGOGY_RUBRIC",
+      "TARGET_YEAR_COHORT_CHECK",
       "SEMANTIC_CROSS_POOL_ORIGINALITY",
-      "MEDIA_LAYOUT_RIGHTS",
-      "VERTICAL_CURRICULUM_MAP",
-      "HISTORICAL_EXAM_AUDIT",
+      "DIFFICULTY_CALIBRATION",
+      "FINAL_MEDIA_LAYOUT",
       "IMPORTER_TYPE_SUPPORT"
     ],
     "safety": "Öğretmen denetimi; ılık su, uygun düşük gerilimli pil ve güvenli modeller. Priz, doğrudan Güneş/lazer, sıcak yüzey, kırık/tehlikeli atık veya kişisel sağlık müdahalesi kullanılmaz.",
     "importerCompatibility": "REVIEW_ONLY_NOT_LEGACY_MC_IMPORT",
-    "generationMethod": "Authored context/answer matrix expanded deterministically; no agent jobs started."
+    "generationMethod": "Authored context/answer matrix expanded deterministically; no agent jobs started.",
+    "sourceProgramEdition": 2026,
+    "officialCurrentPdfCodePresenceVerified": true,
+    "targetAcademicYearApprovalVerified": false,
+    "verticalLinksStatus": "SOURCE_VERIFIED_EDITORIAL_RELATIONS_COHORT_CHECK_REQUIRED",
+    "historicalExamStatus": "IOKBS_2022_2026_BOUNDED_CONTENT_REVIEW"
   },
   "contexts": [
     {
@@ -155,13 +159,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.1.1",
+          "title": "Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/352",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.2.2",
+          "title": "Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/429",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Ölçme ve karşılaştırmadan kütle–ağırlık ayrımına; enerji kavramlarına dolaylı temel."
     },
     {
       "id": "ANX-FB523-002",
@@ -198,13 +258,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.1.1",
+          "title": "Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/352",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.2.2",
+          "title": "Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/429",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Ölçme ve karşılaştırmadan kütle–ağırlık ayrımına; enerji kavramlarına dolaylı temel."
     },
     {
       "id": "ANX-FB523-003",
@@ -241,13 +357,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.1.1",
+          "title": "Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/352",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.2.2",
+          "title": "Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/429",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Ölçme ve karşılaştırmadan kütle–ağırlık ayrımına; enerji kavramlarına dolaylı temel."
     },
     {
       "id": "ANX-FB523-004",
@@ -256,7 +428,7 @@
       "contextId": "FB523-C01",
       "title": "Dünya–Ay sandığı — görev 4",
       "assessmentType": "OPEN_ENDED",
-      "stem": "Kapalı sandığın madde miktarı değişmiyor; Ay’da daha küçük çekim etkisi var. Kart 'kütle azalır' diyor.\n\nVerilen ifadeyi bilimsel olarak düzelt.",
+      "stem": "Kapalı sandığın madde miktarı değişmiyor; Ay’da daha küçük çekim etkisi var. Kart 'kütle azalır' diyor.\n\nBu durum hangi yanlış yoruma yol açabilir? Doğru açıklamayı yaz.",
       "sampleAnswer": "Azalan ağırlıktır.",
       "solution": "Azalan ağırlıktır. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
       "rubric": {
@@ -284,13 +456,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.1.1",
+          "title": "Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/352",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.2.2",
+          "title": "Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/429",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Ölçme ve karşılaştırmadan kütle–ağırlık ayrımına; enerji kavramlarına dolaylı temel."
     },
     {
       "id": "ANX-FB523-005",
@@ -329,13 +557,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.1.1",
+          "title": "Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/352",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.2.2",
+          "title": "Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/429",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Ölçme ve karşılaştırmadan kütle–ağırlık ayrımına; enerji kavramlarına dolaylı temel."
     },
     {
       "id": "ANX-FB523-006",
@@ -372,13 +656,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.1.1",
+          "title": "Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/352",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.2.2",
+          "title": "Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/429",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Ölçme ve karşılaştırmadan kütle–ağırlık ayrımına; enerji kavramlarına dolaylı temel."
     },
     {
       "id": "ANX-FB523-007",
@@ -415,13 +755,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.1.1",
+          "title": "Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/352",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.2.2",
+          "title": "Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/429",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Ölçme ve karşılaştırmadan kütle–ağırlık ayrımına; enerji kavramlarına dolaylı temel."
     },
     {
       "id": "ANX-FB523-008",
@@ -458,13 +854,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.1.1",
+          "title": "Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/352",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.2.2",
+          "title": "Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/429",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Ölçme ve karşılaştırmadan kütle–ağırlık ayrımına; enerji kavramlarına dolaylı temel."
     },
     {
       "id": "ANX-FB523-009",
@@ -473,7 +925,7 @@
       "contextId": "FB523-C02",
       "title": "Pazar kaydı — görev 4",
       "assessmentType": "OPEN_ENDED",
-      "stem": "Paketin etiketinde 2 kg, dinamometre kaydında 20 N var; ikisi aynı sayı sanılıyor.\n\nVerilen ifadeyi bilimsel olarak düzelt.",
+      "stem": "Paketin etiketinde 2 kg, dinamometre kaydında 20 N var; ikisi aynı sayı sanılıyor.\n\nBu durum hangi yanlış yoruma yol açabilir? Doğru açıklamayı yaz.",
       "sampleAnswer": "Birimler ve sayılar eşit kavram değildir.",
       "solution": "Birimler ve sayılar eşit kavram değildir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
       "rubric": {
@@ -501,13 +953,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.1.1",
+          "title": "Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/352",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.2.2",
+          "title": "Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/429",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Ölçme ve karşılaştırmadan kütle–ağırlık ayrımına; enerji kavramlarına dolaylı temel."
     },
     {
       "id": "ANX-FB523-010",
@@ -546,13 +1054,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.1.1",
+          "title": "Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/352",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.2.2",
+          "title": "Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/429",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Ölçme ve karşılaştırmadan kütle–ağırlık ayrımına; enerji kavramlarına dolaylı temel."
     },
     {
       "id": "ANX-FB523-011",
@@ -589,13 +1153,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.1.1",
+          "title": "Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/352",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.2.2",
+          "title": "Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/429",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Ölçme ve karşılaştırmadan kütle–ağırlık ayrımına; enerji kavramlarına dolaylı temel."
     },
     {
       "id": "ANX-FB523-012",
@@ -632,13 +1252,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.1.1",
+          "title": "Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/352",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.2.2",
+          "title": "Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/429",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Ölçme ve karşılaştırmadan kütle–ağırlık ayrımına; enerji kavramlarına dolaylı temel."
     },
     {
       "id": "ANX-FB523-013",
@@ -675,13 +1351,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.1.1",
+          "title": "Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/352",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.2.2",
+          "title": "Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/429",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Ölçme ve karşılaştırmadan kütle–ağırlık ayrımına; enerji kavramlarına dolaylı temel."
     },
     {
       "id": "ANX-FB523-014",
@@ -690,7 +1422,7 @@
       "contextId": "FB523-C03",
       "title": "Bölünen hamur — görev 4",
       "assessmentType": "OPEN_ENDED",
-      "stem": "Hamurdan parça ayrılıyor; aynı yerde kalan parça için 'kütle değişmez' deniyor.\n\nVerilen ifadeyi bilimsel olarak düzelt.",
+      "stem": "Hamurdan parça ayrılıyor; aynı yerde kalan parça için 'kütle değişmez' deniyor.\n\nBu durum hangi yanlış yoruma yol açabilir? Doğru açıklamayı yaz.",
       "sampleAnswer": "Sabit kütle, madde değişmezse geçerlidir.",
       "solution": "Sabit kütle, madde değişmezse geçerlidir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
       "rubric": {
@@ -718,13 +1450,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.1.1",
+          "title": "Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/352",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.2.2",
+          "title": "Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/429",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Ölçme ve karşılaştırmadan kütle–ağırlık ayrımına; enerji kavramlarına dolaylı temel."
     },
     {
       "id": "ANX-FB523-015",
@@ -763,13 +1551,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.1.1",
+          "title": "Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/352",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.2.2",
+          "title": "Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/429",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Ölçme ve karşılaştırmadan kütle–ağırlık ayrımına; enerji kavramlarına dolaylı temel."
     },
     {
       "id": "ANX-FB523-016",
@@ -806,13 +1650,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.1.1",
+          "title": "Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/352",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.2.2",
+          "title": "Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/429",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Ölçme ve karşılaştırmadan kütle–ağırlık ayrımına; enerji kavramlarına dolaylı temel."
     },
     {
       "id": "ANX-FB523-017",
@@ -849,13 +1749,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.1.1",
+          "title": "Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/352",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.2.2",
+          "title": "Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/429",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Ölçme ve karşılaştırmadan kütle–ağırlık ayrımına; enerji kavramlarına dolaylı temel."
     },
     {
       "id": "ANX-FB523-018",
@@ -892,13 +1848,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.1.1",
+          "title": "Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/352",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.2.2",
+          "title": "Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/429",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Ölçme ve karşılaştırmadan kütle–ağırlık ayrımına; enerji kavramlarına dolaylı temel."
     },
     {
       "id": "ANX-FB523-019",
@@ -907,7 +1919,7 @@
       "contextId": "FB523-C04",
       "title": "Yeri değişen çanta — görev 4",
       "assessmentType": "OPEN_ENDED",
-      "stem": "Aynı kapalı çanta Dünya ile Ay arasında taşınıyor; içeriği aynı.\n\nVerilen ifadeyi bilimsel olarak düzelt.",
+      "stem": "Aynı kapalı çanta Dünya ile Ay arasında taşınıyor; içeriği aynı.\n\nBu durum hangi yanlış yoruma yol açabilir? Doğru açıklamayı yaz.",
       "sampleAnswer": "Dünya–Ay değişimi madde miktarını değiştirmez.",
       "solution": "Dünya–Ay değişimi madde miktarını değiştirmez. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
       "rubric": {
@@ -935,13 +1947,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.1.1",
+          "title": "Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/352",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.2.2",
+          "title": "Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/429",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Ölçme ve karşılaştırmadan kütle–ağırlık ayrımına; enerji kavramlarına dolaylı temel."
     },
     {
       "id": "ANX-FB523-020",
@@ -980,13 +2048,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.1.1",
+          "title": "Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/352",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.2.2",
+          "title": "Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/429",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Ölçme ve karşılaştırmadan kütle–ağırlık ayrımına; enerji kavramlarına dolaylı temel."
     },
     {
       "id": "ANX-FB523-021",
@@ -1023,13 +2147,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.1.1",
+          "title": "Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/352",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.2.2",
+          "title": "Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/429",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Ölçme ve karşılaştırmadan kütle–ağırlık ayrımına; enerji kavramlarına dolaylı temel."
     },
     {
       "id": "ANX-FB523-022",
@@ -1066,13 +2246,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.1.1",
+          "title": "Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/352",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.2.2",
+          "title": "Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/429",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Ölçme ve karşılaştırmadan kütle–ağırlık ayrımına; enerji kavramlarına dolaylı temel."
     },
     {
       "id": "ANX-FB523-023",
@@ -1109,13 +2345,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.1.1",
+          "title": "Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/352",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.2.2",
+          "title": "Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/429",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Ölçme ve karşılaştırmadan kütle–ağırlık ayrımına; enerji kavramlarına dolaylı temel."
     },
     {
       "id": "ANX-FB523-024",
@@ -1124,7 +2416,7 @@
       "contextId": "FB523-C05",
       "title": "Birimsiz rapor — görev 4",
       "assessmentType": "OPEN_ENDED",
-      "stem": "Rapor 'kütle 30 N, ağırlık 3 kg' yazıyor.\n\nVerilen ifadeyi bilimsel olarak düzelt.",
+      "stem": "Rapor 'kütle 30 N, ağırlık 3 kg' yazıyor.\n\nBu durum hangi yanlış yoruma yol açabilir? Doğru açıklamayı yaz.",
       "sampleAnswer": "Başlık/birim eşleşmeleri ters.",
       "solution": "Başlık/birim eşleşmeleri ters. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
       "rubric": {
@@ -1152,13 +2444,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.1.1",
+          "title": "Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/352",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.2.2",
+          "title": "Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/429",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Ölçme ve karşılaştırmadan kütle–ağırlık ayrımına; enerji kavramlarına dolaylı temel."
     },
     {
       "id": "ANX-FB523-025",
@@ -1197,13 +2545,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.1.1",
+          "title": "Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/352",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.2.2",
+          "title": "Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/429",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Ölçme ve karşılaştırmadan kütle–ağırlık ayrımına; enerji kavramlarına dolaylı temel."
     },
     {
       "id": "ANX-FB523-026",
@@ -1240,13 +2644,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.1.1",
+          "title": "Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/352",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.2.2",
+          "title": "Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/429",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Ölçme ve karşılaştırmadan kütle–ağırlık ayrımına; enerji kavramlarına dolaylı temel."
     },
     {
       "id": "ANX-FB523-027",
@@ -1283,13 +2743,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.1.1",
+          "title": "Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/352",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.2.2",
+          "title": "Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/429",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Ölçme ve karşılaştırmadan kütle–ağırlık ayrımına; enerji kavramlarına dolaylı temel."
     },
     {
       "id": "ANX-FB523-028",
@@ -1326,13 +2842,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.1.1",
+          "title": "Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/352",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.2.2",
+          "title": "Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/429",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Ölçme ve karşılaştırmadan kütle–ağırlık ayrımına; enerji kavramlarına dolaylı temel."
     },
     {
       "id": "ANX-FB523-029",
@@ -1341,7 +2913,7 @@
       "contextId": "FB523-C06",
       "title": "Düşen kalem — görev 4",
       "assessmentType": "OPEN_ENDED",
-      "stem": "Öğrenci 'ağırlık yalnız düşerken vardır' diyor; kalem masada da çekiliyor.\n\nVerilen ifadeyi bilimsel olarak düzelt.",
+      "stem": "Öğrenci 'ağırlık yalnız düşerken vardır' diyor; kalem masada da çekiliyor.\n\nBu durum hangi yanlış yoruma yol açabilir? Doğru açıklamayı yaz.",
       "sampleAnswer": "Durmak ağırlığı yok etmez.",
       "solution": "Durmak ağırlığı yok etmez. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
       "rubric": {
@@ -1369,13 +2941,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.1.1",
+          "title": "Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/352",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.2.2",
+          "title": "Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/429",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Ölçme ve karşılaştırmadan kütle–ağırlık ayrımına; enerji kavramlarına dolaylı temel."
     },
     {
       "id": "ANX-FB523-030",
@@ -1414,13 +3042,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.1.1",
+          "title": "Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/352",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.2.2",
+          "title": "Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/429",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Ölçme ve karşılaştırmadan kütle–ağırlık ayrımına; enerji kavramlarına dolaylı temel."
     },
     {
       "id": "ANX-FB523-031",
@@ -1457,13 +3141,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.1.1",
+          "title": "Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/352",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.2.2",
+          "title": "Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/429",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Ölçme ve karşılaştırmadan kütle–ağırlık ayrımına; enerji kavramlarına dolaylı temel."
     },
     {
       "id": "ANX-FB523-032",
@@ -1500,13 +3240,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.1.1",
+          "title": "Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/352",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.2.2",
+          "title": "Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/429",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Ölçme ve karşılaştırmadan kütle–ağırlık ayrımına; enerji kavramlarına dolaylı temel."
     },
     {
       "id": "ANX-FB523-033",
@@ -1543,13 +3339,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.1.1",
+          "title": "Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/352",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.2.2",
+          "title": "Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/429",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Ölçme ve karşılaştırmadan kütle–ağırlık ayrımına; enerji kavramlarına dolaylı temel."
     },
     {
       "id": "ANX-FB523-034",
@@ -1558,7 +3410,7 @@
       "contextId": "FB523-C07",
       "title": "Havasız ortam — görev 4",
       "assessmentType": "OPEN_ENDED",
-      "stem": "Öğrenci 'hava olmayınca kütle yok olur' diyor; cisimden madde ayrılmıyor.\n\nVerilen ifadeyi bilimsel olarak düzelt.",
+      "stem": "Öğrenci 'hava olmayınca kütle yok olur' diyor; cisimden madde ayrılmıyor.\n\nBu durum hangi yanlış yoruma yol açabilir? Doğru açıklamayı yaz.",
       "sampleAnswer": "Kütle hava varlığına bağlı değildir.",
       "solution": "Kütle hava varlığına bağlı değildir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
       "rubric": {
@@ -1586,13 +3438,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.1.1",
+          "title": "Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/352",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.2.2",
+          "title": "Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/429",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Ölçme ve karşılaştırmadan kütle–ağırlık ayrımına; enerji kavramlarına dolaylı temel."
     },
     {
       "id": "ANX-FB523-035",
@@ -1631,13 +3539,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.1.1",
+          "title": "Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/352",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.2.2",
+          "title": "Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/429",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Ölçme ve karşılaştırmadan kütle–ağırlık ayrımına; enerji kavramlarına dolaylı temel."
     },
     {
       "id": "ANX-FB523-036",
@@ -1674,13 +3638,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.1.1",
+          "title": "Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/352",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.2.2",
+          "title": "Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/429",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Ölçme ve karşılaştırmadan kütle–ağırlık ayrımına; enerji kavramlarına dolaylı temel."
     },
     {
       "id": "ANX-FB523-037",
@@ -1717,13 +3737,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.1.1",
+          "title": "Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/352",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.2.2",
+          "title": "Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/429",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Ölçme ve karşılaştırmadan kütle–ağırlık ayrımına; enerji kavramlarına dolaylı temel."
     },
     {
       "id": "ANX-FB523-038",
@@ -1760,13 +3836,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.1.1",
+          "title": "Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/352",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.2.2",
+          "title": "Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/429",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Ölçme ve karşılaştırmadan kütle–ağırlık ayrımına; enerji kavramlarına dolaylı temel."
     },
     {
       "id": "ANX-FB523-039",
@@ -1775,7 +3907,7 @@
       "contextId": "FB523-C08",
       "title": "Esneyen yay — görev 4",
       "assessmentType": "OPEN_ENDED",
-      "stem": "Aynı cismin yayı Ay’da Dünya’ya göre daha az uzattığı veriliyor; 'cisim küçüldü' deniyor.\n\nVerilen ifadeyi bilimsel olarak düzelt.",
+      "stem": "Aynı cismin yayı Ay’da Dünya’ya göre daha az uzattığı veriliyor; 'cisim küçüldü' deniyor.\n\nBu durum hangi yanlış yoruma yol açabilir? Doğru açıklamayı yaz.",
       "sampleAnswer": "Az uzama kütle kaybını kanıtlamaz.",
       "solution": "Az uzama kütle kaybını kanıtlamaz. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
       "rubric": {
@@ -1803,13 +3935,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.1.1",
+          "title": "Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/352",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.2.2",
+          "title": "Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/429",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Ölçme ve karşılaştırmadan kütle–ağırlık ayrımına; enerji kavramlarına dolaylı temel."
     },
     {
       "id": "ANX-FB523-040",
@@ -1848,13 +4036,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.1.1",
+          "title": "Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/352",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.2.2",
+          "title": "Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/429",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Ölçme ve karşılaştırmadan kütle–ağırlık ayrımına; enerji kavramlarına dolaylı temel."
     },
     {
       "id": "ANX-FB523-041",
@@ -1891,13 +4135,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.1.1",
+          "title": "Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/352",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.2.2",
+          "title": "Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/429",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Ölçme ve karşılaştırmadan kütle–ağırlık ayrımına; enerji kavramlarına dolaylı temel."
     },
     {
       "id": "ANX-FB523-042",
@@ -1934,13 +4234,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.1.1",
+          "title": "Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/352",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.2.2",
+          "title": "Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/429",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Ölçme ve karşılaştırmadan kütle–ağırlık ayrımına; enerji kavramlarına dolaylı temel."
     },
     {
       "id": "ANX-FB523-043",
@@ -1977,13 +4333,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.1.1",
+          "title": "Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/352",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.2.2",
+          "title": "Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/429",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Ölçme ve karşılaştırmadan kütle–ağırlık ayrımına; enerji kavramlarına dolaylı temel."
     },
     {
       "id": "ANX-FB523-044",
@@ -1992,7 +4404,7 @@
       "contextId": "FB523-C09",
       "title": "Eklenen kitap — görev 4",
       "assessmentType": "OPEN_ENDED",
-      "stem": "Aynı yerde çantaya kitap ekleniyor; 'yalnız ağırlık artar' deniyor.\n\nVerilen ifadeyi bilimsel olarak düzelt.",
+      "stem": "Aynı yerde çantaya kitap ekleniyor; 'yalnız ağırlık artar' deniyor.\n\nBu durum hangi yanlış yoruma yol açabilir? Doğru açıklamayı yaz.",
       "sampleAnswer": "Bu durumda kütle de artar.",
       "solution": "Bu durumda kütle de artar. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
       "rubric": {
@@ -2020,13 +4432,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.1.1",
+          "title": "Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/352",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.2.2",
+          "title": "Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/429",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Ölçme ve karşılaştırmadan kütle–ağırlık ayrımına; enerji kavramlarına dolaylı temel."
     },
     {
       "id": "ANX-FB523-045",
@@ -2065,13 +4533,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.1.1",
+          "title": "Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/352",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.2.2",
+          "title": "Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/429",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Ölçme ve karşılaştırmadan kütle–ağırlık ayrımına; enerji kavramlarına dolaylı temel."
     },
     {
       "id": "ANX-FB523-046",
@@ -2108,13 +4632,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.1.1",
+          "title": "Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/352",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.2.2",
+          "title": "Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/429",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Ölçme ve karşılaştırmadan kütle–ağırlık ayrımına; enerji kavramlarına dolaylı temel."
     },
     {
       "id": "ANX-FB523-047",
@@ -2151,13 +4731,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.1.1",
+          "title": "Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/352",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.2.2",
+          "title": "Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/429",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Ölçme ve karşılaştırmadan kütle–ağırlık ayrımına; enerji kavramlarına dolaylı temel."
     },
     {
       "id": "ANX-FB523-048",
@@ -2194,13 +4830,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.1.1",
+          "title": "Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/352",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.2.2",
+          "title": "Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/429",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Ölçme ve karşılaştırmadan kütle–ağırlık ayrımına; enerji kavramlarına dolaylı temel."
     },
     {
       "id": "ANX-FB523-049",
@@ -2209,7 +4901,7 @@
       "contextId": "FB523-C10",
       "title": "Astronot kaydı — görev 4",
       "assessmentType": "OPEN_ENDED",
-      "stem": "Astronotun kütlesi kg, Dünya ve Ay’daki ağırlıkları N ile kaydediliyor; 'aynı kavram' deniyor.\n\nVerilen ifadeyi bilimsel olarak düzelt.",
+      "stem": "Astronotun kütlesi kg, Dünya ve Ay’daki ağırlıkları N ile kaydediliyor; 'aynı kavram' deniyor.\n\nBu durum hangi yanlış yoruma yol açabilir? Doğru açıklamayı yaz.",
       "sampleAnswer": "İki nicelik özdeş değildir.",
       "solution": "İki nicelik özdeş değildir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
       "rubric": {
@@ -2237,13 +4929,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.1.1",
+          "title": "Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/352",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.2.2",
+          "title": "Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/429",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Ölçme ve karşılaştırmadan kütle–ağırlık ayrımına; enerji kavramlarına dolaylı temel."
     },
     {
       "id": "ANX-FB523-050",
@@ -2282,13 +5030,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.1.1",
+          "title": "Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/352",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 7,
+          "code": "FB.7.2.2",
+          "title": "Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/429",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 7. sınıftaki “Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Ölçme ve karşılaştırmadan kütle–ağırlık ayrımına; enerji kavramlarına dolaylı temel."
     }
   ]
 }

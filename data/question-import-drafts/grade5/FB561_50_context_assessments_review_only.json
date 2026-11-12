@@ -25,17 +25,21 @@
       "Örnek cevaplar anahtar çekirdekleridir; kabul edilen alternatifler uzman tarafından genişletilmelidir."
     ],
     "reviewGates": [
-      "EXPERT_SCIENCE_PEDAGOGY_RUBRIC",
-      "EXACT_PROGRAM_YEAR_CODE",
+      "INDEPENDENT_TEACHER_SCIENCE_PEDAGOGY_RUBRIC",
+      "TARGET_YEAR_COHORT_CHECK",
       "SEMANTIC_CROSS_POOL_ORIGINALITY",
-      "MEDIA_LAYOUT_RIGHTS",
-      "VERTICAL_CURRICULUM_MAP",
-      "HISTORICAL_EXAM_AUDIT",
+      "DIFFICULTY_CALIBRATION",
+      "FINAL_MEDIA_LAYOUT",
       "IMPORTER_TYPE_SUPPORT"
     ],
     "safety": "Öğretmen denetimi; ılık su, uygun düşük gerilimli pil ve güvenli modeller. Priz, doğrudan Güneş/lazer, sıcak yüzey, kırık/tehlikeli atık veya kişisel sağlık müdahalesi kullanılmaz.",
     "importerCompatibility": "REVIEW_ONLY_NOT_LEGACY_MC_IMPORT",
-    "generationMethod": "Authored context/answer matrix expanded deterministically; no agent jobs started."
+    "generationMethod": "Authored context/answer matrix expanded deterministically; no agent jobs started.",
+    "sourceProgramEdition": 2026,
+    "officialCurrentPdfCodePresenceVerified": true,
+    "targetAcademicYearApprovalVerified": false,
+    "verticalLinksStatus": "SOURCE_VERIFIED_EDITORIAL_RELATIONS_COHORT_CHECK_REQUIRED",
+    "historicalExamStatus": "IOKBS_2022_2026_BOUNDED_CONTENT_REVIEW"
   },
   "contexts": [
     {
@@ -159,13 +163,63 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.1",
+          "title": "Maddelerin elektriği iletme durumlarını gösteren deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Maddelerin elektriği iletme durumlarını gösteren deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 1,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Basit devre sorgulamasından sembollere; iletkenlik deneylerine."
     },
     {
       "id": "ANX-FB561-002",
@@ -202,13 +256,63 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.1",
+          "title": "Maddelerin elektriği iletme durumlarını gösteren deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Maddelerin elektriği iletme durumlarını gösteren deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 1,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Basit devre sorgulamasından sembollere; iletkenlik deneylerine."
     },
     {
       "id": "ANX-FB561-003",
@@ -217,7 +321,7 @@
       "contextId": "FB561-C01",
       "title": "Temel kutu — görev 3",
       "assessmentType": "OPEN_ENDED",
-      "stem": "Katalog pil, ampul, anahtar ve kabloyu içeriyor; plastik taban içermiyor.\nBu sorunun temel kataloğu pil, ampul, anahtar ve kablo sembollerini içerir; duy, pil yatağı, bant ve taban için ayrı simge kullanmaz. Bu kapsam tüm teknik standartlar için sembolsüzlük iddiası değildir.\n\nHer grubu uygun adla etiketle; bir eşleştirmeyi gerekçelendir.",
+      "stem": "Katalog pil, ampul, anahtar ve kabloyu içeriyor; plastik taban içermiyor.\nBu sorunun temel kataloğu pil, ampul, anahtar ve kablo sembollerini içerir; duy, pil yatağı, bant ve taban için ayrı simge kullanmaz. Bu kapsam tüm teknik standartlar için sembolsüzlük iddiası değildir.\n\nYaptığın eşleştirme veya gruplandırmanın gerekçesini açıkla.",
       "sampleAnswer": "Taban destek parçasıdır.",
       "solution": "Taban destek parçasıdır. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
       "rubric": {
@@ -246,13 +350,63 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.1",
+          "title": "Maddelerin elektriği iletme durumlarını gösteren deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Maddelerin elektriği iletme durumlarını gösteren deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 1,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Basit devre sorgulamasından sembollere; iletkenlik deneylerine."
     },
     {
       "id": "ANX-FB561-004",
@@ -289,13 +443,63 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.1",
+          "title": "Maddelerin elektriği iletme durumlarını gösteren deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Maddelerin elektriği iletme durumlarını gösteren deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 1,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Basit devre sorgulamasından sembollere; iletkenlik deneylerine."
     },
     {
       "id": "ANX-FB561-005",
@@ -335,13 +539,63 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.1",
+          "title": "Maddelerin elektriği iletme durumlarını gösteren deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Maddelerin elektriği iletme durumlarını gösteren deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 1,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Basit devre sorgulamasından sembollere; iletkenlik deneylerine."
     },
     {
       "id": "ANX-FB561-006",
@@ -378,13 +632,63 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.1",
+          "title": "Maddelerin elektriği iletme durumlarını gösteren deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Maddelerin elektriği iletme durumlarını gösteren deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 1,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Basit devre sorgulamasından sembollere; iletkenlik deneylerine."
     },
     {
       "id": "ANX-FB561-007",
@@ -421,13 +725,63 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.1",
+          "title": "Maddelerin elektriği iletme durumlarını gösteren deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Maddelerin elektriği iletme durumlarını gösteren deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 1,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Basit devre sorgulamasından sembollere; iletkenlik deneylerine."
     },
     {
       "id": "ANX-FB561-008",
@@ -436,7 +790,7 @@
       "contextId": "FB561-C02",
       "title": "Pil çizgileri — görev 3",
       "assessmentType": "OPEN_ENDED",
-      "stem": "Öğrenci pili daire içindeki çarpıyla etiketliyor.\nBu sorunun temel kataloğu pil, ampul, anahtar ve kablo sembollerini içerir; duy, pil yatağı, bant ve taban için ayrı simge kullanmaz. Bu kapsam tüm teknik standartlar için sembolsüzlük iddiası değildir.\n\nHer grubu uygun adla etiketle; bir eşleştirmeyi gerekçelendir.",
+      "stem": "Öğrenci pili daire içindeki çarpıyla etiketliyor.\nBu sorunun temel kataloğu pil, ampul, anahtar ve kablo sembollerini içerir; duy, pil yatağı, bant ve taban için ayrı simge kullanmaz. Bu kapsam tüm teknik standartlar için sembolsüzlük iddiası değildir.\n\nYaptığın eşleştirme veya gruplandırmanın gerekçesini açıkla.",
       "sampleAnswer": "Daire içi çarpı ampuldür.",
       "solution": "Daire içi çarpı ampuldür. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
       "rubric": {
@@ -465,13 +819,63 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.1",
+          "title": "Maddelerin elektriği iletme durumlarını gösteren deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Maddelerin elektriği iletme durumlarını gösteren deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 1,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Basit devre sorgulamasından sembollere; iletkenlik deneylerine."
     },
     {
       "id": "ANX-FB561-009",
@@ -508,13 +912,63 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.1",
+          "title": "Maddelerin elektriği iletme durumlarını gösteren deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Maddelerin elektriği iletme durumlarını gösteren deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 1,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Basit devre sorgulamasından sembollere; iletkenlik deneylerine."
     },
     {
       "id": "ANX-FB561-010",
@@ -554,13 +1008,63 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.1",
+          "title": "Maddelerin elektriği iletme durumlarını gösteren deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Maddelerin elektriği iletme durumlarını gösteren deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 1,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Basit devre sorgulamasından sembollere; iletkenlik deneylerine."
     },
     {
       "id": "ANX-FB561-011",
@@ -599,13 +1103,63 @@
       ],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.1",
+          "title": "Maddelerin elektriği iletme durumlarını gösteren deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Maddelerin elektriği iletme durumlarını gösteren deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 1,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Basit devre sorgulamasından sembollere; iletkenlik deneylerine."
     },
     {
       "id": "ANX-FB561-012",
@@ -644,13 +1198,63 @@
       ],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.1",
+          "title": "Maddelerin elektriği iletme durumlarını gösteren deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Maddelerin elektriği iletme durumlarını gösteren deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 1,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Basit devre sorgulamasından sembollere; iletkenlik deneylerine."
     },
     {
       "id": "ANX-FB561-013",
@@ -659,7 +1263,7 @@
       "contextId": "FB561-C03",
       "title": "Açık anahtar — görev 3",
       "assessmentType": "OPEN_ENDED",
-      "stem": "Anahtarın kontakları ayrık; şemada kesintisiz tel çizilmiş.\nBu sorunun temel kataloğu pil, ampul, anahtar ve kablo sembollerini içerir; duy, pil yatağı, bant ve taban için ayrı simge kullanmaz. Bu kapsam tüm teknik standartlar için sembolsüzlük iddiası değildir.\n\nHer grubu uygun adla etiketle; bir eşleştirmeyi gerekçelendir.",
+      "stem": "Anahtarın kontakları ayrık; şemada kesintisiz tel çizilmiş.\nBu sorunun temel kataloğu pil, ampul, anahtar ve kablo sembollerini içerir; duy, pil yatağı, bant ve taban için ayrı simge kullanmaz. Bu kapsam tüm teknik standartlar için sembolsüzlük iddiası değildir.\n\nYaptığın eşleştirme veya gruplandırmanın gerekçesini açıkla.",
       "sampleAnswer": "Açık anahtar yolun kesildiğini gösterir.",
       "solution": "Açık anahtar yolun kesildiğini gösterir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
       "rubric": {
@@ -690,13 +1294,63 @@
       ],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.1",
+          "title": "Maddelerin elektriği iletme durumlarını gösteren deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Maddelerin elektriği iletme durumlarını gösteren deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 1,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Basit devre sorgulamasından sembollere; iletkenlik deneylerine."
     },
     {
       "id": "ANX-FB561-014",
@@ -735,13 +1389,63 @@
       ],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.1",
+          "title": "Maddelerin elektriği iletme durumlarını gösteren deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Maddelerin elektriği iletme durumlarını gösteren deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 1,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Basit devre sorgulamasından sembollere; iletkenlik deneylerine."
     },
     {
       "id": "ANX-FB561-015",
@@ -783,13 +1487,63 @@
       ],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.1",
+          "title": "Maddelerin elektriği iletme durumlarını gösteren deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Maddelerin elektriği iletme durumlarını gösteren deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 1,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Basit devre sorgulamasından sembollere; iletkenlik deneylerine."
     },
     {
       "id": "ANX-FB561-016",
@@ -828,13 +1582,63 @@
       ],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.1",
+          "title": "Maddelerin elektriği iletme durumlarını gösteren deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Maddelerin elektriği iletme durumlarını gösteren deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 1,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Basit devre sorgulamasından sembollere; iletkenlik deneylerine."
     },
     {
       "id": "ANX-FB561-017",
@@ -873,13 +1677,63 @@
       ],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.1",
+          "title": "Maddelerin elektriği iletme durumlarını gösteren deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Maddelerin elektriği iletme durumlarını gösteren deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 1,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Basit devre sorgulamasından sembollere; iletkenlik deneylerine."
     },
     {
       "id": "ANX-FB561-018",
@@ -888,7 +1742,7 @@
       "contextId": "FB561-C04",
       "title": "Kapalı anahtar — görev 3",
       "assessmentType": "OPEN_ENDED",
-      "stem": "Anahtar kapalı; şemada açık kontak çizilmiş.\nBu sorunun temel kataloğu pil, ampul, anahtar ve kablo sembollerini içerir; duy, pil yatağı, bant ve taban için ayrı simge kullanmaz. Bu kapsam tüm teknik standartlar için sembolsüzlük iddiası değildir.\n\nHer grubu uygun adla etiketle; bir eşleştirmeyi gerekçelendir.",
+      "stem": "Anahtar kapalı; şemada açık kontak çizilmiş.\nBu sorunun temel kataloğu pil, ampul, anahtar ve kablo sembollerini içerir; duy, pil yatağı, bant ve taban için ayrı simge kullanmaz. Bu kapsam tüm teknik standartlar için sembolsüzlük iddiası değildir.\n\nYaptığın eşleştirme veya gruplandırmanın gerekçesini açıkla.",
       "sampleAnswer": "Bağlantı durumu sembolde görünür.",
       "solution": "Bağlantı durumu sembolde görünür. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
       "rubric": {
@@ -919,13 +1773,63 @@
       ],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.1",
+          "title": "Maddelerin elektriği iletme durumlarını gösteren deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Maddelerin elektriği iletme durumlarını gösteren deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 1,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Basit devre sorgulamasından sembollere; iletkenlik deneylerine."
     },
     {
       "id": "ANX-FB561-019",
@@ -964,13 +1868,63 @@
       ],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.1",
+          "title": "Maddelerin elektriği iletme durumlarını gösteren deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Maddelerin elektriği iletme durumlarını gösteren deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 1,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Basit devre sorgulamasından sembollere; iletkenlik deneylerine."
     },
     {
       "id": "ANX-FB561-020",
@@ -1012,13 +1966,63 @@
       ],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.1",
+          "title": "Maddelerin elektriği iletme durumlarını gösteren deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Maddelerin elektriği iletme durumlarını gösteren deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 1,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Basit devre sorgulamasından sembollere; iletkenlik deneylerine."
     },
     {
       "id": "ANX-FB561-021",
@@ -1055,13 +2059,63 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.1",
+          "title": "Maddelerin elektriği iletme durumlarını gösteren deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Maddelerin elektriği iletme durumlarını gösteren deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 1,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Basit devre sorgulamasından sembollere; iletkenlik deneylerine."
     },
     {
       "id": "ANX-FB561-022",
@@ -1098,13 +2152,63 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.1",
+          "title": "Maddelerin elektriği iletme durumlarını gösteren deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Maddelerin elektriği iletme durumlarını gösteren deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 1,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Basit devre sorgulamasından sembollere; iletkenlik deneylerine."
     },
     {
       "id": "ANX-FB561-023",
@@ -1113,7 +2217,7 @@
       "contextId": "FB561-C05",
       "title": "Duy ve ampul — görev 3",
       "assessmentType": "OPEN_ENDED",
-      "stem": "Sınıf kataloğu ampul sembolünü verir; duy için ayrı sembol kullanmaz.\nBu sorunun temel kataloğu pil, ampul, anahtar ve kablo sembollerini içerir; duy, pil yatağı, bant ve taban için ayrı simge kullanmaz. Bu kapsam tüm teknik standartlar için sembolsüzlük iddiası değildir.\n\nHer grubu uygun adla etiketle; bir eşleştirmeyi gerekçelendir.",
+      "stem": "Sınıf kataloğu ampul sembolünü verir; duy için ayrı sembol kullanmaz.\nBu sorunun temel kataloğu pil, ampul, anahtar ve kablo sembollerini içerir; duy, pil yatağı, bant ve taban için ayrı simge kullanmaz. Bu kapsam tüm teknik standartlar için sembolsüzlük iddiası değildir.\n\nYaptığın eşleştirme veya gruplandırmanın gerekçesini açıkla.",
       "sampleAnswer": "Duy bağlantı desteğidir.",
       "solution": "Duy bağlantı desteğidir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
       "rubric": {
@@ -1142,13 +2246,63 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.1",
+          "title": "Maddelerin elektriği iletme durumlarını gösteren deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Maddelerin elektriği iletme durumlarını gösteren deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 1,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Basit devre sorgulamasından sembollere; iletkenlik deneylerine."
     },
     {
       "id": "ANX-FB561-024",
@@ -1185,13 +2339,63 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.1",
+          "title": "Maddelerin elektriği iletme durumlarını gösteren deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Maddelerin elektriği iletme durumlarını gösteren deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 1,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Basit devre sorgulamasından sembollere; iletkenlik deneylerine."
     },
     {
       "id": "ANX-FB561-025",
@@ -1231,13 +2435,63 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.1",
+          "title": "Maddelerin elektriği iletme durumlarını gösteren deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Maddelerin elektriği iletme durumlarını gösteren deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 1,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Basit devre sorgulamasından sembollere; iletkenlik deneylerine."
     },
     {
       "id": "ANX-FB561-026",
@@ -1274,13 +2528,63 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.1",
+          "title": "Maddelerin elektriği iletme durumlarını gösteren deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Maddelerin elektriği iletme durumlarını gösteren deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 1,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Basit devre sorgulamasından sembollere; iletkenlik deneylerine."
     },
     {
       "id": "ANX-FB561-027",
@@ -1317,13 +2621,63 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.1",
+          "title": "Maddelerin elektriği iletme durumlarını gösteren deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Maddelerin elektriği iletme durumlarını gösteren deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 1,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Basit devre sorgulamasından sembollere; iletkenlik deneylerine."
     },
     {
       "id": "ANX-FB561-028",
@@ -1332,7 +2686,7 @@
       "contextId": "FB561-C06",
       "title": "Pil yatağı — görev 3",
       "assessmentType": "OPEN_ENDED",
-      "stem": "Katalog tek pil sembolünü kullanıyor; pil yatağı ayrıca çizilmiyor.\nBu sorunun temel kataloğu pil, ampul, anahtar ve kablo sembollerini içerir; duy, pil yatağı, bant ve taban için ayrı simge kullanmaz. Bu kapsam tüm teknik standartlar için sembolsüzlük iddiası değildir.\n\nHer grubu uygun adla etiketle; bir eşleştirmeyi gerekçelendir.",
+      "stem": "Katalog tek pil sembolünü kullanıyor; pil yatağı ayrıca çizilmiyor.\nBu sorunun temel kataloğu pil, ampul, anahtar ve kablo sembollerini içerir; duy, pil yatağı, bant ve taban için ayrı simge kullanmaz. Bu kapsam tüm teknik standartlar için sembolsüzlük iddiası değildir.\n\nYaptığın eşleştirme veya gruplandırmanın gerekçesini açıkla.",
       "sampleAnswer": "Yatak ile pil aynı parça değildir.",
       "solution": "Yatak ile pil aynı parça değildir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
       "rubric": {
@@ -1361,13 +2715,63 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.1",
+          "title": "Maddelerin elektriği iletme durumlarını gösteren deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Maddelerin elektriği iletme durumlarını gösteren deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 1,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Basit devre sorgulamasından sembollere; iletkenlik deneylerine."
     },
     {
       "id": "ANX-FB561-029",
@@ -1404,13 +2808,63 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.1",
+          "title": "Maddelerin elektriği iletme durumlarını gösteren deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Maddelerin elektriği iletme durumlarını gösteren deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 1,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Basit devre sorgulamasından sembollere; iletkenlik deneylerine."
     },
     {
       "id": "ANX-FB561-030",
@@ -1450,13 +2904,63 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.1",
+          "title": "Maddelerin elektriği iletme durumlarını gösteren deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Maddelerin elektriği iletme durumlarını gösteren deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 1,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Basit devre sorgulamasından sembollere; iletkenlik deneylerine."
     },
     {
       "id": "ANX-FB561-031",
@@ -1493,13 +2997,63 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.1",
+          "title": "Maddelerin elektriği iletme durumlarını gösteren deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Maddelerin elektriği iletme durumlarını gösteren deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 1,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Basit devre sorgulamasından sembollere; iletkenlik deneylerine."
     },
     {
       "id": "ANX-FB561-032",
@@ -1536,13 +3090,63 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.1",
+          "title": "Maddelerin elektriği iletme durumlarını gösteren deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Maddelerin elektriği iletme durumlarını gösteren deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 1,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Basit devre sorgulamasından sembollere; iletkenlik deneylerine."
     },
     {
       "id": "ANX-FB561-033",
@@ -1551,7 +3155,7 @@
       "contextId": "FB561-C07",
       "title": "Kablo biçimi — görev 3",
       "assessmentType": "OPEN_ENDED",
-      "stem": "Gerçekte kıvrılan kablo şemada düz bağlantı çizgisiyle verilmiş.\nBu sorunun temel kataloğu pil, ampul, anahtar ve kablo sembollerini içerir; duy, pil yatağı, bant ve taban için ayrı simge kullanmaz. Bu kapsam tüm teknik standartlar için sembolsüzlük iddiası değildir.\n\nHer grubu uygun adla etiketle; bir eşleştirmeyi gerekçelendir.",
+      "stem": "Gerçekte kıvrılan kablo şemada düz bağlantı çizgisiyle verilmiş.\nBu sorunun temel kataloğu pil, ampul, anahtar ve kablo sembollerini içerir; duy, pil yatağı, bant ve taban için ayrı simge kullanmaz. Bu kapsam tüm teknik standartlar için sembolsüzlük iddiası değildir.\n\nYaptığın eşleştirme veya gruplandırmanın gerekçesini açıkla.",
       "sampleAnswer": "Şema elektriksel bağlantıyı anlatır.",
       "solution": "Şema elektriksel bağlantıyı anlatır. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
       "rubric": {
@@ -1580,13 +3184,63 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.1",
+          "title": "Maddelerin elektriği iletme durumlarını gösteren deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Maddelerin elektriği iletme durumlarını gösteren deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 1,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Basit devre sorgulamasından sembollere; iletkenlik deneylerine."
     },
     {
       "id": "ANX-FB561-034",
@@ -1623,13 +3277,63 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.1",
+          "title": "Maddelerin elektriği iletme durumlarını gösteren deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Maddelerin elektriği iletme durumlarını gösteren deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 1,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Basit devre sorgulamasından sembollere; iletkenlik deneylerine."
     },
     {
       "id": "ANX-FB561-035",
@@ -1669,13 +3373,63 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.1",
+          "title": "Maddelerin elektriği iletme durumlarını gösteren deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Maddelerin elektriği iletme durumlarını gösteren deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 1,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Basit devre sorgulamasından sembollere; iletkenlik deneylerine."
     },
     {
       "id": "ANX-FB561-036",
@@ -1712,13 +3466,63 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.1",
+          "title": "Maddelerin elektriği iletme durumlarını gösteren deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Maddelerin elektriği iletme durumlarını gösteren deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 1,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Basit devre sorgulamasından sembollere; iletkenlik deneylerine."
     },
     {
       "id": "ANX-FB561-037",
@@ -1755,13 +3559,63 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.1",
+          "title": "Maddelerin elektriği iletme durumlarını gösteren deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Maddelerin elektriği iletme durumlarını gösteren deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 1,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Basit devre sorgulamasından sembollere; iletkenlik deneylerine."
     },
     {
       "id": "ANX-FB561-038",
@@ -1770,7 +3624,7 @@
       "contextId": "FB561-C08",
       "title": "Bant parçası — görev 3",
       "assessmentType": "OPEN_ENDED",
-      "stem": "Yalıtım bandı devre elemanları afişine pil sembolüyle eklenmiş.\nBu sorunun temel kataloğu pil, ampul, anahtar ve kablo sembollerini içerir; duy, pil yatağı, bant ve taban için ayrı simge kullanmaz. Bu kapsam tüm teknik standartlar için sembolsüzlük iddiası değildir.\n\nHer grubu uygun adla etiketle; bir eşleştirmeyi gerekçelendir.",
+      "stem": "Yalıtım bandı devre elemanları afişine pil sembolüyle eklenmiş.\nBu sorunun temel kataloğu pil, ampul, anahtar ve kablo sembollerini içerir; duy, pil yatağı, bant ve taban için ayrı simge kullanmaz. Bu kapsam tüm teknik standartlar için sembolsüzlük iddiası değildir.\n\nYaptığın eşleştirme veya gruplandırmanın gerekçesini açıkla.",
       "sampleAnswer": "Bant yardımcı malzemedir.",
       "solution": "Bant yardımcı malzemedir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
       "rubric": {
@@ -1799,13 +3653,63 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.1",
+          "title": "Maddelerin elektriği iletme durumlarını gösteren deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Maddelerin elektriği iletme durumlarını gösteren deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 1,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Basit devre sorgulamasından sembollere; iletkenlik deneylerine."
     },
     {
       "id": "ANX-FB561-039",
@@ -1842,13 +3746,63 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.1",
+          "title": "Maddelerin elektriği iletme durumlarını gösteren deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Maddelerin elektriği iletme durumlarını gösteren deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 1,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Basit devre sorgulamasından sembollere; iletkenlik deneylerine."
     },
     {
       "id": "ANX-FB561-040",
@@ -1888,13 +3842,63 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.1",
+          "title": "Maddelerin elektriği iletme durumlarını gösteren deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Maddelerin elektriği iletme durumlarını gösteren deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 1,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Basit devre sorgulamasından sembollere; iletkenlik deneylerine."
     },
     {
       "id": "ANX-FB561-041",
@@ -1931,13 +3935,63 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.1",
+          "title": "Maddelerin elektriği iletme durumlarını gösteren deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Maddelerin elektriği iletme durumlarını gösteren deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 1,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Basit devre sorgulamasından sembollere; iletkenlik deneylerine."
     },
     {
       "id": "ANX-FB561-042",
@@ -1974,13 +4028,63 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.1",
+          "title": "Maddelerin elektriği iletme durumlarını gösteren deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Maddelerin elektriği iletme durumlarını gösteren deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 1,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Basit devre sorgulamasından sembollere; iletkenlik deneylerine."
     },
     {
       "id": "ANX-FB561-043",
@@ -1989,7 +4093,7 @@
       "contextId": "FB561-C09",
       "title": "Eksik katalog — görev 3",
       "assessmentType": "OPEN_ENDED",
-      "stem": "Grup kendi şekillerini kullanmış; açıklama anahtarı yok.\nBu sorunun temel kataloğu pil, ampul, anahtar ve kablo sembollerini içerir; duy, pil yatağı, bant ve taban için ayrı simge kullanmaz. Bu kapsam tüm teknik standartlar için sembolsüzlük iddiası değildir.\n\nHer grubu uygun adla etiketle; bir eşleştirmeyi gerekçelendir.",
+      "stem": "Grup kendi şekillerini kullanmış; açıklama anahtarı yok.\nBu sorunun temel kataloğu pil, ampul, anahtar ve kablo sembollerini içerir; duy, pil yatağı, bant ve taban için ayrı simge kullanmaz. Bu kapsam tüm teknik standartlar için sembolsüzlük iddiası değildir.\n\nYaptığın eşleştirme veya gruplandırmanın gerekçesini açıkla.",
       "sampleAnswer": "Ortak dil eşleştirmeyi kolaylaştırır.",
       "solution": "Ortak dil eşleştirmeyi kolaylaştırır. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
       "rubric": {
@@ -2018,13 +4122,63 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.1",
+          "title": "Maddelerin elektriği iletme durumlarını gösteren deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Maddelerin elektriği iletme durumlarını gösteren deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 1,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Basit devre sorgulamasından sembollere; iletkenlik deneylerine."
     },
     {
       "id": "ANX-FB561-044",
@@ -2061,13 +4215,63 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.1",
+          "title": "Maddelerin elektriği iletme durumlarını gösteren deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Maddelerin elektriği iletme durumlarını gösteren deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 1,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Basit devre sorgulamasından sembollere; iletkenlik deneylerine."
     },
     {
       "id": "ANX-FB561-045",
@@ -2107,13 +4311,63 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.1",
+          "title": "Maddelerin elektriği iletme durumlarını gösteren deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Maddelerin elektriği iletme durumlarını gösteren deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 1,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Basit devre sorgulamasından sembollere; iletkenlik deneylerine."
     },
     {
       "id": "ANX-FB561-046",
@@ -2150,13 +4404,63 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.1",
+          "title": "Maddelerin elektriği iletme durumlarını gösteren deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Maddelerin elektriği iletme durumlarını gösteren deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 1,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Basit devre sorgulamasından sembollere; iletkenlik deneylerine."
     },
     {
       "id": "ANX-FB561-047",
@@ -2193,13 +4497,63 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.1",
+          "title": "Maddelerin elektriği iletme durumlarını gösteren deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Maddelerin elektriği iletme durumlarını gösteren deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 1,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Basit devre sorgulamasından sembollere; iletkenlik deneylerine."
     },
     {
       "id": "ANX-FB561-048",
@@ -2208,7 +4562,7 @@
       "contextId": "FB561-C10",
       "title": "Fotoğraf ile şema — görev 3",
       "assessmentType": "OPEN_ENDED",
-      "stem": "Afişte ampul fotoğrafı sembol yerine konmuş; parça ve sembol aynı sayılıyor.\nBu sorunun temel kataloğu pil, ampul, anahtar ve kablo sembollerini içerir; duy, pil yatağı, bant ve taban için ayrı simge kullanmaz. Bu kapsam tüm teknik standartlar için sembolsüzlük iddiası değildir.\n\nHer grubu uygun adla etiketle; bir eşleştirmeyi gerekçelendir.",
+      "stem": "Afişte ampul fotoğrafı sembol yerine konmuş; parça ve sembol aynı sayılıyor.\nBu sorunun temel kataloğu pil, ampul, anahtar ve kablo sembollerini içerir; duy, pil yatağı, bant ve taban için ayrı simge kullanmaz. Bu kapsam tüm teknik standartlar için sembolsüzlük iddiası değildir.\n\nYaptığın eşleştirme veya gruplandırmanın gerekçesini açıkla.",
       "sampleAnswer": "Sembol parçayı sadeleştirir.",
       "solution": "Sembol parçayı sadeleştirir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
       "rubric": {
@@ -2237,13 +4591,63 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.1",
+          "title": "Maddelerin elektriği iletme durumlarını gösteren deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Maddelerin elektriği iletme durumlarını gösteren deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 1,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Basit devre sorgulamasından sembollere; iletkenlik deneylerine."
     },
     {
       "id": "ANX-FB561-049",
@@ -2280,13 +4684,63 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.1",
+          "title": "Maddelerin elektriği iletme durumlarını gösteren deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Maddelerin elektriği iletme durumlarını gösteren deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 1,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Basit devre sorgulamasından sembollere; iletkenlik deneylerine."
     },
     {
       "id": "ANX-FB561-050",
@@ -2326,13 +4780,63 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.1",
+          "title": "Maddelerin elektriği iletme durumlarını gösteren deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Maddelerin elektriği iletme durumlarını gösteren deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 1,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 12,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Basit devre sorgulamasından sembollere; iletkenlik deneylerine."
     }
   ]
 }

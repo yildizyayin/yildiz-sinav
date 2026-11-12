@@ -251,7 +251,7 @@
         "Bağlamda kütle ve ağırlık için uygun araç/birim eşleşmesini yaz.",
         "İki kavramın bu durumdaki ortak yönünü belirt.",
         "Kütle ile ağırlığı ayıran temel farkı bağlama uygulayarak açıkla.",
-        "Verilen ifadeyi bilimsel olarak düzelt.",
+        "Bu durum hangi yanlış yoruma yol açabilir? Doğru açıklamayı yaz.",
         "Kütle–ağırlık karşılaştırma kartı hazırla; gerçek ölçüm yoksa veri uydurma."
       ],
       "cases": [
@@ -492,7 +492,7 @@
         "Bu örneklerde hücrenin hangi temel yapıları veya özellikleri belirtilmiş?",
         "Bitki ve hayvan hücresi için ortak olan özelliği yaz.",
         "Bağlamdaki iki örneği ayıran özelliği belirt.",
-        "Verilen çıkarımın sınırını veya yanlışını açıkla.",
+        "Bu gözlem veya modelden hangi aşırı genelleme yapılamaz? Gerekçelendir.",
         "Bağlamı temel alan karşılaştırmalı hücre çizimi/posteri hazırla; ortak ve farklı özellikleri etiketle."
       ],
       "cases": [
@@ -614,7 +614,7 @@
         "Bağlamdaki yapıları hücre, doku, organ, sistem veya organizma düzeyiyle eşleştir.",
         "Küçükten büyüğe doğru ilişkiyi kur.",
         "Bir üst düzeye geçerken yapıların birlikte çalışmasını açıkla.",
-        "Bağlamdaki hatalı sıralamayı veya benzetmenin sınırını belirt.",
+        "Bağlamı kullanırken hangi kavram karışıklığından kaçınılmalı? Hatalı bir ifade varsa düzelt.",
         "Bu örnek için beş düzeyli ilişki haritası hazırla; her bağlantıyı gerekçelendir."
       ],
       "cases": [
@@ -734,7 +734,7 @@
         "Bağlamdaki yapıların niteliğini belirt.",
         "Yapıları iskelet veya kas başlığı altında nasıl ayırırsın?",
         "Uygun alt grubu veya örneği yaz.",
-        "Yanlış etiketin neden uygun olmadığını açıkla.",
+        "Bu örnekler sınıflandırılırken hangi yanlış etiketten kaçınılmalı? Neden?",
         "Bu örnekleri içeren etiketli sınıflandırma tablosu hazırla."
       ],
       "cases": [
@@ -1344,7 +1344,7 @@
         "Bağlamdaki maddenin tanecikleri, boşlukları veya hareketi hakkında hangi özellik belirtilmiş?",
         "Maddeyi katı, sıvı veya gaz olarak sınıflandır ve gerekçelendir.",
         "Bu örneği başka bir hâlden ayıran özelliği açıkla.",
-        "Verilen yanlış çıkarımı düzelt; modelin sınırını belirt.",
+        "Bu gözlemden hangi yanlış çıkarım yapılmamalı? Model kullanıyorsan bir temsil sınırı ekle.",
         "Bu duruma uygun tanecik modeli çiz veya kur; hareketi ve hâl etiketini göster."
       ],
       "cases": [
@@ -1706,7 +1706,7 @@
       "code": "FB.5.5.4",
       "q": [
         "Gözlemdeki hâl değişimini ve ısı alma/verme ilişkisini belirt.",
-        "Hangi kayıt gözleme, hangisi tahmine dayanır?",
+        "Doğrudan gözlenen kısmı belirt. Henüz gözlenmemiş bir önerme varsa onu ayrı etiketle.",
         "Benzer ama henüz gözlenmemiş durum için gerekçeli tahmin yap.",
         "Tahminin geçerliliğini hangi koşul veya yeni veriyle sorgularsın?",
         "Güvenli gösteri kaydı veya öğretmen deneyi kullanarak tahmin–gözlem–sonuç raporu hazırla."
@@ -1954,8 +1954,8 @@
       "q": [
         "Bu ihtiyaç için ısı yalıtımını gösteren hangi modeli önerirsin?",
         "Modelin hangi koşul veya parçası karşılaştırmada sabit tutulmalı?",
-        "Verilen kanıt modelin başarısı hakkında ne söyler?",
-        "Modeli yeni kanıta göre nasıl yenilersin; hangi iddiadan kaçınırsın?",
+        "Bu modeli sınarken hangi gözlem başarıyı destekler? Veri verilmişse o veriyi kullan; yoksa beklenen kanıtı öner.",
+        "Modeli değerlendirmek veya yenilemek için hangi düzeltme ya da sınır notu gerekir?",
         "Güvenli ılık suyla modeli kur/yenile; önce–sonra sıcaklık, süre ve değişikliği kaydet."
       ],
       "cases": [
@@ -2074,7 +2074,7 @@
       "q": [
         "Bağlamdaki parçalar için bu ders düzeyinde kullanılan devre sembollerini belirt.",
         "Parçaları kullanılan katalogda sembolü olanlar ve olmayanlar diye ayır.",
-        "Her grubu uygun adla etiketle; bir eşleştirmeyi gerekçelendir.",
+        "Yaptığın eşleştirme veya gruplandırmanın gerekçesini açıkla.",
         "Yanlış eşleştirmeyi veya 'sembol yok' ifadesinin sınırını düzelt.",
         "Seçilen sembol kataloğuna göre parça–sembol afişi hazırla."
       ],
@@ -2326,8 +2326,8 @@
         [
           "Pil artışı",
           "Özdeş ampullü seri devrede bir ve iki uygun pil aynı yönde karşılaştırılacak.",
-          "Pil artarsa parlaklık artabilir.",
-          "Pil sayısı/parlaklık; ampul sabit.",
+          "Aynı yönde bağlı uygun pil sayısı artırılırsa, özdeş ampul ve diğer koşullar sabitken parlaklık artabilir.",
+          "Bağımsız: pil sayısı; bağımlı: ampul parlaklığı; kontrol: ampul sayısı/türü, pillerin durumu/yönü, sağlam bağlantı ve ortam.",
           "Aynı ampulle pil sayısını değiştiririm.",
           "Pil ve ampul uygunluk sınırı korunmalı.",
           "Öngörü, iki düzen ve sonuç kaydı."
@@ -2335,8 +2335,8 @@
         [
           "Ampul artışı",
           "Aynı pil grubuna seri ikinci özdeş ampul eklenecek.",
-          "Seri ampul artarsa parlaklık azalabilir.",
-          "Ampul sayısı/parlaklık; pil sabit.",
+          "Özdeş ampuller aynı pil grubuna seri eklendiğinde, diğer koşullar aynıysa her ampulün parlaklığı azalabilir.",
+          "Bağımsız: seri ampul sayısı; bağımlı: ampul parlaklığı; kontrol: pil sayısı/durumu, ampul türü, bağlantı ve ortam.",
           "Bir ve iki seri ampulü karşılaştırırım.",
           "Bağlantı seri ve ampuller özdeş olmalı.",
           "Hipotez–gözlem karşılaştırma raporu."
@@ -2344,8 +2344,8 @@
         [
           "İki sayı değişimi",
           "Pil ve seri ampul sayısı birlikte değişmiş; sonuç yalnız pile bağlanmış.",
-          "Tek değişkenli hipotez gerekir.",
-          "Bir sayıyı bağımsız seçerim.",
+          "Aynı yönde bağlı uygun pil sayısı artırılırsa, özdeş ampul ve diğer koşullar sabitken parlaklık artabilir.",
+          "Bağımsız: pil sayısı; bağımlı: ampul parlaklığı; kontrol: ampul sayısı/türü, pillerin durumu/yönü, sağlam bağlantı ve ortam.",
           "Diğer sayıyı sabit tutarım.",
           "Birlikte değişim nedenleri karıştırır.",
           "Kontrollü yeniden tasarım raporu."
@@ -2353,8 +2353,8 @@
         [
           "Eski yeni pil",
           "İki deneyde pil sayısı aynı; biri eski, biri yeni pil kullanıyor.",
-          "Pil durumu parlaklığı etkileyebilir.",
-          "Hedef sayıysa pil durumu kontrol edilmeli.",
+          "Aynı yönde bağlı uygun pil sayısı artırılırsa, özdeş ampul ve diğer koşullar sabitken parlaklık artabilir.",
+          "Bağımsız: pil sayısı; bağımlı: ampul parlaklığı; kontrol: ampul sayısı/türü, pillerin durumu/yönü, sağlam bağlantı ve ortam.",
           "Benzer durumlu pillerle sayıyı sınarım.",
           "Sayı tek değişen koşul değildir.",
           "Kaynak durumunu yazan test planı."
@@ -2362,8 +2362,8 @@
         [
           "Farklı ampuller",
           "Bir deneyde küçük, diğerinde farklı özellikte ampul var; pil sayısı etkisi aranıyor.",
-          "Aynı ampulle pil sayısı sınanır.",
-          "Pil sayısı/parlaklık; ampul türü sabit.",
+          "Aynı yönde bağlı uygun pil sayısı artırılırsa, özdeş ampul ve diğer koşullar sabitken parlaklık artabilir.",
+          "Bağımsız: pil sayısı; bağımlı: ampul parlaklığı; kontrol: ampul sayısı/türü, pillerin durumu/yönü, sağlam bağlantı ve ortam.",
           "Özdeş ampullerle yeniden karşılaştırırım.",
           "Farklı ampuller sonuçları karıştırır.",
           "Parça özellikli karşılaştırma planı."
@@ -2371,8 +2371,8 @@
         [
           "Ortam aydınlığı",
           "Aynı devre karanlık ve aydınlık odada farklı parlak sanılıyor.",
-          "Devre aynıysa algı ortamdan etkilenebilir.",
-          "Hedef pil/ampul; ortam sabit.",
+          "Aynı yönde bağlı uygun pil sayısı artırılırsa, özdeş ampul ve diğer koşullar sabitken parlaklık artabilir.",
+          "Bağımsız: pil sayısı; bağımlı: ampul parlaklığı; kontrol: ampul sayısı/türü, pillerin durumu/yönü, sağlam bağlantı ve ortam.",
           "Aynı ortamda iki devreyi karşılaştırırım.",
           "Algı değişimi devre etkisi değildir.",
           "Ortam kontrollü gözlem planı."
@@ -2380,8 +2380,8 @@
         [
           "Gevşek temas",
           "Pil artırılan devrede tel gevşek; ampul sönüyor.",
-          "Sağlam devrede pil sayısı sınanmalı.",
-          "Pil sayısı/parlaklık; temas sabit.",
+          "Aynı yönde bağlı uygun pil sayısı artırılırsa, özdeş ampul ve diğer koşullar sabitken parlaklık artabilir.",
+          "Bağımsız: pil sayısı; bağımlı: ampul parlaklığı; kontrol: ampul sayısı/türü, pillerin durumu/yönü, sağlam bağlantı ve ortam.",
           "Önce bağlantıyı düzeltirim.",
           "Sönme hipotezi tek başına çürütmez.",
           "Temas kontrolü ve tekrar kaydı."
@@ -2389,8 +2389,8 @@
         [
           "Tek gözlem",
           "Bir denemede iki pilli devre daha parlak; öğrenci her koşulda sonsuza dek artar diyor.",
-          "Uygun sınırlar içinde artış beklenebilir.",
-          "Pil sayısı/parlaklık; diğerleri sabit.",
+          "Aynı yönde bağlı uygun pil sayısı artırılırsa, özdeş ampul ve diğer koşullar sabitken parlaklık artabilir.",
+          "Bağımsız: pil sayısı; bağımlı: ampul parlaklığı; kontrol: ampul sayısı/türü, pillerin durumu/yönü, sağlam bağlantı ve ortam.",
           "Güvenli aralıkta tekrar yaparım.",
           "Sınırsız pil artışı çıkarılmaz.",
           "Sınırlı hipotez ve tekrar planı."
@@ -2398,8 +2398,8 @@
         [
           "Ters pil",
           "İki pilden biri ters bağlanmış; öğrenci sayı arttı diye kesin artış bekliyor.",
-          "Aynı yönlü uygun kaynak koşulu gerekir.",
-          "Pil sayısı yanında yön kontrol edilir.",
+          "Aynı yönde bağlı uygun pil sayısı artırılırsa, özdeş ampul ve diğer koşullar sabitken parlaklık artabilir.",
+          "Bağımsız: pil sayısı; bağımlı: ampul parlaklığı; kontrol: ampul sayısı/türü, pillerin durumu/yönü, sağlam bağlantı ve ortam.",
           "Öğretmenle doğru yönü kontrol ederim.",
           "Sayı tek başına yeterli değildir.",
           "Kaynak yönü etiketli plan."
@@ -2407,8 +2407,8 @@
         [
           "Ölçüt belirsiz",
           "Kayıt yalnız 'iyi yandı' diyor; karşılaştırma ölçütü yok.",
-          "Parlaklık için tutarlı gözlem ölçütü gerekir.",
-          "Pil veya ampul sayısı/parlaklık.",
+          "Aynı yönde bağlı uygun pil sayısı artırılırsa, özdeş ampul ve diğer koşullar sabitken parlaklık artabilir.",
+          "Bağımsız: pil sayısı; bağımlı: ampul parlaklığı; kontrol: ampul sayısı/türü, pillerin durumu/yönü, sağlam bağlantı ve ortam.",
           "Aynı koşulda göreli parlaklık kaydı.",
           "Belirsiz sözcük güçlü kanıt değildir.",
           "Açık ölçütlü hipotez değerlendirme raporu."

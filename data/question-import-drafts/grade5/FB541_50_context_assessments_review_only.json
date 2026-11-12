@@ -25,17 +25,21 @@
       "Örnek cevaplar anahtar çekirdekleridir; kabul edilen alternatifler uzman tarafından genişletilmelidir."
     ],
     "reviewGates": [
-      "EXPERT_SCIENCE_PEDAGOGY_RUBRIC",
-      "EXACT_PROGRAM_YEAR_CODE",
+      "INDEPENDENT_TEACHER_SCIENCE_PEDAGOGY_RUBRIC",
+      "TARGET_YEAR_COHORT_CHECK",
       "SEMANTIC_CROSS_POOL_ORIGINALITY",
-      "MEDIA_LAYOUT_RIGHTS",
-      "VERTICAL_CURRICULUM_MAP",
-      "HISTORICAL_EXAM_AUDIT",
+      "DIFFICULTY_CALIBRATION",
+      "FINAL_MEDIA_LAYOUT",
       "IMPORTER_TYPE_SUPPORT"
     ],
     "safety": "Öğretmen denetimi; ılık su, uygun düşük gerilimli pil ve güvenli modeller. Priz, doğrudan Güneş/lazer, sıcak yüzey, kırık/tehlikeli atık veya kişisel sağlık müdahalesi kullanılmaz.",
     "importerCompatibility": "REVIEW_ONLY_NOT_LEGACY_MC_IMPORT",
-    "generationMethod": "Authored context/answer matrix expanded deterministically; no agent jobs started."
+    "generationMethod": "Authored context/answer matrix expanded deterministically; no agent jobs started.",
+    "sourceProgramEdition": 2026,
+    "officialCurrentPdfCodePresenceVerified": true,
+    "targetAcademicYearApprovalVerified": false,
+    "verticalLinksStatus": "SOURCE_VERIFIED_EDITORIAL_RELATIONS_COHORT_CHECK_REQUIRED",
+    "historicalExamStatus": "IOKBS_2022_2026_BOUNDED_CONTENT_REVIEW"
   },
   "contexts": [
     {
@@ -161,13 +165,75 @@
       ],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.7.1",
+          "title": "Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/365",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.4.1",
+          "title": "Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/412",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 10,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Görmede ışığın rolünden doğrusal yayılmaya; yansımaya."
     },
     {
       "id": "ANX-FB541-002",
@@ -206,13 +272,75 @@
       ],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.7.1",
+          "title": "Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/365",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.4.1",
+          "title": "Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/412",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 10,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Görmede ışığın rolünden doğrusal yayılmaya; yansımaya."
     },
     {
       "id": "ANX-FB541-003",
@@ -251,13 +379,75 @@
       ],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.7.1",
+          "title": "Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/365",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.4.1",
+          "title": "Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/412",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 10,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Görmede ışığın rolünden doğrusal yayılmaya; yansımaya."
     },
     {
       "id": "ANX-FB541-004",
@@ -296,13 +486,75 @@
       ],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.7.1",
+          "title": "Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/365",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.4.1",
+          "title": "Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/412",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 10,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Görmede ışığın rolünden doğrusal yayılmaya; yansımaya."
     },
     {
       "id": "ANX-FB541-005",
@@ -343,13 +595,75 @@
       ],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.7.1",
+          "title": "Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/365",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.4.1",
+          "title": "Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/412",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 10,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Görmede ışığın rolünden doğrusal yayılmaya; yansımaya."
     },
     {
       "id": "ANX-FB541-006",
@@ -386,13 +700,75 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.7.1",
+          "title": "Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/365",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.4.1",
+          "title": "Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/412",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 10,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Görmede ışığın rolünden doğrusal yayılmaya; yansımaya."
     },
     {
       "id": "ANX-FB541-007",
@@ -429,13 +805,75 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.7.1",
+          "title": "Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/365",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.4.1",
+          "title": "Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/412",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 10,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Görmede ışığın rolünden doğrusal yayılmaya; yansımaya."
     },
     {
       "id": "ANX-FB541-008",
@@ -472,13 +910,75 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.7.1",
+          "title": "Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/365",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.4.1",
+          "title": "Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/412",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 10,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Görmede ışığın rolünden doğrusal yayılmaya; yansımaya."
     },
     {
       "id": "ANX-FB541-009",
@@ -515,13 +1015,75 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.7.1",
+          "title": "Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/365",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.4.1",
+          "title": "Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/412",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 10,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Görmede ışığın rolünden doğrusal yayılmaya; yansımaya."
     },
     {
       "id": "ANX-FB541-010",
@@ -560,13 +1122,75 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.7.1",
+          "title": "Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/365",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.4.1",
+          "title": "Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/412",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 10,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Görmede ışığın rolünden doğrusal yayılmaya; yansımaya."
     },
     {
       "id": "ANX-FB541-011",
@@ -603,13 +1227,75 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.7.1",
+          "title": "Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/365",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.4.1",
+          "title": "Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/412",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 10,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Görmede ışığın rolünden doğrusal yayılmaya; yansımaya."
     },
     {
       "id": "ANX-FB541-012",
@@ -646,13 +1332,75 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.7.1",
+          "title": "Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/365",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.4.1",
+          "title": "Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/412",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 10,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Görmede ışığın rolünden doğrusal yayılmaya; yansımaya."
     },
     {
       "id": "ANX-FB541-013",
@@ -689,13 +1437,75 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.7.1",
+          "title": "Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/365",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.4.1",
+          "title": "Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/412",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 10,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Görmede ışığın rolünden doğrusal yayılmaya; yansımaya."
     },
     {
       "id": "ANX-FB541-014",
@@ -732,13 +1542,75 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.7.1",
+          "title": "Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/365",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.4.1",
+          "title": "Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/412",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 10,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Görmede ışığın rolünden doğrusal yayılmaya; yansımaya."
     },
     {
       "id": "ANX-FB541-015",
@@ -777,13 +1649,75 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.7.1",
+          "title": "Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/365",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.4.1",
+          "title": "Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/412",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 10,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Görmede ışığın rolünden doğrusal yayılmaya; yansımaya."
     },
     {
       "id": "ANX-FB541-016",
@@ -820,13 +1754,75 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.7.1",
+          "title": "Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/365",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.4.1",
+          "title": "Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/412",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 10,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Görmede ışığın rolünden doğrusal yayılmaya; yansımaya."
     },
     {
       "id": "ANX-FB541-017",
@@ -863,13 +1859,75 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.7.1",
+          "title": "Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/365",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.4.1",
+          "title": "Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/412",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 10,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Görmede ışığın rolünden doğrusal yayılmaya; yansımaya."
     },
     {
       "id": "ANX-FB541-018",
@@ -906,13 +1964,75 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.7.1",
+          "title": "Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/365",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.4.1",
+          "title": "Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/412",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 10,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Görmede ışığın rolünden doğrusal yayılmaya; yansımaya."
     },
     {
       "id": "ANX-FB541-019",
@@ -949,13 +2069,75 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.7.1",
+          "title": "Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/365",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.4.1",
+          "title": "Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/412",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 10,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Görmede ışığın rolünden doğrusal yayılmaya; yansımaya."
     },
     {
       "id": "ANX-FB541-020",
@@ -994,13 +2176,75 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.7.1",
+          "title": "Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/365",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.4.1",
+          "title": "Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/412",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 10,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Görmede ışığın rolünden doğrusal yayılmaya; yansımaya."
     },
     {
       "id": "ANX-FB541-021",
@@ -1039,13 +2283,75 @@
       ],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.7.1",
+          "title": "Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/365",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.4.1",
+          "title": "Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/412",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 10,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Görmede ışığın rolünden doğrusal yayılmaya; yansımaya."
     },
     {
       "id": "ANX-FB541-022",
@@ -1084,13 +2390,75 @@
       ],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.7.1",
+          "title": "Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/365",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.4.1",
+          "title": "Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/412",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 10,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Görmede ışığın rolünden doğrusal yayılmaya; yansımaya."
     },
     {
       "id": "ANX-FB541-023",
@@ -1129,13 +2497,75 @@
       ],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.7.1",
+          "title": "Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/365",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.4.1",
+          "title": "Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/412",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 10,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Görmede ışığın rolünden doğrusal yayılmaya; yansımaya."
     },
     {
       "id": "ANX-FB541-024",
@@ -1174,13 +2604,75 @@
       ],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.7.1",
+          "title": "Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/365",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.4.1",
+          "title": "Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/412",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 10,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Görmede ışığın rolünden doğrusal yayılmaya; yansımaya."
     },
     {
       "id": "ANX-FB541-025",
@@ -1221,13 +2713,75 @@
       ],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.7.1",
+          "title": "Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/365",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.4.1",
+          "title": "Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/412",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 10,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Görmede ışığın rolünden doğrusal yayılmaya; yansımaya."
     },
     {
       "id": "ANX-FB541-026",
@@ -1264,13 +2818,75 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.7.1",
+          "title": "Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/365",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.4.1",
+          "title": "Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/412",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 10,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Görmede ışığın rolünden doğrusal yayılmaya; yansımaya."
     },
     {
       "id": "ANX-FB541-027",
@@ -1307,13 +2923,75 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.7.1",
+          "title": "Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/365",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.4.1",
+          "title": "Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/412",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 10,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Görmede ışığın rolünden doğrusal yayılmaya; yansımaya."
     },
     {
       "id": "ANX-FB541-028",
@@ -1350,13 +3028,75 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.7.1",
+          "title": "Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/365",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.4.1",
+          "title": "Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/412",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 10,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Görmede ışığın rolünden doğrusal yayılmaya; yansımaya."
     },
     {
       "id": "ANX-FB541-029",
@@ -1393,13 +3133,75 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.7.1",
+          "title": "Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/365",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.4.1",
+          "title": "Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/412",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 10,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Görmede ışığın rolünden doğrusal yayılmaya; yansımaya."
     },
     {
       "id": "ANX-FB541-030",
@@ -1438,13 +3240,75 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.7.1",
+          "title": "Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/365",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.4.1",
+          "title": "Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/412",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 10,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Görmede ışığın rolünden doğrusal yayılmaya; yansımaya."
     },
     {
       "id": "ANX-FB541-031",
@@ -1481,13 +3345,75 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.7.1",
+          "title": "Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/365",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.4.1",
+          "title": "Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/412",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 10,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Görmede ışığın rolünden doğrusal yayılmaya; yansımaya."
     },
     {
       "id": "ANX-FB541-032",
@@ -1524,13 +3450,75 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.7.1",
+          "title": "Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/365",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.4.1",
+          "title": "Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/412",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 10,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Görmede ışığın rolünden doğrusal yayılmaya; yansımaya."
     },
     {
       "id": "ANX-FB541-033",
@@ -1567,13 +3555,75 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.7.1",
+          "title": "Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/365",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.4.1",
+          "title": "Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/412",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 10,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Görmede ışığın rolünden doğrusal yayılmaya; yansımaya."
     },
     {
       "id": "ANX-FB541-034",
@@ -1610,13 +3660,75 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.7.1",
+          "title": "Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/365",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.4.1",
+          "title": "Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/412",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 10,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Görmede ışığın rolünden doğrusal yayılmaya; yansımaya."
     },
     {
       "id": "ANX-FB541-035",
@@ -1655,13 +3767,75 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.7.1",
+          "title": "Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/365",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.4.1",
+          "title": "Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/412",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 10,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Görmede ışığın rolünden doğrusal yayılmaya; yansımaya."
     },
     {
       "id": "ANX-FB541-036",
@@ -1698,13 +3872,75 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.7.1",
+          "title": "Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/365",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.4.1",
+          "title": "Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/412",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 10,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Görmede ışığın rolünden doğrusal yayılmaya; yansımaya."
     },
     {
       "id": "ANX-FB541-037",
@@ -1741,13 +3977,75 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.7.1",
+          "title": "Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/365",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.4.1",
+          "title": "Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/412",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 10,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Görmede ışığın rolünden doğrusal yayılmaya; yansımaya."
     },
     {
       "id": "ANX-FB541-038",
@@ -1784,13 +4082,75 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.7.1",
+          "title": "Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/365",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.4.1",
+          "title": "Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/412",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 10,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Görmede ışığın rolünden doğrusal yayılmaya; yansımaya."
     },
     {
       "id": "ANX-FB541-039",
@@ -1827,13 +4187,75 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.7.1",
+          "title": "Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/365",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.4.1",
+          "title": "Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/412",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 10,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Görmede ışığın rolünden doğrusal yayılmaya; yansımaya."
     },
     {
       "id": "ANX-FB541-040",
@@ -1872,13 +4294,75 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.7.1",
+          "title": "Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/365",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.4.1",
+          "title": "Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/412",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 10,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Görmede ışığın rolünden doğrusal yayılmaya; yansımaya."
     },
     {
       "id": "ANX-FB541-041",
@@ -1915,13 +4399,75 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.7.1",
+          "title": "Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/365",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.4.1",
+          "title": "Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/412",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 10,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Görmede ışığın rolünden doğrusal yayılmaya; yansımaya."
     },
     {
       "id": "ANX-FB541-042",
@@ -1958,13 +4504,75 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.7.1",
+          "title": "Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/365",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.4.1",
+          "title": "Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/412",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 10,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Görmede ışığın rolünden doğrusal yayılmaya; yansımaya."
     },
     {
       "id": "ANX-FB541-043",
@@ -2001,13 +4609,75 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.7.1",
+          "title": "Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/365",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.4.1",
+          "title": "Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/412",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 10,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Görmede ışığın rolünden doğrusal yayılmaya; yansımaya."
     },
     {
       "id": "ANX-FB541-044",
@@ -2044,13 +4714,75 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.7.1",
+          "title": "Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/365",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.4.1",
+          "title": "Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/412",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 10,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Görmede ışığın rolünden doğrusal yayılmaya; yansımaya."
     },
     {
       "id": "ANX-FB541-045",
@@ -2089,13 +4821,75 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.7.1",
+          "title": "Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/365",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.4.1",
+          "title": "Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/412",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 10,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Görmede ışığın rolünden doğrusal yayılmaya; yansımaya."
     },
     {
       "id": "ANX-FB541-046",
@@ -2132,13 +4926,75 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.7.1",
+          "title": "Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/365",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.4.1",
+          "title": "Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/412",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 10,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Görmede ışığın rolünden doğrusal yayılmaya; yansımaya."
     },
     {
       "id": "ANX-FB541-047",
@@ -2175,13 +5031,75 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.7.1",
+          "title": "Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/365",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.4.1",
+          "title": "Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/412",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 10,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Görmede ışığın rolünden doğrusal yayılmaya; yansımaya."
     },
     {
       "id": "ANX-FB541-048",
@@ -2218,13 +5136,75 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.7.1",
+          "title": "Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/365",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.4.1",
+          "title": "Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/412",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 10,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Görmede ışığın rolünden doğrusal yayılmaya; yansımaya."
     },
     {
       "id": "ANX-FB541-049",
@@ -2261,13 +5241,75 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.7.1",
+          "title": "Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/365",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.4.1",
+          "title": "Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/412",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 10,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Görmede ışığın rolünden doğrusal yayılmaya; yansımaya."
     },
     {
       "id": "ANX-FB541-050",
@@ -2306,13 +5348,75 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.7.1",
+          "title": "Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/365",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.4.1",
+          "title": "Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/412",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 3,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 8,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2025,
+            "scienceQuestionNumber": 9,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2026,
+            "scienceQuestionNumber": 10,
+            "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Görmede ışığın rolünden doğrusal yayılmaya; yansımaya."
     }
   ]
 }

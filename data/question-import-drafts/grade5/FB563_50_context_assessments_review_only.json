@@ -25,17 +25,21 @@
       "Örnek cevaplar anahtar çekirdekleridir; kabul edilen alternatifler uzman tarafından genişletilmelidir."
     ],
     "reviewGates": [
-      "EXPERT_SCIENCE_PEDAGOGY_RUBRIC",
-      "EXACT_PROGRAM_YEAR_CODE",
+      "INDEPENDENT_TEACHER_SCIENCE_PEDAGOGY_RUBRIC",
+      "TARGET_YEAR_COHORT_CHECK",
       "SEMANTIC_CROSS_POOL_ORIGINALITY",
-      "MEDIA_LAYOUT_RIGHTS",
-      "VERTICAL_CURRICULUM_MAP",
-      "HISTORICAL_EXAM_AUDIT",
+      "DIFFICULTY_CALIBRATION",
+      "FINAL_MEDIA_LAYOUT",
       "IMPORTER_TYPE_SUPPORT"
     ],
     "safety": "Öğretmen denetimi; ılık su, uygun düşük gerilimli pil ve güvenli modeller. Priz, doğrudan Güneş/lazer, sıcak yüzey, kırık/tehlikeli atık veya kişisel sağlık müdahalesi kullanılmaz.",
     "importerCompatibility": "REVIEW_ONLY_NOT_LEGACY_MC_IMPORT",
-    "generationMethod": "Authored context/answer matrix expanded deterministically; no agent jobs started."
+    "generationMethod": "Authored context/answer matrix expanded deterministically; no agent jobs started.",
+    "sourceProgramEdition": 2026,
+    "officialCurrentPdfCodePresenceVerified": true,
+    "targetAcademicYearApprovalVerified": false,
+    "verticalLinksStatus": "SOURCE_VERIFIED_EDITORIAL_RELATIONS_COHORT_CHECK_REQUIRED",
+    "historicalExamStatus": "IOKBS_2022_2026_BOUNDED_CONTENT_REVIEW"
   },
   "contexts": [
     {
@@ -128,15 +132,15 @@
       "title": "Pil artışı — görev 1",
       "assessmentType": "OPEN_ENDED",
       "stem": "Özdeş ampullü seri devrede bir ve iki uygun pil aynı yönde karşılaştırılacak.\n\nBu bağlam için sınanabilir bir parlaklık hipotezi kur.",
-      "sampleAnswer": "Pil artarsa parlaklık artabilir.",
-      "solution": "Pil artarsa parlaklık artabilir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "sampleAnswer": "Aynı yönde bağlı uygun pil sayısı artırılırsa, özdeş ampul ve diğer koşullar sabitken parlaklık artabilir.",
+      "solution": "Aynı yönde bağlı uygun pil sayısı artırılırsa, özdeş ampul ve diğer koşullar sabitken parlaklık artabilir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
       "rubric": {
         "maxScore": 4,
         "scaleRef": "metadata.rubricScale",
         "criteria": [
           {
             "maxScore": 2,
-            "criterion": "Pil artarsa parlaklık artabilir."
+            "criterion": "Aynı yönde bağlı uygun pil sayısı artırılırsa, özdeş ampul ve diğer koşullar sabitken parlaklık artabilir."
           },
           {
             "maxScore": 2,
@@ -155,13 +159,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.2",
+          "title": "Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Devre sorgulamasından parlaklık değişkenlerine; kontrollü deneylere."
     },
     {
       "id": "ANX-FB563-002",
@@ -171,15 +231,15 @@
       "title": "Pil artışı — görev 2",
       "assessmentType": "OPEN_ENDED",
       "stem": "Özdeş ampullü seri devrede bir ve iki uygun pil aynı yönde karşılaştırılacak.\n\nBağımsız, bağımlı ve kontrol edilen değişkenleri belirt.",
-      "sampleAnswer": "Pil sayısı/parlaklık; ampul sabit.",
-      "solution": "Pil sayısı/parlaklık; ampul sabit. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "sampleAnswer": "Bağımsız: pil sayısı; bağımlı: ampul parlaklığı; kontrol: ampul sayısı/türü, pillerin durumu/yönü, sağlam bağlantı ve ortam.",
+      "solution": "Bağımsız: pil sayısı; bağımlı: ampul parlaklığı; kontrol: ampul sayısı/türü, pillerin durumu/yönü, sağlam bağlantı ve ortam. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
       "rubric": {
         "maxScore": 4,
         "scaleRef": "metadata.rubricScale",
         "criteria": [
           {
             "maxScore": 2,
-            "criterion": "Pil sayısı/parlaklık; ampul sabit."
+            "criterion": "Bağımsız: pil sayısı; bağımlı: ampul parlaklığı; kontrol: ampul sayısı/türü, pillerin durumu/yönü, sağlam bağlantı ve ortam."
           },
           {
             "maxScore": 2,
@@ -199,13 +259,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.2",
+          "title": "Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Devre sorgulamasından parlaklık değişkenlerine; kontrollü deneylere."
     },
     {
       "id": "ANX-FB563-003",
@@ -242,13 +358,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.2",
+          "title": "Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Devre sorgulamasından parlaklık değişkenlerine; kontrollü deneylere."
     },
     {
       "id": "ANX-FB563-004",
@@ -285,13 +457,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.2",
+          "title": "Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Devre sorgulamasından parlaklık değişkenlerine; kontrollü deneylere."
     },
     {
       "id": "ANX-FB563-005",
@@ -332,13 +560,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.2",
+          "title": "Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Devre sorgulamasından parlaklık değişkenlerine; kontrollü deneylere."
     },
     {
       "id": "ANX-FB563-006",
@@ -348,15 +632,15 @@
       "title": "Ampul artışı — görev 1",
       "assessmentType": "OPEN_ENDED",
       "stem": "Aynı pil grubuna seri ikinci özdeş ampul eklenecek.\n\nBu bağlam için sınanabilir bir parlaklık hipotezi kur.",
-      "sampleAnswer": "Seri ampul artarsa parlaklık azalabilir.",
-      "solution": "Seri ampul artarsa parlaklık azalabilir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "sampleAnswer": "Özdeş ampuller aynı pil grubuna seri eklendiğinde, diğer koşullar aynıysa her ampulün parlaklığı azalabilir.",
+      "solution": "Özdeş ampuller aynı pil grubuna seri eklendiğinde, diğer koşullar aynıysa her ampulün parlaklığı azalabilir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
       "rubric": {
         "maxScore": 4,
         "scaleRef": "metadata.rubricScale",
         "criteria": [
           {
             "maxScore": 2,
-            "criterion": "Seri ampul artarsa parlaklık azalabilir."
+            "criterion": "Özdeş ampuller aynı pil grubuna seri eklendiğinde, diğer koşullar aynıysa her ampulün parlaklığı azalabilir."
           },
           {
             "maxScore": 2,
@@ -375,13 +659,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.2",
+          "title": "Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Devre sorgulamasından parlaklık değişkenlerine; kontrollü deneylere."
     },
     {
       "id": "ANX-FB563-007",
@@ -391,15 +731,15 @@
       "title": "Ampul artışı — görev 2",
       "assessmentType": "OPEN_ENDED",
       "stem": "Aynı pil grubuna seri ikinci özdeş ampul eklenecek.\n\nBağımsız, bağımlı ve kontrol edilen değişkenleri belirt.",
-      "sampleAnswer": "Ampul sayısı/parlaklık; pil sabit.",
-      "solution": "Ampul sayısı/parlaklık; pil sabit. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "sampleAnswer": "Bağımsız: seri ampul sayısı; bağımlı: ampul parlaklığı; kontrol: pil sayısı/durumu, ampul türü, bağlantı ve ortam.",
+      "solution": "Bağımsız: seri ampul sayısı; bağımlı: ampul parlaklığı; kontrol: pil sayısı/durumu, ampul türü, bağlantı ve ortam. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
       "rubric": {
         "maxScore": 4,
         "scaleRef": "metadata.rubricScale",
         "criteria": [
           {
             "maxScore": 2,
-            "criterion": "Ampul sayısı/parlaklık; pil sabit."
+            "criterion": "Bağımsız: seri ampul sayısı; bağımlı: ampul parlaklığı; kontrol: pil sayısı/durumu, ampul türü, bağlantı ve ortam."
           },
           {
             "maxScore": 2,
@@ -419,13 +759,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.2",
+          "title": "Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Devre sorgulamasından parlaklık değişkenlerine; kontrollü deneylere."
     },
     {
       "id": "ANX-FB563-008",
@@ -462,13 +858,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.2",
+          "title": "Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Devre sorgulamasından parlaklık değişkenlerine; kontrollü deneylere."
     },
     {
       "id": "ANX-FB563-009",
@@ -505,13 +957,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.2",
+          "title": "Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Devre sorgulamasından parlaklık değişkenlerine; kontrollü deneylere."
     },
     {
       "id": "ANX-FB563-010",
@@ -552,13 +1060,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.2",
+          "title": "Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Devre sorgulamasından parlaklık değişkenlerine; kontrollü deneylere."
     },
     {
       "id": "ANX-FB563-011",
@@ -568,15 +1132,15 @@
       "title": "İki sayı değişimi — görev 1",
       "assessmentType": "OPEN_ENDED",
       "stem": "Pil ve seri ampul sayısı birlikte değişmiş; sonuç yalnız pile bağlanmış.\n\nBu bağlam için sınanabilir bir parlaklık hipotezi kur.",
-      "sampleAnswer": "Tek değişkenli hipotez gerekir.",
-      "solution": "Tek değişkenli hipotez gerekir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "sampleAnswer": "Aynı yönde bağlı uygun pil sayısı artırılırsa, özdeş ampul ve diğer koşullar sabitken parlaklık artabilir.",
+      "solution": "Aynı yönde bağlı uygun pil sayısı artırılırsa, özdeş ampul ve diğer koşullar sabitken parlaklık artabilir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
       "rubric": {
         "maxScore": 4,
         "scaleRef": "metadata.rubricScale",
         "criteria": [
           {
             "maxScore": 2,
-            "criterion": "Tek değişkenli hipotez gerekir."
+            "criterion": "Aynı yönde bağlı uygun pil sayısı artırılırsa, özdeş ampul ve diğer koşullar sabitken parlaklık artabilir."
           },
           {
             "maxScore": 2,
@@ -595,13 +1159,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.2",
+          "title": "Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Devre sorgulamasından parlaklık değişkenlerine; kontrollü deneylere."
     },
     {
       "id": "ANX-FB563-012",
@@ -611,15 +1231,15 @@
       "title": "İki sayı değişimi — görev 2",
       "assessmentType": "OPEN_ENDED",
       "stem": "Pil ve seri ampul sayısı birlikte değişmiş; sonuç yalnız pile bağlanmış.\n\nBağımsız, bağımlı ve kontrol edilen değişkenleri belirt.",
-      "sampleAnswer": "Bir sayıyı bağımsız seçerim.",
-      "solution": "Bir sayıyı bağımsız seçerim. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "sampleAnswer": "Bağımsız: pil sayısı; bağımlı: ampul parlaklığı; kontrol: ampul sayısı/türü, pillerin durumu/yönü, sağlam bağlantı ve ortam.",
+      "solution": "Bağımsız: pil sayısı; bağımlı: ampul parlaklığı; kontrol: ampul sayısı/türü, pillerin durumu/yönü, sağlam bağlantı ve ortam. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
       "rubric": {
         "maxScore": 4,
         "scaleRef": "metadata.rubricScale",
         "criteria": [
           {
             "maxScore": 2,
-            "criterion": "Bir sayıyı bağımsız seçerim."
+            "criterion": "Bağımsız: pil sayısı; bağımlı: ampul parlaklığı; kontrol: ampul sayısı/türü, pillerin durumu/yönü, sağlam bağlantı ve ortam."
           },
           {
             "maxScore": 2,
@@ -639,13 +1259,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.2",
+          "title": "Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Devre sorgulamasından parlaklık değişkenlerine; kontrollü deneylere."
     },
     {
       "id": "ANX-FB563-013",
@@ -682,13 +1358,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.2",
+          "title": "Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Devre sorgulamasından parlaklık değişkenlerine; kontrollü deneylere."
     },
     {
       "id": "ANX-FB563-014",
@@ -725,13 +1457,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.2",
+          "title": "Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Devre sorgulamasından parlaklık değişkenlerine; kontrollü deneylere."
     },
     {
       "id": "ANX-FB563-015",
@@ -772,13 +1560,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.2",
+          "title": "Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Devre sorgulamasından parlaklık değişkenlerine; kontrollü deneylere."
     },
     {
       "id": "ANX-FB563-016",
@@ -788,15 +1632,15 @@
       "title": "Eski yeni pil — görev 1",
       "assessmentType": "OPEN_ENDED",
       "stem": "İki deneyde pil sayısı aynı; biri eski, biri yeni pil kullanıyor.\n\nBu bağlam için sınanabilir bir parlaklık hipotezi kur.",
-      "sampleAnswer": "Pil durumu parlaklığı etkileyebilir.",
-      "solution": "Pil durumu parlaklığı etkileyebilir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "sampleAnswer": "Aynı yönde bağlı uygun pil sayısı artırılırsa, özdeş ampul ve diğer koşullar sabitken parlaklık artabilir.",
+      "solution": "Aynı yönde bağlı uygun pil sayısı artırılırsa, özdeş ampul ve diğer koşullar sabitken parlaklık artabilir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
       "rubric": {
         "maxScore": 4,
         "scaleRef": "metadata.rubricScale",
         "criteria": [
           {
             "maxScore": 2,
-            "criterion": "Pil durumu parlaklığı etkileyebilir."
+            "criterion": "Aynı yönde bağlı uygun pil sayısı artırılırsa, özdeş ampul ve diğer koşullar sabitken parlaklık artabilir."
           },
           {
             "maxScore": 2,
@@ -815,13 +1659,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.2",
+          "title": "Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Devre sorgulamasından parlaklık değişkenlerine; kontrollü deneylere."
     },
     {
       "id": "ANX-FB563-017",
@@ -831,15 +1731,15 @@
       "title": "Eski yeni pil — görev 2",
       "assessmentType": "OPEN_ENDED",
       "stem": "İki deneyde pil sayısı aynı; biri eski, biri yeni pil kullanıyor.\n\nBağımsız, bağımlı ve kontrol edilen değişkenleri belirt.",
-      "sampleAnswer": "Hedef sayıysa pil durumu kontrol edilmeli.",
-      "solution": "Hedef sayıysa pil durumu kontrol edilmeli. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "sampleAnswer": "Bağımsız: pil sayısı; bağımlı: ampul parlaklığı; kontrol: ampul sayısı/türü, pillerin durumu/yönü, sağlam bağlantı ve ortam.",
+      "solution": "Bağımsız: pil sayısı; bağımlı: ampul parlaklığı; kontrol: ampul sayısı/türü, pillerin durumu/yönü, sağlam bağlantı ve ortam. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
       "rubric": {
         "maxScore": 4,
         "scaleRef": "metadata.rubricScale",
         "criteria": [
           {
             "maxScore": 2,
-            "criterion": "Hedef sayıysa pil durumu kontrol edilmeli."
+            "criterion": "Bağımsız: pil sayısı; bağımlı: ampul parlaklığı; kontrol: ampul sayısı/türü, pillerin durumu/yönü, sağlam bağlantı ve ortam."
           },
           {
             "maxScore": 2,
@@ -859,13 +1759,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.2",
+          "title": "Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Devre sorgulamasından parlaklık değişkenlerine; kontrollü deneylere."
     },
     {
       "id": "ANX-FB563-018",
@@ -902,13 +1858,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.2",
+          "title": "Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Devre sorgulamasından parlaklık değişkenlerine; kontrollü deneylere."
     },
     {
       "id": "ANX-FB563-019",
@@ -945,13 +1957,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.2",
+          "title": "Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Devre sorgulamasından parlaklık değişkenlerine; kontrollü deneylere."
     },
     {
       "id": "ANX-FB563-020",
@@ -992,13 +2060,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.2",
+          "title": "Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Devre sorgulamasından parlaklık değişkenlerine; kontrollü deneylere."
     },
     {
       "id": "ANX-FB563-021",
@@ -1008,15 +2132,15 @@
       "title": "Farklı ampuller — görev 1",
       "assessmentType": "OPEN_ENDED",
       "stem": "Bir deneyde küçük, diğerinde farklı özellikte ampul var; pil sayısı etkisi aranıyor.\n\nBu bağlam için sınanabilir bir parlaklık hipotezi kur.",
-      "sampleAnswer": "Aynı ampulle pil sayısı sınanır.",
-      "solution": "Aynı ampulle pil sayısı sınanır. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "sampleAnswer": "Aynı yönde bağlı uygun pil sayısı artırılırsa, özdeş ampul ve diğer koşullar sabitken parlaklık artabilir.",
+      "solution": "Aynı yönde bağlı uygun pil sayısı artırılırsa, özdeş ampul ve diğer koşullar sabitken parlaklık artabilir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
       "rubric": {
         "maxScore": 4,
         "scaleRef": "metadata.rubricScale",
         "criteria": [
           {
             "maxScore": 2,
-            "criterion": "Aynı ampulle pil sayısı sınanır."
+            "criterion": "Aynı yönde bağlı uygun pil sayısı artırılırsa, özdeş ampul ve diğer koşullar sabitken parlaklık artabilir."
           },
           {
             "maxScore": 2,
@@ -1035,13 +2159,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.2",
+          "title": "Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Devre sorgulamasından parlaklık değişkenlerine; kontrollü deneylere."
     },
     {
       "id": "ANX-FB563-022",
@@ -1051,15 +2231,15 @@
       "title": "Farklı ampuller — görev 2",
       "assessmentType": "OPEN_ENDED",
       "stem": "Bir deneyde küçük, diğerinde farklı özellikte ampul var; pil sayısı etkisi aranıyor.\n\nBağımsız, bağımlı ve kontrol edilen değişkenleri belirt.",
-      "sampleAnswer": "Pil sayısı/parlaklık; ampul türü sabit.",
-      "solution": "Pil sayısı/parlaklık; ampul türü sabit. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "sampleAnswer": "Bağımsız: pil sayısı; bağımlı: ampul parlaklığı; kontrol: ampul sayısı/türü, pillerin durumu/yönü, sağlam bağlantı ve ortam.",
+      "solution": "Bağımsız: pil sayısı; bağımlı: ampul parlaklığı; kontrol: ampul sayısı/türü, pillerin durumu/yönü, sağlam bağlantı ve ortam. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
       "rubric": {
         "maxScore": 4,
         "scaleRef": "metadata.rubricScale",
         "criteria": [
           {
             "maxScore": 2,
-            "criterion": "Pil sayısı/parlaklık; ampul türü sabit."
+            "criterion": "Bağımsız: pil sayısı; bağımlı: ampul parlaklığı; kontrol: ampul sayısı/türü, pillerin durumu/yönü, sağlam bağlantı ve ortam."
           },
           {
             "maxScore": 2,
@@ -1079,13 +2259,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.2",
+          "title": "Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Devre sorgulamasından parlaklık değişkenlerine; kontrollü deneylere."
     },
     {
       "id": "ANX-FB563-023",
@@ -1122,13 +2358,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.2",
+          "title": "Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Devre sorgulamasından parlaklık değişkenlerine; kontrollü deneylere."
     },
     {
       "id": "ANX-FB563-024",
@@ -1165,13 +2457,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.2",
+          "title": "Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Devre sorgulamasından parlaklık değişkenlerine; kontrollü deneylere."
     },
     {
       "id": "ANX-FB563-025",
@@ -1212,13 +2560,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.2",
+          "title": "Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Devre sorgulamasından parlaklık değişkenlerine; kontrollü deneylere."
     },
     {
       "id": "ANX-FB563-026",
@@ -1228,15 +2632,15 @@
       "title": "Ortam aydınlığı — görev 1",
       "assessmentType": "OPEN_ENDED",
       "stem": "Aynı devre karanlık ve aydınlık odada farklı parlak sanılıyor.\n\nBu bağlam için sınanabilir bir parlaklık hipotezi kur.",
-      "sampleAnswer": "Devre aynıysa algı ortamdan etkilenebilir.",
-      "solution": "Devre aynıysa algı ortamdan etkilenebilir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "sampleAnswer": "Aynı yönde bağlı uygun pil sayısı artırılırsa, özdeş ampul ve diğer koşullar sabitken parlaklık artabilir.",
+      "solution": "Aynı yönde bağlı uygun pil sayısı artırılırsa, özdeş ampul ve diğer koşullar sabitken parlaklık artabilir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
       "rubric": {
         "maxScore": 4,
         "scaleRef": "metadata.rubricScale",
         "criteria": [
           {
             "maxScore": 2,
-            "criterion": "Devre aynıysa algı ortamdan etkilenebilir."
+            "criterion": "Aynı yönde bağlı uygun pil sayısı artırılırsa, özdeş ampul ve diğer koşullar sabitken parlaklık artabilir."
           },
           {
             "maxScore": 2,
@@ -1255,13 +2659,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.2",
+          "title": "Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Devre sorgulamasından parlaklık değişkenlerine; kontrollü deneylere."
     },
     {
       "id": "ANX-FB563-027",
@@ -1271,15 +2731,15 @@
       "title": "Ortam aydınlığı — görev 2",
       "assessmentType": "OPEN_ENDED",
       "stem": "Aynı devre karanlık ve aydınlık odada farklı parlak sanılıyor.\n\nBağımsız, bağımlı ve kontrol edilen değişkenleri belirt.",
-      "sampleAnswer": "Hedef pil/ampul; ortam sabit.",
-      "solution": "Hedef pil/ampul; ortam sabit. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "sampleAnswer": "Bağımsız: pil sayısı; bağımlı: ampul parlaklığı; kontrol: ampul sayısı/türü, pillerin durumu/yönü, sağlam bağlantı ve ortam.",
+      "solution": "Bağımsız: pil sayısı; bağımlı: ampul parlaklığı; kontrol: ampul sayısı/türü, pillerin durumu/yönü, sağlam bağlantı ve ortam. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
       "rubric": {
         "maxScore": 4,
         "scaleRef": "metadata.rubricScale",
         "criteria": [
           {
             "maxScore": 2,
-            "criterion": "Hedef pil/ampul; ortam sabit."
+            "criterion": "Bağımsız: pil sayısı; bağımlı: ampul parlaklığı; kontrol: ampul sayısı/türü, pillerin durumu/yönü, sağlam bağlantı ve ortam."
           },
           {
             "maxScore": 2,
@@ -1299,13 +2759,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.2",
+          "title": "Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Devre sorgulamasından parlaklık değişkenlerine; kontrollü deneylere."
     },
     {
       "id": "ANX-FB563-028",
@@ -1342,13 +2858,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.2",
+          "title": "Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Devre sorgulamasından parlaklık değişkenlerine; kontrollü deneylere."
     },
     {
       "id": "ANX-FB563-029",
@@ -1385,13 +2957,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.2",
+          "title": "Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Devre sorgulamasından parlaklık değişkenlerine; kontrollü deneylere."
     },
     {
       "id": "ANX-FB563-030",
@@ -1432,13 +3060,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.2",
+          "title": "Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Devre sorgulamasından parlaklık değişkenlerine; kontrollü deneylere."
     },
     {
       "id": "ANX-FB563-031",
@@ -1448,15 +3132,15 @@
       "title": "Gevşek temas — görev 1",
       "assessmentType": "OPEN_ENDED",
       "stem": "Pil artırılan devrede tel gevşek; ampul sönüyor.\n\nBu bağlam için sınanabilir bir parlaklık hipotezi kur.",
-      "sampleAnswer": "Sağlam devrede pil sayısı sınanmalı.",
-      "solution": "Sağlam devrede pil sayısı sınanmalı. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "sampleAnswer": "Aynı yönde bağlı uygun pil sayısı artırılırsa, özdeş ampul ve diğer koşullar sabitken parlaklık artabilir.",
+      "solution": "Aynı yönde bağlı uygun pil sayısı artırılırsa, özdeş ampul ve diğer koşullar sabitken parlaklık artabilir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
       "rubric": {
         "maxScore": 4,
         "scaleRef": "metadata.rubricScale",
         "criteria": [
           {
             "maxScore": 2,
-            "criterion": "Sağlam devrede pil sayısı sınanmalı."
+            "criterion": "Aynı yönde bağlı uygun pil sayısı artırılırsa, özdeş ampul ve diğer koşullar sabitken parlaklık artabilir."
           },
           {
             "maxScore": 2,
@@ -1475,13 +3159,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.2",
+          "title": "Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Devre sorgulamasından parlaklık değişkenlerine; kontrollü deneylere."
     },
     {
       "id": "ANX-FB563-032",
@@ -1491,15 +3231,15 @@
       "title": "Gevşek temas — görev 2",
       "assessmentType": "OPEN_ENDED",
       "stem": "Pil artırılan devrede tel gevşek; ampul sönüyor.\n\nBağımsız, bağımlı ve kontrol edilen değişkenleri belirt.",
-      "sampleAnswer": "Pil sayısı/parlaklık; temas sabit.",
-      "solution": "Pil sayısı/parlaklık; temas sabit. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "sampleAnswer": "Bağımsız: pil sayısı; bağımlı: ampul parlaklığı; kontrol: ampul sayısı/türü, pillerin durumu/yönü, sağlam bağlantı ve ortam.",
+      "solution": "Bağımsız: pil sayısı; bağımlı: ampul parlaklığı; kontrol: ampul sayısı/türü, pillerin durumu/yönü, sağlam bağlantı ve ortam. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
       "rubric": {
         "maxScore": 4,
         "scaleRef": "metadata.rubricScale",
         "criteria": [
           {
             "maxScore": 2,
-            "criterion": "Pil sayısı/parlaklık; temas sabit."
+            "criterion": "Bağımsız: pil sayısı; bağımlı: ampul parlaklığı; kontrol: ampul sayısı/türü, pillerin durumu/yönü, sağlam bağlantı ve ortam."
           },
           {
             "maxScore": 2,
@@ -1519,13 +3259,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.2",
+          "title": "Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Devre sorgulamasından parlaklık değişkenlerine; kontrollü deneylere."
     },
     {
       "id": "ANX-FB563-033",
@@ -1562,13 +3358,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.2",
+          "title": "Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Devre sorgulamasından parlaklık değişkenlerine; kontrollü deneylere."
     },
     {
       "id": "ANX-FB563-034",
@@ -1605,13 +3457,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.2",
+          "title": "Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Devre sorgulamasından parlaklık değişkenlerine; kontrollü deneylere."
     },
     {
       "id": "ANX-FB563-035",
@@ -1652,13 +3560,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.2",
+          "title": "Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Devre sorgulamasından parlaklık değişkenlerine; kontrollü deneylere."
     },
     {
       "id": "ANX-FB563-036",
@@ -1668,15 +3632,15 @@
       "title": "Tek gözlem — görev 1",
       "assessmentType": "OPEN_ENDED",
       "stem": "Bir denemede iki pilli devre daha parlak; öğrenci her koşulda sonsuza dek artar diyor.\n\nBu bağlam için sınanabilir bir parlaklık hipotezi kur.",
-      "sampleAnswer": "Uygun sınırlar içinde artış beklenebilir.",
-      "solution": "Uygun sınırlar içinde artış beklenebilir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "sampleAnswer": "Aynı yönde bağlı uygun pil sayısı artırılırsa, özdeş ampul ve diğer koşullar sabitken parlaklık artabilir.",
+      "solution": "Aynı yönde bağlı uygun pil sayısı artırılırsa, özdeş ampul ve diğer koşullar sabitken parlaklık artabilir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
       "rubric": {
         "maxScore": 4,
         "scaleRef": "metadata.rubricScale",
         "criteria": [
           {
             "maxScore": 2,
-            "criterion": "Uygun sınırlar içinde artış beklenebilir."
+            "criterion": "Aynı yönde bağlı uygun pil sayısı artırılırsa, özdeş ampul ve diğer koşullar sabitken parlaklık artabilir."
           },
           {
             "maxScore": 2,
@@ -1695,13 +3659,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.2",
+          "title": "Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Devre sorgulamasından parlaklık değişkenlerine; kontrollü deneylere."
     },
     {
       "id": "ANX-FB563-037",
@@ -1711,15 +3731,15 @@
       "title": "Tek gözlem — görev 2",
       "assessmentType": "OPEN_ENDED",
       "stem": "Bir denemede iki pilli devre daha parlak; öğrenci her koşulda sonsuza dek artar diyor.\n\nBağımsız, bağımlı ve kontrol edilen değişkenleri belirt.",
-      "sampleAnswer": "Pil sayısı/parlaklık; diğerleri sabit.",
-      "solution": "Pil sayısı/parlaklık; diğerleri sabit. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "sampleAnswer": "Bağımsız: pil sayısı; bağımlı: ampul parlaklığı; kontrol: ampul sayısı/türü, pillerin durumu/yönü, sağlam bağlantı ve ortam.",
+      "solution": "Bağımsız: pil sayısı; bağımlı: ampul parlaklığı; kontrol: ampul sayısı/türü, pillerin durumu/yönü, sağlam bağlantı ve ortam. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
       "rubric": {
         "maxScore": 4,
         "scaleRef": "metadata.rubricScale",
         "criteria": [
           {
             "maxScore": 2,
-            "criterion": "Pil sayısı/parlaklık; diğerleri sabit."
+            "criterion": "Bağımsız: pil sayısı; bağımlı: ampul parlaklığı; kontrol: ampul sayısı/türü, pillerin durumu/yönü, sağlam bağlantı ve ortam."
           },
           {
             "maxScore": 2,
@@ -1739,13 +3759,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.2",
+          "title": "Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Devre sorgulamasından parlaklık değişkenlerine; kontrollü deneylere."
     },
     {
       "id": "ANX-FB563-038",
@@ -1782,13 +3858,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.2",
+          "title": "Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Devre sorgulamasından parlaklık değişkenlerine; kontrollü deneylere."
     },
     {
       "id": "ANX-FB563-039",
@@ -1825,13 +3957,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.2",
+          "title": "Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Devre sorgulamasından parlaklık değişkenlerine; kontrollü deneylere."
     },
     {
       "id": "ANX-FB563-040",
@@ -1872,13 +4060,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.2",
+          "title": "Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Devre sorgulamasından parlaklık değişkenlerine; kontrollü deneylere."
     },
     {
       "id": "ANX-FB563-041",
@@ -1888,15 +4132,15 @@
       "title": "Ters pil — görev 1",
       "assessmentType": "OPEN_ENDED",
       "stem": "İki pilden biri ters bağlanmış; öğrenci sayı arttı diye kesin artış bekliyor.\n\nBu bağlam için sınanabilir bir parlaklık hipotezi kur.",
-      "sampleAnswer": "Aynı yönlü uygun kaynak koşulu gerekir.",
-      "solution": "Aynı yönlü uygun kaynak koşulu gerekir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "sampleAnswer": "Aynı yönde bağlı uygun pil sayısı artırılırsa, özdeş ampul ve diğer koşullar sabitken parlaklık artabilir.",
+      "solution": "Aynı yönde bağlı uygun pil sayısı artırılırsa, özdeş ampul ve diğer koşullar sabitken parlaklık artabilir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
       "rubric": {
         "maxScore": 4,
         "scaleRef": "metadata.rubricScale",
         "criteria": [
           {
             "maxScore": 2,
-            "criterion": "Aynı yönlü uygun kaynak koşulu gerekir."
+            "criterion": "Aynı yönde bağlı uygun pil sayısı artırılırsa, özdeş ampul ve diğer koşullar sabitken parlaklık artabilir."
           },
           {
             "maxScore": 2,
@@ -1915,13 +4159,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.2",
+          "title": "Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Devre sorgulamasından parlaklık değişkenlerine; kontrollü deneylere."
     },
     {
       "id": "ANX-FB563-042",
@@ -1931,15 +4231,15 @@
       "title": "Ters pil — görev 2",
       "assessmentType": "OPEN_ENDED",
       "stem": "İki pilden biri ters bağlanmış; öğrenci sayı arttı diye kesin artış bekliyor.\n\nBağımsız, bağımlı ve kontrol edilen değişkenleri belirt.",
-      "sampleAnswer": "Pil sayısı yanında yön kontrol edilir.",
-      "solution": "Pil sayısı yanında yön kontrol edilir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "sampleAnswer": "Bağımsız: pil sayısı; bağımlı: ampul parlaklığı; kontrol: ampul sayısı/türü, pillerin durumu/yönü, sağlam bağlantı ve ortam.",
+      "solution": "Bağımsız: pil sayısı; bağımlı: ampul parlaklığı; kontrol: ampul sayısı/türü, pillerin durumu/yönü, sağlam bağlantı ve ortam. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
       "rubric": {
         "maxScore": 4,
         "scaleRef": "metadata.rubricScale",
         "criteria": [
           {
             "maxScore": 2,
-            "criterion": "Pil sayısı yanında yön kontrol edilir."
+            "criterion": "Bağımsız: pil sayısı; bağımlı: ampul parlaklığı; kontrol: ampul sayısı/türü, pillerin durumu/yönü, sağlam bağlantı ve ortam."
           },
           {
             "maxScore": 2,
@@ -1959,13 +4259,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.2",
+          "title": "Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Devre sorgulamasından parlaklık değişkenlerine; kontrollü deneylere."
     },
     {
       "id": "ANX-FB563-043",
@@ -2002,13 +4358,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.2",
+          "title": "Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Devre sorgulamasından parlaklık değişkenlerine; kontrollü deneylere."
     },
     {
       "id": "ANX-FB563-044",
@@ -2045,13 +4457,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.2",
+          "title": "Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Devre sorgulamasından parlaklık değişkenlerine; kontrollü deneylere."
     },
     {
       "id": "ANX-FB563-045",
@@ -2092,13 +4560,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.2",
+          "title": "Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Devre sorgulamasından parlaklık değişkenlerine; kontrollü deneylere."
     },
     {
       "id": "ANX-FB563-046",
@@ -2108,15 +4632,15 @@
       "title": "Ölçüt belirsiz — görev 1",
       "assessmentType": "OPEN_ENDED",
       "stem": "Kayıt yalnız 'iyi yandı' diyor; karşılaştırma ölçütü yok.\n\nBu bağlam için sınanabilir bir parlaklık hipotezi kur.",
-      "sampleAnswer": "Parlaklık için tutarlı gözlem ölçütü gerekir.",
-      "solution": "Parlaklık için tutarlı gözlem ölçütü gerekir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "sampleAnswer": "Aynı yönde bağlı uygun pil sayısı artırılırsa, özdeş ampul ve diğer koşullar sabitken parlaklık artabilir.",
+      "solution": "Aynı yönde bağlı uygun pil sayısı artırılırsa, özdeş ampul ve diğer koşullar sabitken parlaklık artabilir. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
       "rubric": {
         "maxScore": 4,
         "scaleRef": "metadata.rubricScale",
         "criteria": [
           {
             "maxScore": 2,
-            "criterion": "Parlaklık için tutarlı gözlem ölçütü gerekir."
+            "criterion": "Aynı yönde bağlı uygun pil sayısı artırılırsa, özdeş ampul ve diğer koşullar sabitken parlaklık artabilir."
           },
           {
             "maxScore": 2,
@@ -2135,13 +4659,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.2",
+          "title": "Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Devre sorgulamasından parlaklık değişkenlerine; kontrollü deneylere."
     },
     {
       "id": "ANX-FB563-047",
@@ -2151,15 +4731,15 @@
       "title": "Ölçüt belirsiz — görev 2",
       "assessmentType": "OPEN_ENDED",
       "stem": "Kayıt yalnız 'iyi yandı' diyor; karşılaştırma ölçütü yok.\n\nBağımsız, bağımlı ve kontrol edilen değişkenleri belirt.",
-      "sampleAnswer": "Pil veya ampul sayısı/parlaklık.",
-      "solution": "Pil veya ampul sayısı/parlaklık. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
+      "sampleAnswer": "Bağımsız: pil sayısı; bağımlı: ampul parlaklığı; kontrol: ampul sayısı/türü, pillerin durumu/yönü, sağlam bağlantı ve ortam.",
+      "solution": "Bağımsız: pil sayısı; bağımlı: ampul parlaklığı; kontrol: ampul sayısı/türü, pillerin durumu/yönü, sağlam bağlantı ve ortam. Gerekçe bağlamdaki bilgiyle ilişkilendirilmelidir; bilimsel olarak eşdeğer açıklamalar kabul edilir.",
       "rubric": {
         "maxScore": 4,
         "scaleRef": "metadata.rubricScale",
         "criteria": [
           {
             "maxScore": 2,
-            "criterion": "Pil veya ampul sayısı/parlaklık."
+            "criterion": "Bağımsız: pil sayısı; bağımlı: ampul parlaklığı; kontrol: ampul sayısı/türü, pillerin durumu/yönü, sağlam bağlantı ve ortam."
           },
           {
             "maxScore": 2,
@@ -2179,13 +4759,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.2",
+          "title": "Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Devre sorgulamasından parlaklık değişkenlerine; kontrollü deneylere."
     },
     {
       "id": "ANX-FB563-048",
@@ -2222,13 +4858,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.2",
+          "title": "Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Devre sorgulamasından parlaklık değişkenlerine; kontrollü deneylere."
     },
     {
       "id": "ANX-FB563-049",
@@ -2265,13 +4957,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.2",
+          "title": "Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Devre sorgulamasından parlaklık değişkenlerine; kontrollü deneylere."
     },
     {
       "id": "ANX-FB563-050",
@@ -2312,13 +5060,69 @@
       "assetPaths": [],
       "status": "DRAFT_NOT_APPROVED",
       "copyrightStatus": "ORIGINAL_AI_ASSISTED_TEXT_REQUIRES_REVIEW",
-      "priorLearningLinks": [],
-      "futureLearningLinks": [],
+      "priorLearningLinks": [
+        {
+          "grade": 4,
+          "code": "FB.4.6.1",
+          "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+          "relationshipType": "SUPPORTING_PREREQUISITE",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "4. sınıf programındaki “Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme” çalışması bu konuya hazırlık sağlar."
+        }
+      ],
+      "futureLearningLinks": [
+        {
+          "grade": 6,
+          "code": "FB.6.6.2",
+          "title": "Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme",
+          "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+          "relationshipType": "CONCEPT_EXTENSION",
+          "mappingAuthority": "ANUNEX_EDITORIAL_NOT_MEB_EQUIVALENCE",
+          "sourceProgramEdition": 2026,
+          "cohortCompatibilityRequired": true,
+          "studentCompletionVerified": false,
+          "studentText": "Bu konu, 6. sınıftaki “Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme” çalışmasına temel olur."
+        }
+      ],
       "historicalExamEvidence": {
         "verifiedCount": null,
-        "status": "NOT_SCANNED",
-        "matches": []
-      }
+        "allTimeCount": null,
+        "status": "BOUNDED_ARCHIVE_REVIEW_COMPLETED",
+        "scope": "2022–2026 İOKBS 5. sınıf A Fen testleri",
+        "scannedQuestions": 110,
+        "contentRelatedCount": 2,
+        "partialContentCount": 0,
+        "questionReferences": [
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 13,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          },
+          {
+            "year": 2022,
+            "scienceQuestionNumber": 14,
+            "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+            "matchExtent": "CONCEPT_CONTENT"
+          }
+        ],
+        "mappingAuthority": "ANUNEX_EDITORIAL_NOT_OFFICIAL_TAG",
+        "zeroMeans": "Bu tarama kapsamında ilişki saptanmadı; tüm MEB arşivinde sıfır demek değildir.",
+        "LGS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "YKS": {
+          "status": "NOT_SCANNED",
+          "count": null
+        },
+        "futureAppearanceProbability": null
+      },
+      "relationshipRationale": "Devre sorgulamasından parlaklık değişkenlerine; kontrollü deneylere."
     }
   ]
 }
