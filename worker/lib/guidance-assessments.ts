@@ -1,18 +1,32 @@
 import type { AuthUser, Env } from '../types';
 import { all,audit,badRequest,forbidden,json,notFound,one,uuid } from './db';
 
-type InstrumentSchema={scale?:{min?:number;max?:number};items?:Array<{id:string;dimension:string;text:string;reverse?:boolean}>};
+type InstrumentItem={id:string;dimension?:string;text:string;reverse?:boolean;type?:'LIKERT'|'YESNO'|'AB'|'CHOICE'|'TEXT'|'PEER';optional?:boolean;max?:number;options?:Array<{id:string;text:string;value?:number}>;a?:{text:string;dimension:string};b?:{text:string;dimension:string}};
+type InstrumentSchema={scale?:{min?:number;max?:number};items?:InstrumentItem[]};
 type ScoreResult={dimensions:Record<string,number>;confidence:Record<string,number>;answered:number;total:number};
 
 function parseJson<T>(value:unknown,fallback:T):T{if(typeof value!=='string'||!value)return fallback;try{return JSON.parse(value) as T}catch{return fallback}}
 
+/**
+ * Scores an educational self-assessment. A plain item is the 1–5 scale it always was; R3 (owner, 12 Nov 2026) adds
+ * yes/no, A/B (each side feeds its own dimension), multiple choice (scored only when an option carries a value),
+ * short text and classmate choice (never scored). Every dimension is 0–100; low means "focus here", never a diagnosis.
+ */
 export function scoreGuidanceResponses(schema:InstrumentSchema,responses:Record<string,unknown>):ScoreResult{
  const items=Array.isArray(schema?.items)?schema.items:[];if(!items.length)throw new Error('INSTRUMENT_SCHEMA_EMPTY');
- const min=Number(schema.scale?.min??1),max=Number(schema.scale?.max??5);if(!(max>min))throw new Error('INSTRUMENT_SCALE_INVALID');
+ const hasScale=items.some(i=>!i.type||i.type==='LIKERT');
+ const min=Number(schema.scale?.min??1),max=Number(schema.scale?.max??5);if(hasScale&&!(max>min))throw new Error('INSTRUMENT_SCALE_INVALID');
  const sums=new Map<string,{sum:number,count:number}>();let answered=0;
+ const add=(dimension:string|undefined,normalized:number)=>{const key=dimension||'genel';const current=sums.get(key)||{sum:0,count:0};current.sum+=normalized;current.count++;sums.set(key,current)};
  for(const item of items){
-  const raw=Number(responses?.[item.id]);if(!Number.isFinite(raw)||raw<min||raw>max)throw new Error(`RESPONSE_REQUIRED:${item.id}`);
-  const value=item.reverse?max-(raw-min):raw;const normalized=((value-min)/(max-min))*100;const current=sums.get(item.dimension)||{sum:0,count:0};current.sum+=normalized;current.count++;sums.set(item.dimension,current);answered++;
+  const raw=responses?.[item.id];const type=item.type||'LIKERT';
+  if(type==='TEXT'){const t=typeof raw==='string'?raw.trim():'';if(!t){if(item.optional)continue;throw new Error(`RESPONSE_REQUIRED:${item.id}`)}if(t.length>1000)throw new Error(`RESPONSE_TOO_LONG:${item.id}`);answered++;continue}
+  if(type==='PEER'){const list=Array.isArray(raw)?raw.map(String):[];if(!list.length){if(item.optional)continue;throw new Error(`RESPONSE_REQUIRED:${item.id}`)}if(list.length>Number(item.max||3)||new Set(list).size!==list.length)throw new Error(`RESPONSE_INVALID:${item.id}`);answered++;continue}
+  if(type==='YESNO'){const yes=raw===true||raw==='YES'?true:raw===false||raw==='NO'?false:null;if(yes===null)throw new Error(`RESPONSE_REQUIRED:${item.id}`);let v=yes?100:0;if(item.reverse)v=100-v;add(item.dimension,v);answered++;continue}
+  if(type==='AB'){if(raw!=='A'&&raw!=='B')throw new Error(`RESPONSE_REQUIRED:${item.id}`);const chosen=raw==='A'?item.a:item.b,other=raw==='A'?item.b:item.a;if(chosen?.dimension)add(chosen.dimension,100);if(other?.dimension)add(other.dimension,0);answered++;continue}
+  if(type==='CHOICE'){const opt=(item.options||[]).find(o=>o.id===raw);if(!opt){if(item.optional&&(raw===undefined||raw===null||raw===''))continue;throw new Error(`RESPONSE_REQUIRED:${item.id}`)}if(item.dimension&&Number.isFinite(Number(opt.value)))add(item.dimension,Math.max(0,Math.min(100,Number(opt.value))));answered++;continue}
+  const n=Number(raw);if(!Number.isFinite(n)||n<min||n>max)throw new Error(`RESPONSE_REQUIRED:${item.id}`);
+  const value=item.reverse?max-(n-min):n;add(item.dimension,((value-min)/(max-min))*100);answered++;
  }
  const dimensions:Record<string,number>={},confidence:Record<string,number>={};for(const [key,row] of sums){dimensions[key]=Number((row.sum/row.count).toFixed(1));confidence[key]=Number(Math.min(1,row.count/2).toFixed(2));}
  return{dimensions,confidence,answered,total:items.length};
@@ -33,17 +47,17 @@ export async function counselorCanAccess(env:Env,user:AuthUser,studentId:string)
  return Boolean(await one(env.DB.prepare(`SELECT 1 FROM teacher_assignments WHERE user_id=? AND institution_id=? AND assignment_type='GUIDANCE' AND active=1 AND (class_id=? OR class_id IS NULL) LIMIT 1`).bind(user.id,user.institution_id,enr.class_id)));
 }
 
-async function instrumentByCode(env:Env,code:string){return one<any>(env.DB.prepare(`SELECT * FROM guidance_assessment_instruments WHERE code=? AND active=1 AND clinical_use=0 AND requires_counselor_approval=1`).bind(code))}
+async function instrumentByCode(env:Env,code:string,institutionId?:string|null){return one<any>(env.DB.prepare(`SELECT * FROM guidance_assessment_instruments WHERE code=? AND active=1 AND clinical_use=0 AND requires_counselor_approval=1 AND (institution_id IS NULL OR institution_id=?)`).bind(code,institutionId??null))}
 async function sessionById(env:Env,id:string){return one<any>(env.DB.prepare(`SELECT s.*,i.code instrument_code,i.title instrument_title,i.category,i.version,i.question_schema_json FROM guidance_assessment_sessions s JOIN guidance_assessment_instruments i ON i.id=s.instrument_id WHERE s.id=?`).bind(id))}
 
-export async function listGuidanceInstruments(env:Env){
- return all<any>(env.DB.prepare(`SELECT id,code,title,category,version,description,requires_counselor_approval,evidence_level FROM guidance_assessment_instruments WHERE active=1 AND clinical_use=0 AND requires_counselor_approval=1 ORDER BY CASE category WHEN 'RBA' THEN 0 ELSE 1 END,title`));
+export async function listGuidanceInstruments(env:Env,institutionId?:string|null){
+ return all<any>(env.DB.prepare(`SELECT id,code,title,category,version,description,requires_counselor_approval,evidence_level,grade_min,grade_max FROM guidance_assessment_instruments WHERE active=1 AND clinical_use=0 AND requires_counselor_approval=1 AND (institution_id IS NULL OR institution_id=?) ORDER BY CASE category WHEN 'RBA' THEN 0 ELSE 1 END,title`).bind(institutionId??null));
 }
 
 export async function proposeGuidanceAssessment(env:Env,user:AuthUser,code:string,reason?:string,evidence?:unknown){
  if(user.role!=='STUDENT'||!user.student_id)return {ok:false as const,response:forbidden('Rehberlik testi önerisi öğrenci hesabından oluşturulabilir.')};
  const enr=await enrollment(env,user.student_id);if(!enr)return {ok:false as const,response:badRequest('Aktif öğrenci kaydı bulunamadı.')};
- const instrument=await instrumentByCode(env,code);if(!instrument)return {ok:false as const,response:notFound('Seçilen rehberlik aracı bulunamadı.')};
+ const instrument=await instrumentByCode(env,code,enr.institution_id);if(!instrument)return {ok:false as const,response:notFound('Seçilen rehberlik aracı bulunamadı.')};
  const existing=await one<any>(env.DB.prepare(`SELECT id,status FROM guidance_assessment_sessions WHERE student_id=? AND instrument_id=? AND status IN ('PROPOSED','APPROVED','IN_PROGRESS','SUBMITTED') ORDER BY created_at DESC LIMIT 1`).bind(user.student_id,instrument.id));
  if(existing)return {ok:true as const,reused:true,session:await sessionById(env,existing.id)};
  const id=uuid('gas');await env.DB.prepare(`INSERT INTO guidance_assessment_sessions(id,institution_id,student_id,instrument_id,proposed_by,proposed_by_user_id,proposal_reason,proposal_evidence_json,status) VALUES(?,?,?,?,'NIBIRU',?,?,?,'PROPOSED')`).bind(id,enr.institution_id,user.student_id,instrument.id,user.id,String(reason||'Nibiru rehberlik önerisi').slice(0,1000),evidence?JSON.stringify(evidence):null).run();
@@ -56,7 +70,7 @@ export async function counselorAssignGuidanceAssessment(request:Request,env:Env,
  const body:any=await request.json().catch(()=>({}));const studentId=String(body.studentId||'').trim(),code=String(body.instrumentCode||'').trim();
  if(!studentId||!code)return badRequest('Öğrenci ve test seçilmelidir.');
  if(!await counselorCanAccess(env,user,studentId))return forbidden('Bu öğrenciye rehberlik testi açma yetkiniz yok.');
- const instrument=await instrumentByCode(env,code);if(!instrument)return notFound('Seçilen rehberlik aracı bulunamadı.');
+ const instrument=await instrumentByCode(env,code,user.institution_id);if(!instrument)return notFound('Seçilen rehberlik aracı bulunamadı.');
  const enr=await enrollment(env,studentId);
  const open=await one<any>(env.DB.prepare(`SELECT id FROM guidance_assessment_sessions WHERE student_id=? AND instrument_id=? AND status IN ('PROPOSED','APPROVED','IN_PROGRESS','SUBMITTED') LIMIT 1`).bind(studentId,instrument.id));
  if(open)return json({ok:true,reused:true,session:await sessionById(env,open.id)});
@@ -69,7 +83,10 @@ export async function counselorAssignGuidanceAssessment(request:Request,env:Env,
 export async function myGuidanceSessions(env:Env,user:AuthUser){
  if(user.role!=='STUDENT'||!user.student_id)return forbidden('Bu liste öğrenci hesabına açıktır.');
  const rows=await all<any>(env.DB.prepare(`SELECT s.id,s.status,s.proposal_reason,s.approved_at,s.submitted_at,s.reviewed_at,s.counselor_note,s.created_at,i.code,i.title,i.category,i.version,i.description,i.question_schema_json FROM guidance_assessment_sessions s JOIN guidance_assessment_instruments i ON i.id=s.instrument_id WHERE s.student_id=? ORDER BY s.created_at DESC LIMIT 50`).bind(user.student_id));
- return json({ok:true,sessions:rows.map(row=>({...row,question_schema:['APPROVED','IN_PROGRESS'].includes(row.status)?parseJson(row.question_schema_json,{}):undefined,question_schema_json:undefined}))});
+ const needsMates=rows.some(row=>['APPROVED','IN_PROGRESS'].includes(row.status)&&String(row.question_schema_json||'').includes('"PEER"'));
+ const enr=needsMates?await enrollment(env,user.student_id):null;
+ const classmates=enr?.class_id?await all<any>(env.DB.prepare(`SELECT s.id,s.first_name||' '||s.last_name name FROM student_enrollments e JOIN student_entities s ON s.id=e.student_id WHERE e.class_id=? AND e.status='ACTIVE' AND s.id<>? ORDER BY s.first_name,s.last_name`).bind(enr.class_id,user.student_id)):[];
+ return json({ok:true,classmates,sessions:rows.map(row=>({...row,question_schema:['APPROVED','IN_PROGRESS'].includes(row.status)?parseJson(row.question_schema_json,{}):undefined,question_schema_json:undefined}))});
 }
 
 export async function counselorQueue(env:Env,user:AuthUser){
@@ -95,6 +112,9 @@ export async function counselorDecision(request:Request,env:Env,user:AuthUser,id
 export async function submitGuidanceAssessment(request:Request,env:Env,user:AuthUser,id:string){
  if(user.role!=='STUDENT'||!user.student_id)return forbidden('Rehberlik testini yalnız öğrenci kendi hesabından doldurabilir.');const session=await sessionById(env,id);if(!session||session.student_id!==user.student_id)return notFound('Rehberlik oturumu bulunamadı.');
  if(!['APPROVED','IN_PROGRESS'].includes(session.status))return badRequest('Bu test gerçek rehber öğretmeni tarafından onaylanmadan uygulanamaz.','COUNSELOR_APPROVAL_REQUIRED');const body:any=await request.json().catch(()=>({}));const responses=body.responses&&typeof body.responses==='object'?body.responses:{};
+ // R3: a classmate choice may name only active classmates, never oneself
+ const peerItems=(parseJson<InstrumentSchema>(session.question_schema_json,{}).items||[]).filter(i=>i.type==='PEER');
+ if(peerItems.length){const enr=await enrollment(env,user.student_id);const mates=new Set((await all<any>(env.DB.prepare(`SELECT student_id FROM student_enrollments WHERE class_id=? AND status='ACTIVE' AND student_id<>?`).bind(enr?.class_id??null,user.student_id))).map(r=>String(r.student_id)));for(const it of peerItems){const list=(responses as any)[it.id];if(Array.isArray(list)&&list.some((x:any)=>!mates.has(String(x))))return badRequest('Yalnız sınıf arkadaşlarını seçebilirsin.','GUIDANCE_RESPONSE_INVALID')}}
  let result:ScoreResult;try{result=scoreGuidanceResponses(parseJson<InstrumentSchema>(session.question_schema_json,{}),responses)}catch(e){return badRequest(e instanceof Error?e.message:'Yanıtlar geçersiz.','GUIDANCE_RESPONSE_INVALID')}
  await env.DB.prepare(`UPDATE guidance_assessment_sessions SET status='SUBMITTED',response_json=?,scored_result_json=?,submitted_at=CURRENT_TIMESTAMP,updated_at=CURRENT_TIMESTAMP WHERE id=? AND status IN ('APPROVED','IN_PROGRESS')`).bind(JSON.stringify(responses),JSON.stringify(result),id).run();
  await audit(env.DB,user.id,session.institution_id,'GUIDANCE_ASSESSMENT_SUBMITTED','guidance_assessment',id,{instrument:session.instrument_code,answered:result.answered});
