@@ -11,7 +11,7 @@ const fail = (status: number, code: string, message: string) => json({ ok: false
 const text = (v: unknown, max: number) => (typeof v === 'string' ? v.trim().slice(0, max) : '');
 
 /** Students the guidance teacher is assigned to (active enrolment in a guidance class of theirs). */
-async function guidanceStudentIds(env: Env, user: AuthUser): Promise<string[]> {
+export async function guidanceStudentIds(env: Env, user: AuthUser): Promise<string[]> {
   // same rule as the counsellor queue (guidance-assessments.ts): a GUIDANCE assignment for the class, or a school-wide one (class_id NULL)
   if (user.role !== 'GUIDANCE_TEACHER' || !user.institution_id) return [];
   return (await all<{ id: string }>(env.DB.prepare(`SELECT DISTINCT e.student_id id FROM student_enrollments e JOIN teacher_assignments ta ON ta.institution_id=e.institution_id AND (ta.class_id=e.class_id OR ta.class_id IS NULL)
