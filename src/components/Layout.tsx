@@ -241,7 +241,7 @@ export function Layout() {
         }) : visibleNav.map((item) => { const Icon=item.icon; return <NavLink key={item.to} style={navTone(item.to)} to={item.to} end={item.to==='/' } onClick={()=>setMobileNavOpen(false)} className={({isActive})=>isActive?'nav-item active':'nav-item'}><Icon size={19}/><span>{item.label}</span></NavLink>; })}
       </nav>
       <div className="sidebar-footer">
-        <div className="nibiru-sidebar-card"><NibiruMark size={36} state="active"/><div><strong>Nibiru AI</strong><span>Canlı akademik zekâ</span></div><ChevronRight size={16}/></div>
+        <div className="nibiru-sidebar-card"><NibiruMark size={36} state="active"/><div><strong>Nibiru AI</strong><span>Akademik asistan</span></div><ChevronRight size={16}/></div>
         <button className="ghost sidebar-logout" onClick={async()=>{try{await logout();navigate('/login')}catch(e:any){setLogoutError(e.message)}}}><LogOut size={18}/>Çıkış</button>
       </div>
       </>}

@@ -21,7 +21,7 @@ type Instrument = {
 const catalog = [
   {
     code: 'RBA_EDU_V1',
-    title: 'RBA Öğrenme ve Çalışma Profili',
+    title: 'RBA (Rehberlik Bilgi Anketi) · Öğrenme ve Çalışma Profili',
     category: 'RBA',
     version: '1.0',
     description: 'Öğrencinin çalışma davranışı ve akademik öz-düzenleme sinyallerini eğitim amacıyla değerlendirir. Tanı aracı değildir.',
