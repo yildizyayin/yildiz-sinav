@@ -41,8 +41,7 @@ export function AnnualPlan() {
     {error && <div className="alert error">{error}</div>}{notice && <div className="alert success" role="status">{notice}</div>}
     <section className="gd-card gd-form"><h2>Yılın çerçevesi</h2>
       <div className="two"><label>MEB yıllık rehberlik teması<input value={head.theme} maxLength={200} onChange={(e) => setHead({ ...head, theme: e.target.value })} placeholder="Örn. 2026–2027: Selamlaşma" /></label></div>
-      <label>Öncelikli ihtiyaçlar (RİBA ve gözlemlerden)<textarea value={head.priorities} maxLength={2000} onChange={(e) => setHead({ ...head, priorities: e.target.value })} /></label>
-      {data?.ribaTop?.length > 0 && <div className="gp-note"><b>RİBA’da en çok işaretlenenler:</b><ol>{data.ribaTop.map((r: any, k: number) => <li key={k}>{r.text} <small>({r.form}, %{Math.round(r.aPct * 100)})</small></li>)}</ol></div>}
+      <label>Öncelikli ihtiyaçlar (anket ve gözlemlerden)<textarea value={head.priorities} maxLength={2000} onChange={(e) => setHead({ ...head, priorities: e.target.value })} /></label>
       <div className="gd-actions"><button type="button" className="primary" onClick={saveHead}>Kaydet</button></div></section>
     <section className="gd-card gd-form"><h2>Plana ekle</h2><div className="two">
       <label>Ay<select value={form.month} onChange={(e) => setForm({ ...form, month: Number(e.target.value) })}>{MONTHS.map((m) => <option key={m} value={m}>{MONTH_NAME[m]}</option>)}</select></label>

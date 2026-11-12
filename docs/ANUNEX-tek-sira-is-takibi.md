@@ -610,4 +610,21 @@ Diğer roller:
 1. RBA açılımı.
 2. Hedef kurum türü: devlet okulu, özel okul, kurs.
 3. Zorbalık bildiriminin isimsiz yapılabilmesi (öneri: evet, yalnız rehber görür).
-4. İçerik onayı için PDR uzmanı.
+4. ~~İçerik onayı için PDR uzmanı.~~ Karar (12 Kasım): PDR uzmanı gerekmiyor; içerik Süper Admin onayından geçer.
+
+## 12 Kasım 2026: rehberlik tamamlandı, RİBA kaldırıldı, YouTube planı
+
+### Kullanıcı kararları
+
+- R1–R5 uygulandı (PR #534–#538); canlıya alma sahibin onayında.
+- **RİBA kullanılmıyor.** Şablon kaydı silinmedi, kapatıldı (0175); formu yüklenemez, anket olarak açılamaz, ekranlarda görünmez. Yıllık plandaki RİBA önerisi kaldırıldı.
+- **PDR uzmanı gerekmiyor.** Rehberlik içeriği Süper Admin onayıyla açılır.
+- **YouTube kazanım videosu, onay beklemeden:** sıra 1) sistemdeki yayın videosu, 2) öğretmenin yüklediği link, 3) YouTube'dan otomatik video. Otomatik video o kazanımın **gerçek kesiti** olmalı (başlangıç–bitiş saniyesi). Her kazanım için bir kez bulunur ve kaydedilir.
+
+### YouTube işi (sıradaki)
+
+- YouTube Data API anahtarı canlıda tanımlı (11 Kasım deploy'unda senkronlandı; 9 Ekim kabul testi geçti). Canlıda şu an video sayısı 0.
+- Kesit bulma: Gemini API'nin herkese açık YouTube linki desteği (önizleme, şimdilik ücretsiz, ücretsiz katmanda günde 8 saat video). Gemini'ye yalnız video linki ve kazanım metni gider; öğrenci verisi gitmez. Ücretsiz kota dolarsa video açıklamasındaki bölüm zamanları kullanılır.
+- Ücretli olsaydı tahmini tek seferlik maliyet (3.449 kazanım × 3 aday): Flash-Lite ~75 $, 2.5 Flash ~225 $, 3 Flash ~375 $. Ödeme yapılmayacak.
+- Korumalar: safeSearch=strict, yaş sınırlı/gömülemeyen/canlı elenir, youtube-nocookie, öğretmende "Kaldır / başka video bul", öğrencide "konuyla ilgili değil" bildirimi.
+- Gerekli: ücretsiz Gemini API anahtarı (Google AI Studio, kart istemez) — sahip ekleyecek.
