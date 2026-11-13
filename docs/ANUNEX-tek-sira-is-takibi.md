@@ -689,6 +689,14 @@ Dış öneri üzerine 360 px'te kontrol edildi; tespitler doğrulandı. Yapılac
 - anunex.com mobil düzeltmeleri ve pilot okul başvurusu canlıda (PR #548). İngilizce kazanımlı telefon görüntüsü olduğu gibi kaldı.
 - Gemini model seçimi canlıda (PR #549).
 - KVKK aydınlatma metinleri taslak olarak yazıldı (0181, `docs/KVKK-aydinlatma-metinleri-taslak.md`): öğrenci, veli, öğretmen, rehber öğretmen, kurum yöneticisi ve Nibiru ek bilgilendirmesi. Süper Admin › KVKK Metinleri'nde okunur/düzenlenir; [ ] alanlar doldurulmadan yayımlanamaz. Hukuk incelemesi gerekir.
+## 13 Kasım 2026: Nibiru 2.0 (sahip kararları)
+
+- Kararlar: görev "hepsi dengeli", ton "samimi abi/abla", model "ücretsiz Gemini". Şikâyetler: aynı cevabı tekrarlama, robot gibi dil, ChatGPT/Claude hissi yok; gezegen sayfada sabit kalmasın, öğrenci telefonda/tablette taşıyıp döndürebilsin.
+- Yapılan (PR nibiru-2): Gemini sohbet motoru (`worker/lib/nibiru-gemini.ts`, 0182) — modele ad/numara/iletişim/rehberlik notu gitmez, {ad} yer tutucusu ANUNEX'te doldurulur; son konuşma (1 gün) bağlam olarak, 30 gün sonra silinir; eylemler yalnız gerçek veriyle (video bölümü, rehbere yaz, haftalık program); günlük 900 / kişi başı 60 çağrı sınırı; kural tabanlı yol yedek.
+- **KVKK kapısı:** Canlıda Gemini sohbeti, Süper Admin › KVKK › Veri işleyenler'de "Google Gemini" kaydı (hukuk incelemesi + DPA durumu) ve aktarım kaydı onaylanana kadar KAPALI. Kazanım videosu araması kişisel veri göndermediği için bu kapıya bağlı değil.
+- Kural tabanlı yol düzeltmeleri: her cevaba plan eklenmez (yalnız plan sorulunca), sayılar Türkçe (4,67), isimler Türkçe ekle (Ali'nin), "canım sıkkın…" gibi cümleler duygu cevabı alır.
+- Sohbet ekranı yenilendi: sade akış, yazarak gelen cevap, kalın/madde biçimi, takip çipleri, video bölümü ekranda oynar, aşağıda sabit yazma kutusu.
+- Öğrenci panelinde sürüklenebilir Nibiru gezegeni: parmakla taşınır, hareketle döner, kenara yapışır, iki kez dokununca döner, dokununca Nibiru açılır; yeri cihazda hatırlanır.
 
 ## 13 Kasım 2026 akşam: öğrenci rehberliği ve KVKK sırası
 

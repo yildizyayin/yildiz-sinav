@@ -86,6 +86,8 @@ export interface Env {
   YOUTUBE_API_KEY?: string;
   GEMINI_API_KEY?: string;
   GEMINI_MODEL?: string;
+  NIBIRU_GEMINI_MODEL?: string;
+  NIBIRU_GEMINI?: string;
   WHATSAPP_VERIFY_TOKEN?: string;
   WHATSAPP_APP_SECRET?: string;
   WHATSAPP_ACCESS_TOKEN?: string;

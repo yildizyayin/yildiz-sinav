@@ -188,7 +188,7 @@ async function orchestratedNibiruChat(request:Request,env:Env,ctx:ExecutionConte
   let coachPlan:any=null,guidanceRoute:any=null,guidanceAssessment:any=null;
   if(route.specialist==='EDUCATION_COACH'&&user.role==='STUDENT'&&user.student_id){
     const result=await createOrReuseDailyCoachPlan(env,user);
-    if(result.available){const summary=coachPlanSummary(result);coachPlan=result;if(summary&&!payload.answer.includes('Bugünkü planın'))payload.answer=`${payload.answer}\n\nBugünkü planın sisteme kaydedildi:\n${summary}`;}
+    if(result.available){const summary=coachPlanSummary(result);coachPlan=result;if(summary&&payload.intent==='TODAY_PLAN'&&!/Bugünkü planın|planın hazır/.test(payload.answer))payload.answer=`${payload.answer}\n\nBugünkü planın sisteme kaydedildi:\n${summary}`;/* 13 Nov: only when the plan was asked */}
     else coachPlan={available:false,reason:result.reason};
   }
   if(route.specialist==='GUIDANCE_COUNSELOR'&&user.role==='STUDENT'&&user.student_id){

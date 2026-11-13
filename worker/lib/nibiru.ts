@@ -10,6 +10,7 @@ import { chooseNibiruModelDecision, runNibiruInference, type NibiruInferenceResu
 import { routeNibiruSpecialist } from './nibiru-specialists';
 import { clarifyAnswer, conversationAnswer, conversationKind } from './nibiru-conversation';
 import { NIBIRU_SAFETY_ANSWER, flagSafetyFromNibiru, isPersonalHarm } from './guidance-center';
+import { geminiNibiru } from './nibiru-gemini';
 import type { NibiruSpecialist } from './nibiru-specialists';
 
 export type NibiruIntent =
@@ -280,18 +281,28 @@ async function aiAnswer(
   return {text,inference,blocked:null};
 }
 
+/** 13 Nov 2026 ("robot gibi"): numbers in Turkish (4,67) and names in Turkish case with the right suffix (Ali'nin). */
+export function trNum(v: unknown, d = 2) { if (v == null || v === '' || !Number.isFinite(Number(v))) return '—'; return Number(Number(v).toFixed(d)).toLocaleString('tr-TR', { maximumFractionDigits: d }); }
+export function trName(v: unknown) { const s = String(v || '').trim().split(/\s+/)[0] || ''; return s ? s.charAt(0).toLocaleUpperCase('tr-TR') + s.slice(1).toLocaleLowerCase('tr-TR') : ''; }
+export function trGenitive(name: string) {
+  const n = trName(name); if (!n) return n;
+  const vowels = n.toLocaleLowerCase('tr-TR').match(/[aeıioöuü]/g) || ['e']; const last = vowels[vowels.length - 1];
+  const v = 'aı'.includes(last) ? 'ı' : 'ei'.includes(last) ? 'i' : 'ou'.includes(last) ? 'u' : 'ü';
+  return /[aeıioöuü]$/i.test(n) ? `${n}’n${v}n` : `${n}’${v}n`;
+}
+
 function fallbackAnswer(intent: NibiruIntent, context: any) {
   if (context.student) {
-    const name = context.student.first_name;
+    const name = trName(context.student.first_name); const nameOf = trGenitive(name);
     const latest = context.latestExam;
     if (intent === 'LATEST_EXAM') {
       if (!latest) return `${AI_PREFIX} ${name} için henüz sonuçlanmış bir sınav verisi görünmüyor.`;
-      return `${AI_PREFIX} ${name}’in en son sonuçlanan sınavı ${latest.title}. ${latest.net ?? '—'} net${latest.score != null ? `, ${latest.score} puan` : ''}. ${latest.correct_count} doğru, ${latest.wrong_count} yanlış, ${latest.blank_count} boş görünüyor. İsterseniz ders bazlı özeti de açıklayabilirim.`;
+      return `${AI_PREFIX} ${nameOf} en son sonuçlanan sınavı ${latest.title}: ${trNum(latest.net)} net${latest.score != null ? `, ${trNum(latest.score)} puan` : ''}. ${latest.correct_count} doğru, ${latest.wrong_count} yanlış, ${latest.blank_count} boş görünüyor. İsterseniz ders bazlı özeti de açıklayabilirim.`;
     }
     if (intent === 'WEAK_OUTCOMES') {
       const weak = context.weakOutcomes?.slice(0,3) || [];
       if (!weak.length) return `${AI_PREFIX} ${name} için kazanım düzeyinde yeterli ölçme kanıtı henüz oluşmamış.`;
-      return `${AI_PREFIX} ${name} için pekiştirme açısından öne çıkan alanlar: ${weak.map((x:any)=>`${x.subject_name} – ${x.title} (%${x.avg_success})`).join('; ')}. Bunları “başarısızlık” değil, bir sonraki öğrenme adımı için gelişim alanı olarak değerlendirmek daha doğru olur.`;
+      return `${AI_PREFIX} ${name} için pekiştirme açısından öne çıkan alanlar: ${weak.map((x:any)=>`${x.subject_name} – ${x.title} (%${trNum(x.avg_success,0)})`).join('; ')}. Bunları “başarısızlık” değil, bir sonraki öğrenme adımı için gelişim alanı olarak değerlendirmek daha doğru olur.`;
     }
     if (intent === 'TODAY_PLAN') {
       const weak = context.weakOutcomes?.[0]; const worksheet = context.assignments?.[0];
@@ -299,8 +310,8 @@ function fallbackAnswer(intent: NibiruIntent, context: any) {
       return `${AI_PREFIX} Bugün ${name} için kısa bir pekiştirme uygun görünüyor.${weak ? ` Öncelik: ${weak.subject_name} – ${weak.title}.` : ''}${worksheet ? ` Atanmış “${worksheet.title}” föyünden çalışılabilir.` : ''} Çalışmayı kısa tekrar + uygulama + yanlışların kontrolü şeklinde tamamlayabilirsiniz.`;
     }
     const exams = context.exams || [];
-    if (intent === 'SENSITIVE_LABEL') return `${AI_PREFIX} ${name}’i “başarılı/başarısız” diye etiketlemek doğru olmaz. ${exams.length ? `Sistemde ${exams.length} yakın dönem ölçme kaydı var; gelişimi bu kanıtların birlikte değerlendirilmesiyle izlemek daha sağlıklı.` : 'Henüz yeterli ölçme verisi bulunmuyor.'}`;
-    if (latest) return `${AI_PREFIX} ${name}’in son ölçme verisine göre ${latest.title} sınavında ${latest.net ?? '—'} net görünüyor. Güçlü ve gelişime açık alanları birlikte değerlendirmek için kazanım ve ders bazlı sonuçlara da bakabilirim.`;
+    if (intent === 'SENSITIVE_LABEL') return `${AI_PREFIX} ${name} için “başarılı/başarısız” diye etiketlemek doğru olmaz. ${exams.length ? `Sistemde ${exams.length} yakın dönem ölçme kaydı var; gelişimi bu kanıtların birlikte değerlendirilmesiyle izlemek daha sağlıklı.` : 'Henüz yeterli ölçme verisi bulunmuyor.'}`;
+    if (latest) return `${AI_PREFIX} ${nameOf} son ölçme verisine göre ${latest.title} sınavında ${trNum(latest.net)} net görünüyor. Güçlü ve gelişime açık alanları birlikte değerlendirmek için kazanım ve ders bazlı sonuçlara da bakabilirim.`;
     return `${AI_PREFIX} ${name} için henüz yeterli sonuç verisi oluşmamış.`;
   }
   if (context.institution) return `${AI_PREFIX} ${context.institution.name} için ${context.activeStudents} aktif öğrenci, ${context.activeClasses} aktif sınıf ve ${context.pendingScans} bekleyen optik görünüyor.${context.todayExams ? ` Bugün ${context.todayExams} sınav kaydı var.` : ''}`;
@@ -375,6 +386,17 @@ export async function runNibiru(env: Env, user: AuthUser, message: string, chann
   const planAnswer = planSummary
     ? AI_PREFIX + ' Bugün için doğrulanmış kısa çalışma planın hazır:\n' + planSummary + '\nGörevleri tamamladıktan sonra mini test ile pekiştirme yapabilirsin.'
     : null;
+  // Nibiru 2.0 (owner, 13 Nov 2026): free Gemini talks first — everything but the safety answer and the quick social
+  // replies; a missing key, the free quota or an error falls back to the rule-based path below.
+  const gem = safety || (socialReply && ['GREETING','THANKS','BYE'].includes(String(social))) || context?.disambiguation?.length || context?.noStudent ? null
+    : await geminiNibiru(env,user,message,channelKey,context,coachPlan).catch(() => null);
+  if (gem) {
+    try {
+      await saveSession(env,channel,channelKey,user.id,intent,studentId,examId,decision.specialist,decision.workload);
+      await env.DB.prepare('INSERT INTO nibiru_audit_events(id,institution_id,user_id,channel,role,intent,subject_student_id,subject_exam_id,outcome,message_chars) VALUES(?,?,?,?,?,?,?,?,?,?)').bind(uuid('niba'),user.institution_id,user.id,channel,user.role,intent,studentId,examId,'ANSWERED',message.length).run();
+    } catch (error) { console.error(JSON.stringify({ event:'nibiru_persistence_error', error:error instanceof Error?error.message:String(error) })); }
+    return { answer: gem.answer, intent, studentId, examId, outcome: 'ANSWERED', coachPlan, orchestration: { specialist:decision.specialist, specialistLabel:decision.specialistLabel, workload:decision.workload, routerMode:'GEMINI', gatewayConfigured:false, selectedFamily:'GEMINI', fallbackUsed:false, attempts:[] }, suggestions: gem.suggestions, actions: gem.actions, engine: 'GEMINI' } as any;
+  }
   const ai = fixed || planAnswer ? null : await aiAnswer(env,user,intent,message,context,decision);
   // without a model answer: a greeting or help gets the conversation layer, an unclear or off-topic question is asked
   // back with what can be answered — never the same exam summary for everything
