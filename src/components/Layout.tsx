@@ -18,6 +18,7 @@ import { LicenseBoundary } from './LicenseBoundary';
 import { NibiruMark,NibiruNavIcon } from './NibiruMark';
 import { AnunexBrand } from './AnunexBrand';
 import { ParentDock, StudentDock } from './StudentDock';
+import { NibiruFloat } from './NibiruFloat';
 import '../student-panel-design.css';
 
 type NavItem={to:string;label:string;icon:any;feature?:string;children?:NavItem[]};
@@ -255,6 +256,7 @@ export function Layout() {
       <div className="page-wrap"><PrivacyNoticeGate/>{logoutError&&<div className="alert error" role="alert">{logoutError}</div>}<LicenseBoundary><PageLoader routeKey={location.pathname+location.search}><Outlet/></PageLoader></LicenseBoundary></div>
     </main>
     {user.role==='STUDENT'&&<StudentDock items={visibleNav} onMenu={()=>setMobileNavOpen(true)}/>}
+    {user.role==='STUDENT'&&<NibiruFloat/>}
     {user.role==='PARENT'&&<ParentDock onMenu={()=>setMobileNavOpen(true)}/>}
   </div>;
 }

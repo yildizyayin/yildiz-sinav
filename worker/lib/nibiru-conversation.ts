@@ -11,7 +11,8 @@ export type ConversationContext = { role: string; firstName?: string | null; gra
 const clean = (m: string) => m.toLocaleLowerCase('tr-TR').replace(/[!?.,;:…"'()]+/g, ' ').replace(/\s+/g, ' ').trim();
 
 const PATTERNS: Array<[ConversationKind, RegExp]> = [
-  ['LOW_MOOD', /^(çok )?(sıkıldım|yoruldum|bıktım|canım sıkkın|canım sıkılıyor|moralim bozuk|üzgünüm|çalışmak istemiyorum|hiç çalışasım yok|motivasyonum yok|motive olamıyorum)( ya| ama| artık| bugün)?$/],
+  // 13 Nov 2026: a low mood inside a longer sentence ('canım sıkkın hiç ders çalışmak istemiyorum') counts too
+  ['LOW_MOOD', /(sıkıldım|yoruldum|bıktım|canım sıkkın|canım sıkılıyor|moralim bozuk|üzgünüm|(ders )?çalışmak istemiyorum|çalışasım yok|motivasyonum yok|motive olamıyorum|stresliyim|çok gerginim)/],
   ['HOW_ARE_YOU', /^(merhaba |selam |slm |hey )?(nasılsın|nasılsınız|naber|ne haber|nbr|iyi misin|ne var ne yok|keyifler nasıl|naptın|napıyorsun|ne yapıyorsun)( nibiru)?$/],
   ['THANKS', /^(çok )?(teşekkürler|teşekkür ederim|teşekkür ederiz|teşekkürler nibiru|sağ ol|sağol|sağolun|sağ olun|eyvallah|tşk|tşkler|eline sağlık|harikasın|süpersin)( nibiru)?$/],
   ['BYE', /^(görüşürüz|hoşça kal|hoşçakal|bay bay|bye|güle güle|kendine iyi bak|iyi geceler|iyi akşamlar görüşürüz|sonra görüşürüz)( nibiru)?$/],
