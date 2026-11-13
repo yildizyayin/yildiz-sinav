@@ -660,7 +660,7 @@ Dış öneri üzerine 360 px'te kontrol edildi; tespitler doğrulandı. Yapılac
 - **KVKK metinleri:** Claude yazacak (aydınlatma metinleri, açık rıza, pilot başvuru formu metni); sahip onaylar.
 - **Föy cevap anahtarı:** Föyler basılınca kitapçıklarla eklenecek; bekliyor.
 - **Bildirimler:** Trendyol benzeri "siparişiniz alındı/teslim edildi" düzeni — WhatsApp, e-posta, SMS; Android'de marka adı/logosuyla görünen SMS (Google RCS Business Messaging) araştırılacak.
-- **ÇAP TYT ve 7. sınıf Fenomen denemesi:** Sahip "sil gitsin" dedi. Kalıcı silme geri alınamaz; ÇAP TYT'de 207 katılımcı sonucu var, Fenomen 7'de katılımcı yok. Silmeden önce sahibe kesin onay soruldu. Bu iki sınavla ilgili eski "bekleyen" işler (TYT puan düzeltmesi, Fenomen 7 anahtarı) listeden çıkarıldı.
+- **ÇAP TYT ve 7. sınıf Fenomen denemesi:** Karar (13 Kasım): sistemde kalsın, silinmeyecek. Bu iki sınavla ilgili eski "bekleyen" işler (TYT puan düzeltmesi, Fenomen 7 anahtarı) listeden çıkarıldı.
 
 ### Sıra
 
@@ -669,7 +669,6 @@ Dış öneri üzerine 360 px'te kontrol edildi; tespitler doğrulandı. Yapılac
 3. KVKK metinleri (genel aydınlatma, veli/öğrenci, öğretmen, pilot başvuru, Nibiru/Gemini veri aktarımı).
 4. Bildirim kanalları araştırması ve planı (WhatsApp / e-posta / SMS / RCS; ücretsiz kalan kısım önce).
 5. Nibiru — sahiple birlikte yeniden tasarım.
-6. ÇAP TYT ve Fenomen 7 silme (kesin onaydan sonra).
 
 ### Sahibin onayı bekleyenler
 
@@ -684,3 +683,9 @@ Dış öneri üzerine 360 px'te kontrol edildi; tespitler doğrulandı. Yapılac
 - Rapor Merkezi hızlı PDF yazıcısı (`karne-writer` dalı GitHub'da yok; istenirse yeniden).
 - Yanlış soru zincirinde "oyun" adımı kararı.
 - Soru havuzu dolunca (2027) sitede gerçek soru sayısı.
+
+## 13 Kasım 2026: yapılanlar
+
+- anunex.com mobil düzeltmeleri ve pilot okul başvurusu canlıda (PR #548). İngilizce kazanımlı telefon görüntüsü olduğu gibi kaldı.
+- Gemini model seçimi canlıda (PR #549).
+- KVKK aydınlatma metinleri taslak olarak yazıldı (0181, `docs/KVKK-aydinlatma-metinleri-taslak.md`): öğrenci, veli, öğretmen, rehber öğretmen, kurum yöneticisi ve Nibiru ek bilgilendirmesi. Süper Admin › KVKK Metinleri'nde okunur/düzenlenir; [ ] alanlar doldurulmadan yayımlanamaz. Hukuk incelemesi gerekir.
