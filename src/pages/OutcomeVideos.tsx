@@ -46,7 +46,7 @@ export function OutcomeVideos() {
       <div><b>{st.found}</b><span>otomatik bölüm bulundu</span><small>toplam {st.total} kazanım</small></div>
       <div><b>{st.waiting}</b><span>aramada sırada</span><small>{st.missed} kazanımda henüz bulunamadı</small></div>
       <div><b>{st.today.searches}/{st.today.searchCap}</b><span>bugünkü YouTube araması</span><small>ücretsiz kota</small></div>
-      <div><b>{st.gemini ? `${st.today.geminiMinutes}/${st.today.geminiMinuteCap} dk` : 'Kapalı'}</b><span>Gemini ile izleme</span><small>{st.gemini ? 'ücretsiz kota' : 'anahtar eklenince açılır; şimdilik bölüm listeleri kullanılıyor'}</small></div>
+      <div><b>{st.gemini ? `${st.today.geminiMinutes}/${st.today.geminiMinuteCap} dk` : 'Kapalı'}</b><span>Gemini ile izleme</span><small>{st.gemini ? 'ücretsiz kota' : 'kapalı; videonun bölüm listesi ve kısa videolar kullanılıyor'}</small></div>
       {!st.youtube && <div className="warn"><b>YouTube kapalı</b><span>YouTube API anahtarı tanımlı değil</span></div>}
     </div>}
 

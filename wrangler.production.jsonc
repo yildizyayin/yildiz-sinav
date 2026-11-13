@@ -40,6 +40,7 @@
     "binding": "AI"
   },
   "vars": {
+    "OUTCOME_VIDEO_GEMINI": "off",
     "SCHEDULED_JOBS_PAUSED": "false",
     "QUESTION_AUTOMATED_ACADEMIC_YEAR": "2027-2028",
     "QUESTION_AUTOMATED_PILOT_MODE": "true",
