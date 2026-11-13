@@ -124,6 +124,34 @@ export async function screenWarnings(env: Env, studentIds: string[]) {
   return out;
 }
 
+/** Owner 13 Nov 2026: the diary is open for a student only while the guidance teacher's request runs. */
+export async function screenRequestFor(env: Env, studentId: string) {
+  return one<any>(env.DB.prepare(`SELECT r.id,r.start_date,r.end_date,r.note FROM guidance_screen_requests r
+    WHERE (r.student_id=? OR r.class_id IN (SELECT class_id FROM student_enrollments WHERE student_id=? AND status='ACTIVE')) AND r.start_date<=? AND r.end_date>=? ORDER BY r.end_date DESC LIMIT 1`).bind(studentId, studentId, today(), today()));
+}
+
+async function screenRequests(request: Request, env: Env, user: AuthUser, url: URL) {
+  if (user.role !== 'GUIDANCE_TEACHER' || !user.institution_id) return fail(403, 'FORBIDDEN', 'Ekran günlüğünü rehber öğretmen ister.');
+  const scope = await guidanceStudentIds(env, user);
+  if (request.method === 'GET') {
+    const classId = text(url.searchParams.get('classId'), 80);
+    return json({ ok: true, requests: await all<any>(env.DB.prepare(`SELECT id,class_id,student_id,start_date,end_date,note FROM guidance_screen_requests WHERE institution_id=? AND counselor_id=? AND (?='' OR class_id=?) AND end_date>=? ORDER BY end_date DESC`).bind(user.institution_id, user.id, classId, classId, today())) });
+  }
+  const b = await request.json().catch(() => ({})) as any;
+  const classId = text(b?.classId, 80) || null; const studentId = text(b?.studentId, 80) || null;
+  const days = [7, 14, 21].includes(Number(b?.days)) ? Number(b.days) : 7;
+  if (!classId && !studentId) return fail(400, 'VALIDATION_ERROR', 'Sınıf ya da öğrenci seçin.');
+  if (studentId && !scope.includes(studentId)) return fail(403, 'FORBIDDEN', 'Bu öğrencinin rehber öğretmeni değilsiniz.');
+  if (classId) {
+    const inClass = (await all<any>(env.DB.prepare(`SELECT student_id FROM student_enrollments WHERE class_id=? AND status='ACTIVE'`).bind(classId))).map((r) => r.student_id);
+    if (!inClass.length || !inClass.some((id) => scope.includes(id))) return fail(403, 'FORBIDDEN', 'Bu sınıfın rehber öğretmeni değilsiniz.');
+  }
+  const id = uuid('gsr');
+  await env.DB.prepare(`INSERT INTO guidance_screen_requests(id,institution_id,class_id,student_id,counselor_id,start_date,end_date,note) VALUES(?,?,?,?,?,?,?,?)`).bind(id, user.institution_id, classId, studentId, user.id, today(), addDays(today(), days - 1), text(b?.note, 300) || null).run();
+  await audit(env.DB, user.id, user.institution_id, 'GUIDANCE_SCREEN_REQUESTED', 'guidance_screen_request', id, { classId, studentId, days });
+  return json({ ok: true, id, endDate: addDays(today(), days - 1) }, 201);
+}
+
 async function screenMine(request: Request, env: Env, user: AuthUser, url: URL) {
   let studentId = user.student_id;
   if (user.role === 'PARENT') {
@@ -131,9 +159,9 @@ async function screenMine(request: Request, env: Env, user: AuthUser, url: URL) 
     const want = request.method === 'GET' ? text(url.searchParams.get('studentId'), 80) : text(((await request.clone().json().catch(() => ({}))) as any)?.studentId, 80);
     studentId = want || children[0]?.id || null;
     if (!studentId || !children.some((c) => c.id === studentId)) return request.method === 'GET' ? json({ ok: true, children, logs: [] }) : fail(403, 'FORBIDDEN', 'Yalnız kendi çocuğunuz için kayıt girebilirsiniz.');
-    if (request.method === 'GET') return json({ ok: true, children, studentId, logs: await all<any>(env.DB.prepare(`SELECT * FROM guidance_screen_logs WHERE student_id=? AND log_date>=? ORDER BY log_date DESC`).bind(studentId, addDays(today(), -13))) });
+    if (request.method === 'GET') return json({ ok: true, children, studentId, requested: await screenRequestFor(env, studentId), logs: await all<any>(env.DB.prepare(`SELECT * FROM guidance_screen_logs WHERE student_id=? AND log_date>=? ORDER BY log_date DESC`).bind(studentId, addDays(today(), -13))) });
   } else if (user.role !== 'STUDENT' || !studentId) return fail(403, 'FORBIDDEN', 'Ekran günlüğü öğrenci ve veliler içindir.');
-  if (request.method === 'GET') return json({ ok: true, logs: await all<any>(env.DB.prepare(`SELECT * FROM guidance_screen_logs WHERE student_id=? AND log_date>=? ORDER BY log_date DESC`).bind(studentId, addDays(today(), -13))) });
+  if (request.method === 'GET') return json({ ok: true, requested: await screenRequestFor(env, studentId), logs: await all<any>(env.DB.prepare(`SELECT * FROM guidance_screen_logs WHERE student_id=? AND log_date>=? ORDER BY log_date DESC`).bind(studentId, addDays(today(), -13))) });
   const b = await request.json().catch(() => ({})) as any;
   const date = text(b?.date, 10) || today();
   if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || date > today() || date < addDays(today(), -6)) return fail(400, 'VALIDATION_ERROR', 'Kayıt yalnız son yedi gün için girilebilir.');
@@ -169,6 +197,7 @@ export async function handleGuidanceContent(request: Request, env: Env): Promise
   const p = url.pathname.replace(/\/+$/, '');
   if (p === '/api/guidance-content/resources/mine' && request.method === 'GET') { if (!['STUDENT', 'PARENT', 'TEACHER'].includes(user.role) || !user.institution_id) return fail(403, 'FORBIDDEN', 'Bu bölüm öğrenci, veli ve öğretmenler içindir.'); return myResources(env, user); }
   if (p === '/api/guidance-content/screen/mine') return screenMine(request, env, user, url);
+  if (p === '/api/guidance-content/screen/requests' && ['GET', 'POST'].includes(request.method)) return screenRequests(request, env, user, url);
   if (p === '/api/guidance-content/my-activities' && request.method === 'GET') {
     if (!['TEACHER', 'GUIDANCE_TEACHER'].includes(user.role)) return fail(403, 'FORBIDDEN', 'Bu bölüm öğretmenler içindir.');
     const rows = await all<any>(env.DB.prepare(`SELECT g.*,a.title,a.goal,a.steps_json,a.materials,a.duration_min,c.name class_name FROM guidance_activity_assignments g JOIN guidance_activities a ON a.id=g.activity_id JOIN classes c ON c.id=g.class_id WHERE g.teacher_id=? ORDER BY g.status,g.due_date`).bind(user.id));

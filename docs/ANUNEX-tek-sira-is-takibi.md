@@ -689,3 +689,8 @@ Dış öneri üzerine 360 px'te kontrol edildi; tespitler doğrulandı. Yapılac
 - anunex.com mobil düzeltmeleri ve pilot okul başvurusu canlıda (PR #548). İngilizce kazanımlı telefon görüntüsü olduğu gibi kaldı.
 - Gemini model seçimi canlıda (PR #549).
 - KVKK aydınlatma metinleri taslak olarak yazıldı (0181, `docs/KVKK-aydinlatma-metinleri-taslak.md`): öğrenci, veli, öğretmen, rehber öğretmen, kurum yöneticisi ve Nibiru ek bilgilendirmesi. Süper Admin › KVKK Metinleri'nde okunur/düzenlenir; [ ] alanlar doldurulmadan yayımlanamaz. Hukuk incelemesi gerekir.
+
+## 13 Kasım 2026 akşam: öğrenci rehberliği ve KVKK sırası
+
+- **KVKK işleri en sona alındı (şirket kurulduktan sonra):** aydınlatma metinlerinin şirket bilgileriyle doldurulup yayımlanması; giriş ekranında "Okudum ve anladım"; okul yöneticisi için Kurum Veri İşleme Sözleşmesi ve Veri Sorumlusu Taahhüdü kabul ekranı; Google Gemini / Workers AI veri işleyen ve aktarım kayıtları; avukat incelemesi. Not: Gemini API şartları 18 yaş altına yönelik uygulamalarda kullanımı yasaklıyor — öğrenci sohbeti için Gemini açılmayacak.
+- **Rehberliğim (yapıldı):** Öğrenci yalnız rehber öğretmenin gönderdiklerini görür: verilen haftalık program, açılan testler, davet edildiği anketler, sınıfla paylaşılan kaynaklar, kendisiyle paylaşılan destek planı, istenen ekran günlüğü ve planlı görüşme saati (konu/not gösterilmez). Menüde tek "Rehberliğim" + her zaman "Rehberime yaz". Test kataloğu ve RBA sekmesi öğrenciden kaldırıldı; ekran günlüğü rehber "Günlüğü aç" dediğinde açılır (0183).
