@@ -19,6 +19,7 @@ import type { AuthUser, Env } from '../types';
 import { all, audit, json, one, uuid } from './db';
 import { fetchYoutubeMetadata, youtubeCandidateAvailable } from './youtube-candidate-policy';
 
+export const geminiOn = (env: Env) => Boolean(env.GEMINI_API_KEY) && (env as any).OUTCOME_VIDEO_GEMINI !== 'off';
 export const SEARCH_CAP = 80;               // YouTube Data API: 100 units a search, 10 000 units a day shared with others
 export const GEMINI_SECONDS_CAP = 7 * 3600;  // Gemini YouTube input: 8 hours of video a day on the free tier
 export const REPORTS_TO_REMOVE = 3;
@@ -216,7 +217,9 @@ export async function findOutcomeVideo(env: Env, outcomeId: string): Promise<{ s
 
   // 1. Gemini watches up to two of the best candidates and gives the exact part
   let geminiTried = false; const verdicts: string[] = [];
-  if (env.GEMINI_API_KEY) {
+  // owner 13 Nov 2026: "gemini işe yaramıyorsa kapat" — 34 calls found nothing and Google's terms bar services used
+  // by under-18s; OUTCOME_VIDEO_GEMINI=off (wrangler vars) keeps it off, the chapter and short-video methods remain.
+  if (geminiOn(env)) {
     let spent = u.gemini_seconds;
     for (const c of cands.slice(0, 2)) {
       if (spent + c.duration > GEMINI_SECONDS_CAP) break;
@@ -265,7 +268,7 @@ export async function runOutcomeVideoQueue(env: Env, max = 1) {
     const r = await findOutcomeVideo(env, next.outcome_id);
     if (r.status === 'QUOTA') break;
     // a miss without Gemini's look is tried again soon (Gemini may have a free quota tomorrow); a real miss after 60 days
-    const retryDays = r.status === 'FOUND' ? null : r.status === 'ERROR' ? 1 : r.reason === 'NO_SEGMENT' && !r.geminiTried ? (env.GEMINI_API_KEY ? 2 : 14) : 60;
+    const retryDays = r.status === 'FOUND' ? null : r.status === 'ERROR' ? 1 : r.reason === 'NO_SEGMENT' && !r.geminiTried ? (geminiOn(env) ? 2 : 14) : 60;
     await env.DB.prepare(`UPDATE outcome_video_queue SET status=?,attempts=attempts+1,last_reason=?,next_try_at=?,updated_at=CURRENT_TIMESTAMP WHERE outcome_id=?`)
       .bind(r.status, (r.detail ? `${r.reason} · ${r.detail}` : r.reason).slice(0, 600), retryDays == null ? null : new Date(Date.now() + retryDays * 86400_000).toISOString().replace('T', ' ').slice(0, 19), next.outcome_id).run();
     done++;
@@ -344,7 +347,7 @@ async function list(env: Env, user: AuthUser, url: URL) {
   const u = await usage(env);
   const stats = await one<any>(env.DB.prepare(`SELECT (SELECT count(*) FROM outcome_auto_videos WHERE status='ACTIVE') found,(SELECT count(*) FROM outcome_video_queue WHERE status='WAITING') waiting,(SELECT count(*) FROM outcome_video_queue WHERE status='NOT_FOUND') missed,(SELECT count(*) FROM outcomes WHERE active=1 AND coalesce(node_type,'OUTCOME')='OUTCOME') total`));
   return json({ ok: true, outcomes: out, subjects,
-    status: { youtube: !!env.YOUTUBE_API_KEY, gemini: !!env.GEMINI_API_KEY, today: { searches: u.searches, searchCap: SEARCH_CAP, geminiMinutes: Math.round(u.gemini_seconds / 60), geminiMinuteCap: GEMINI_SECONDS_CAP / 60 }, found: Number(stats?.found || 0), waiting: Number(stats?.waiting || 0), missed: Number(stats?.missed || 0), total: Number(stats?.total || 0) } });
+    status: { youtube: !!env.YOUTUBE_API_KEY, gemini: geminiOn(env), today: { searches: u.searches, searchCap: SEARCH_CAP, geminiMinutes: Math.round(u.gemini_seconds / 60), geminiMinuteCap: GEMINI_SECONDS_CAP / 60 }, found: Number(stats?.found || 0), waiting: Number(stats?.waiting || 0), missed: Number(stats?.missed || 0), total: Number(stats?.total || 0) } });
 }
 
 function clipTimes(b: any) {
