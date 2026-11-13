@@ -1,0 +1,174 @@
+{
+  "metadata": {
+    "outcomeCode": "MAT.5.3.5",
+    "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/448",
+    "academicYearCatalog": "2027-2028",
+    "status": "DRAFT_NOT_APPROVED",
+    "count": 10,
+    "notPartOf50MCQuota": true,
+    "currentImporterSupports": false
+  },
+  "tasks": [
+    {
+      "id": "MAT535-P01",
+      "type": "CONSTRUCT_OBSERVE_EXPLAIN",
+      "title": "Üç doğruyla üçgen",
+      "prompt": "Çizgeç kullanarak üç doğruyu çiftler hâlinde üç ayrı noktada kesiştirecek biçimde çiz. Ortada oluşan kapalı üçgeni belirle ve köşelerini harflerle işaretle.",
+      "evidence": [
+        "Üç ayrı kesişim",
+        "Üç düz kenar",
+        "Kapalı sınır ve isimlendirme"
+      ],
+      "teacherReviewRequired": true,
+      "automaticScoringAllowed": false
+    },
+    {
+      "id": "MAT535-P02",
+      "type": "CONSTRUCT_OBSERVE_EXPLAIN",
+      "title": "Üçgen oluşturmayan doğrular",
+      "prompt": "İlk çiziminde üç doğruyu aynı noktada kesiştir. İkinci çiziminde iki doğruyu paralel yap. Her iki durumda neden üçgen oluşmadığını açıkla.",
+      "evidence": [
+        "Aynı merkezli üç doğru örneği",
+        "İki paralel-bir kesen örneği",
+        "Üçgenin neden oluşmadığına gerekçe"
+      ],
+      "teacherReviewRequired": true,
+      "automaticScoringAllowed": false
+    },
+    {
+      "id": "MAT535-P03",
+      "type": "CONSTRUCT_OBSERVE_EXPLAIN",
+      "title": "Dört doğrudan dörtgen",
+      "prompt": "Dört farklı doğruyu ardışık kesiştirip dört farklı köşeden oluşan dış bükey dörtgen çiz. Dört kenarı sırayla listele.",
+      "evidence": [
+        "Dört köşe",
+        "Dört düz kenar ve kapanma",
+        "Kenar listesinin sıralılığı"
+      ],
+      "teacherReviewRequired": true,
+      "automaticScoringAllowed": false
+    },
+    {
+      "id": "MAT535-P04",
+      "type": "CONSTRUCT_OBSERVE_EXPLAIN",
+      "title": "Beşgen yapım günlüğü",
+      "prompt": "Beş kenarlı dış bükey kapalı bir şekil çiz. Çizdiğin her adımı ve son kenarın ilk köşeyle nasıl birleştiğini açıkla.",
+      "evidence": [
+        "Beş düz kenar",
+        "Beş köşe",
+        "Son kenarla kapanma"
+      ],
+      "teacherReviewRequired": true,
+      "automaticScoringAllowed": false
+    },
+    {
+      "id": "MAT535-P05",
+      "type": "CONSTRUCT_OBSERVE_EXPLAIN",
+      "title": "Altıgen doğrulama",
+      "prompt": "Altı ayrı kenarlı dış bükey bir altıgen oluştur. Uç uca birleşen kenarları numaralandır; aynı doğrultuda fazladan işaretlenmiş bir noktanın neden yeni köşe olmadığını tartış.",
+      "evidence": [
+        "Altı gerçek köşe",
+        "Kapanma ve düz kenarlar",
+        "Ara nokta-köşe ayrımı"
+      ],
+      "teacherReviewRequired": true,
+      "automaticScoringAllowed": false
+    },
+    {
+      "id": "MAT535-P06",
+      "type": "CONSTRUCT_OBSERVE_EXPLAIN",
+      "title": "Kapanmayan çizimi düzelt",
+      "prompt": "Öğretmenin hazırladığı dört düz parçalı ama açık kalan çizime uygun bir son kenar ekleyip kapalı dörtgen elde et. Öncesi-sonrası eskizini oluştur.",
+      "evidence": [
+        "Önce açık zincir",
+        "Kapatan kenar",
+        "Dörtgen olarak doğrulama"
+      ],
+      "teacherReviewRequired": true,
+      "automaticScoringAllowed": false
+    },
+    {
+      "id": "MAT535-P07",
+      "type": "CONSTRUCT_OBSERVE_EXPLAIN",
+      "title": "Eğri ve düz sınırları karşılaştır",
+      "prompt": "Çember ve kapalı bir beşgen çiz. Çemberin neden beşgen gibi çokgen sayılamayacağını kenar türüne göre açıkla.",
+      "evidence": [
+        "Eğri çember sınırı",
+        "Düz kenarlı çokgen",
+        "Düz/eğri ayrımını gerekçelendirme"
+      ],
+      "teacherReviewRequired": true,
+      "automaticScoringAllowed": false
+    },
+    {
+      "id": "MAT535-P08",
+      "type": "CONSTRUCT_OBSERVE_EXPLAIN",
+      "title": "Tek köşeden geçen doğruları sınama",
+      "prompt": "Dört farklı doğruyu aynı noktadan geçir. Kapalı dörtgen oluşturamadığını gözle. Dörtgen oluşturmak için doğruların konumunu değiştir.",
+      "evidence": [
+        "İlk çizimde dörtgen olmaması",
+        "Yeni çizimde dört köşe",
+        "Geometrik koşul karşılaştırması"
+      ],
+      "teacherReviewRequired": true,
+      "automaticScoringAllowed": false
+    },
+    {
+      "id": "MAT535-P09",
+      "type": "CONSTRUCT_OBSERVE_EXPLAIN",
+      "title": "Güncel şehir krokisi",
+      "prompt": "Kendin tasarladığın ya da kullanım izni olan basit bir şehir krokisinde üçgen, dörtgen veya beşgen biçimli kapalı adaları işaretle. Kenarları neden çokgen oluşturuyor, yaz.",
+      "evidence": [
+        "Gerçek hayata uygun temsil",
+        "En az iki farklı çokgen",
+        "Kapanma ve kenar sayısı gerekçesi"
+      ],
+      "teacherReviewRequired": true,
+      "automaticScoringAllowed": false
+    },
+    {
+      "id": "MAT535-P10",
+      "type": "CONSTRUCT_OBSERVE_EXPLAIN",
+      "title": "Dijital çizim doğrulama",
+      "prompt": "Dinamik geometri programında üçgen, dörtgen ve altıgen oluştur. Köşe noktalarını sürükleyerek kapanma, kenar sayısı ve dış bükeylik özelliklerinin nasıl korunduğunu/bozulduğunu raporla.",
+      "evidence": [
+        "Üç dijital çokgen",
+        "Köşe/kenar kontrolü",
+        "Sürüklemede gözlem ve gerekçe"
+      ],
+      "teacherReviewRequired": true,
+      "automaticScoringAllowed": false
+    }
+  ],
+  "rubric": {
+    "criteria": [
+      {
+        "id": "construction",
+        "weight": 35,
+        "description": "Kapalı düz kenarlı dış bükey çokgeni doğru oluşturma"
+      },
+      {
+        "id": "identification",
+        "weight": 25,
+        "description": "Kenar/köşe sayısı ve isimlendirme"
+      },
+      {
+        "id": "reasoning",
+        "weight": 25,
+        "description": "Yanlış durumlar için geçerli gerekçe/karşı örnek"
+      },
+      {
+        "id": "review",
+        "weight": 15,
+        "description": "Ölçüm, krokide yorum ve öz değerlendirme"
+      }
+    ],
+    "levels": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "requiresTeacherSignoff": true
+  }
+}

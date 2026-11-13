@@ -1,0 +1,188 @@
+{
+  "metadata": {
+    "outcomeCode": "MAT.5.3.1",
+    "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/448",
+    "sourceProcessComponents": [
+      "a: araç ve teknoloji tanıma",
+      "b: uygun araç ve teknoloji belirleme",
+      "c: araç ve teknolojiyi kullanma"
+    ],
+    "curriculumCatalogYear": "2027-2028",
+    "status": "DRAFT_NOT_APPROVED",
+    "taskCount": 8,
+    "importableByCurrentMultipleChoiceAPI": false,
+    "studentData": false,
+    "mediaAttached": false
+  },
+  "tasks": [
+    {
+      "taskId": "MAT531-P01",
+      "type": "PRACTICAL_DRAWING",
+      "title": "İki nokta ve doğru parçası",
+      "studentPrompt": "Boş kâğıda A ve B adında, birbirinden farklı iki nokta işaretle. Çizgeç yardımıyla AB doğru parçasını çiz. Neden doğru yerine doğru parçası oluşturduğunu bir cümleyle açıkla.",
+      "expectedEvidence": [
+        "A ve B noktalarının işaretlenmesi",
+        "A ve B uç noktaları arasında düz çizim",
+        "İki uç nokta ile sınırlandırmayı açıklama"
+      ],
+      "toolRequirements": [
+        "Çizgeç",
+        "Kâğıt",
+        "Kalem"
+      ]
+    },
+    {
+      "taskId": "MAT531-P02",
+      "type": "PRACTICAL_DRAWING",
+      "title": "Doğru parçasından ışına",
+      "studentPrompt": "C ve D noktaları arasında bir doğru parçası çiz. Aynı düz çizgiyi C'den başlatıp D'nin ötesinde okla sürdürerek CD ışınına dönüştür. İki çizimin farkını işaretle.",
+      "expectedEvidence": [
+        "Başlangıç noktası C",
+        "D doğrultusunda bir yönlü devam",
+        "Doğru parçası ve ışın farkına ilişkin açıklama"
+      ],
+      "toolRequirements": [
+        "Çizgeç",
+        "Kalem"
+      ]
+    },
+    {
+      "taskId": "MAT531-P03",
+      "type": "PRACTICAL_DRAWING",
+      "title": "Ortak köşeli iki ışınla açı",
+      "studentPrompt": "Kâğıda O, P ve Q noktalarını O'dan bakıldığında farklı yönlerde olacak biçimde yerleştir. OP ve OQ ışınlarını çizerek O köşeli bir açı oluştur; köşeyi ve kolları etiketle.",
+      "expectedEvidence": [
+        "Aynı O başlangıçlı iki ışın",
+        "Farklı yönler, iki kol",
+        "Açı köşesinin O olarak doğru etiketlenmesi"
+      ],
+      "toolRequirements": [
+        "Çizgeç",
+        "Kalem"
+      ]
+    },
+    {
+      "taskId": "MAT531-P04",
+      "type": "PRACTICAL_DRAWING",
+      "title": "Pergelle çember",
+      "studentPrompt": "Kâğıda M merkezini işaretle. Pergel açıklığını 4 cm olarak ayarlayarak M merkezli bir çember çiz. Merkezden çember üzerindeki N noktasına bir yarıçap çiz.",
+      "expectedEvidence": [
+        "Pergel iğnesinin M'de sabit tutulması",
+        "4 cm sabit yarıçapla çember",
+        "MN doğru parçasının yarıçap olarak gösterilmesi"
+      ],
+      "toolRequirements": [
+        "Pergel",
+        "Santimetre ölçekli cetvel",
+        "Kalem"
+      ]
+    },
+    {
+      "taskId": "MAT531-P05",
+      "type": "PRACTICAL_DRAWING",
+      "title": "Eş yarıçaplı farklı merkezler",
+      "studentPrompt": "A ve B olmak üzere iki farklı merkez işaretle. Pergel açıklığını değiştirmeden A ve B merkezli çemberler çiz. Eş yarıçapı nasıl sağladığını açıkla.",
+      "expectedEvidence": [
+        "Farklı A ve B merkezleri",
+        "Her iki çemberde eş açıklık",
+        "Merkez ve yarıçap ayrımının açıklanması"
+      ],
+      "toolRequirements": [
+        "Pergel",
+        "Kalem"
+      ]
+    },
+    {
+      "taskId": "MAT531-P06",
+      "type": "PRACTICAL_DRAWING",
+      "title": "Doğru üzerindeki noktadan dikme",
+      "studentPrompt": "d doğrusunu çiz. d'nin üzerinde P noktası işaretle. Gönye yardımıyla P noktasından geçen ve d'ye dik olan doğruyu çiz; diklik işareti koy.",
+      "expectedEvidence": [
+        "d doğrusu ve P noktasının doğruda olması",
+        "Gönyenin kenarının d ile hizalanması",
+        "P'den geçen dik doğru ve diklik gösterimi"
+      ],
+      "toolRequirements": [
+        "Çizgeç",
+        "Gönye",
+        "Kalem"
+      ]
+    },
+    {
+      "taskId": "MAT531-P07",
+      "type": "PRACTICAL_DRAWING",
+      "title": "Doğru dışındaki noktadan dikme",
+      "studentPrompt": "d doğrusu ile d'nin üzerinde olmayan P noktasını çiz. Gönye yardımıyla P'den d'ye bir dik doğru parçası oluştur ve kesişim noktasını H olarak adlandır.",
+      "expectedEvidence": [
+        "P'nin d dışında olması",
+        "P-H çiziminin d'ye dik olması",
+        "H'nin doğru üzerinde doğru belirlenmesi"
+      ],
+      "toolRequirements": [
+        "Çizgeç",
+        "Gönye",
+        "Kalem"
+      ]
+    },
+    {
+      "taskId": "MAT531-P08",
+      "type": "DIGITAL_CONSTRUCTION",
+      "title": "Dinamik geometri uygulaması",
+      "studentPrompt": "Bir dinamik geometri uygulamasında iki nokta oluştur ve bunlardan bir doğru parçası çiz. Ardından bir merkez noktası oluşturarak çember aracını kullan. Son olarak verilen bir doğruya başka bir noktadan dik doğru oluştur. Her işlemde hangi aracı seçtiğini kaydet.",
+      "expectedEvidence": [
+        "Dijital doğru parçası, iki uç nokta",
+        "Dijital çember ve merkezi",
+        "Bir doğruya dik doğru ve aracı",
+        "Araç seçimlerini açıklama"
+      ],
+      "toolRequirements": [
+        "Onaylı dinamik geometri yazılımı",
+        "Öğretmen gözlemi"
+      ]
+    }
+  ],
+  "rubric": {
+    "rubricId": "MAT531-TOOL-USE-4LEVEL",
+    "criteria": [
+      {
+        "id": "tool_identification",
+        "weight": 20,
+        "descriptor": "Gerekli araç veya dijital aracı doğru tanır"
+      },
+      {
+        "id": "tool_selection",
+        "weight": 20,
+        "descriptor": "Verilen inşa için doğru araç ve kurulumu seçer"
+      },
+      {
+        "id": "construction_accuracy",
+        "weight": 45,
+        "descriptor": "Nokta, doğru, doğru parçası, ışın, açı, çember veya dikmeyi istenen koşula göre oluşturur"
+      },
+      {
+        "id": "explanation_and_safety",
+        "weight": 15,
+        "descriptor": "Seçimini geometrik gerekçeyle açıklar; araçları özenli kullanır"
+      }
+    ],
+    "levels": [
+      {
+        "score": 4,
+        "label": "Bağımsız ve doğru"
+      },
+      {
+        "score": 3,
+        "label": "Küçük yönlendirmeyle doğru"
+      },
+      {
+        "score": 2,
+        "label": "Kısmen doğru"
+      },
+      {
+        "score": 1,
+        "label": "Yetersiz kanıt"
+      }
+    ],
+    "scoring": "Çalışma ürününü öğretmen gözlemiyle değerlendirin; dijital sonucu otomatik olarak tam puan saymayın."
+  }
+}

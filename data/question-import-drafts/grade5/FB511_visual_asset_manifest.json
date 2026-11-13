@@ -1,0 +1,119 @@
+{
+  "metadata": {
+    "outcomeCode": "FB.5.1.1",
+    "sourceDate": "2026-11-12",
+    "assetCount": 6,
+    "visualDependentQuestionCount": 22,
+    "actualPhotographsStored": 0,
+    "realWorldEventPhotoRightsChecked": false,
+    "releaseReady": false
+  },
+  "assets": [
+    {
+      "assetId": "FEN111-01",
+      "assetType": "DIAGRAM",
+      "path": "data/question-import-drafts/grade5/assets/FEN111_01_sunspot_sequence.svg",
+      "altText": "Güneş lekelerinin üç temsili gözlemde soldan merkeze ve sağa yer değiştirdiğini gösteren bilimsel çizim",
+      "educationalRationale": "Değişimi görerek çıkarım ve modelin sınırlarını sorgulama",
+      "creatorCredit": "ANUNEX original vector teaching diagram (AI-assisted)",
+      "licenseEvidence": "Original SVG authored directly within ANUNEX draft branch; independent originality and commercial-rights review pending",
+      "rightsStatus": "DRAFT_NOT_APPROVED",
+      "sourceType": "ORIGINAL_SYNTHETIC_VISUAL",
+      "notRealNASAImage": true,
+      "teacherVisualAccuracyReview": "PENDING",
+      "printRenderingReview": "PENDING"
+    },
+    {
+      "assetId": "FEN111-02",
+      "assetType": "DIAGRAM",
+      "path": "data/question-import-drafts/grade5/assets/FEN111_02_source_reliability.svg",
+      "altText": "Gözlem tarihi ve kurumu açıklanan kaynak ile anonim paylaşımın karşılaştırılması",
+      "educationalRationale": "Kaynağın denetlenebilirliğini görsel kanıtlara göre seçme",
+      "creatorCredit": "ANUNEX original vector teaching diagram (AI-assisted)",
+      "licenseEvidence": "Original SVG authored directly within ANUNEX draft branch; independent originality and commercial-rights review pending",
+      "rightsStatus": "DRAFT_NOT_APPROVED",
+      "sourceType": "ORIGINAL_SYNTHETIC_VISUAL",
+      "notRealNASAImage": true,
+      "teacherVisualAccuracyReview": "PENDING",
+      "printRenderingReview": "PENDING"
+    },
+    {
+      "assetId": "FEN111-03",
+      "assetType": "DIAGRAM",
+      "path": "data/question-import-drafts/grade5/assets/FEN111_03_solar_structure.svg",
+      "altText": "Çok sıcak gazlardan oluşan Güneş'in üç boyutlu görünüş ve temsili kesit modeli",
+      "educationalRationale": "Katmanlı yapıyı anlamak, modelin sıcaklık ölçmediğini ayırt etmek",
+      "creatorCredit": "ANUNEX original vector teaching diagram (AI-assisted)",
+      "licenseEvidence": "Original SVG authored directly within ANUNEX draft branch; independent originality and commercial-rights review pending",
+      "rightsStatus": "DRAFT_NOT_APPROVED",
+      "sourceType": "ORIGINAL_SYNTHETIC_VISUAL",
+      "notRealNASAImage": true,
+      "teacherVisualAccuracyReview": "PENDING",
+      "printRenderingReview": "PENDING"
+    },
+    {
+      "assetId": "FEN111-04",
+      "assetType": "DIAGRAM",
+      "path": "data/question-import-drafts/grade5/assets/FEN111_04_apparent_size.svg",
+      "altText": "Yakındaki küçük ve uzaktaki büyük nesnenin benzer görünür büyüklükte temsil edildiği karşılaştırma",
+      "educationalRationale": "Uzaklık-büyüklük açıklamasını değerlendirme",
+      "creatorCredit": "ANUNEX original vector teaching diagram (AI-assisted)",
+      "licenseEvidence": "Original SVG authored directly within ANUNEX draft branch; independent originality and commercial-rights review pending",
+      "rightsStatus": "DRAFT_NOT_APPROVED",
+      "sourceType": "ORIGINAL_SYNTHETIC_VISUAL",
+      "notRealNASAImage": true,
+      "teacherVisualAccuracyReview": "PENDING",
+      "printRenderingReview": "PENDING"
+    },
+    {
+      "assetId": "FEN111-05",
+      "assetType": "TABLE",
+      "path": "data/question-import-drafts/grade5/assets/FEN111_05_spot_data_table.svg",
+      "altText": "Lekenin görünür konumunu üç örnek gözlem gününde sol, orta ve sağ olarak gösteren tablo",
+      "educationalRationale": "Tarihli veri ve çıkarımı ayırma",
+      "creatorCredit": "ANUNEX original vector teaching diagram (AI-assisted)",
+      "licenseEvidence": "Original SVG authored directly within ANUNEX draft branch; independent originality and commercial-rights review pending",
+      "rightsStatus": "DRAFT_NOT_APPROVED",
+      "sourceType": "ORIGINAL_SYNTHETIC_VISUAL",
+      "notRealNASAImage": true,
+      "teacherVisualAccuracyReview": "PENDING",
+      "printRenderingReview": "PENDING"
+    },
+    {
+      "assetId": "FEN111-06",
+      "assetType": "DIAGRAM",
+      "path": "data/question-import-drafts/grade5/assets/FEN111_06_safe_observation.svg",
+      "altText": "Bilimsel arşiv görüntüsünü ekrandan inceleme ve doğrudan bakmayı karşılaştıran güvenlik resmi",
+      "educationalRationale": "Güvenli bilimsel araştırma yöntemini seçme",
+      "creatorCredit": "ANUNEX original vector teaching diagram (AI-assisted)",
+      "licenseEvidence": "Original SVG authored directly within ANUNEX draft branch; independent originality and commercial-rights review pending",
+      "rightsStatus": "DRAFT_NOT_APPROVED",
+      "sourceType": "ORIGINAL_SYNTHETIC_VISUAL",
+      "notRealNASAImage": true,
+      "teacherVisualAccuracyReview": "PENDING",
+      "printRenderingReview": "PENDING"
+    }
+  ],
+  "realObservationSourceCandidates": [
+    {
+      "name": "NASA Goddard Solar Data Analysis Center",
+      "url": "https://umbra.gsfc.nasa.gov/images/",
+      "verifiedPageDate": "2026-11-12",
+      "status": "SOURCE_PAGE_VERIFIED_AS_DATE_STAMPED; NO_IMAGE_COPIED",
+      "usageReview": "https://www.nasa.gov/nasa-brand-center/images-and-media/"
+    },
+    {
+      "name": "NASA Science SDO Sunspot Activity",
+      "url": "https://science.nasa.gov/sun/track-the-solar-cycle-with-sunspots/",
+      "verifiedPageDate": "2026-11-12",
+      "status": "METHOD_REFERENCE_ONLY",
+      "usageReview": "https://www.nasa.gov/nasa-brand-center/images-and-media/"
+    }
+  ],
+  "strictNotes": [
+    "Only 6 original vector teaching diagrams are stored in GitHub; no NASA images are included.",
+    "Do not call synthetic diagrams observed photos.",
+    "Map actual source-verified photographs only after checking specific image rights, date, credit, and scientific authenticity.",
+    "Use 50 question rows as preliminary drafts, not teacher-approved content."
+  ]
+}

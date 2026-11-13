@@ -1,0 +1,3050 @@
+{
+  "schemaVersion": 2,
+  "description": "250 authored shared contexts, including replacement drafts for first two outcomes. Each has five distinct tasks and key anchors. Preserve dependencies.",
+  "units": [
+    {
+      "code": "FB.5.2.1",
+      "q": [
+        "Bu durumda kuvvetin büyüklüğünü belirlemek için hangi ölçüm veya okuma uygundur?",
+        "Hangi kayıt kuvvetlerin karşılaştırılmasını destekler?",
+        "Öğrencinin iddiasını değerlendir ve doğru ifadeyi yaz.",
+        "Güvenilir ölçüm için hangi koşulu kontrol etmelisin?",
+        "Bu bağlam için güvenli bir ölçüm yap; sonucu araç ve birimiyle kaydet."
+      ],
+      "cases": [
+        [
+          "Kutu çekme",
+          "Aynı kutu iki kez dinamometreyle çekiliyor: 3 N ve 5 N. Öğrenci 'kutunun rengi kuvvettir' diyor.",
+          "Dinamometreyle çekme kuvvetini okurum.",
+          "5 N, 3 N’den büyüktür.",
+          "Renk kuvvet büyüklüğü değildir.",
+          "Aynı yönde, sıfırlanmış araçla okurum.",
+          "Çekme denemesi; gerçek N kaydı."
+        ],
+        [
+          "Boş gösterge",
+          "Dinamometre yük yokken 2 N gösteriyor. Öğrenci 'hiç kuvvet yokken 2 N doğru' diyor.",
+          "Yüksüz sıfır ayarını kontrol ederim.",
+          "Sıfır sapması karşılaştırmayı bozabilir.",
+          "Gösterge ayarsız olabilir.",
+          "Ölçmeden önce sıfırlarım.",
+          "Öğretmenle sıfır kontrolü; önce/sonra kayıt."
+        ],
+        [
+          "Bölme okuma",
+          "0–10 N ölçeğinde beş eşit aralık var; ibre üçüncü aralıkta. Öğrenci 3 N yazmış.",
+          "Her aralık 2 N; gösterge 6 N.",
+          "Üç aralık, 6 N eder.",
+          "Aralık sayısı birim değer değildir.",
+          "Ölçeği ve göz hizasını kontrol ederim.",
+          "Eşit aralıklı ölçek çizip okuma yaparım."
+        ],
+        [
+          "Sınırı aşan yük",
+          "Araç en çok 5 N ölçüyor; öğretmenin yük kartında 8 N yazıyor. Öğrenci yayı zorlamak istiyor.",
+          "Daha yüksek kapasiteli uygun araç seçerim.",
+          "8 N, 5 N sınırını aşar.",
+          "Sınırı zorlamak güvenilir ölçüm sağlamaz.",
+          "Ölçüm aralığı yükü kapsamalı.",
+          "Uygun küçük yükle, sınırı aşmadan kayıt."
+        ],
+        [
+          "Hareket etmeyen kapı",
+          "Kapı açılmıyor; dinamometre çekme sırasında 4 N gösteriyor. Öğrenci 'hareket yoksa kuvvet yok' diyor.",
+          "Çekme sırasında dinamometre okurum.",
+          "4 N, kuvvet uygulandığını destekler.",
+          "Hareketsizlik uygulanan kuvveti yok saydırmaz.",
+          "Kapıya zarar vermeden küçük kuvvet uygularım.",
+          "Güvenli sabit nesnede öğretmen gözetimli okuma."
+        ],
+        [
+          "Yay esnemesi",
+          "Aynı dinamometrede 2 N ve 6 N uygulanınca ikinci uzama daha fazla. Öğrenci 'uzama birimi kilogram' diyor.",
+          "Kuvveti N ölçeğinden okurum.",
+          "Aynı araçta 6 N daha büyük uzama oluşturmuş.",
+          "Kuvvet birimi N’dir; uzama uzunluktur.",
+          "Aynı yay ve esneklik sınırı korunmalı.",
+          "Küçük kuvvetleri N ile tabloya yazarım."
+        ],
+        [
+          "İki farklı araç",
+          "Aynı cisim iki farklı yaylı araçta farklı uzunlukta uzama oluşturuyor. Öğrenci uzun uzayanın kuvvetini büyük sayıyor.",
+          "Her aracın N ölçeğini okurum.",
+          "Ham uzamalar farklı araçlarda doğrudan karşılaştırılmaz.",
+          "Yayın özelliği uzamayı etkiler.",
+          "Her aracın kalibrasyonunu kontrol ederim.",
+          "Aynı küçük kuvvet için iki N kaydı."
+        ],
+        [
+          "Sayı var birim yok",
+          "Çekme kayıtları K:4, L:7; araç ve birim yazılmamış. Öğrenci kesin kuvvet karşılaştırması yayımlıyor.",
+          "Araç ile N birimini doğrularım.",
+          "Aynı ölçüm türü ve birim gerekli.",
+          "Eksik birimle kesin sonuç sunulmaz.",
+          "Özgün ölçüm notuna dönerim.",
+          "Dinamometre, tarih ve N ile kayıt."
+        ],
+        [
+          "Sallanan askı",
+          "Dinamometre yükü sallanırken gösterge değişiyor. Öğrenci rastgele en yüksek sayıyı sonuç seçiyor.",
+          "Yük sakinleşince uygun okumayı yaparım.",
+          "Tekrarlı dengeli okumalar daha tutarlıdır.",
+          "Rastgele tepe değer gerekçesizdir.",
+          "Sarsıntı ve yan çekmeyi azaltırım.",
+          "Dengeli üç okuma ve sapma notu."
+        ],
+        [
+          "Dört istasyon",
+          "Aynı araçla sünger sıkma, ip çekme ve oyuncak itme inceleniyor. Öğrenci yalnız çekmenin kuvvet olduğunu söylüyor.",
+          "Ölçülebilen itme/çekmeyi N ile tanımlarım.",
+          "Kuvvet etkileri farklı görevlerde karşılaştırılabilir.",
+          "İtme de kuvvet uygulamasıdır.",
+          "Araç doğru doğrultuda kullanılmalı.",
+          "Uygun çekme istasyonu kurup gerçek kayıt."
+        ]
+      ],
+      "processMap": [
+        [
+          "a"
+        ],
+        [
+          "b",
+          "c"
+        ],
+        [
+          "a",
+          "c"
+        ],
+        [
+          "b"
+        ],
+        [
+          "a",
+          "b",
+          "c"
+        ]
+      ]
+    },
+    {
+      "code": "FB.5.2.2",
+      "q": [
+        "Bu ihtiyaç için nasıl bir dinamometre modeli önerirsin?",
+        "Modelde ölçümü mümkün kılan özelliği açıkla.",
+        "Verilen sorun veya iddia için hangi düzeltme gerekir?",
+        "Düzeltmenin işe yaradığını hangi karşılaştırmayla sınarsın?",
+        "Modeli öğretmen denetiminde kur veya yenile; önce/sonra kayıt ve sınır notu sun."
+      ],
+      "cases": [
+        [
+          "Göstergesiz yay",
+          "Yay küçük kuvvetlerde uzuyor, ama ölçek yok. Öğrenci bunu doğrudan N ölçen araç sayıyor.",
+          "Yay, gösterge ve kalibre ölçek eklerim.",
+          "Kuvvetle değişen yay uzaması.",
+          "Kalibrasyonsuz uzama N değildir.",
+          "Bilinen küçük kuvvetlerle karşılaştırırım.",
+          "İbre ve referans ölçek; gerçek deneme."
+        ],
+        [
+          "Sıfır yeri",
+          "Boş modelin ibresi sıfır çizgisinin altında duruyor.",
+          "Boş konumu sıfır yaparım.",
+          "Başlangıç referansı ölçümü sağlar.",
+          "Sıfır çizgisi yeniden yerleştirilmeli.",
+          "Yüksüz konuma dönüşü tekrarlarım.",
+          "Önce/sonra sıfır kaydı."
+        ],
+        [
+          "Kalıcı uzama",
+          "Ağır yük çıkarılınca yay eski boyuna dönmüyor.",
+          "Daha uygun yay ve kapasite seçerim.",
+          "Esnek uzama geri dönebilmelidir.",
+          "Hasarlı yay kullanılmamalı.",
+          "Küçük kuvvetten sonra dönüşü sınarım.",
+          "Öğretmenle güvenli yay değişimi."
+        ],
+        [
+          "Sürtünen ibre",
+          "Gösterge kartona sürtünüp takılıyor; yük çıkarılınca da aynı yerde.",
+          "Serbest hareketli gösterge tasarlarım.",
+          "İbre yay hareketini izlemeli.",
+          "Takılma giderilmeli.",
+          "Yükleme ve boşaltmada okumayı karşılaştırırım.",
+          "Sürtünmesiz kılavuz; yeniden okuma."
+        ],
+        [
+          "Çok sert yay",
+          "Küçük kuvvetlerde uzama neredeyse seçilemiyor.",
+          "Uygun daha duyarlı yay seçerim.",
+          "Okunabilir uzama gerekir.",
+          "Küçük kuvvete uygun aralık kurulmalı.",
+          "Aynı küçük kuvveti iki modelde denerim.",
+          "Aralıkları okunabilir ölçekli model."
+        ],
+        [
+          "Çok yumuşak yay",
+          "Küçük yükte yay gövdenin dışına taşıyor.",
+          "Daha uygun sertlik ve gövde seçerim.",
+          "Ölçüm aralığı tasarımla ilişkilidir.",
+          "Sınırı aşan kullanım önlenmeli.",
+          "Güvenli kapasite içinde referansla denerim.",
+          "Kapasite etiketli yenilenmiş tasarım."
+        ],
+        [
+          "Eşit olmayan çizgiler",
+          "Kalibrasyonda eşit kuvvet artışları eşit uzama sağlıyor; çizgiler rastgele aralıklı.",
+          "Veriye uygun eşit aralıklı ölçek kurarım.",
+          "Referans kuvvet–uzama eşleşmesi.",
+          "Rastgele çizgiler düzeltilmeli.",
+          "Referans noktalarını yeniden okurum.",
+          "Kalibrasyon tablosu ve yeni çizgiler."
+        ],
+        [
+          "Yan çekilen model",
+          "Yay eğilerek gövdeye dayanıyor; sonuç kararsız.",
+          "Kuvveti yay doğrultusunda iletirim.",
+          "Serbest eksenel uzama.",
+          "Askı ve çekme doğrultusu düzeltilmeli.",
+          "Aynı küçük yükü düzgün doğrultuda tekrarlarım.",
+          "Doğrultusu işaretli güvenli düzenek."
+        ],
+        [
+          "İşaretsiz sınır",
+          "Modelin en büyük güvenli referansı 4 N; öğrenci her yükü ölçebileceğini söylüyor.",
+          "0–4 N çalışma aralığını yazarım.",
+          "Kalibre edilmiş aralık geçerlidir.",
+          "Sınırsız ölçüm iddiası kaldırılmalı.",
+          "Aralık içi referanslarla sınarım.",
+          "Aralık etiketi ve sınır notu."
+        ],
+        [
+          "Okunamayan ölçek",
+          "Ölçek ince ve sık; iki öğrenci farklı çizgi okuyor.",
+          "Geniş, yüksek karşıtlıklı ölçek tasarlarım.",
+          "Ayırt edilebilir bölmeler.",
+          "Yazı/bölme okunabilirliği artırılmalı.",
+          "Aynı yükte akran okumalarını karşılaştırırım.",
+          "Yenilenmiş ölçek ve okuma farkı kaydı."
+        ]
+      ],
+      "processMap": [
+        [
+          "a"
+        ],
+        [
+          "a"
+        ],
+        [
+          "b"
+        ],
+        [
+          "b"
+        ],
+        [
+          "a",
+          "b"
+        ]
+      ]
+    },
+    {
+      "code": "FB.5.2.3",
+      "q": [
+        "Bağlamda kütle ve ağırlık için uygun araç/birim eşleşmesini yaz.",
+        "İki kavramın bu durumdaki ortak yönünü belirt.",
+        "Kütle ile ağırlığı ayıran temel farkı bağlama uygulayarak açıkla.",
+        "Bu durum hangi yanlış yoruma yol açabilir? Doğru açıklamayı yaz.",
+        "Kütle–ağırlık karşılaştırma kartı hazırla; gerçek ölçüm yoksa veri uydurma."
+      ],
+      "cases": [
+        [
+          "Dünya–Ay sandığı",
+          "Kapalı sandığın madde miktarı değişmiyor; Ay’da daha küçük çekim etkisi var. Kart 'kütle azalır' diyor.",
+          "Kütle eşit kollu teraziyle kg/g; ağırlık dinamometreyle N olarak belirlenir.",
+          "İkisi de aynı sandıkla ilişkilidir.",
+          "Kütle aynı; ağırlık daha küçük.",
+          "Azalan ağırlıktır.",
+          "İki ortamı ayıran karşılaştırma kartı."
+        ],
+        [
+          "Pazar kaydı",
+          "Paketin etiketinde 2 kg, dinamometre kaydında 20 N var; ikisi aynı sayı sanılıyor.",
+          "Kütle eşit kollu teraziyle kg/g; ağırlık dinamometreyle N olarak belirlenir.",
+          "Aynı paket için iki ölçüm.",
+          "Araç ve birimleri farklıdır.",
+          "Birimler ve sayılar eşit kavram değildir.",
+          "İki sütunlu araç/birim tablosu."
+        ],
+        [
+          "Bölünen hamur",
+          "Hamurdan parça ayrılıyor; aynı yerde kalan parça için 'kütle değişmez' deniyor.",
+          "Kütle eşit kollu teraziyle kg/g; ağırlık dinamometreyle N olarak belirlenir.",
+          "İkisi kalan maddeyle ilişkilidir.",
+          "Madde ayrılması kütleyi de azaltır.",
+          "Sabit kütle, madde değişmezse geçerlidir.",
+          "Parça ayrılması öncesi/sonrası kartı."
+        ],
+        [
+          "Yeri değişen çanta",
+          "Aynı kapalı çanta Dünya ile Ay arasında taşınıyor; içeriği aynı.",
+          "Kütle eşit kollu teraziyle kg/g; ağırlık dinamometreyle N olarak belirlenir.",
+          "Aynı cisme ait nicelikler.",
+          "Kütle korunur; ağırlık çekime bağlıdır.",
+          "Dünya–Ay değişimi madde miktarını değiştirmez.",
+          "Ortam ve içerik koşulunu ayrı kaydet."
+        ],
+        [
+          "Birimsiz rapor",
+          "Rapor 'kütle 30 N, ağırlık 3 kg' yazıyor.",
+          "Kütle eşit kollu teraziyle kg/g; ağırlık dinamometreyle N olarak belirlenir.",
+          "Aynı raporda cisim tanımlanıyor.",
+          "Kütle kuvvet değildir.",
+          "Başlık/birim eşleşmeleri ters.",
+          "Düzeltilmiş rapor; sayı doğrulaması ayrıca."
+        ],
+        [
+          "Düşen kalem",
+          "Öğrenci 'ağırlık yalnız düşerken vardır' diyor; kalem masada da çekiliyor.",
+          "Kütle eşit kollu teraziyle kg/g; ağırlık dinamometreyle N olarak belirlenir.",
+          "Duran cismin de kütlesi ve ağırlığı olabilir.",
+          "Ağırlık çekim kuvvetidir.",
+          "Durmak ağırlığı yok etmez.",
+          "Duran/hareketli ayrımını düzelten kart."
+        ],
+        [
+          "Havasız ortam",
+          "Öğrenci 'hava olmayınca kütle yok olur' diyor; cisimden madde ayrılmıyor.",
+          "Kütle eşit kollu teraziyle kg/g; ağırlık dinamometreyle N olarak belirlenir.",
+          "İkisi de ortam koşuluyla birlikte değerlendirilir.",
+          "Havasızlık madde miktarını yok etmez.",
+          "Kütle hava varlığına bağlı değildir.",
+          "Madde miktarı–çekim ayrımlı açıklama."
+        ],
+        [
+          "Esneyen yay",
+          "Aynı cismin yayı Ay’da Dünya’ya göre daha az uzattığı veriliyor; 'cisim küçüldü' deniyor.",
+          "Kütle eşit kollu teraziyle kg/g; ağırlık dinamometreyle N olarak belirlenir.",
+          "Ölçümler aynı cisim üzerinde yapılır.",
+          "Uzama ağırlıkla ilişkilidir.",
+          "Az uzama kütle kaybını kanıtlamaz.",
+          "Kaynaklı ortam karşılaştırma tablosu."
+        ],
+        [
+          "Eklenen kitap",
+          "Aynı yerde çantaya kitap ekleniyor; 'yalnız ağırlık artar' deniyor.",
+          "Kütle eşit kollu teraziyle kg/g; ağırlık dinamometreyle N olarak belirlenir.",
+          "İkisi de eklenen maddeyle artabilir.",
+          "Kütle madde miktarı; ağırlık çekim etkisidir.",
+          "Bu durumda kütle de artar.",
+          "Ekleme öncesi/sonrası iki nicelik kartı."
+        ],
+        [
+          "Astronot kaydı",
+          "Astronotun kütlesi kg, Dünya ve Ay’daki ağırlıkları N ile kaydediliyor; 'aynı kavram' deniyor.",
+          "Kütle eşit kollu teraziyle kg/g; ağırlık dinamometreyle N olarak belirlenir.",
+          "Aynı kişiye ilişkin ölçümlerdir.",
+          "Ağırlık yerel çekime bağlıdır.",
+          "İki nicelik özdeş değildir.",
+          "Kaynak ve birim alanlı karşılaştırma."
+        ]
+      ],
+      "processMap": [
+        [
+          "a"
+        ],
+        [
+          "b"
+        ],
+        [
+          "c"
+        ],
+        [
+          "c"
+        ],
+        [
+          "a",
+          "b",
+          "c"
+        ]
+      ]
+    },
+    {
+      "code": "FB.5.2.4",
+      "q": [
+        "Verilen gözlemlerde sürtünmeyle ilişkili örüntüyü belirt.",
+        "Örüntüyü destekleyen iki durumu veya kaydı karşılaştır.",
+        "Bu kanıtlardan hangi sınırlı genellemeyi yapabilirsin?",
+        "Genellemeyi hangi koşulla sınırlar; hangi aşırı iddiayı önlersin?",
+        "Genellemeyi güvenli bir ek gözlemle sına; gerçek sonuçla tahmini ayrı kaydet."
+      ],
+      "cases": [
+        [
+          "Oyuncak yolları",
+          "Aynı oyuncak eşit başlangıçla halıda daha kısa, düz zeminde daha uzun gidiyor.",
+          "Halıda durdurucu etki daha fazla.",
+          "Aynı başlangıç, farklı gidilen yol.",
+          "Bu düzenekte yüzey hareketi etkiler.",
+          "Bütün pürüzlü yüzeyler için kesin sıra kurulmaz.",
+          "Aynı oyuncakla yüzeyi değiştir; tekrar kaydı."
+        ],
+        [
+          "Bisiklet freni",
+          "Aynı hızdaki model tekerlek, fren teması artınca daha çabuk duruyor.",
+          "Temasla yavaşlama artmış.",
+          "Fren temassız ve temaslı durum.",
+          "Sürtünme durdurmada yararlı olabilir.",
+          "Gerçek yolda tehlikeli deney yapılmaz.",
+          "Öğretmenle masa tekerleğinde karşılaştırma."
+        ],
+        [
+          "Islak taban",
+          "Aynı ayakkabı modeli aynı eğimde ıslak zeminde daha kolay kayıyor.",
+          "Islaklık tutunmayı değiştirmiş.",
+          "Kuru/ıslak kontrollü model.",
+          "Bu koşulda kayma kolaylaşmıştır.",
+          "İnsan kaydırılarak denenmez.",
+          "Ayakkabı modeliyle güvenli eğim deneyi."
+        ],
+        [
+          "Paraşüt modeli",
+          "Aynı küçük yük, açık kâğıt paraşütle daha yavaş iniyor.",
+          "Hava etkisi inişi yavaşlatmış.",
+          "Paraşütlü ve paraşütsüz yük.",
+          "Hava direnci hareketi etkileyebilir.",
+          "Yük ve bırakma yüksekliği aynı tutulur.",
+          "Alçak yükseklikte hafif yükle tekrar."
+        ],
+        [
+          "Suda biçim",
+          "Eş malzeme modellerden sivri olanı suda hareket ettirmek daha kolay.",
+          "Biçim su direncini etkiliyor.",
+          "Aynı ortamda iki biçim.",
+          "Akıcı biçim bu modelde direnci azaltmış.",
+          "Tüm araçlar için tek ölçüm yeterli değil.",
+          "Eş büyüklükte modelleri su içinde karşılaştır."
+        ],
+        [
+          "Silgi kullanımı",
+          "Kurşun kalem izi silgi sürtülünce azalıyor; silgi de aşınıyor.",
+          "Sürtünme iz giderme ve aşınmayla ilişkili.",
+          "Sürtme öncesi/sonrası.",
+          "Sürtünmenin yararlı ve aşındırıcı etkileri olabilir.",
+          "Her yüzey aynı biçimde aşınmaz.",
+          "Atık kâğıtta güvenli önce/sonra kayıt."
+        ],
+        [
+          "Yağlanan menteşe",
+          "Gıcırdayan model menteşe uygun bakım sonrası daha kolay hareket ediyor.",
+          "Hareketi zorlaştıran etki azalmış.",
+          "Bakım öncesi/sonrası.",
+          "Uygun yağlama sürtünmeyi azaltabilir.",
+          "Her yere yağ sürmek doğru değildir.",
+          "Yalnız öğretmenin uygun gördüğü modelde gözlem."
+        ],
+        [
+          "Tutuş ve eldiven",
+          "Aynı kuru kavanoz modelini lastik tutacakla çevirmek daha kolay.",
+          "Tutunma artınca kavrama kolaylaşmış.",
+          "Çıplak model tutacak/lastik kaplı.",
+          "Sürtünme kavramaya yardım edebilir.",
+          "Keskin/kırılabilir kap kullanılmaz.",
+          "Plastik kap ve güvenli tutacak karşılaştırması."
+        ],
+        [
+          "Kayan mobilya modeli",
+          "Aynı kutu sabit ayak yerine tekerlekle daha kolay taşınıyor.",
+          "Düzenek değişimi direnci azaltmış.",
+          "Sürükleme ve tekerlekli taşıma.",
+          "Tekerlek bu görevde hareketi kolaylaştırır.",
+          "Sürtünme tamamen yok sayılmaz.",
+          "Hafif kutuyla eş yüzeyde deneme."
+        ],
+        [
+          "Spor tabanı",
+          "Aynı çekme modelinde desenli taban daha güçlü tutunuyor.",
+          "Taban yapısı tutunmayı etkilemiş.",
+          "Aynı yükte iki taban.",
+          "Sürtünme güvenli tutuşta yararlıdır.",
+          "Islaklık ve yüzey de ayrıca etkilidir.",
+          "Taban modelleriyle yüzeyi sabit tutan test."
+        ]
+      ],
+      "processMap": [
+        [
+          "a"
+        ],
+        [
+          "a"
+        ],
+        [
+          "b"
+        ],
+        [
+          "b"
+        ],
+        [
+          "a",
+          "b"
+        ]
+      ]
+    },
+    {
+      "code": "FB.5.3.1",
+      "q": [
+        "Bu örneklerde hücrenin hangi temel yapıları veya özellikleri belirtilmiş?",
+        "Bitki ve hayvan hücresi için ortak olan özelliği yaz.",
+        "Bağlamdaki iki örneği ayıran özelliği belirt.",
+        "Bu gözlem veya modelden hangi aşırı genelleme yapılamaz? Gerekçelendir.",
+        "Bağlamı temel alan karşılaştırmalı hücre çizimi/posteri hazırla; ortak ve farklı özellikleri etiketle."
+      ],
+      "cases": [
+        [
+          "Yaprak ve yanak",
+          "Yaprak örneğinde çeper ve kloroplast; yanak örneğinde zar, sitoplazma, çekirdek gösteriliyor.",
+          "Zar, sitoplazma ve çekirdek temel kısımlardır.",
+          "Her iki örnekte temel kısımlar bulunur.",
+          "Yaprak örneğinde çeper ve kloroplast.",
+          "Görünmeyen yapı yok sayılmaz.",
+          "İki örneği kaynak çizimle karşılaştır."
+        ],
+        [
+          "Soğan zarı",
+          "Soğan zarı bitki örneğinde kloroplast görülmüyor; öğrenci hayvan hücresi sayıyor.",
+          "Bitki hücresinde çeper görülebilir.",
+          "İki hücre türünde zar bulunur.",
+          "Bitkide çeper, hayvanda çeper yok.",
+          "Her bitki hücresinde kloroplast bulunmaz.",
+          "Soğan ve hayvan hücresi karşılaştırması."
+        ],
+        [
+          "Eksik çekirdek çizimi",
+          "Bitki çiziminde çekirdek unutulmuş; hayvan çiziminde var. Öğrenci yalnız hayvanda bulunduğunu söylüyor.",
+          "Çekirdek temel yapılardan biridir.",
+          "Her iki tipte çekirdek gösterilir.",
+          "Çeper bitki örneğine özgü farktır.",
+          "Çizim eksikliği biyolojik yokluk değildir.",
+          "Eksik bitki çizimini kaynakla tamamla."
+        ],
+        [
+          "Çeper ile zar",
+          "Bitki modelinde çeperin zarın yerine geçtiği yazılmış.",
+          "Bitkide zar ve çeper ayrı yapılardır.",
+          "İki tipte hücre zarı bulunur.",
+          "Bitkide zar dışında çeper bulunur.",
+          "Çeper zarı ortadan kaldırmaz.",
+          "İki sınırı ayıran etiketli model."
+        ],
+        [
+          "Koful karşılaştırması",
+          "Kaynakta bitki örneğinin kofulu daha büyük, hayvan örneğininki daha küçük gösterilmiş.",
+          "Koful ve temel kısımlar belirtilmiş.",
+          "Koful iki tipte de bulunabilir.",
+          "Verilen örnekte koful büyüklüğü farklı.",
+          "Tek çizimden tüm hücreler için kesin boyut çıkarılmaz.",
+          "Kofulları kaynakla karşılaştıran poster."
+        ],
+        [
+          "Şekil tek başına",
+          "Öğrenci yuvarlak çizilen her hücreyi hayvan, köşeli olanı bitki sayıyor.",
+          "Şekil yanında yapı bilgisi gerekir.",
+          "İkisinin de zarı ve sitoplazması var.",
+          "Çeper gibi yapısal veri ayırıcıdır.",
+          "Şekil tek başına kesin sınıflandırma değildir.",
+          "Şekil ve yapı kanıtını ayrı göster."
+        ],
+        [
+          "Mikroskop ölçeği",
+          "İki fotoğraf farklı büyütmelerde; hayvan hücresi kâğıtta daha büyük görünüyor.",
+          "Görüntü ölçeği kontrol edilmeli.",
+          "İkisinde temel kısımlar aranır.",
+          "Yapısal farklılık boyuttan ayrı incelenir.",
+          "Farklı büyütme gerçek boyut karşılaştırması sağlamaz.",
+          "Büyütme bilgili karşılaştırma çizimi."
+        ],
+        [
+          "Ortak organeller",
+          "Kaynak kartı ribozomu protein üretimiyle, mitokondriyi enerji sağlamayla ilişkilendiriyor; ikisi de iki hücre tipinde var.",
+          "Ribozom ve mitokondri görevleri.",
+          "Bu organeller iki tipte ortaktır.",
+          "Bitkide çeper ayırıcı örnektir.",
+          "Ortak organeller hücre tiplerini özdeş yapmaz.",
+          "Ortak organel görevleri etiketli poster."
+        ],
+        [
+          "Taşıma ve paketleme",
+          "Kaynak kartı endoplazmik retikulumu hücre içi taşımayla, Golgiyi paketleme/salgıyla ilişkilendiriyor; iki tipte de var.",
+          "Endoplazmik retikulum ve Golgi görevleri.",
+          "İki hücrede de bulunurlar.",
+          "Bitki çeperi ayrı farktır.",
+          "Görevler model boyasından çıkarılmaz.",
+          "İki hücrede görev etiketli organel posteri."
+        ],
+        [
+          "Kör nokta",
+          "Bulanık örnekte çekirdek seçilemiyor; öğrenci çekirdek olmadığını kaydediyor.",
+          "Gözlem kalitesi temel yapıyı etkiler.",
+          "Tipik iki hücrede çekirdek bulunur.",
+          "Çeper gibi ek kanıt aranır.",
+          "Seçilememek bulunmamak değildir.",
+          "Gözlenemeyen bölümleri belirsiz işaretle."
+        ]
+      ],
+      "processMap": [
+        [
+          "a"
+        ],
+        [
+          "b"
+        ],
+        [
+          "c"
+        ],
+        [
+          "a",
+          "c"
+        ],
+        [
+          "a",
+          "b",
+          "c"
+        ]
+      ]
+    },
+    {
+      "code": "FB.5.3.2",
+      "q": [
+        "Bağlamdaki yapıları hücre, doku, organ, sistem veya organizma düzeyiyle eşleştir.",
+        "Küçükten büyüğe doğru ilişkiyi kur.",
+        "Bir üst düzeye geçerken yapıların birlikte çalışmasını açıkla.",
+        "Bağlamı kullanırken hangi kavram karışıklığından kaçınılmalı? Hatalı bir ifade varsa düzelt.",
+        "Bu örnek için beş düzeyli ilişki haritası hazırla; her bağlantıyı gerekçelendir."
+      ],
+      "cases": [
+        [
+          "Kas yolu",
+          "Kartlar: kas hücresi, kas dokusu, kol kası organı, destek-hareket sistemi, insan.",
+          "Beş kart beş düzeyi temsil eder.",
+          "Hücre→doku→organ→sistem→organizma.",
+          "Benzer görevli hücreler doku oluşturur.",
+          "Organ tek bir hücre değildir.",
+          "Kas örneğiyle beş düzeyli harita."
+        ],
+        [
+          "Kalp örneği",
+          "Kalp kası hücresi, kalp kası dokusu, kalp, dolaşım sistemi, insan kartları karışık.",
+          "Kalp organ, dolaşım sistemdir.",
+          "Hücre→doku→kalp→dolaşım→insan.",
+          "Farklı dokular organı oluşturur.",
+          "Sistem ile organ yer değiştirmez.",
+          "Kartları gerekçeli sıraya yerleştir."
+        ],
+        [
+          "Mide örneği",
+          "Mide organını oluşturan farklı dokular var; öğrenci mideyi organizma sayıyor.",
+          "Mide organ; insan organizmadır.",
+          "Hücre→doku→organ→sistem→organizma.",
+          "Dokular birlikte mide işlevine katılır.",
+          "Tek organ tüm organizma değildir.",
+          "Mide merkezli hiyerarşi haritası."
+        ],
+        [
+          "Kemik örneği",
+          "Kemik hücresi, kemik dokusu, uyluk kemiği, destek-hareket sistemi, insan verilmiş.",
+          "Uyluk kemiği organ düzeyinde.",
+          "Hücreden organizmaya sıralanır.",
+          "Organlar sistem içinde iş birliği yapar.",
+          "Doku ile organ özdeş değildir.",
+          "Kemik örneğiyle etiketli zincir."
+        ],
+        [
+          "Eksik doku",
+          "Bir afiş hücre→organ→sistem→organizma yazıyor; ara düzey unutulmuş.",
+          "Eksik düzey dokudur.",
+          "Hücre→doku→organ→sistem→organizma.",
+          "Hücreler dokular içinde örgütlenir.",
+          "Doku düzeyi atlanmamalı.",
+          "Eksik kartı ekleyerek harita kur."
+        ],
+        [
+          "Ters oklar",
+          "Modelde organizma→sistem→organ→doku→hücre küçükten büyüğe diye etiketli.",
+          "Düzey adları doğru, yön etiketi yanlış.",
+          "Küçükten büyüğe hücreyle başlanır.",
+          "Her üst düzey alt yapıları içerir.",
+          "Verilen sıra büyükten küçüğedir.",
+          "İki yönü doğru açıklayan harita."
+        ],
+        [
+          "Mahalle benzetmesi",
+          "Ev–mahalle–ilçe–il–ülke sırası biyolojik düzeylere benzetiliyor.",
+          "Beşli düzen, örgütlenmeye benzetilir.",
+          "Evden ülkeye kapsam büyür.",
+          "Bütün alt birimlerin ilişkisiyle oluşur.",
+          "Mahalle gerçek doku değildir.",
+          "Benzetme ve biyolojik örneği yan yana göster."
+        ],
+        [
+          "Tek görevli doku",
+          "Öğrenci 'farklı organlar aynı sistemde olamaz' diyor.",
+          "Organ ve sistem farklı düzeylerdir.",
+          "Organlar sistemin içinde yer alır.",
+          "Farklı organlar ortak işleve katılır.",
+          "Aynı görünmeleri gerekmez.",
+          "Ortak işlevi gösteren ilişki haritası."
+        ],
+        [
+          "Bağımsız sistemler",
+          "Öğrenci insanın sistemlerinin birbirinden tamamen kopuk olduğunu çiziyor.",
+          "İnsan organizma düzeyidir.",
+          "Organlar sistemleri, sistemler organizmayı oluşturur.",
+          "Sistemler uyumlu bütün içinde çalışır.",
+          "Bağımsızlık iddiası aşırıdır.",
+          "Sistemler arası iş birliği notlu harita."
+        ],
+        [
+          "Model parçası",
+          "Bir öğrenci küçük bir hücre modeline 'tam insan' etiketi koyuyor.",
+          "Model hücreyi temsil eder.",
+          "Hücre organizmanın alt düzeyidir.",
+          "Çok hücreli insanda birçok düzey vardır.",
+          "Model parçası tüm insan değildir.",
+          "Temsil düzeylerini ayıran beş kart."
+        ]
+      ],
+      "processMap": [
+        [
+          "a"
+        ],
+        [
+          "a"
+        ],
+        [
+          "b"
+        ],
+        [
+          "b"
+        ],
+        [
+          "a",
+          "b"
+        ]
+      ]
+    },
+    {
+      "code": "FB.5.3.3",
+      "q": [
+        "Bağlamdaki yapıların niteliğini belirt.",
+        "Yapıları iskelet veya kas başlığı altında nasıl ayırırsın?",
+        "Uygun alt grubu veya örneği yaz.",
+        "Bu örnekler sınıflandırılırken hangi yanlış etiketten kaçınılmalı? Neden?",
+        "Bu örnekleri içeren etiketli sınıflandırma tablosu hazırla."
+      ],
+      "cases": [
+        [
+          "Kol modeli",
+          "Üst kol kemiği, dirsek eklemi ve kol kası kartları var.",
+          "Kemik destek; eklem bağlantı; kas hareketle ilişkili.",
+          "Kemik/eklem iskelet; kas ayrı grup.",
+          "Üst kol uzun kemik; dirsek oynar eklem.",
+          "Eklem kas değildir.",
+          "İskelet–kas ayrımlı tablo."
+        ],
+        [
+          "Kafatası",
+          "Kafatası kemiğine 'kol kası' etiketi yapıştırılmış.",
+          "Sert kemik yapı korumaya katılır.",
+          "İskelet grubunda.",
+          "Kafatası yassı kemik örneği.",
+          "Kemik kas olarak etiketlenmez.",
+          "Kemik türü ve görevli tablo."
+        ],
+        [
+          "El bileği",
+          "El bileği kemikleri uzun kemik diye yazılmış.",
+          "Bilekte kısa kemikler bulunur.",
+          "İskelet grubunda.",
+          "Kısa kemik örneği.",
+          "Büyüklük değil biçim özellikleri esas.",
+          "Örnek ve tür etiketli tablo."
+        ],
+        [
+          "Kaburga",
+          "Kaburga ile uyluk kemiği aynı biçim grubuna alınmış.",
+          "İkisi kemiktir; biçimleri farklıdır.",
+          "İkisi de iskelet grubunda.",
+          "Kaburga yassı; uyluk uzun kemik.",
+          "Tüm kemikler aynı çeşit değildir.",
+          "İki kemik türünü karşılaştıran tablo."
+        ],
+        [
+          "Omur bağlantısı",
+          "Omurlar arasındaki hareket, kol eklemi kadar serbest sanılıyor.",
+          "Bazı eklemler sınırlı hareketlidir.",
+          "Eklemler iskelet bileşenidir.",
+          "Omurlar arası yarı oynar örneği.",
+          "Hareket miktarları aynı değildir.",
+          "Oynar/yarı oynar/oynamaz örnekli tablo."
+        ],
+        [
+          "Kafatası bağlantısı",
+          "Kafatası kemikleri arasındaki bağlantı oynar diye yazılmış.",
+          "Bu bağlantılar sınırlı/hareketsizdir.",
+          "İskeletin eklem grubunda.",
+          "Oynamaz eklem örneği.",
+          "Dirsek gibi oynar sayılmaz.",
+          "Konum ve eklem türü tablosu."
+        ],
+        [
+          "Kıkırdak örneği",
+          "Kulak kepçesi ve eklem yüzü kartlarında kıkırdak gösteriliyor.",
+          "Esnek destek yapı niteliği.",
+          "İskelet bileşenleri arasında kıkırdak.",
+          "Kulak kepçesinde kıkırdak örneği.",
+          "Her esnek yapı kas değildir.",
+          "Kemik–kıkırdak ayrımlı tablo."
+        ],
+        [
+          "Kalp kası",
+          "Kalp kası kemiğin çeşidi diye gruplanmış.",
+          "Kas dokusu niteliğindedir.",
+          "Kas grubuna alınır.",
+          "Kalp kası ayrı kas çeşidi.",
+          "Kemik çeşidi değildir.",
+          "Çizgili/düz/kalp kası örnek tablosu."
+        ],
+        [
+          "Mide duvarı",
+          "Mide duvarındaki kasla kol kasının aynı tür olduğu söyleniyor.",
+          "İkisi kas; türleri farklı.",
+          "Kas grubunda.",
+          "Mide düz kas; kol çizgili kas.",
+          "Bütün kaslar aynı çeşit değildir.",
+          "Tür ve bulunduğu yer eşleştirmesi."
+        ],
+        [
+          "Eksik iskelet",
+          "Afişte iskelet yalnız kemik olarak tanımlanmış; eklem ve kıkırdak unutulmuş.",
+          "İskelette farklı destek bileşenleri vardır.",
+          "Kemik, eklem, kıkırdak iskelete alınır.",
+          "Kaslar ayrı ana grupta.",
+          "İskelet yalnız kemik değildir.",
+          "Tamamlanmış hiyerarşik sınıflandırma."
+        ]
+      ],
+      "processMap": [
+        [
+          "a"
+        ],
+        [
+          "b"
+        ],
+        [
+          "c"
+        ],
+        [
+          "ç"
+        ],
+        [
+          "a",
+          "b",
+          "c",
+          "ç"
+        ]
+      ]
+    },
+    {
+      "code": "FB.5.3.4",
+      "q": [
+        "Bu konuda bilgi toplamak için hangi güvenilir araç veya kaynağı seçersin?",
+        "Kaynakta hangi somut sorunun cevabını ararsın?",
+        "Ulaştığın bilginin doğruluğunu nasıl kontrol edersin?",
+        "Doğrulanmış bilgiyle öneri veya iddiayı nasıl kaydedersin?",
+        "Kısa araştırma yap; kaynak, tarih, doğrulama ve kişisel uygulama notunu içeren kayıt hazırla."
+      ],
+      "cases": [
+        [
+          "Çanta taşıma",
+          "Sosyal medya her çocuk için aynı çanta yükünü öneriyor; kaynak yok.",
+          "MEB/sağlık kurumu ve alan uzmanı.",
+          "Uygun taşıma ve kişiye uygun yük.",
+          "Öğretmen ve uzman kaynağıyla karşılaştırırım.",
+          "Kaynağı olmayan kesin sayıyı aktarmam.",
+          "Kaynaklı doğru taşıma araştırma kartı."
+        ],
+        [
+          "Ekran başı duruş",
+          "Sınıfta uzun süre eğilerek oturma alışkanlığı tartışılıyor.",
+          "Güvenilir sağlık eğitimi kaynağı.",
+          "Duruş ve hareket molası bilgisi.",
+          "Birden fazla yetkin kaynakla doğrularım.",
+          "Genel bilgi ile tanıyı ayırırım.",
+          "Doğrulanmış duruş bilgisi afişi."
+        ],
+        [
+          "Beslenme reklamı",
+          "Bir reklam tek ürünün kemikleri kesin güçlendirdiğini söylüyor.",
+          "Sağlık kurumu/alan uzmanı.",
+          "Dengeli beslenmenin rolü.",
+          "Reklamdan bağımsız kaynak ararım.",
+          "Tek ürünle kesin sonuç iddiasını benimsemem.",
+          "Kaynak ve reklam ayrımlı araştırma."
+        ],
+        [
+          "Spor öncesi",
+          "Arkadaş tüm sporlar için tek hareketin yeterli hazırlık olduğunu iddia ediyor.",
+          "Beden eğitimi öğretmeni ve uzman kaynak.",
+          "Güvenli, uygun etkinlik hazırlığı.",
+          "Yaşa ve etkinliğe uygunluğu sorarım.",
+          "Kişiye özel reçete vermeden kaydederim.",
+          "Öğretmen doğrulamalı hazırlık notu."
+        ],
+        [
+          "Kırık şüphesi",
+          "Kurgusal olayda düşen çocuğun kolunu arkadaşları çekerek düzeltmek istiyor.",
+          "Yetkin ilk yardım/sağlık kaynağı.",
+          "Şüpheli yaralanmada yetişkin ve sağlık yardımı.",
+          "Yetkin uzmanla doğrularım.",
+          "Çekip düzeltme önerisini yaymam.",
+          "Müdahale denemesi yapmadan kaynaklı güvenlik kartı."
+        ],
+        [
+          "Uyku ve hareket",
+          "Öğrenci yalnız spor yapmanın tüm sağlıklı alışkanlıkların yerine geçtiğini söylüyor.",
+          "Yetkin sağlık eğitimi kaynağı.",
+          "Dinlenme, beslenme, hareket ilişkisi.",
+          "Öneriyi farklı kaynaklarla kontrol ederim.",
+          "Tek davranışla her şeyi açıklamam.",
+          "Birlikte ele alınan alışkanlıklar posteri."
+        ],
+        [
+          "Eski afiş",
+          "Yıllar önceki afişin yazarı ve tarihi belirsiz.",
+          "Tarihi ve sorumlusu belli kurum kaynağı.",
+          "Bilginin güncel ve güvenilir olup olmadığı.",
+          "Yeni kaynakla tutarlılığı denetlerim.",
+          "Kaynak belirsizliğini görünür yazarım.",
+          "Sürüm/tarih alanlı araştırma tablosu."
+        ],
+        [
+          "Akran deneyimi",
+          "Bir arkadaşın ağrısı geçmiş; aynı çözüm herkese öneriliyor.",
+          "Alan uzmanı ve resmî eğitim kaynağı.",
+          "Tek deneyimin genellenebilirliği.",
+          "Kişisel örneği bilimsel kaynakla ayırırım.",
+          "Anekdotu evrensel tedavi saymam.",
+          "Deneyim/kanıt ayrımlı bilgi kaydı."
+        ],
+        [
+          "Spor ekipmanı",
+          "Reklam, koruyucunun her düşmede yaralanmayı önlediğini söylüyor.",
+          "Güvenilir güvenlik/sağlık eğitimi kaynağı.",
+          "Koruyucunun amacı ve sınırları.",
+          "Ürün reklamı dışındaki bilgiyi ararım.",
+          "Risk sıfır iddiasından kaçınırım.",
+          "Kaynaklı güvenli etkinlik afişi."
+        ],
+        [
+          "Ortak poster",
+          "Grup posterinde kaynaklar yok; bazı öneriler doğrulanmamış.",
+          "Kütüphane ve yetkin kurum yayınları.",
+          "Her önerinin dayanağı.",
+          "Önerileri tek tek doğrularım.",
+          "Doğrulanmayanları ayrı işaretlerim.",
+          "Kaynakçalı ve doğrulama durumlu son poster."
+        ]
+      ],
+      "processMap": [
+        [
+          "a"
+        ],
+        [
+          "b"
+        ],
+        [
+          "c"
+        ],
+        [
+          "ç"
+        ],
+        [
+          "a",
+          "b",
+          "c",
+          "ç"
+        ]
+      ]
+    },
+    {
+      "code": "FB.5.4.1",
+      "q": [
+        "Bu gözlem ışığın izlediği yol hakkında ne gösteriyor?",
+        "Düzenekteki hangi karşılaştırma bu açıklamayı destekler?",
+        "Gözlemi çizgi ve yön belirten bir kayıtla nasıl gösterirsin?",
+        "Gözlemden çıkarılamayacak sonucu veya düzenek hatasını belirt.",
+        "Güvenli LED ışıkla bağlamı sınayan gözlem yap; gerçek çizim ve koşulları kaydet."
+      ],
+      "cases": [
+        [
+          "Delikli karton",
+          "Üç delik aynı hizadayken LED görülüyor; ortadaki kart kayınca görülmüyor.",
+          "Işık bu düzende doğrusal ilerler.",
+          "Hizalı ve kaymış delikler.",
+          "Delikleri bağlayan düz ışın çizgisi.",
+          "Kartonun kayması ışığın kıvrıldığını göstermez.",
+          "Delik hizasını değiştirip gözlemi kaydet."
+        ],
+        [
+          "Düz ve bükülü tüp",
+          "LED düz tüpten görülüyor; opak bükülü tüpten doğrudan görülmüyor.",
+          "Doğrudan ışık yolu düzdür.",
+          "Tüp biçimi değişince görünürlük değişmiş.",
+          "Düz tüpte kesintisiz ışın yolu.",
+          "Bükülü tüpte kıvrılan ışık varsayılmaz.",
+          "Tüplerle doğrudan görünürlüğü karşılaştır."
+        ],
+        [
+          "Kutu delikleri",
+          "Kutudaki küçük LED farklı yönlerdeki deliklerden görülüyor.",
+          "Kaynak farklı yönlere ışık yayar.",
+          "Farklı yönlerde ışık çıkışı.",
+          "Kaynak merkezinden farklı düz ışınlar.",
+          "Her yönde eşit parlaklık kanıtlanmış değildir.",
+          "Güvenli kutu modelinde yönleri kaydet."
+        ],
+        [
+          "El feneri sınırı",
+          "El feneri ışığı öne yönlendiriyor; öğrenci tüm kaynaklar yalnız öne ışık yayar diyor.",
+          "Fener ışığı belirli yöne yönlendirebilir.",
+          "Açık küçük LED ile karşılaştırılır.",
+          "Kaynak ve fener gövdesini ayrı çizerim.",
+          "Tek fenerden tüm kaynaklara genelleme yapılmaz.",
+          "Kaynağın çevresinde güvenli gözlem yap."
+        ],
+        [
+          "Işın çizimi",
+          "Öğrenci gözlem yolunu dalgalı çizip doğrusal yayılma diye etiketliyor.",
+          "Doğrusal yol düz çizgiyle temsil edilir.",
+          "Hizalı delik gözlemi destekler.",
+          "Kaynağı ve yönü belirten düz çizgi.",
+          "Dalgalı şema gözlemle uyumlu değildir.",
+          "Delik düzeni gözlemiyle çizimi karşılaştır."
+        ],
+        [
+          "Görünmeyen yol",
+          "Temiz havada LED ve aydınlanan ekran görülüyor; aradaki yol seçilmiyor.",
+          "Görünmeyen yol, ışık yokluğu değildir.",
+          "Kaynak ile aydınlanan hedef.",
+          "Kaynak–hedef arasına temsili düz ışın.",
+          "Her noktada ışını gözle görmek gerekmez.",
+          "Ek toz/duman üretmeden hedef gözlemi."
+        ],
+        [
+          "Kenar engeli",
+          "Opak kart doğrudan yolun önüne gelince LED görülmüyor.",
+          "Engel doğrudan yolu keser.",
+          "Engel öncesi/sonrası.",
+          "Kesilen düz yolu şemada gösteririm.",
+          "Kartın arkasına ışık kıvrıldı denemez.",
+          "Engeli yer değiştirerek kayıt tut."
+        ],
+        [
+          "Çok yönlü pano",
+          "Küçük ışık kaynağının sağ, sol ve üstündeki ekranlar aydınlanıyor.",
+          "Işık farklı yönlerde yayılmış.",
+          "Üç ekranın aydınlanma kaydı.",
+          "Farklı yönlere düz ışınlar.",
+          "Yalnız bir yönde yayılır iddiası desteklenmez.",
+          "Birden fazla yönü aynı kaynakla incele."
+        ],
+        [
+          "Eksik gözlem kaydı",
+          "Kayıt 'ışık geçti' diyor; delik konumları belirtilmemiş.",
+          "Yol için konum bilgisi gerekir.",
+          "Hizalı/kaymış düzenler ayrı kaydedilir.",
+          "Kart ve delik yerlerini çizimle eklerim.",
+          "Eksik kayıttan düzenek kesin kurulamaz.",
+          "Konum etiketli tekrar gözlemi."
+        ],
+        [
+          "İki değişken",
+          "Kart kaydırılırken LED de kapatılıyor; ışık kayboluyor.",
+          "Hangi değişimin etkili olduğu belirsiz.",
+          "LED açıkken yalnız kart kaydırılmalı.",
+          "Her durumun ayrı şeması.",
+          "İki değişimle yalnız doğrultu etkisi kanıtlanmaz.",
+          "Tek değişkenli güvenli tekrar."
+        ]
+      ],
+      "processMap": [
+        [
+          "a"
+        ],
+        [
+          "a"
+        ],
+        [
+          "b"
+        ],
+        [
+          "c"
+        ],
+        [
+          "a",
+          "b",
+          "c"
+        ]
+      ]
+    },
+    {
+      "code": "FB.5.4.2",
+      "q": [
+        "Malzemenin ışığı geçirme niteliğini verilen gözleme göre belirt.",
+        "Malzemeyi saydam, yarı saydam veya opak grubuna yerleştir.",
+        "Sınıflandırmayı hangi gözlemle gerekçelendirirsin?",
+        "Bağlamdaki yanlış genellemeyi veya sınıflandırma sınırını açıkla.",
+        "Malzemelerle güvenli sınıflandırma deneyi yap; gözlem ve grup etiketlerini kaydet."
+      ],
+      "cases": [
+        [
+          "Pencere filmi",
+          "Bir filmden bakınca ayrıntılar net; diğerinden ışık geliyor ama ayrıntı seçilmiyor.",
+          "İlk film net, ikinci dağınık geçiriyor.",
+          "İlk saydam; ikinci yarı saydam.",
+          "Ayrıntıların seçilme farkı.",
+          "İkisi de ışık geçiriyor diye aynı grup olmaz.",
+          "Aynı LED ve arka şekille karşılaştır."
+        ],
+        [
+          "Ahşap kart",
+          "Işık kartın arkasına doğrudan geçmiyor; öğrenci koyu renkten dolayı saydam diyor.",
+          "Doğrudan ışık geçirmiyor.",
+          "Opak.",
+          "Arkasındaki şekil ışıkla görülmüyor.",
+          "Renk tek başına geçirgenlik değildir.",
+          "Ahşap ve saydam örnek için kayıt."
+        ],
+        [
+          "Buzlu yüzey",
+          "Buzlu cam ışık geçiriyor; arkadaki yazı okunamıyor.",
+          "Kısmen/dağıtarak ışık geçiriyor.",
+          "Yarı saydam.",
+          "Işık var, ayrıntı net değil.",
+          "Yazı okunmaması tamamen opak demek değildir.",
+          "Netlik ve ışık geçişini ayrı kaydet."
+        ],
+        [
+          "Şeffaf dosya",
+          "Temiz dosyanın arkasındaki harf net okunuyor.",
+          "Net ışık geçiriyor.",
+          "Saydam.",
+          "Arka harf seçiliyor.",
+          "Saydamlık renksizlikle özdeş değildir.",
+          "Dosya ve kâğıt karşılaştırması."
+        ],
+        [
+          "Alüminyum folyo",
+          "Deliksiz folyodan ışık geçmiyor; öğrenci parlak yüzeyi saydam sayıyor.",
+          "Doğrudan ışığı geçirmiyor.",
+          "Opak.",
+          "Folyo arkasında doğrudan ışık yok.",
+          "Yansıtma ile geçirme farklıdır.",
+          "Yansıma ve geçiş kaydını ayır."
+        ],
+        [
+          "İnce kumaş",
+          "Aynı kumaşta ışık sızıyor, şekiller net değil.",
+          "Kısmi ve dağınık geçiş.",
+          "Verilen örnek yarı saydam.",
+          "Işık görülüyor, ayrıntı belirsiz.",
+          "Bütün kumaşlar aynı sınıfta değildir.",
+          "Örneğin kat ve kalınlığını yaz."
+        ],
+        [
+          "Katlanan kâğıt",
+          "Tek ince kâğıt ışık sızdırıyor; çok katlısı deneyde geçirmiyor.",
+          "Kat sayısı geçişi değiştirmiş.",
+          "Tek yarı saydam; çok kat deneyde opak.",
+          "Aynı kaynakta farklı geçiş.",
+          "Malzeme adı tek başına yeterli değildir.",
+          "Kat sayısını kontrollü değiştir."
+        ],
+        [
+          "Renkli cam",
+          "Yeşil camdan arka şekil net görülüyor.",
+          "Renkli olsa da net geçiriyor.",
+          "Saydam.",
+          "Arka şeklin ayrıntısı seçiliyor.",
+          "Renkli olan her şey opak değildir.",
+          "Renk ve geçirgenliği ayrı etiketle."
+        ],
+        [
+          "Delikli levha",
+          "Opak levhanın deliklerinden LED görülüyor; levha saydam deniyor.",
+          "Işık deliklerden geçiyor.",
+          "Levhanın malzemesi opak.",
+          "Dolu bölüm geçirmiyor.",
+          "Delik boşluğu malzemenin saydamlığı değildir.",
+          "Delikli/deliksiz bölümleri karşılaştır."
+        ],
+        [
+          "Eksik test",
+          "Öğrenci yalnız ışık kapalıyken malzemeye bakıp opak kararı veriyor.",
+          "Geçirgenlik test edilmemiş.",
+          "Veri olmadan grup kesinleşmez.",
+          "Açık ışık ve hedef gerekir.",
+          "Karanlıkta görünmeme yeterli kanıt değildir.",
+          "Aynı koşullu LED testini tamamla."
+        ]
+      ],
+      "processMap": [
+        [
+          "a"
+        ],
+        [
+          "b"
+        ],
+        [
+          "c",
+          "ç"
+        ],
+        [
+          "a",
+          "c"
+        ],
+        [
+          "a",
+          "b",
+          "c",
+          "ç"
+        ]
+      ]
+    },
+    {
+      "code": "FB.5.4.3",
+      "q": [
+        "Bu durumda tam gölgenin oluşmasını hangi ilişki açıklar?",
+        "Verilen karşılaştırmada değişen koşulu ve gölgeye etkisini belirt.",
+        "Gözlem kaydında hangi konum veya boyut bilgisi bulunmalı?",
+        "Sonucun sınırını ya da öğrencinin yanlış yorumunu açıkla.",
+        "Güvenli küçük LED–opak cisim–ekran düzeneğinde ilgili değişkeni sına ve kaydet."
+      ],
+      "cases": [
+        [
+          "Kaynağa yaklaşma",
+          "Küçük kaynak ve ekran sabit; opak cisim kaynağa yaklaşınca gölge büyüyor.",
+          "Cisim doğrusal ışık yolunu keser.",
+          "Cisim–kaynak aralığı azalmış, gölge büyümüş.",
+          "Üç konum ve gölge boyu.",
+          "Cismin gerçek boyutu büyümemiştir.",
+          "Aynı cismi iki konumda karşılaştır."
+        ],
+        [
+          "Ekrana yaklaşma",
+          "Küçük kaynak sabit; cisim ekrana yaklaşınca gölge küçülüyor.",
+          "Opak cisim ışığı engeller.",
+          "Cisim–ekran aralığı azalmış.",
+          "Kaynak/cisim/ekran yerleri.",
+          "Bu düzende gölge küçülür; cisim küçülmez.",
+          "Ekran sabit, cisim hareketli test."
+        ],
+        [
+          "Engel kaldırma",
+          "Opak kart kaldırılınca karanlık gölge bölgesi kayboluyor.",
+          "Gölge için ışığı kesen engel gerekir.",
+          "Engelin varlığı değişmiş.",
+          "Kartlı/kartsız ekran çizimi.",
+          "Gölge bağımsız siyah bir nesne değildir.",
+          "Kart var/yok gözlem kaydı."
+        ],
+        [
+          "Cisim biçimi",
+          "Aynı kart önden geniş, yandan ince gölge oluşturuyor.",
+          "Işığı kesen görünüş belirleyicidir.",
+          "Cismin ışığa yönelimi değişmiş.",
+          "Cisim yönü ve gölge şekli.",
+          "Tek gölge gerçek üç boyutlu biçimi tam vermez.",
+          "Kartı çevirip iki gölge çiz."
+        ],
+        [
+          "Kaynak uzaklığı",
+          "Cisim ve ekran sabit; küçük ışık kaynağı uzaklaşınca gölge boyu azalıyor.",
+          "Işığın engellenmesi tam gölge oluşturur.",
+          "Kaynak–cisim uzaklığı artmış.",
+          "Kaynağın yeri ve gölge boyu.",
+          "Yalnız kaynağı değiştirerek yorumlanır.",
+          "Küçük kaynakla iki mesafeyi kaydet."
+        ],
+        [
+          "Gölgede ölçek",
+          "İki gölge fotoğrafı farklı büyütülmüş; büyük baskı büyük gölge sanılıyor.",
+          "Gölge boyu fiziksel ölçümle kaydedilmeli.",
+          "Baskı ölçeği değişmiş olabilir.",
+          "Cetvel veya ortak ölçek.",
+          "Fotoğraf baskısı gerçek boyu tek başına vermez.",
+          "Ekranda gerçek uzunluğu ölç."
+        ],
+        [
+          "Tangram perdesi",
+          "Tek küçük LED ve ekran sabit; tangram parçalarının dizilişi değişince gölge biçimi değişiyor.",
+          "Opak tangram ışığı engeller.",
+          "Engelin düzlemsel dizilişi değişmiş.",
+          "Parçaların konumu ve gölge çizimi.",
+          "Gölge tek başına üç boyutlu yapıyı vermez.",
+          "Tek kaynakla iki tangram dizilişini kaydet."
+        ],
+        [
+          "Saydam engel",
+          "Opak kart yerine temiz saydam levha konulunca aynı koyu tam gölge oluşmuyor.",
+          "Tam gölge güçlü engellemeyle ilişkilidir.",
+          "Malzemenin geçirgenliği değişmiş.",
+          "Malzeme ve ışık geçişi.",
+          "Her cisim aynı tam gölgeyi oluşturmaz.",
+          "Opak/saydam örneği eş düzende karşılaştır."
+        ],
+        [
+          "Gökyüzü modeli",
+          "Öğrenci Dünya gölgesini Ay evrelerinin her geceki nedeni sayıyor.",
+          "Gölge ışığın cisimle kesilmesidir.",
+          "Tutulma ve evre farklı durumlardır.",
+          "Kaynak ve üç cismin konumu.",
+          "Ay evreleri her gece Dünya gölgesi değildir.",
+          "Masa modelinde gölge durumunu ayrı işaretle."
+        ],
+        [
+          "Birlikte oynatılan parçalar",
+          "Cisim ve ekran aynı anda kaydırılmış; gölge farkı yalnız cisme bağlanıyor.",
+          "Konumlar ışığın engellenmesini etkiler.",
+          "İki değişken birlikte değişmiş.",
+          "Her parçanın başlangıç/son yeri.",
+          "Tek neden kesin seçilemez.",
+          "Bir parçayı sabit tutarak tekrar yap."
+        ]
+      ],
+      "processMap": [
+        [
+          "a"
+        ],
+        [
+          "c"
+        ],
+        [
+          "b"
+        ],
+        [
+          "c"
+        ],
+        [
+          "a",
+          "b",
+          "c"
+        ]
+      ]
+    },
+    {
+      "code": "FB.5.5.1",
+      "q": [
+        "Bağlamdaki maddenin tanecikleri, boşlukları veya hareketi hakkında hangi özellik belirtilmiş?",
+        "Maddeyi katı, sıvı veya gaz olarak sınıflandır ve gerekçelendir.",
+        "Bu örneği başka bir hâlden ayıran özelliği açıkla.",
+        "Bu gözlemden hangi yanlış çıkarım yapılmamalı? Model kullanıyorsan bir temsil sınırı ekle.",
+        "Bu duruma uygun tanecik modeli çiz veya kur; hareketi ve hâl etiketini göster."
+      ],
+      "cases": [
+        [
+          "Kap değiştiren su",
+          "Su başka kaba aktarılınca şekli değişiyor; miktar kaybı yok.",
+          "Tanecikler yer değiştirebilir.",
+          "Sıvı; kabın şeklini alır.",
+          "Belirli hacmi korunur.",
+          "Şekil değişimi madde kaybı değildir.",
+          "Yakın tanecikli akışkan model."
+        ],
+        [
+          "Hava şırıngası",
+          "İğnesiz kapalı şırıngadaki hava itmeyle daha küçük hacme sığıyor.",
+          "Tanecikler arası boşluk azalabilir.",
+          "Gaz; kolay sıkıştırılır.",
+          "Sıvıya göre boşluklar daha geniştir.",
+          "Taneciklerin kendisi ezilmez.",
+          "Aynı sayıda taneciği iki hacimde göster."
+        ],
+        [
+          "Taş örneği",
+          "Taş aynı koşulda başka kaba konunca kendi şeklini koruyor.",
+          "Tanecikler konum çevresinde titreşir.",
+          "Katı; belirli şekli var.",
+          "Sıvı gibi kabın tüm şeklini almaz.",
+          "Katıda tanecikler hareketsiz değildir.",
+          "Yakın düzenli konum ve titreşim işareti."
+        ],
+        [
+          "Kavanoza yayılan gaz",
+          "Gaz bağlı iki hacme yayılıyor; öğrenci yarısının yok olduğunu söylüyor.",
+          "Tanecikler boşlukta yayılır.",
+          "Gaz; bulunduğu hacmi doldurur.",
+          "Belirli şekil ve hacmi yok.",
+          "Yayılma yok olma değildir.",
+          "İki bölmeye yayılmış tanecik modeli."
+        ],
+        [
+          "Şeker taneleri",
+          "Kuru şeker taneleri kaba dökülüyor; öğrenci akabildiği için sıvı sayıyor.",
+          "Her tane katıdır.",
+          "Şeker taneleri katıdır.",
+          "Yığın akışı sıvı taneciği demek değildir.",
+          "Yığın şekli tek başına hâli belirlemez.",
+          "Tane ile taneciği ayıran açıklamalı model."
+        ],
+        [
+          "Sıvı şırıngası",
+          "İğnesiz kapalı şırıngada suyun hacmi elle belirgin azaltılamıyor.",
+          "Tanecikler arası boşluk küçüktür.",
+          "Sıvı; yaklaşık sıkıştırılamaz.",
+          "Gaza göre boşluklar azdır.",
+          "Boşluk hiç yok denmez.",
+          "Yakın, yer değiştiren tanecikler."
+        ],
+        [
+          "Metal bilye",
+          "Bilye soğukken de sıcak odada da katı; öğrenci yalnız sıcakta hareket var diyor.",
+          "Katı tanecikleri titreşir.",
+          "Katı.",
+          "Tanecikler serbestçe tüm kaba yayılmaz.",
+          "Soğuk katıda da hareket vardır.",
+          "Titreşim okları olan katı modeli."
+        ],
+        [
+          "Buhar çizimi",
+          "Gaz modeli tanecikleri birbirine değen sabit noktalarla çizilmiş.",
+          "Gazda boşluk ve yer değiştirme vardır.",
+          "Gaz modeli düzeltilmeli.",
+          "Katıdaki yerinde titreşimden farklıdır.",
+          "Sabit bitişik noktalar gazı uygun göstermez.",
+          "Geniş boşluklu hareketli tanecik çizimi."
+        ],
+        [
+          "Erime modeli",
+          "Buz erirken taneciklerin tamamen kaybolduğu çiziliyor.",
+          "Tanecikler kaybolmaz; düzen değişir.",
+          "Katıdan sıvıya geçiş.",
+          "Şekil ve hareket düzeni değişir.",
+          "Erime taneciklerin yok olması değildir.",
+          "Aynı tanecikleri iki hâlde göster."
+        ],
+        [
+          "Balon hacmi",
+          "Balondaki hava daha büyük kaba aktarılıyor; gaz tanecikleri büyüdü deniyor.",
+          "Aralıklar ve yayılım değişir.",
+          "Gaz.",
+          "Gaz kabın hacmine yayılır.",
+          "Tanecikler kap büyüdü diye şişmez.",
+          "Tanecik boyunu koruyan iki kap modeli."
+        ]
+      ],
+      "processMap": [
+        [
+          "a"
+        ],
+        [
+          "c"
+        ],
+        [
+          "b"
+        ],
+        [
+          "ç"
+        ],
+        [
+          "a",
+          "b",
+          "c",
+          "ç"
+        ]
+      ]
+    },
+    {
+      "code": "FB.5.5.2",
+      "q": [
+        "Bu durumda ısı ile sıcaklığın hangi özellikleri söz konusu?",
+        "Kavramların ortak ilişkisini belirt; neden aynı kavram olmadıklarını açıkla.",
+        "Uygun araç ve birim ayrımını yap.",
+        "Yanlış ifadeyi veya verinin izin vermediği çıkarımı düzelt.",
+        "Isı–sıcaklık karşılaştırma kartı hazırla; bağlamı doğru kavramlarla yeniden anlat."
+      ],
+      "cases": [
+        [
+          "Termometre etiketi",
+          "Termometre 25 °C; öğrenci 'ısısı 25 derece' yazıyor.",
+          "25 °C sıcaklık değeridir.",
+          "İkisi termal olaylarla ilişkilidir.",
+          "Sıcaklık termometre/°C; ısı J veya cal.",
+          "Isı dereceyle ifade edilmez.",
+          "Düzeltilmiş araç–birim tablosu."
+        ],
+        [
+          "Enerji kaydı",
+          "Deney kartı aktarılan enerjiyi 200 J, sıcaklığı 30 °C veriyor.",
+          "J enerji aktarımı, °C sıcaklık.",
+          "Isı aktarımı sıcaklığı etkileyebilir.",
+          "Isı kalorimetreyle hesaplanabilir; sıcaklık ölçülür.",
+          "200 J ile 30 °C toplanmaz.",
+          "İki niceliği ayıran açıklama kartı."
+        ],
+        [
+          "Eşit sıcaklık",
+          "İki farklı miktarda su aynı 20 °C; toplam enerjileri eşit sanılıyor.",
+          "Sıcaklıklar eşittir.",
+          "Madde ve enerji davranışıyla ilişkilidir.",
+          "Termometre toplam enerjiyi doğrudan vermez.",
+          "Eşit sıcaklık eşit toplam enerji demek değildir.",
+          "Miktar ve sıcaklığı ayrı sütunla göster."
+        ],
+        [
+          "Dokunma yanılgısı",
+          "Metal ve tahta aynı odada; dokunma hissi farklı, ölçüm sıcaklığı eşit.",
+          "His ve sıcaklık ölçümü farklıdır.",
+          "Isı aktarımı hissi etkiler.",
+          "Sıcaklık için termometre kullanılır.",
+          "His tek başına sıcaklık ölçüsü değildir.",
+          "Ölçüm/his ayrımlı kart."
+        ],
+        [
+          "Yanan etiket",
+          "Afişte 'sıcaklık bir enerji çeşididir' yazıyor.",
+          "Isı enerji aktarımıyla ilişkilidir.",
+          "İkisi aynı olayda incelenebilir.",
+          "Sıcaklık °C; ısı J/cal.",
+          "Sıcaklık enerji değildir.",
+          "Kavram özelliklerini doğru etiketle."
+        ],
+        [
+          "Isınan kaşık",
+          "Ilık suya konan daha soğuk kaşığın sıcaklığı artıyor.",
+          "Isı sıcaktan soğuğa aktarılır.",
+          "Enerji aktarımı sıcaklık değişimiyle ilişkili.",
+          "Termometre sıcaklığı kaydeder.",
+          "Aktarılan şey sıcaklık adlı madde değildir.",
+          "Önce/sonra sıcaklık ve aktarım oku."
+        ],
+        [
+          "Değişmeyen sıcaklık",
+          "Saf buz erirken enerji alıyor; sıcaklık bir süre sabit.",
+          "Isı alınması her zaman sıcaklık artışı değildir.",
+          "Hâl değişimi termal olaydır.",
+          "Isı J/cal, sıcaklık °C.",
+          "Sabit sıcaklık ısı alınmadığını kanıtlamaz.",
+          "Hâl ve sıcaklık ayrımlı kart."
+        ],
+        [
+          "Hatalı birim",
+          "Deney tablosunda ısı kg, sıcaklık N yazılmış.",
+          "Isı ve sıcaklık birimleri karışmış.",
+          "İkisi kütle/kuvvetten farklı kavramlar.",
+          "Isı J/cal; sıcaklık °C.",
+          "Kg ve N burada uygun değil.",
+          "Dört birimi doğru niceliklerle eşleştir."
+        ],
+        [
+          "Kalorimetre",
+          "Öğrenci kalorimetreyi doğrudan derece gösteren her cihaz sanıyor.",
+          "Isı alışverişi hesaplaması için düzenektir.",
+          "Sıcaklık ölçümleri hesapta kullanılabilir.",
+          "Termometre ile kalorimetre işlevleri farklı.",
+          "Aynı araç sayılmaz.",
+          "Araç ve işlevli karşılaştırma kartı."
+        ],
+        [
+          "Aynı artış",
+          "İki deneyde sıcaklık artışı aynı; miktarlar farklı. Isı kesin eşit deniyor.",
+          "Sıcaklık değişimleri eşit verilmiş.",
+          "Isı aktarımı değişimi etkiler.",
+          "Isı hesabı ek bilgi gerektirir.",
+          "Eşit artıştan kesin eşit ısı çıkarılmaz.",
+          "Verilen/verilmeyen bilgi tablosu."
+        ]
+      ],
+      "processMap": [
+        [
+          "a"
+        ],
+        [
+          "b"
+        ],
+        [
+          "c"
+        ],
+        [
+          "c"
+        ],
+        [
+          "a",
+          "b",
+          "c"
+        ]
+      ]
+    },
+    {
+      "code": "FB.5.5.3",
+      "q": [
+        "Verilen durumda ısı alışverişinin yönünü veya durumunu belirt.",
+        "Önceki ve sonraki sıcaklıkları düzenli bir kayda dönüştür.",
+        "Ölçümlerden hangi bilimsel çıkarım yapılabilir?",
+        "Desteklenmeyen sonucu veya deney koşulu sorununu açıkla.",
+        "Öğretmen gözetiminde güvenli ılık suyla benzer bir karıştırma deneyi yap; gerçek ölçümleri kaydet."
+      ],
+      "cases": [
+        [
+          "İki eş su",
+          "Eş miktarda aynı tür su 20 ve 40 °C; karışım 30 °C ölçülmüş.",
+          "Sıcak sudan soğuk suya.",
+          "20/40 önce; 30 sonra.",
+          "Sıcaklıklar yakınlaşmış; ısı alışverişi var.",
+          "Her karışımın aritmetik ortalama olduğu genellenmez.",
+          "Aynı tür ılık sularla önce/sonra kayıt."
+        ],
+        [
+          "Farklı miktar",
+          "Az su 40, çok su 20 °C; sonuç 25 °C.",
+          "40 °C sudan 20 °C suya.",
+          "Miktarlar ve 40/20→25.",
+          "Miktar sonucu etkileyebilir.",
+          "Eş miktar koşulu varsayılmaz.",
+          "Miktarı da yazan güvenli ölçüm."
+        ],
+        [
+          "Eşit sıcaklık",
+          "İki su da 25 °C; karışım 25 °C.",
+          "Aralarında net ısı akışı beklenmez.",
+          "25/25→25.",
+          "Sıcaklık farkı yok.",
+          "Her karıştırmada sıcaklık değişir denmez.",
+          "Eşit sıcaklık kontrol deneyi."
+        ],
+        [
+          "Eksik ilk ölçüm",
+          "Karışım 28 °C; başlangıç sularından biri ölçülmemiş.",
+          "Yön kesin belirlenemez.",
+          "Eksik başlangıç boş bırakılır.",
+          "Karışım sıcaklığı tek başına yetersiz.",
+          "Eksik değer tahminle gözlem sayılmaz.",
+          "Önce iki suyu da ölçerek tekrar."
+        ],
+        [
+          "Ortam etkisi",
+          "20 ve 40 °C eş su, uzun bekleyince oda 22 °C’ye yaklaşıyor.",
+          "Önce sular arasında, sonra ortamla alışveriş.",
+          "İlk karışım ve geç ölçüm ayrılır.",
+          "Ortamla enerji alışverişi olabilir.",
+          "Geç ölçüm yalnız iki suyu açıklamaz.",
+          "Karıştırma zamanı ve ölçüm zamanı kaydı."
+        ],
+        [
+          "Ölçüm şaşkınlığı",
+          "20 ve 35 °C suların karışımı 50 °C yazılmış; dış ısıtma yok.",
+          "Sıcak olandan soğuk olana olmalı.",
+          "20/35→50 kaydı şüpheli.",
+          "Koşul veya ölçüm denetlenmeli.",
+          "Dış enerji yokken bu sonuç desteklenmez.",
+          "Araç ve yazım kontrolüyle güvenli tekrar."
+        ],
+        [
+          "Birimsiz karışım",
+          "Kayıt 18, 32, 25; sıcaklık birimi eksik.",
+          "Sıcak olandan soğuk olana.",
+          "Birim doğrulanarak önce/sonra tablo.",
+          "Karşılaştırılabilir sıcaklıklar gerekir.",
+          "Birimsiz kayıt tam rapor değildir.",
+          "°C ve araç bilgili tekrar."
+        ],
+        [
+          "Sıcak soğuk adları",
+          "Öğrenci 15 °C ve 25 °C suyun ikisini de soğuk diye adlandırıyor.",
+          "25’ten 15 °C suya.",
+          "15/25 ve son ölçüm.",
+          "Göreli sıcaklık farkı belirleyici.",
+          "Günlük adlar farkı yok etmez.",
+          "Termometreyle farkı kaydet."
+        ],
+        [
+          "Kap değişkeni",
+          "İki grupta su aynı ama kap ve bekleme süresi farklı; sonuçlar farklı.",
+          "Sular ve ortam arasında aktarım mümkün.",
+          "Kap/süre ile sıcaklıklar kaydedilir.",
+          "Farkın nedeni tek başına seçilemez.",
+          "Koşullar eşit sayılmaz.",
+          "Aynı kap ve sürede kontrollü tekrar."
+        ],
+        [
+          "Tekrarlı ölçüm",
+          "Aynı koşullarda karışım 29, 30, 29 °C kaydedilmiş.",
+          "Sıcak sudan soğuk suya.",
+          "Üç tekrar ayrı yazılır.",
+          "Yakın sonuçlar tutarlılığı destekler.",
+          "Farklı kayıtlar silinmez.",
+          "Tüm tekrarlar ve sapma notu."
+        ]
+      ],
+      "processMap": [
+        [
+          "a"
+        ],
+        [
+          "b"
+        ],
+        [
+          "c"
+        ],
+        [
+          "c"
+        ],
+        [
+          "a",
+          "b",
+          "c"
+        ]
+      ]
+    },
+    {
+      "code": "FB.5.5.4",
+      "q": [
+        "Gözlemdeki hâl değişimini ve ısı alma/verme ilişkisini belirt.",
+        "Doğrudan gözlenen kısmı belirt. Henüz gözlenmemiş bir önerme varsa onu ayrı etiketle.",
+        "Benzer ama henüz gözlenmemiş durum için gerekçeli tahmin yap.",
+        "Tahminin geçerliliğini hangi koşul veya yeni veriyle sorgularsın?",
+        "Güvenli gösteri kaydı veya öğretmen deneyi kullanarak tahmin–gözlem–sonuç raporu hazırla."
+      ],
+      "cases": [
+        [
+          "Buz küpü",
+          "Buz odada suya dönüşüyor; öğrenci başka buzun da eriyeceğini söylüyor.",
+          "Erime; ısı alma.",
+          "İlk dönüşüm gözlem, diğeri tahmin.",
+          "Benzer koşuldaki buz eriyebilir.",
+          "Ortam ve bekleme süresi kontrol edilir.",
+          "Erimeyi gerçek zaman kaydıyla izle."
+        ],
+        [
+          "Dondurucu suyu",
+          "Su soğutulunca buz olmuş; yeni su kabı henüz gözlenmemiş.",
+          "Donma; ısı verme.",
+          "Buz oluşumu gözlem, yeni kap tahmin.",
+          "Yeterince soğutulursa donabilir.",
+          "Süre ve soğutma koşulu gerekir.",
+          "Öğretmen kayıtlarıyla donma raporu."
+        ],
+        [
+          "Çamaşır kuruma",
+          "Islak bez zamanla kuruyor; öğrenci kaynama olmadığından hâl değişimi yok diyor.",
+          "Buharlaşma; ısı alma.",
+          "Kuruma gözlemdir.",
+          "Benzer bez başka sıcaklıkta da kuruyabilir.",
+          "Hava, sıcaklık ve süre etkili.",
+          "Bez kütlesi/kuruluk gözlemli rapor."
+        ],
+        [
+          "Soğuk bardak",
+          "Soğuk bardağın dışına su damlaları oluşuyor; bardak sızdırmıyor.",
+          "Yoğuşma; ısı verme.",
+          "Dış damlalar gözlemdir.",
+          "Benzer soğuk yüzeyde damla oluşabilir.",
+          "Havadaki nem koşulu gerekir.",
+          "Sızdırmazlık kontrolü ve damla kaydı."
+        ],
+        [
+          "Kaynama kaydı",
+          "Saf sıvı sabit basınçta kaynarken sıcaklık bir süre sabit kalmış.",
+          "Kaynama; ısı alma.",
+          "Sabit sıcaklık ölçüm kaydı.",
+          "Aynı koşulda kaynama boyunca sabitlik beklenir.",
+          "Saflık ve basınç koşulu korunmalı.",
+          "Hazır güvenli gösteri verisini yorumla."
+        ],
+        [
+          "Erime çizelgesi",
+          "Saf buz erirken ısıtılıyor; sıcaklık bir süre değişmiyor.",
+          "Erime; ısı alma.",
+          "Sıcaklık ve hâl kaydı gözlem.",
+          "Aynı koşulda erime sırasında sabitlik beklenir.",
+          "Karışım değil saf madde koşulu.",
+          "Öğretmen verisinden zaman–hâl tablosu."
+        ],
+        [
+          "Süblimleşme örneği",
+          "Güvenli video katının sıvı evre görülmeden gaza geçtiğini gösteriyor.",
+          "Süblimleşme; ısı alma.",
+          "Videodaki değişim gözlem verisi.",
+          "Aynı madde uygun koşulda benzer geçiş yapabilir.",
+          "Her katı böyle davranır denmez.",
+          "Maddeye dokunmadan video kanıt raporu."
+        ],
+        [
+          "Kırağı kaydı",
+          "Videoda su buharı soğuk yüzeyde doğrudan katı kristal oluşturuyor.",
+          "Kırağılaşma; ısı verme.",
+          "Doğrudan kristal oluşumu gözlem.",
+          "Uygun soğuk yüzeyde tekrarlanabilir.",
+          "Önce sıvı oluşmuşsa aynı süreç değildir.",
+          "Önce/sonra hâl etiketli video raporu."
+        ],
+        [
+          "Görünür buhar bulutu",
+          "Öğrenci beyaz bulutun gaz hâlindeki suyun kendisi olduğunu söylüyor; küçük damlacık bilgisi veriliyor.",
+          "Damlacık oluşumu yoğuşmayla ilişkilidir.",
+          "Damlacık bilgisi kanıt kartıdır.",
+          "Soğutma damlacıkları artırabilir.",
+          "Görünmez su gazı ile damlacık ayrılır.",
+          "Sıcak kaynağa yaklaşmadan kaynaklı rapor."
+        ],
+        [
+          "Yumuşayan hamur",
+          "Hamur yoğrulunca şekli değişiyor; sıvı hâle geçiş gözlenmemiş.",
+          "Şekil değişimi tek başına hâl değişimi değildir.",
+          "Gözlenen yalnız biçim değişimi.",
+          "Aynı işlem mutlaka erime sağlamaz.",
+          "Hâl özellikleri ayrıca gözlenmeli.",
+          "Şekil/hâl ayrımlı gözlem raporu."
+        ]
+      ],
+      "processMap": [
+        [
+          "a"
+        ],
+        [
+          "b"
+        ],
+        [
+          "ç"
+        ],
+        [
+          "d"
+        ],
+        [
+          "a",
+          "b",
+          "c",
+          "ç",
+          "d"
+        ]
+      ]
+    },
+    {
+      "code": "FB.5.5.5",
+      "q": [
+        "Verilen malzemenin ısı iletimi bakımından niteliğini belirt.",
+        "Malzemeleri ısı iletkeni veya görece yalıtkan olarak gruplandır.",
+        "Grup etiketini hangi gözlem veya işleve dayandırırsın?",
+        "Yanlış genellemeyi veya karşılaştırmanın sınırını açıkla.",
+        "Bu kullanım için sınıflandırma kartı hazırla; metaller arasında iletkenlik sıralaması yapma."
+      ],
+      "cases": [
+        [
+          "Tencere sapı",
+          "Metal gövde ve ahşap sap kullanılıyor.",
+          "Gövde daha kolay, sap daha yavaş iletir.",
+          "Metal iletken; ahşap görece yalıtkan.",
+          "Isı aktarma ve tutma işlevleri.",
+          "Yalıtkan hiç ısı iletmez demek değildir.",
+          "Gövde–sap işlevli sınıflandırma."
+        ],
+        [
+          "Çorba kaşığı",
+          "Ilık sudaki metal kaşık sapı, eş koşuldaki tahta saptan önce ısınıyor.",
+          "Metal bu karşılaştırmada daha hızlı iletir.",
+          "Metal iletken; tahta görece yalıtkan.",
+          "Eş koşulda sap sıcaklık değişimi.",
+          "Bütün metalleri sıralayan kanıt değildir.",
+          "Aynı süre/koşul bilgili kart."
+        ],
+        [
+          "Fırın eldiveni",
+          "Yalıtkan tutacak elde ısı geçişini yavaşlatmak için kullanılıyor.",
+          "Isı aktarımını yavaşlatır.",
+          "Tutacak görece yalıtkan.",
+          "Koruyucu işlevi ısı geçişiyle ilişkili.",
+          "Sınırsız sıcaklıkta güvenli sayılmaz.",
+          "Malzeme ve kullanım sınırı kartı."
+        ],
+        [
+          "Bina duvarı",
+          "Duvara uygun yalıtkan katman ekleniyor.",
+          "İç–dış ısı geçişi yavaşlar.",
+          "Katman görece yalıtkan.",
+          "Sıcaklığı korumaya yardımcı işlev.",
+          "Isı üretmez; geçişi yavaşlatır.",
+          "Katman–işlev sınıflandırma afişi."
+        ],
+        [
+          "Yaz yalıtımı",
+          "İçerisi serin, dışarısı sıcak; öğrenci yalıtım yalnız kışın işe yarar diyor.",
+          "Dıştan içe aktarımı da yavaşlatır.",
+          "Yalıtkan her iki mevsimde işlevli.",
+          "Sıcaklık farkı yönü değişebilir.",
+          "Yalnız kış iddiası yanlıştır.",
+          "Yaz/kış işlevli kart."
+        ],
+        [
+          "Metal çeşitleri",
+          "Demir, bakır ve alüminyum kartları var; sayısal veri yok.",
+          "Üçü de ısı iletkeni örneği.",
+          "Aynı iletken grubuna.",
+          "Metal malzeme özellikleri.",
+          "Verisiz kendi aralarında sıra yapılmaz.",
+          "Sıralamasız metal gruplama tablosu."
+        ],
+        [
+          "Soğuk tutan çanta",
+          "Yalıtımlı çanta serin suyun ısınmasını yavaşlatıyor.",
+          "Dıştan ısı aktarımı yavaşlar.",
+          "Çanta katmanı görece yalıtkan.",
+          "İçeriğin geç ısınması.",
+          "Çanta soğuk enerji üretmez.",
+          "Malzeme–işlev karşılaştırması."
+        ],
+        [
+          "Islak bez sınırı",
+          "Kuru ve ıslak bez farklı davranıyor; malzeme koşulu kaydedilmemiş.",
+          "Koşul ısı aktarımını etkileyebilir.",
+          "Aynı ad tek davranış garantilemez.",
+          "Nem durumu ayrıca yazılmalı.",
+          "Kuru bez sonucu ıslak beze taşınmaz.",
+          "Durumu belirten sınıflandırma notu."
+        ],
+        [
+          "Dokunarak karar",
+          "Aynı odadaki metal daha soğuk hissediliyor; sıcaklıkları ölçümde eşit.",
+          "His farklı iletimle ilişkili olabilir.",
+          "Metal iletken örneği.",
+          "Hızlı ısı aktarımı hissi etkiler.",
+          "Soğuk his daha düşük sıcaklığı kanıtlamaz.",
+          "His/ölçüm/iletim ayrımlı kart."
+        ],
+        [
+          "İnce kaplama",
+          "Yalıtkan kaplama yırtılmış; metal bölge açıkta.",
+          "Açık metal ısıyı kolay iletir.",
+          "Metal iletken; kaplama görece yalıtkan.",
+          "Farklı malzeme bölgeleri.",
+          "Kaplamalı ad, her noktanın korunduğu anlamına gelmez.",
+          "Bölge ve durum etiketli tablo."
+        ]
+      ],
+      "processMap": [
+        [
+          "a"
+        ],
+        [
+          "b"
+        ],
+        [
+          "c",
+          "ç"
+        ],
+        [
+          "a",
+          "c"
+        ],
+        [
+          "a",
+          "b",
+          "c",
+          "ç"
+        ]
+      ]
+    },
+    {
+      "code": "FB.5.5.6",
+      "q": [
+        "Bu ihtiyaç için ısı yalıtımını gösteren hangi modeli önerirsin?",
+        "Modelin hangi koşul veya parçası karşılaştırmada sabit tutulmalı?",
+        "Bu modeli sınarken hangi gözlem başarıyı destekler? Veri verilmişse o veriyi kullan; yoksa beklenen kanıtı öner.",
+        "Modeli değerlendirmek veya yenilemek için hangi düzeltme ya da sınır notu gerekir?",
+        "Güvenli ılık suyla modeli kur/yenile; önce–sonra sıcaklık, süre ve değişikliği kaydet."
+      ],
+      "cases": [
+        [
+          "Kutu ev",
+          "Aynı kutulardan biri kaplı; eş başlangıçtan sonra sıcaklığı daha az düşüyor.",
+          "Kaplı/kaplamasız kutu modeli.",
+          "Başlangıç sıcaklığı ve süre.",
+          "Kaplama kaybı yavaşlatmış.",
+          "Isı üretir iddiası kurulmaz.",
+          "Aynı koşullu iki kutu raporu."
+        ],
+        [
+          "Açık kapak",
+          "Kaplı kutunun kapağı açık; sıcaklık çabuk değişiyor.",
+          "Kapaklı yalıtım modeli.",
+          "Kutu, miktar ve süre.",
+          "Açıklık ısı geçişini artırabilir.",
+          "Kapak uyumunu iyileştiririm.",
+          "Açık/kapalı kapak ölçüm kaydı."
+        ],
+        [
+          "Yazlık serinlik",
+          "Serin içeriğin sıcak odada ısınması yavaşlatılacak.",
+          "İçeri ısı girişini azaltan model.",
+          "Başlangıç ve dış koşullar.",
+          "Az sıcaklık artışı korumayı destekler.",
+          "Yalıtım yalnız sıcak tutmaz.",
+          "Serin içerikli eş koşul deneyi."
+        ],
+        [
+          "Farklı su miktarı",
+          "Kaplı kutuda çok, çıplakta az su var; kaplama üstün ilan ediliyor.",
+          "Eş miktarlı karşılaştırma modeli.",
+          "Su miktarı eşitlenmeli.",
+          "Veri tek başına kaplamayı ayıramaz.",
+          "Miktarı eşitleyerek yenilerim.",
+          "Kontrollü tekrar ve eski fark notu."
+        ],
+        [
+          "Farklı başlangıç",
+          "Kutular farklı sıcaklıklarla başlamış; yalnız son sıcaklıklar karşılaştırılıyor.",
+          "Eş başlangıçlı tasarım.",
+          "Başlangıç sıcaklığı.",
+          "Son değer tek başına yeterli değil.",
+          "Başlangıç ve değişimi kaydederim.",
+          "Önce/sonra karşılaştırmalı kayıt."
+        ],
+        [
+          "Sızıntılı model",
+          "Ilık su sızıyor; sıcaklık düşüşü yalnız duvara bağlanıyor.",
+          "Sızdırmaz güvenli iç kap.",
+          "İç kap ve sıvı miktarı.",
+          "Sızıntı ek etkendir.",
+          "Sızdırmazlığı giderip yeniden sınarım.",
+          "Kaçaksız model ve sıcaklık kaydı."
+        ],
+        [
+          "Çok kalın tasarım",
+          "Kalın kaplama işe yarıyor ama sergi kapısına sığmıyor.",
+          "İşlev ve kullanım sınırına uygun model.",
+          "Eş test koşulları.",
+          "Başarı tek başına kullanılabilirlik değildir.",
+          "Boyutu azaltıp yeniden ölçerim.",
+          "Isı koruma ve boyut raporu."
+        ],
+        [
+          "Hatalı termometre",
+          "Bir araç sürekli diğerinden yüksek okuyor; modeller farklı araçlarla ölçülmüş.",
+          "Ölçüm araçları doğrulanmış model.",
+          "Araç doğruluğu ve konumu.",
+          "Araç sapması sonucu etkileyebilir.",
+          "Araçları kontrol ederek yenilerim.",
+          "Referans kontrolü ve tekrar kaydı."
+        ],
+        [
+          "Tarihî yapı",
+          "Sanal yapı incelemesinde kalın duvar ve küçük açıklıklar görülüyor; tek özellik tüm başarı sayılıyor.",
+          "Gözlenen özelliği sınayan küçük model.",
+          "Diğer boyut ve koşullar.",
+          "Görüntü tek başına performans ölçmez.",
+          "Özelliği tek değişken olarak denerim.",
+          "Kültürel kaynak ve model testi ayrı kaydı."
+        ],
+        [
+          "Akran yenilemesi",
+          "Akranlar modelin süresini kaydetmediğini söylüyor.",
+          "Zaman kontrollü karşılaştırma modeli.",
+          "Ölçüm süresi.",
+          "Süresiz sonuçlar karşılaştırılamaz.",
+          "Ortak süre çizelgesi eklerim.",
+          "Geribildirim–değişiklik–yeni veri raporu."
+        ]
+      ],
+      "processMap": [
+        [
+          "a"
+        ],
+        [
+          "a"
+        ],
+        [
+          "b"
+        ],
+        [
+          "b"
+        ],
+        [
+          "a",
+          "b"
+        ]
+      ]
+    },
+    {
+      "code": "FB.5.6.1",
+      "q": [
+        "Bağlamdaki parçalar için bu ders düzeyinde kullanılan devre sembollerini belirt.",
+        "Parçaları kullanılan katalogda sembolü olanlar ve olmayanlar diye ayır.",
+        "Yaptığın eşleştirme veya gruplandırmanın gerekçesini açıkla.",
+        "Yanlış eşleştirmeyi veya 'sembol yok' ifadesinin sınırını düzelt.",
+        "Seçilen sembol kataloğuna göre parça–sembol afişi hazırla."
+      ],
+      "cases": [
+        [
+          "Temel kutu",
+          "Katalog pil, ampul, anahtar ve kabloyu içeriyor; plastik taban içermiyor.",
+          "Pil, ampul, anahtar, kablo sembolleri.",
+          "Dört devre elemanı katalogda; taban değil.",
+          "Taban destek parçasıdır.",
+          "Katalog dışında olmak evrensel sembolsüzlük değildir.",
+          "Tabanı ayrı gösteren eşleştirme afişi."
+        ],
+        [
+          "Pil çizgileri",
+          "Öğrenci pili daire içindeki çarpıyla etiketliyor.",
+          "Pil uzun/kısa paralel çizgilerle gösterilir.",
+          "Pil ve ampul katalogda sembollüdür.",
+          "Daire içi çarpı ampuldür.",
+          "İki sembol karıştırılmamalı.",
+          "Pil–ampul ayrımlı kartlar."
+        ],
+        [
+          "Açık anahtar",
+          "Anahtarın kontakları ayrık; şemada kesintisiz tel çizilmiş.",
+          "Açık anahtar ayrık kontakla gösterilir.",
+          "Anahtar ve kablo sembollüdür.",
+          "Açık anahtar yolun kesildiğini gösterir.",
+          "Anahtar tel gibi etiketlenmez.",
+          "Açık/kapalı anahtar eşleştirmesi."
+        ],
+        [
+          "Kapalı anahtar",
+          "Anahtar kapalı; şemada açık kontak çizilmiş.",
+          "Kapalı kontak sembolü gerekir.",
+          "Anahtar katalogda sembollüdür.",
+          "Bağlantı durumu sembolde görünür.",
+          "Açık ve kapalı aynı gösterilmez.",
+          "Durumu belirten iki anahtar kartı."
+        ],
+        [
+          "Duy ve ampul",
+          "Sınıf kataloğu ampul sembolünü verir; duy için ayrı sembol kullanmaz.",
+          "Ampul daire içi çarpı.",
+          "Ampul katalogda; duy ayrı simgeyle verilmemiş.",
+          "Duy bağlantı desteğidir.",
+          "Bu düzeyde ayrı sembol yok denir.",
+          "Duy/ampul ayrımlı katalog afişi."
+        ],
+        [
+          "Pil yatağı",
+          "Katalog tek pil sembolünü kullanıyor; pil yatağı ayrıca çizilmiyor.",
+          "Pil enerji kaynağı sembolüyle gösterilir.",
+          "Pil katalogda; yatak ayrı gösterilmez.",
+          "Yatak ile pil aynı parça değildir.",
+          "Katalog kapsamı belirtilmeli.",
+          "Gerçek parça ve şema farkı afişi."
+        ],
+        [
+          "Kablo biçimi",
+          "Gerçekte kıvrılan kablo şemada düz bağlantı çizgisiyle verilmiş.",
+          "Kablo bağlantı çizgisiyle gösterilir.",
+          "Kablo sembolü katalogdadır.",
+          "Şema elektriksel bağlantıyı anlatır.",
+          "Çizgi gerçek kablo biçimini kopyalamaz.",
+          "Farklı kıvrım–aynı bağlantı kartı."
+        ],
+        [
+          "Bant parçası",
+          "Yalıtım bandı devre elemanları afişine pil sembolüyle eklenmiş.",
+          "Pil sembolü banda ait değildir.",
+          "Bant bu temel katalogda yoktur.",
+          "Bant yardımcı malzemedir.",
+          "Her malzemeye pil sembolü verilemez.",
+          "Yardımcı malzemeyi ayrı etiketle."
+        ],
+        [
+          "Eksik katalog",
+          "Grup kendi şekillerini kullanmış; açıklama anahtarı yok.",
+          "Ortak semboller tercih edilir.",
+          "Katalog kapsamı görünür olmalı.",
+          "Ortak dil eşleştirmeyi kolaylaştırır.",
+          "Açıklamasız kişisel işaret belirsizdir.",
+          "Standart ders sembollü afiş yenilemesi."
+        ],
+        [
+          "Fotoğraf ile şema",
+          "Afişte ampul fotoğrafı sembol yerine konmuş; parça ve sembol aynı sayılıyor.",
+          "Fotoğraf ve şematik sembol farklıdır.",
+          "Ampul sembollü elemandır.",
+          "Sembol parçayı sadeleştirir.",
+          "Her fotoğraf devre sembolü değildir.",
+          "Fotoğraf/ad/sembol üç sütunlu afiş."
+        ]
+      ],
+      "processMap": [
+        [
+          "a"
+        ],
+        [
+          "b"
+        ],
+        [
+          "c",
+          "ç"
+        ],
+        [
+          "b"
+        ],
+        [
+          "a",
+          "b",
+          "c",
+          "ç"
+        ]
+      ]
+    },
+    {
+      "code": "FB.5.6.2",
+      "q": [
+        "Verilen tasarıma uygun devre şeması ve deney düzeneği nasıl olmalı?",
+        "Deneyde hangi gözlem veya ölçümü kaydetmelisin?",
+        "Verilen kayıt devrenin çalışması hakkında ne söylüyor?",
+        "Sorunu gidermek için hangi tek koşulu kontrol eder; sonucu nasıl sınarsın?",
+        "Yalnız uygun düşük gerilimli pil ve öğretmen gözetimiyle şemanı kur; gerçek sonuç raporu sun."
+      ],
+      "cases": [
+        [
+          "Kapalı yol",
+          "Bir pil, uygun ampul, kapalı anahtar ve kabloyla kesintisiz yol isteniyor; ampul yanıyor.",
+          "Pilden ampule kapalı yol çizilir.",
+          "Yanma durumu ve bağlantılar.",
+          "Kapalı devre çalışmış.",
+          "Bağlantı sürekliliği denetlenir.",
+          "Şema–düzenek fotoğraf/çizim eşleştirmesi."
+        ],
+        [
+          "Açık anahtar",
+          "Aynı devrede anahtar açık; ampul yanmıyor.",
+          "Anahtarda açık kontak gösterilir.",
+          "Anahtar açık/kapalı ve yanma.",
+          "Açık yol çalışmayı engelliyor.",
+          "Yalnız anahtarı kapatarak sınarım.",
+          "İki durumlu gerçek gözlem raporu."
+        ],
+        [
+          "Gevşek kablo",
+          "Şema kapalı ama bağlantı gevşek; bazen yanıyor.",
+          "Şemadaki tüm bağlantılar sağlam olmalı.",
+          "Kesintili yanma ve temas yeri.",
+          "Düzenek şemaya kararlı uymuyor.",
+          "Gevşek teması tek başına düzeltirim.",
+          "Düzeltme öncesi/sonrası kayıt."
+        ],
+        [
+          "Boş pil",
+          "Doğru bağlantılı devre yanmıyor; kaynak kontrol kartı pilin tükenmiş olabileceğini söylüyor.",
+          "Uygun çalışan pille aynı şema.",
+          "Pil değişimi ve yanma durumu.",
+          "Tek başına yanmama neden seçtirmez.",
+          "Uygun referans pili denerim.",
+          "Pil kontrolü içeren deney raporu."
+        ],
+        [
+          "Arızalı ampul",
+          "Aynı devre referans ampulle yanıyor, ilk ampulle yanmıyor.",
+          "Aynı kapalı yol korunur.",
+          "İki ampulün çalışma durumu.",
+          "İlk ampulde sorun olabilir.",
+          "Yalnız ampulü değiştiririm.",
+          "Parça kontrolü tablosu."
+        ],
+        [
+          "İki seri ampul",
+          "Tek pil ile iki özdeş uygun ampul seri bağlı; ikisi de sönükçe yanıyor.",
+          "Tek yol üzerinde iki ampul.",
+          "Her ampulün yanma/parlaklık gözlemi.",
+          "Devre kapalı ve iki ampul çalışıyor.",
+          "Temas ve pil uygunluğu kontrol edilir.",
+          "Seri devrenin şema ve kayıtları."
+        ],
+        [
+          "Kayıtsız deney",
+          "Grup devreyi kurduğunu söylüyor; yanma ve şema kaydı yok.",
+          "Çizilmiş şemayla eşleştirilir.",
+          "Kurulum, anahtar, yanma kaydı.",
+          "Kanıt henüz raporlanmamış.",
+          "Gerçek gözlemle kaydı tamamlarım.",
+          "Uydurulmamış veri içeren rapor."
+        ],
+        [
+          "İki değişim",
+          "Grup pil ve ampulü aynı anda değiştirmiş; tek neden ilan ediyor.",
+          "Karşılaştırmada şema ve parçalar tanımlanır.",
+          "Her değişen parça yazılır.",
+          "Neden ayrılamamış.",
+          "Bir seferde tek parçayı değiştiririm.",
+          "Kontrollü tekrar raporu."
+        ],
+        [
+          "Şemada eksik tel",
+          "Şema bir bağlantıyı atlıyor ama gerçek düzenek kapalı.",
+          "Şema gerçek bağlantıyla tamamlanmalı.",
+          "Eksik çizgi ve yanma durumu.",
+          "Çizim ile düzenek tutarsız.",
+          "Şemayı düzeltip bağlantıyı izlerim.",
+          "Düzeltilmiş şema–düzenek raporu."
+        ],
+        [
+          "Güvenli kaynak",
+          "Öğrenci pil devresini prizle çalıştırmak istiyor; deney uygun pille tasarlanmış.",
+          "Yalnız uygun düşük gerilimli pil.",
+          "Kaynak türü ve uygunluk.",
+          "Priz bu deneyin kaynağı değildir.",
+          "Priz kullanmadan öğretmene danışırım.",
+          "Uygun pil ile güvenli kurulum raporu."
+        ]
+      ],
+      "processMap": [
+        [
+          "a"
+        ],
+        [
+          "b"
+        ],
+        [
+          "b"
+        ],
+        [
+          "a",
+          "b"
+        ],
+        [
+          "a",
+          "b"
+        ]
+      ]
+    },
+    {
+      "code": "FB.5.6.3",
+      "q": [
+        "Bu bağlam için sınanabilir bir parlaklık hipotezi kur.",
+        "Bağımsız, bağımlı ve kontrol edilen değişkenleri belirt.",
+        "Hipotezi sınamak için nasıl bir karşılaştırma yaparsın?",
+        "Verilen kanıtın sınırını veya karıştırıcı etkeni açıkla.",
+        "Uygun pil/ampul sınırları içinde öğretmen gözetimli deneme planla ve gerçek sonuçla hipotezi değerlendir."
+      ],
+      "cases": [
+        [
+          "Pil artışı",
+          "Özdeş ampullü seri devrede bir ve iki uygun pil aynı yönde karşılaştırılacak.",
+          "Aynı yönde bağlı uygun pil sayısı artırılırsa, özdeş ampul ve diğer koşullar sabitken parlaklık artabilir.",
+          "Bağımsız: pil sayısı; bağımlı: ampul parlaklığı; kontrol: ampul sayısı/türü, pillerin durumu/yönü, sağlam bağlantı ve ortam.",
+          "Aynı ampulle pil sayısını değiştiririm.",
+          "Pil ve ampul uygunluk sınırı korunmalı.",
+          "Öngörü, iki düzen ve sonuç kaydı."
+        ],
+        [
+          "Ampul artışı",
+          "Aynı pil grubuna seri ikinci özdeş ampul eklenecek.",
+          "Özdeş ampuller aynı pil grubuna seri eklendiğinde, diğer koşullar aynıysa her ampulün parlaklığı azalabilir.",
+          "Bağımsız: seri ampul sayısı; bağımlı: ampul parlaklığı; kontrol: pil sayısı/durumu, ampul türü, bağlantı ve ortam.",
+          "Bir ve iki seri ampulü karşılaştırırım.",
+          "Bağlantı seri ve ampuller özdeş olmalı.",
+          "Hipotez–gözlem karşılaştırma raporu."
+        ],
+        [
+          "İki sayı değişimi",
+          "Pil ve seri ampul sayısı birlikte değişmiş; sonuç yalnız pile bağlanmış.",
+          "Aynı yönde bağlı uygun pil sayısı artırılırsa, özdeş ampul ve diğer koşullar sabitken parlaklık artabilir.",
+          "Bağımsız: pil sayısı; bağımlı: ampul parlaklığı; kontrol: ampul sayısı/türü, pillerin durumu/yönü, sağlam bağlantı ve ortam.",
+          "Diğer sayıyı sabit tutarım.",
+          "Birlikte değişim nedenleri karıştırır.",
+          "Kontrollü yeniden tasarım raporu."
+        ],
+        [
+          "Eski yeni pil",
+          "İki deneyde pil sayısı aynı; biri eski, biri yeni pil kullanıyor.",
+          "Aynı yönde bağlı uygun pil sayısı artırılırsa, özdeş ampul ve diğer koşullar sabitken parlaklık artabilir.",
+          "Bağımsız: pil sayısı; bağımlı: ampul parlaklığı; kontrol: ampul sayısı/türü, pillerin durumu/yönü, sağlam bağlantı ve ortam.",
+          "Benzer durumlu pillerle sayıyı sınarım.",
+          "Sayı tek değişen koşul değildir.",
+          "Kaynak durumunu yazan test planı."
+        ],
+        [
+          "Farklı ampuller",
+          "Bir deneyde küçük, diğerinde farklı özellikte ampul var; pil sayısı etkisi aranıyor.",
+          "Aynı yönde bağlı uygun pil sayısı artırılırsa, özdeş ampul ve diğer koşullar sabitken parlaklık artabilir.",
+          "Bağımsız: pil sayısı; bağımlı: ampul parlaklığı; kontrol: ampul sayısı/türü, pillerin durumu/yönü, sağlam bağlantı ve ortam.",
+          "Özdeş ampullerle yeniden karşılaştırırım.",
+          "Farklı ampuller sonuçları karıştırır.",
+          "Parça özellikli karşılaştırma planı."
+        ],
+        [
+          "Ortam aydınlığı",
+          "Aynı devre karanlık ve aydınlık odada farklı parlak sanılıyor.",
+          "Aynı yönde bağlı uygun pil sayısı artırılırsa, özdeş ampul ve diğer koşullar sabitken parlaklık artabilir.",
+          "Bağımsız: pil sayısı; bağımlı: ampul parlaklığı; kontrol: ampul sayısı/türü, pillerin durumu/yönü, sağlam bağlantı ve ortam.",
+          "Aynı ortamda iki devreyi karşılaştırırım.",
+          "Algı değişimi devre etkisi değildir.",
+          "Ortam kontrollü gözlem planı."
+        ],
+        [
+          "Gevşek temas",
+          "Pil artırılan devrede tel gevşek; ampul sönüyor.",
+          "Aynı yönde bağlı uygun pil sayısı artırılırsa, özdeş ampul ve diğer koşullar sabitken parlaklık artabilir.",
+          "Bağımsız: pil sayısı; bağımlı: ampul parlaklığı; kontrol: ampul sayısı/türü, pillerin durumu/yönü, sağlam bağlantı ve ortam.",
+          "Önce bağlantıyı düzeltirim.",
+          "Sönme hipotezi tek başına çürütmez.",
+          "Temas kontrolü ve tekrar kaydı."
+        ],
+        [
+          "Tek gözlem",
+          "Bir denemede iki pilli devre daha parlak; öğrenci her koşulda sonsuza dek artar diyor.",
+          "Aynı yönde bağlı uygun pil sayısı artırılırsa, özdeş ampul ve diğer koşullar sabitken parlaklık artabilir.",
+          "Bağımsız: pil sayısı; bağımlı: ampul parlaklığı; kontrol: ampul sayısı/türü, pillerin durumu/yönü, sağlam bağlantı ve ortam.",
+          "Güvenli aralıkta tekrar yaparım.",
+          "Sınırsız pil artışı çıkarılmaz.",
+          "Sınırlı hipotez ve tekrar planı."
+        ],
+        [
+          "Ters pil",
+          "İki pilden biri ters bağlanmış; öğrenci sayı arttı diye kesin artış bekliyor.",
+          "Aynı yönde bağlı uygun pil sayısı artırılırsa, özdeş ampul ve diğer koşullar sabitken parlaklık artabilir.",
+          "Bağımsız: pil sayısı; bağımlı: ampul parlaklığı; kontrol: ampul sayısı/türü, pillerin durumu/yönü, sağlam bağlantı ve ortam.",
+          "Öğretmenle doğru yönü kontrol ederim.",
+          "Sayı tek başına yeterli değildir.",
+          "Kaynak yönü etiketli plan."
+        ],
+        [
+          "Ölçüt belirsiz",
+          "Kayıt yalnız 'iyi yandı' diyor; karşılaştırma ölçütü yok.",
+          "Aynı yönde bağlı uygun pil sayısı artırılırsa, özdeş ampul ve diğer koşullar sabitken parlaklık artabilir.",
+          "Bağımsız: pil sayısı; bağımlı: ampul parlaklığı; kontrol: ampul sayısı/türü, pillerin durumu/yönü, sağlam bağlantı ve ortam.",
+          "Aynı koşulda göreli parlaklık kaydı.",
+          "Belirsiz sözcük güçlü kanıt değildir.",
+          "Açık ölçütlü hipotez değerlendirme raporu."
+        ]
+      ],
+      "processMap": [
+        [
+          "d"
+        ],
+        [
+          "a",
+          "c"
+        ],
+        [
+          "ç"
+        ],
+        [
+          "b"
+        ],
+        [
+          "a",
+          "b",
+          "c",
+          "ç",
+          "d"
+        ]
+      ]
+    },
+    {
+      "code": "FB.5.7.1",
+      "q": [
+        "Atıkların ayrıştırma açısından hangi nitelikleri verilmiş?",
+        "Verilen yerel kabul kartına göre hangi gruplara ayrılmalılar?",
+        "Her gruba uygun etiket ve gerekçe yaz.",
+        "Yanlış genellemeyi veya eksik yerel bilgiyi belirt.",
+        "Gerçek atığa dokunmadan temiz örnek/görsel kartlarla ayrıştırma tablosu hazırla."
+      ],
+      "cases": [
+        [
+          "Temiz ambalaj",
+          "Kurgu kabul kartı temiz kâğıt ve metal ambalajı alıyor; kirli mendili almıyor.",
+          "Malzeme ve kirlenme durumu farklı.",
+          "Kâğıt/metal geri dönüşüm; mendil kartta dışarıda.",
+          "Kabul koşuluna göre etiketlenir.",
+          "Her kâğıt görünümlü ürün kabul edilmez.",
+          "Kabul kartlı üç örnek tablosu."
+        ],
+        [
+          "Cam türleri",
+          "Kart ambalaj şişesini kabul ediyor; seramik ve aynayı ayrı tutuyor.",
+          "Cam ambalaj ile diğer ürünler farklı.",
+          "Şişe kabul; diğerleri ayrı akış.",
+          "Ürün türü etiketi gerekir.",
+          "Hepsi kırılgan diye aynı grup olmaz.",
+          "Kırık örnek kullanmadan görsel tablo."
+        ],
+        [
+          "Yağlı kutu",
+          "Kart temiz kartonu alıyor; yoğun yağlı bölümü kabul etmiyor.",
+          "Kirlenme ayırıcı nitelik.",
+          "Temiz/kabul; yağlı bölge kartta dışarıda.",
+          "Duruma göre etiket.",
+          "Her karton koşulsuz kabul edilmez.",
+          "Temiz fotoğraflarla durum tablosu."
+        ],
+        [
+          "Kompozit paket",
+          "Kart içecek kutularına ayrı toplama yolu tanımlıyor.",
+          "Birden fazla malzemeli ambalaj.",
+          "Karttaki ayrı ambalaj akışı.",
+          "Yerel kabul etiketine uyulur.",
+          "Sadece dış rengine göre sınıflanmaz.",
+          "Ambalaj türü ve akış tablosu."
+        ],
+        [
+          "Pil atığı",
+          "Kart atık pili evsel ambalajdan ayrı özel topluyor.",
+          "Pil özel atık türüdür.",
+          "Ayrı pil toplama yolu.",
+          "Ambalaj kutusuna atılmaz.",
+          "Geri dönüşebilir demek aynı kutu değildir.",
+          "Pile dokunmadan işaretli görsel kart."
+        ],
+        [
+          "Organik kabuk",
+          "Kart sebze kabukları için ayrı organik akış veriyor; ambalaj değil.",
+          "Organik atık niteliği.",
+          "Karttaki organik grup.",
+          "Ambalajdan farklı işleme yolu.",
+          "Her atık aynı yöntemle geri dönüştürülmez.",
+          "Yerel kart koşullu sınıflandırma."
+        ],
+        [
+          "Elektronik parça",
+          "Kart elektronik atığı ayrı yetkili toplama yoluna yönlendiriyor.",
+          "Elektronik bileşen niteliği.",
+          "Ayrı elektronik atık akışı.",
+          "Evsel ambalajla karışmaz.",
+          "Parçalayarak malzeme ayırma yapılmaz.",
+          "Fotoğraf üzerinden akış tablosu."
+        ],
+        [
+          "Bilinmeyen plastik",
+          "Ambalajın türü belirsiz; yerel kart bu ürünü açıklamıyor.",
+          "Malzeme bilgisi eksik.",
+          "Kesin sınıf yerine bilgi beklenir.",
+          "Belirsiz/kuruma sorulacak etiketi.",
+          "Bütün plastikler her yerde kabul edilmez.",
+          "Eksik bilgi alanı olan tablo."
+        ],
+        [
+          "Gıda atığı teması",
+          "30 Mart 2026 Sıfır Atık Günü gıda atığına odaklanıyor. Kurgu kart organik ve ambalajı ayırıyor.",
+          "Gıda artığı ile ambalaj farklı.",
+          "Organik/ambalaj akışları ayrı.",
+          "İçerik ve paket ayrı etiketlenir.",
+          "Etkinlik teması yerel kabul kuralı değildir.",
+          "Kaynaklı tema ve kurgu kabul kartlı tablo."
+        ],
+        [
+          "Kirlenmiş karışım",
+          "Temiz geri dönüşüm kutusuna yemek artığı dökülmüş; tümü temiz sayılıyor.",
+          "Karışım ve kirlenme önemli.",
+          "Kartın kirlenme koşulu kontrol edilir.",
+          "Durumu belirsiz karışım ayrı değerlendirilir.",
+          "Kutunun adı içerik temizliğini kanıtlamaz.",
+          "Atığa dokunmadan fotoğraf sınıflandırması."
+        ]
+      ],
+      "processMap": [
+        [
+          "a"
+        ],
+        [
+          "b"
+        ],
+        [
+          "c",
+          "ç"
+        ],
+        [
+          "a",
+          "b"
+        ],
+        [
+          "a",
+          "b",
+          "c",
+          "ç"
+        ]
+      ]
+    },
+    {
+      "code": "FB.5.7.2",
+      "q": [
+        "Bağlamda geri dönüşüm ve kaynak kullanımı açısından hangi ilişki araştırılıyor?",
+        "Verileri hangi başlıklarla kaydeder ve karşılaştırırsın?",
+        "Verilerin desteklediği bilimsel çıkarımı yaz.",
+        "Verilerin kanıtlamadığı tasarruf veya başarı iddiasını belirt.",
+        "Kaynaklı küçük bir inceleme yap; gerçek kayıt, sınırlılık ve uygulanabilir öneri sun."
+      ],
+      "cases": [
+        [
+          "Kâğıt kaydı",
+          "Kurgu okulda 10 kg kâğıt ayrılmış; tesise teslim bilgisi henüz yok.",
+          "Malzemenin yeniden kazanım olasılığı.",
+          "Ayrılan/teslim edilen/işlenen miktar.",
+          "Ayrıştırma yapılmış; işlem tamamlanması bilinmiyor.",
+          "Kesin ağaç/enerji sayısı çıkarılmaz.",
+          "Teslim kanıtı ve kaynaklı inceleme."
+        ],
+        [
+          "Plastik işleme",
+          "Kaynak kartı plastik ambalajın işlenip yeni ham maddeye dönüştürüldüğünü anlatıyor; miktar yok.",
+          "Geri dönüşüm malzemeyi yeniden üretime katabilir.",
+          "Toplanan, işlenen ve yeni kullanım.",
+          "Malzeme döngüsü kaynak kullanımını destekler.",
+          "Verilmeyen tasarruf miktarı hesaplanamaz.",
+          "Kaynaklı işlem aşamaları incelemesi."
+        ],
+        [
+          "Alım ve atık",
+          "Daha az gereksiz ambalaj alınınca ayrılan atık da azalıyor.",
+          "Önleme kaynak kullanımını etkiler.",
+          "Alınan ve atılan ambalaj.",
+          "Az atık, önlemeden kaynaklanabilir.",
+          "Az geri dönüşüm miktarı başarısızlık değildir.",
+          "Önleme/ayrıştırma ayrı kayıtlı inceleme."
+        ],
+        [
+          "Metal döngüsü",
+          "Kaynak kartı metalin işlenip yeni üründe kullanıldığını belirtiyor; oran vermiyor.",
+          "Malzeme tekrar üretime girebilir.",
+          "Malzeme girişi ve yeni kullanım.",
+          "Birincil kaynak ihtiyacını azaltmaya katkı olabilir.",
+          "Verilmeyen enerji yüzdesi uydurulmaz.",
+          "Kaynak metninin sınırlarını yaz."
+        ],
+        [
+          "Kontaminasyon",
+          "Aynı miktar ambalajdan kirli karışımda daha azı kabul ediliyor.",
+          "Ayrıştırma kalitesi kazanımı etkiler.",
+          "Toplanan/kabul/ret miktarı.",
+          "Doğru ayrıştırma verimi destekler.",
+          "Toplanan her şey işlenmiş sayılmaz.",
+          "Kabul koşullu kaynak incelemesi."
+        ],
+        [
+          "Ağırlık artışı",
+          "Kutudaki ıslak kâğıt ağır gelmiş; tasarruf daha çok sanılıyor.",
+          "Nem ölçümü etkiliyor.",
+          "Kuru/ıslak durum ve miktar.",
+          "Ham ağırlık karşılaştırması yanıltabilir.",
+          "Daha ağır kutu kesin daha çok malzeme değildir.",
+          "Koşulları eşitleyen kayıt önerisi."
+        ],
+        [
+          "Karşılaştırmasız kampanya",
+          "Kampanya sonrası atık az; öncesi veri yok.",
+          "Etkiyi görmek için başlangıç kaydı gerekir.",
+          "Önce/sonra miktar ve katılım.",
+          "Tek son ölçüm etkiyi kesinleştirmez.",
+          "Kesin yüzde başarı çıkarılmaz.",
+          "Başlangıç verili takip planı."
+        ],
+        [
+          "Gıda israfı",
+          "2026 Sıfır Atık Günü gıda atığı temalı. Kurgu yemekhane artık ve ambalajı ayrı tartıyor.",
+          "Gıda israfı kaynak kaybıyla ilişkilidir.",
+          "Gıda/ambalaj miktarı ve porsiyon sayısı.",
+          "Önleme ve uygun yönetim birlikte incelenir.",
+          "Kurgu okul verisi küresel istatistik değildir.",
+          "Resmî tema ve yerel gerçek kayıt ayrımı."
+        ],
+        [
+          "Kişi sayısı farkı",
+          "İki gün atık aynı; ikinci gün öğrenci sayısı daha fazla.",
+          "Kişi sayısı karşılaştırmayı etkiler.",
+          "Toplam ve kişi sayısı.",
+          "Aynı toplam farklı koşullarda oluşmuş.",
+          "Tek toplamla davranış eşit denmez.",
+          "Katılım bilgili inceleme."
+        ],
+        [
+          "İşlenmeyen stok",
+          "Toplanan şişeler depoda bekliyor; okul tümü yeni ürüne dönüştü diyor.",
+          "Toplama ile işlem farklı aşamalar.",
+          "Toplama, teslim, işlem kanıtı.",
+          "Toplama hazırlık aşamasıdır.",
+          "Stok işlenmiş ürün değildir.",
+          "Aşamaları kaynakla izleyen rapor."
+        ]
+      ],
+      "processMap": [
+        [
+          "a"
+        ],
+        [
+          "b"
+        ],
+        [
+          "c"
+        ],
+        [
+          "c"
+        ],
+        [
+          "a",
+          "b",
+          "c"
+        ]
+      ]
+    },
+    {
+      "code": "FB.5.7.3",
+      "q": [
+        "Bağlamdaki deneyim veya kaydı hangi somut noktalarla gözden geçirirsin?",
+        "Deneyimden çıkarılabilecek sınırlı sonucu yaz.",
+        "Uygulanabilir bir iyileştirme öner ve gerekçelendir.",
+        "Önerinin işe yaradığını hangi ölçütle değerlendirirsin?",
+        "Kendi güvenli okul/ev gözlemini yap; gerçek deneyim, çıkarım, uygulama ve değerlendirme günlüğü hazırla."
+      ],
+      "cases": [
+        [
+          "Yanlış kutu",
+          "Kurgu gözlemde birçok kişi etiketleri karıştırmış.",
+          "Hangi etiketin karıştığı incelenir.",
+          "Mevcut etiketler yeterince anlaşılmamış olabilir.",
+          "Örnek resimli açık etiket.",
+          "Yanlış atım sayısı ve akran açıklaması.",
+          "Kişisel veri toplamadan gerçek gözlem."
+        ],
+        [
+          "Uzak istasyon",
+          "Kutu sınıftan uzak; öğrenciler sık kullanmadıklarını söylüyor.",
+          "Uzaklık ve erişim kaydı.",
+          "Yerleşim katılımı etkileyebilir.",
+          "Uygun erişilebilir konum önerisi.",
+          "Kullanım ve yanlış atım takibi.",
+          "İzinli konum incelemesi günlüğü."
+        ],
+        [
+          "Dolan kutu",
+          "Kutu taşınca temiz malzemeler karışıyor.",
+          "Doluluk ve boşaltma sıklığı.",
+          "Toplama düzeni yetersiz olabilir.",
+          "Sorumlu ve boşaltma çizelgesi.",
+          "Taşma sıklığının değişimi.",
+          "Atığa dokunmadan doluluk gözlemi."
+        ],
+        [
+          "Belirsiz sorumluluk",
+          "Kutuyu kimin teslim edeceği bilinmiyor.",
+          "Görev ve teslim kaydı.",
+          "Ayrıştırma tek başına süreç değildir.",
+          "Yetişkin sorumluluğunda görev akışı.",
+          "Teslim kayıtlarının tamamlanması.",
+          "Güvenli görev dağılımı günlüğü."
+        ],
+        [
+          "Tek günlük başarı",
+          "Bir gün yanlış atım yok; sistem kalıcı başarılı sayılıyor.",
+          "Süre ve gözlem kapsamı.",
+          "Bir gün sınırlı kanıttır.",
+          "Farklı günlerde izleme.",
+          "Tekrarlı uygun ayrıştırma.",
+          "Uzunlamasına gerçek gözlem planı."
+        ],
+        [
+          "Erişilemeyen etiket",
+          "Yazılar küçük; bazı kullanıcılar okuyamıyor.",
+          "Okunabilirlik ve erişim.",
+          "Sorun yalnız isteksizlik olmayabilir.",
+          "Büyük yazı, resim ve uygun yükseklik.",
+          "Kullanıcı geribildirimi ve doğru eşleştirme.",
+          "İzinli erişilebilirlik incelemesi."
+        ],
+        [
+          "Yeni kullanıcılar",
+          "Yeni öğrenciler okulun kabul kurallarını bilmiyor.",
+          "Bilgilendirme deneyimi.",
+          "Eksik tanıtım hataları etkileyebilir.",
+          "Kısa örnekli tanıtım.",
+          "Tanıtım öncesi/sonrası anlayış.",
+          "Akran izniyle kişisiz geribildirim."
+        ],
+        [
+          "Gıda atığı haftası",
+          "2026 teması gıda atığı; kurgu sınıf yalnız afiş yapmış, davranış kaydı yok.",
+          "Afiş ile uygulama ayrılır.",
+          "Farkındalık kanıtı davranış kanıtı değildir.",
+          "Önleme ve miktar izleme planı.",
+          "Gerçek gıda artığı ve katılım kaydı.",
+          "Atığa temas etmeden yetişkin ölçümünü incele."
+        ],
+        [
+          "Yerel kural değişimi",
+          "Kabul kartı güncellenmiş; eski etiketler kullanılmaya devam ediyor.",
+          "Kart tarihi ve etiket sürümü.",
+          "Bilgi güncelleme süreci eksik.",
+          "Yetkili kartla etiket yenileme.",
+          "Yeni kurala uygun eşleştirme.",
+          "Kaynak/sürüm bilgili deneyim günlüğü."
+        ],
+        [
+          "Geribildirim döngüsü",
+          "Öneri uygulanmış ama sonuç kimseyle paylaşılmamış.",
+          "Önce/sonra kayıt ve paylaşım.",
+          "Değerlendirme tamamlanmamış.",
+          "Kısa ölçütlü sonuç paylaşımı.",
+          "Kanıtlı değişim ve yeni ihtiyaç.",
+          "Mahremiyet koruyan sonuç günlüğü."
+        ]
+      ],
+      "processMap": [
+        [
+          "a"
+        ],
+        [
+          "b"
+        ],
+        [
+          "b"
+        ],
+        [
+          "c"
+        ],
+        [
+          "a",
+          "b",
+          "c"
+        ]
+      ]
+    },
+    {
+      "code": "FB.5.1.1",
+      "q": [
+        "Bu soruya bilgi toplamak için hangi güvenli araç veya kaynağı seçersin?",
+        "Bağlamdaki bilgiden Güneş’in yapısı veya dönmesiyle ilgili ne öğrenebilirsin?",
+        "Bilginin doğruluğunu hangi karşılaştırmayla sınarsın?",
+        "Sonucu kaydederken hangi kaynak, tarih veya sınır bilgisini belirtmelisin?",
+        "Güvenilir dijital/basılı kaynakla kısa araştırma yap; doğrudan Güneş gözlemi yapmadan kaynaklı kayıt hazırla."
+      ],
+      "processMap": [
+        [
+          "a"
+        ],
+        [
+          "b"
+        ],
+        [
+          "c"
+        ],
+        [
+          "ç"
+        ],
+        [
+          "a",
+          "b",
+          "c",
+          "ç"
+        ]
+      ],
+      "cases": [
+        [
+          "Güneş lekesi dizisi",
+          "Kurgu kaynak kartında aynı leke farklı tarihlerde Güneş diski üzerinde farklı yerde gösteriliyor.",
+          "Tarihli güvenilir uzay gözlem arşivi.",
+          "Leke konumları dönmeye kanıt sağlayabilir.",
+          "Tarihli seri ve açıklamasını karşılaştırırım.",
+          "Tarih sırası ve bakış koşulu.",
+          "Leke dizisini kaynakla açıklayan rapor."
+        ],
+        [
+          "Gaz topu modeli",
+          "Bir afiş Güneş’i katı taş küre diye tanımlıyor; kaynak sıcak gaz yapısını anlatıyor.",
+          "Yetkin astronomi yayını.",
+          "Güneş çok sıcak gazlardan oluşur.",
+          "Afişi bilimsel kaynakla doğrularım.",
+          "Düzeltilmiş bilgi ve kaynak tarihi.",
+          "Yapı bilgisini katman adları vermeden kaydet."
+        ],
+        [
+          "Katmanlı çizim",
+          "Şema Güneş’in farklı katmanlarını gösteriyor; öğrenci her çizgiyi katı duvar sayıyor.",
+          "Açıklaması bulunan bilimsel şema.",
+          "Güneş’in farklı katmanları vardır.",
+          "Şema ile kaynak metni karşılaştırırım.",
+          "Çizginin temsili olduğunu belirtirim.",
+          "Katman isimleri ayrıntısına girmeyen bilgi notu."
+        ],
+        [
+          "Uzaklık etkisi",
+          "Güneş gökyüzünde küçük görünüyor; öğrenci Dünya’dan küçük olduğunu söylüyor.",
+          "Gerçek büyüklük verili kaynak.",
+          "Güneş Dünya’dan çok büyüktür.",
+          "Görünür boyutu gerçek verilerle ayırırım.",
+          "Uzaklığın görünüşe etkisini yazarım.",
+          "Boyut–görünüş ayrımlı kaynaklı afiş."
+        ],
+        [
+          "Tek fotoğraf",
+          "Tek Güneş fotoğrafından dönme süresi kesin hesaplanmak isteniyor.",
+          "Zaman bilgili görüntü serisi.",
+          "Tek kare hareket süresini vermez.",
+          "Farklı tarihler ve açıklamalar gerekir.",
+          "Eksik zaman bilgisini belirtirim.",
+          "Verilen/verilmeyen bilgi tablosu."
+        ],
+        [
+          "Yanıltıcı kaynak",
+          "İsimsiz paylaşım Güneş’in ışığını Ay’dan aldığını söylüyor.",
+          "Yazarı/kurumu belli astronomi kaynağı.",
+          "Güneş ışık ve enerji kaynağıdır.",
+          "İddiayı yetkin kaynaklarla karşılaştırırım.",
+          "Paylaşımın doğrulanmadığını işaretlerim.",
+          "Kaynak güvenilirliği karşılaştırma kaydı."
+        ],
+        [
+          "Güvenli araştırma",
+          "Öğrenci Güneş’i sıradan dürbünle incelemeyi öneriyor.",
+          "Güvenilir hazır gözlem verileri.",
+          "Yapı ve dönme dijital kaynaktan incelenebilir.",
+          "Öğretmenle kaynak doğrularım.",
+          "Doğrudan bakış tehlikesini belirtirim.",
+          "Dürbün/mercek kullanmadan kaynak araştırması."
+        ],
+        [
+          "Model ile fotoğraf",
+          "Renkli katman görselinin gerçek renkli fotoğraf olduğu sanılıyor.",
+          "Görsel türü ve açıklaması belli kaynak.",
+          "Model yapıyı temsilen gösterir.",
+          "Üretim türünü ve açıklamasını denetlerim.",
+          "Şema/fotoğraf ayrımını kaydederim.",
+          "Görsel türü etiketli araştırma dosyası."
+        ],
+        [
+          "Ters tarihler",
+          "Güneş lekesi kareleri dosya adına göre dizilmiş; çekim tarihleri farklı sırada.",
+          "Özgün tarihli veri arşivi.",
+          "Dönme çıkarımı doğru sıra gerektirir.",
+          "Çekim zamanına göre yeniden sıralarım.",
+          "Dosya adı ile çekim tarihini ayırırım.",
+          "Tarihli dizi ve sınırlı çıkarım raporu."
+        ],
+        [
+          "İki kaynağın uyuşmazlığı",
+          "İki metin Güneş’in dönmesi hakkında farklı ifadeler veriyor; biri kaynaksız.",
+          "Yetkin kurum ve açıklamalı kaynak.",
+          "Güneş kendi ekseni çevresinde döner.",
+          "Tarih, yazar ve kapsamı kontrol ederim.",
+          "Uyuşmazlığı silmeden doğrulama yazarım.",
+          "Doğrulanmış bilgi ve açık soru listesi."
+        ]
+      ]
+    },
+    {
+      "code": "FB.5.1.2",
+      "q": [
+        "Bağlamda Ay’ın hangi özelliği veya hareketi belirtiliyor?",
+        "Veriyi hangi başlıklarla kaydetmelisin?",
+        "Kayıttan hangi bilimsel çıkarımı yapabilirsin?",
+        "Desteklenmeyen iddiayı veya gözlemin sınırını belirt.",
+        "Güvenilir kaynak veya güvenli modelle ilgili veriyi incele; gerçek kayıtla gerekçeli çıkarım raporu sun."
+      ],
+      "processMap": [
+        [
+          "a"
+        ],
+        [
+          "b"
+        ],
+        [
+          "c"
+        ],
+        [
+          "c"
+        ],
+        [
+          "a",
+          "b",
+          "c"
+        ]
+      ],
+      "cases": [
+        [
+          "Kraterli yüzey",
+          "Kaynak görseli Ay’ın kayalık yüzeyinde çok sayıda çarpma krateri gösteriyor.",
+          "Kayalık ve kraterli yüzey.",
+          "Kaynak, görüntü ve gözlenen özellik.",
+          "Ay yüzeyinde çarpma izleri bulunur.",
+          "Şema gerçek fotoğraf diye sunulmaz.",
+          "Kaynak türünü belirten yüzey raporu."
+        ],
+        [
+          "Dönme–dolanma",
+          "Veri kartı Ay’ın kendi ekseninde dönmesini ve Dünya çevresinde dolanmasını ayrı gösteriyor.",
+          "İki farklı hareket.",
+          "Hareket adı, merkez/eksen.",
+          "Dönme ile dolanma aynı hareket değildir.",
+          "Bir hareket diğerini yok saydırmaz.",
+          "İki hareketi ayrı çizimle kaydet."
+        ],
+        [
+          "Uzak yüz kaydı",
+          "DSCOVR görüntüsünde Ay’ın Dünya’dan görünmeyen yüzü aydınlık.",
+          "Uzak yüz Güneş ışığı alabilir.",
+          "Çekim tarihi, bakış noktası, aydınlık yüz.",
+          "Uzak yüz daima karanlık değildir.",
+          "Bu tek kare tüm hareket dönemini vermez.",
+          "2015 görüntüsünü kaynaklı yorumla."
+        ],
+        [
+          "Göreli yer değişimi",
+          "2015 DSCOVR dizisindeki iki seçili karede Ay’ın Dünya’ya göre yeri değişmiş.",
+          "Ay’ın göreli konumu değişiyor.",
+          "Kare sırası ve kaynak tarihi.",
+          "Görüntü dizisi hareket kanıtı sunar.",
+          "İki kareden tam dönem hesaplanmaz.",
+          "Görüntü ile çıkarımı ayıran rapor."
+        ],
+        [
+          "Aynı yüz",
+          "Kaynak Ay’ın dönme ve Dünya çevresinde dolanma sürelerinin yaklaşık eşit olduğunu belirtiyor.",
+          "Uyumlu dönme ve dolanma.",
+          "İki hareket ve yaklaşık süre ilişkisi.",
+          "Dünya’dan yaklaşık aynı yüz görülür.",
+          "Ay hiç dönmüyor sonucu yanlıştır.",
+          "İşaretli top modeliyle kaynak karşılaştırması."
+        ],
+        [
+          "Dünya ile boyut",
+          "Kaynakta Dünya Ay’dan büyük; eş boyda oyuncak görseli yanında verilmiş.",
+          "Ay Dünya’dan küçüktür.",
+          "Gerçek boyut kaynağı ve model sınırı.",
+          "Oyuncak çizimi ölçekli olmayabilir.",
+          "Oyuncak görünüşü ölçüm değildir.",
+          "Kaynaklı boyut karşılaştırma kaydı."
+        ],
+        [
+          "Koyu düzlükler",
+          "Kaynak Ay’daki koyu düzlüklerin su denizi olmadığını açıklıyor.",
+          "Katı koyu düzlükler.",
+          "Görsel, açıklama ve adlandırma.",
+          "Deniz adı sıvı suyu kanıtlamaz.",
+          "Görsel koyuluğu su varlığına eşitlenmez.",
+          "Görsel–terim–açıklama tablosu."
+        ],
+        [
+          "Hareket tablosu",
+          "Öğrenci Ay’ın Dünya çevresindeki yoluna dönme, kendi eksenine dolanma yazmış.",
+          "Hareket adları ters eşleştirilmiş.",
+          "Doğru hareket ve referans noktası.",
+          "Kendi ekseni dönme, Dünya çevresi dolanma.",
+          "Yanlış etiketi aynen aktarmam.",
+          "Düzeltilmiş hareket tablosu."
+        ],
+        [
+          "Eksik yüzey görüntüsü",
+          "Bulanık Ay karesinde krater seçilmiyor; öğrenci Ay’da krater yok diyor.",
+          "Görüntü kalitesi gözlemi sınırlar.",
+          "Görüntü kalitesi ve seçilen özellik.",
+          "Seçilememek yokluk kanıtı değildir.",
+          "Tek bulanık kareye genelleme yapılmaz.",
+          "Daha açık kaynakla karşılaştırmalı kayıt."
+        ],
+        [
+          "Işık kaynağı iddiası",
+          "Kaynak Ay’ın Güneş ışığını yansıttığını söylüyor; öğrenci kendi ışığı var diyor.",
+          "Yansıyan ışıkla görünür.",
+          "Işık kaynağı ve yansıtan cisim ayrımı.",
+          "Ay kendi ışığını üretmez.",
+          "Parlak görünmek ışık kaynağı olmak değildir.",
+          "Lamba–mat top modeliyle kaynak raporu."
+        ]
+      ]
+    }
+  ]
+}

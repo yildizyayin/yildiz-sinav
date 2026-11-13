@@ -1,0 +1,176 @@
+{
+  "metadata": {
+    "outcomeCode": "MAT.5.4.3",
+    "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/451",
+    "status": "DRAFT_NOT_APPROVED",
+    "sourceDate": "2026-08-28",
+    "curriculumTargetYear": "2027-2028",
+    "count": 10,
+    "notCountedToward50Questions": true,
+    "multipleChoiceImporterSupports": false,
+    "noAssetFilesAttached": true
+  },
+  "tasks": [
+    {
+      "taskId": "MAT543-P01",
+      "title": "24 karelik farklı tasarımlar",
+      "prompt": "24 eş birim kareyi 1×24, 2×12, 3×8 ve 4×6 biçiminde yeniden düzenle. Her modelin çevresini hesaplayıp tabloya yaz. Alanı 36 birim kareden büyük model kullanma.",
+      "expectedEvidence": [
+        "Dört geçerli alan 24 modeli",
+        "Çevre 50,28,22,20",
+        "Eş alan farklı çevre çıkarımı"
+      ],
+      "taskType": "REAL_WORLD_MODEL_REASON_EXPLAIN",
+      "teacherAssessmentRequired": true,
+      "autoGraded": false
+    },
+    {
+      "taskId": "MAT543-P02",
+      "title": "20 birim çevre tasarımları",
+      "prompt": "20 birim çevreli, kenarları pozitif doğal sayı olan bütün farklı dikdörtgen ölçülerini kareli kâğıda çiz. Alanlarını küçükten büyüğe sırala.",
+      "expectedEvidence": [
+        "Beş sırasız kenar çifti",
+        "Alanlar 9,16,21,24,25",
+        "Çevre sabitken alan değişimi"
+      ],
+      "taskType": "REAL_WORLD_MODEL_REASON_EXPLAIN",
+      "teacherAssessmentRequired": true,
+      "autoGraded": false
+    },
+    {
+      "taskId": "MAT543-P03",
+      "title": "Dikdörtgen ile kareyi karşılaştır",
+      "prompt": "Çevresi 24 birim olan 3×9, 4×8, 5×7 ve 6×6 modellerini çiz. Hangisinin en büyük alana sahip olduğunu nedenleriyle açıkla.",
+      "expectedEvidence": [
+        "Dört doğru model",
+        "Alan 27,32,35,36",
+        "Kare ile en büyük alanı gerekçelendirme"
+      ],
+      "taskType": "REAL_WORLD_MODEL_REASON_EXPLAIN",
+      "teacherAssessmentRequired": true,
+      "autoGraded": false
+    },
+    {
+      "taskId": "MAT543-P04",
+      "title": "36 kareyi koru",
+      "prompt": "36 kare kullanarak 3×12, 4×9 ve 6×6 dikdörtgenlerini oluştur. Çevrelerini ve alanlarını tabloda karşılaştır; çizimlerin tamamını doğrula.",
+      "expectedEvidence": [
+        "Alanları 36 olan üç model",
+        "Çevreleri 30,26,24",
+        "Değişen/değişmeyen nicelikler"
+      ],
+      "taskType": "REAL_WORLD_MODEL_REASON_EXPLAIN",
+      "teacherAssessmentRequired": true,
+      "autoGraded": false
+    },
+    {
+      "taskId": "MAT543-P05",
+      "title": "Alan 12 için karşı örnek",
+      "prompt": "'Alan aynıysa çevre de aynıdır' iddiasını alanları 12 olan iki farklı dikdörtgenle çürüt.",
+      "expectedEvidence": [
+        "2×6 ve 3×4 veya benzeri",
+        "Alanları 12, çevreleri farklı",
+        "Geçerli karşı örnek açıklaması"
+      ],
+      "taskType": "REAL_WORLD_MODEL_REASON_EXPLAIN",
+      "teacherAssessmentRequired": true,
+      "autoGraded": false
+    },
+    {
+      "taskId": "MAT543-P06",
+      "title": "Çevre 16 için karşı örnek",
+      "prompt": "'Çevre aynıysa alan da aynıdır' önermesini sınamak amacıyla 2×6 ve 3×5 dikdörtgenlerini çiz. Ölçümlerle sonuç yaz.",
+      "expectedEvidence": [
+        "İki model de çevre 16",
+        "Alanları 12 ve 15",
+        "Yanlış genellemeye gerekçe"
+      ],
+      "taskType": "REAL_WORLD_MODEL_REASON_EXPLAIN",
+      "teacherAssessmentRequired": true,
+      "autoGraded": false
+    },
+    {
+      "taskId": "MAT543-P07",
+      "title": "En küçük çevre arayışı",
+      "prompt": "Alanı 18 birim kare olan doğal sayı kenarlı bütün dikdörtgenleri çiz, çevrelerini hesapla ve en küçüğünü gerekçelendir.",
+      "expectedEvidence": [
+        "1×18,2×9,3×6",
+        "Çevreler 38,22,18",
+        "En küçük 3×6"
+      ],
+      "taskType": "REAL_WORLD_MODEL_REASON_EXPLAIN",
+      "teacherAssessmentRequired": true,
+      "autoGraded": false
+    },
+    {
+      "taskId": "MAT543-P08",
+      "title": "Akran tablosu kontrolü",
+      "prompt": "Arkadaşının hazırladığı, alanı 20 birim kare olan dikdörtgenlere ait tabloyu kontrol et. Sırasız çarpan çiftleri ve çevrelerde eksik/hatalı kayıtları düzelt.",
+      "expectedEvidence": [
+        "1×20,2×10,4×5",
+        "Çevreler 42,24,18",
+        "En az bir kontrol açıklaması"
+      ],
+      "taskType": "REAL_WORLD_MODEL_REASON_EXPLAIN",
+      "teacherAssessmentRequired": true,
+      "autoGraded": false
+    },
+    {
+      "taskId": "MAT543-P09",
+      "title": "Piksel sergi tasarımı",
+      "prompt": "Aynı çevreye sahip, alanları farklı en az üç dikdörtgenle ızgaralı bir piksel panosu oluştur. Her biri en fazla 36 birim kare olsun.",
+      "expectedEvidence": [
+        "Doğru üç farklı model",
+        "Aynı çevreyi gösterme",
+        "Her birinin alanı en fazla 36"
+      ],
+      "taskType": "REAL_WORLD_MODEL_REASON_EXPLAIN",
+      "teacherAssessmentRequired": true,
+      "autoGraded": false
+    },
+    {
+      "taskId": "MAT543-P10",
+      "title": "İki şartın birlikte denetimi",
+      "prompt": "Alanı 24 ve çevresi 22 birim olan bir dikdörtgeni kareli kâğıtta çiz. Önce alan çarpım çiftlerini listele, sonra çevreye uyan çifti seç.",
+      "expectedEvidence": [
+        "3×8 çözümü",
+        "Alan ve çevre birlikte doğrulama",
+        "Farklı strateji/akran öz değerlendirmesi"
+      ],
+      "taskType": "REAL_WORLD_MODEL_REASON_EXPLAIN",
+      "teacherAssessmentRequired": true,
+      "autoGraded": false
+    }
+  ],
+  "rubric": {
+    "criteria": [
+      {
+        "id": "model",
+        "weight": 25,
+        "description": "Alan veya çevresi verilen dikdörtgenlerin gerçekçi, doğru ve ölçülebilir modellerini oluşturma"
+      },
+      {
+        "id": "table",
+        "weight": 25,
+        "description": "Her modelin kenar/alan/çevre verilerini doğru tablolaştırma"
+      },
+      {
+        "id": "inference",
+        "weight": 30,
+        "description": "Eş alanın farklı çevre, eş çevrenin farklı alan verebilmesini gerekçelendirme"
+      },
+      {
+        "id": "reflection",
+        "weight": 20,
+        "description": "Örnek, karşı örnek ve öz-akran kontrolü"
+      }
+    ],
+    "performanceLevels": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "teacherApprovalRequired": true
+  }
+}

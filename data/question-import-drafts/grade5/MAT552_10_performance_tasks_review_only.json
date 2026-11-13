@@ -1,0 +1,200 @@
+{
+  "metadata": {
+    "outcomeCode": "MAT.5.5.2",
+    "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/452",
+    "academicYearCatalog": "2027-2028",
+    "reviewStatus": "DRAFT_NOT_APPROVED",
+    "taskCount": 10,
+    "notCountedToward50Questions": true,
+    "currentMCImporterCompatible": false,
+    "noStudentDataCollected": true
+  },
+  "tasks": [
+    {
+      "id": "MAT552-P01",
+      "title": "Arkadaş grafiğini denetle",
+      "prompt": "Öğretmenin sağladığı kasıtlı olarak yanlış ölçekli ve doğru ölçekli iki sütun grafiğini karşılaştır. İfadelerin hangisinin veriyi doğru yansıttığını gerekçelendir.",
+      "evidence": [
+        "Eksen başlangıcı ve ölçek kontrolü",
+        "Ham sıklıkların karşılaştırılması",
+        "Yanıltıcı izlenimin gösterilmesi",
+        "Doğru yorum"
+      ],
+      "taskType": "STATISTICAL_RESEARCH_AND_CRITIQUE",
+      "manualTeacherAssessment": true,
+      "autoGraded": false,
+      "syntheticExampleDataOnly": true
+    },
+    {
+      "id": "MAT552-P02",
+      "title": "Genelleme doğru mu?",
+      "prompt": "Bir sınıftan alınan sentetik tercihlerin 'Türkiye'deki bütün öğrenciler' diye sunulduğu örnek haberi incele. Yorumun sınırlarını yaz ve daha güvenilir örneklem öner.",
+      "evidence": [
+        "Örneklem/evren ayrımı",
+        "Aşırı genelleme işareti",
+        "İyileştirme",
+        "Saygılı gerekçe"
+      ],
+      "taskType": "STATISTICAL_RESEARCH_AND_CRITIQUE",
+      "manualTeacherAssessment": true,
+      "autoGraded": false,
+      "syntheticExampleDataOnly": true
+    },
+    {
+      "id": "MAT552-P03",
+      "title": "Eksik kategori incelemesi",
+      "prompt": "Grafikte yalnız en yüksek iki kategori gösterilmiş olsun. Tam tabloda dört kategori bulunduğunda çıkarımların nasıl değişebileceğini karşı örnekle göster.",
+      "evidence": [
+        "Eksik veri tespiti",
+        "Dört kategori tablosu",
+        "Uygun karşı örnek",
+        "Yorumu düzeltme"
+      ],
+      "taskType": "STATISTICAL_RESEARCH_AND_CRITIQUE",
+      "manualTeacherAssessment": true,
+      "autoGraded": false,
+      "syntheticExampleDataOnly": true
+    },
+    {
+      "id": "MAT552-P04",
+      "title": "Tek/çoklu seçim hatası",
+      "prompt": "Bir anket 20 kişiden ikişer kategori seçmesini istiyor. Toplam kategori yanıtı 40 iken raporda '40 katılımcı' yazılmış. Raporun sorununu ve doğru başlığını açıkla.",
+      "evidence": [
+        "20 kişi/40 seçim ayrımı",
+        "Grafik başlığı revizyonu",
+        "Veri toplama kuralı",
+        "Gerekçe"
+      ],
+      "taskType": "STATISTICAL_RESEARCH_AND_CRITIQUE",
+      "manualTeacherAssessment": true,
+      "autoGraded": false,
+      "syntheticExampleDataOnly": true
+    },
+    {
+      "id": "MAT552-P05",
+      "title": "İki sınıfın ham sayı ve payları",
+      "prompt": "A sınıfı 10/20, B sınıfı 15/30 tercihi ile ilgili iki yorum yaz: yalnız ham sayı kullanan yanıltıcı yorum ve payı hesaba katan düzeltme.",
+      "evidence": [
+        "İki sınıfın doğru verileri",
+        "Payların ikisinde 1/2 olması",
+        "Yanıltıcı iddianın reddi",
+        "Gerekçeli sonuç"
+      ],
+      "taskType": "STATISTICAL_RESEARCH_AND_CRITIQUE",
+      "manualTeacherAssessment": true,
+      "autoGraded": false,
+      "syntheticExampleDataOnly": true
+    },
+    {
+      "id": "MAT552-P06",
+      "title": "Sosyal medya istatistik eleştirisi",
+      "prompt": "Tamamen sentetik bir paylaşım için '50 kişiden 25'i seçti, çoğunluk destekliyor' iddiasını incele. Eleştiri yaz ve desteklenen daha kesin bir cümle öner.",
+      "evidence": [
+        "Yarı/çoğunluk farkı",
+        "Doğru 25/50 yorumu",
+        "Tartışmada kanıt",
+        "İfade düzeltme"
+      ],
+      "taskType": "STATISTICAL_RESEARCH_AND_CRITIQUE",
+      "manualTeacherAssessment": true,
+      "autoGraded": false,
+      "syntheticExampleDataOnly": true
+    },
+    {
+      "id": "MAT552-P07",
+      "title": "Çelişkili toplamları yakala",
+      "prompt": "Sıklık tablosunda 8, 9, 7 kayıt var ama toplam 20 yazılmış. Yanlışlığı bul, tabloyu yeniden düzenle ve rapor cümlesini düzelt.",
+      "evidence": [
+        "Doğru 24 toplamı",
+        "Düzgün tablo",
+        "Hata türü açıklaması",
+        "Veri sorumluluğu"
+      ],
+      "taskType": "STATISTICAL_RESEARCH_AND_CRITIQUE",
+      "manualTeacherAssessment": true,
+      "autoGraded": false,
+      "syntheticExampleDataOnly": true
+    },
+    {
+      "id": "MAT552-P08",
+      "title": "Akran değerlendirme formu",
+      "prompt": "Sınıf arkadaşının kategorik araştırma posterine ilişkin araştırma sorusu, örneklem, tablo-grafik uyumu, sonuç ve yanlılık ölçütleriyle rubrik hazırla ve sentetik örneği değerlendir.",
+      "evidence": [
+        "Beş ölçüt",
+        "Kanıta dayalı geribildirim",
+        "Yanlılık tespiti",
+        "Düzeltme önerisi"
+      ],
+      "taskType": "STATISTICAL_RESEARCH_AND_CRITIQUE",
+      "manualTeacherAssessment": true,
+      "autoGraded": false,
+      "syntheticExampleDataOnly": true
+    },
+    {
+      "id": "MAT552-P09",
+      "title": "Birleşik veride yanlış çıkarım",
+      "prompt": "İki okul için ayrı tablolar oluştur; toplamda A en yüksekken ikinci okulda B en yüksek olacak sayılar seç. 'Her okulda A en çok seçildi' iddiasını karşı örnekle çürüt.",
+      "evidence": [
+        "İki tutarlı tablo",
+        "Birleşik toplamın doğru hesabı",
+        "İkinci okulun karşı örnek olması",
+        "İddianın reddi"
+      ],
+      "taskType": "STATISTICAL_RESEARCH_AND_CRITIQUE",
+      "manualTeacherAssessment": true,
+      "autoGraded": false,
+      "syntheticExampleDataOnly": true
+    },
+    {
+      "id": "MAT552-P10",
+      "title": "İstatistik tartışma oturumu",
+      "prompt": "Öğretmenin hazırladığı iki çelişkili haber başlığını aynı sentetik kategorik veriyle karşılaştır. Bir başlığı kabul, ötekini gerekçeli reddet; hangi bilgilerin eksik olduğunu belirt.",
+      "evidence": [
+        "Açık iddia ve veri",
+        "Kabul/red gerekçesi",
+        "Eksik bilgi",
+        "Saygılı tartışma"
+      ],
+      "taskType": "STATISTICAL_RESEARCH_AND_CRITIQUE",
+      "manualTeacherAssessment": true,
+      "autoGraded": false,
+      "syntheticExampleDataOnly": true
+    }
+  ],
+  "rubric": {
+    "criteria": [
+      {
+        "id": "evidence",
+        "weight": 30,
+        "description": "İddiayı kaynak veri ile karşılaştırma"
+      },
+      {
+        "id": "bias",
+        "weight": 25,
+        "description": "Hata, örneklem yanlılığı veya ölçek sorununu bulma"
+      },
+      {
+        "id": "argument",
+        "weight": 25,
+        "description": "Kabul/red için açık matematiksel gerekçe veya karşı örnek"
+      },
+      {
+        "id": "correction",
+        "weight": 15,
+        "description": "Doğru ve kapsamla uyumlu sonuç oluşturma"
+      },
+      {
+        "id": "ethics",
+        "weight": 5,
+        "description": "Saygılı, dürüst ve mahremiyete uygun tartışma"
+      }
+    ],
+    "levels": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "teacherSignoffRequired": true
+  }
+}

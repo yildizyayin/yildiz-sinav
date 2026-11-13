@@ -1,0 +1,167 @@
+{
+  "metadata": {
+    "outcomeCode": "FB.5.1.2",
+    "source": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/367",
+    "status": "DRAFT_NOT_APPROVED",
+    "taskCount": 10,
+    "notCountedToward50Questions": true,
+    "realImageRightsNotCleared": true
+  },
+  "tasks": [
+    {
+      "id": "FB512-P01",
+      "title": "Ay yüzeyi kaynak analizi",
+      "prompt": "Bilimsel Ay fotoğrafından iki farklı krater seç. Kaynağı, görüntü tarihini, yüzey özelliğini ve bu görüntüden çıkaramayacağın bilgiyi kaydet.",
+      "evidence": [
+        "Gerçek fotoğraf kaynak ve tarihi",
+        "İki krater gözlemi",
+        "Model/fotoğraf ayrımı"
+      ],
+      "requiresTeacherReview": true,
+      "autoGraded": false,
+      "kind": "OBSERVATION_MODEL_EVIDENCE"
+    },
+    {
+      "id": "FB512-P02",
+      "title": "İşaretli top ve Dünya modeli",
+      "prompt": "Topun bir yüzüne işaret koy; Dünya modelinin çevresinde gezdirirken aynı yüzü Dünya'ya dönük tutmak için topu döndür. İki hareketi ayrı açıkla.",
+      "evidence": [
+        "Kendi ekseninde dönüş",
+        "Dünya çevresinde dolanma",
+        "Yaklaşık aynı yüz açıklaması"
+      ],
+      "requiresTeacherReview": true,
+      "autoGraded": false,
+      "kind": "OBSERVATION_MODEL_EVIDENCE"
+    },
+    {
+      "id": "FB512-P03",
+      "title": "Dönme/dolanma karşılaştırma tablosu",
+      "prompt": "Ay'ın dönme ve dolanma hareketlerini neye göre gerçekleştiği, yaklaşık süre ve gözleme etkisi sütunlarıyla karşılaştıran tablo hazırla.",
+      "evidence": [
+        "Doğru iki hareket",
+        "Yaklaşık 27 gün",
+        "Eş zamanlı hareket gerekçesi"
+      ],
+      "requiresTeacherReview": true,
+      "autoGraded": false,
+      "kind": "OBSERVATION_MODEL_EVIDENCE"
+    },
+    {
+      "id": "FB512-P04",
+      "title": "Yüzey çizimini gerçek fotoğrafla karşılaştır",
+      "prompt": "ANUNEX'in temsili krater çizimini güvenilir bir Ay yüzeyi fotoğrafıyla karşılaştır. Çizimin neyi doğru anlattığını ve neyi eksik bıraktığını belirt.",
+      "evidence": [
+        "Çizim-gerçek ayrımı",
+        "Krater özellikleri",
+        "Görsel doğrulama"
+      ],
+      "requiresTeacherReview": true,
+      "autoGraded": false,
+      "kind": "OBSERVATION_MODEL_EVIDENCE"
+    },
+    {
+      "id": "FB512-P05",
+      "title": "Dünya-Ay boy modeli",
+      "prompt": "Dünya çapını 16 cm gösteren bir daire seçip Ay için yaklaşık 4 cm çaplı daire oluştur. Bu modelin uzaklıkları neden birebir göstermediğini açıkla.",
+      "evidence": [
+        "Yaklaşık 4:1 çap ilişkisi",
+        "İki doğru boyut modeli",
+        "Uzaklık ölçeği notu"
+      ],
+      "requiresTeacherReview": true,
+      "autoGraded": false,
+      "kind": "OBSERVATION_MODEL_EVIDENCE"
+    },
+    {
+      "id": "FB512-P06",
+      "title": "2026 krater haberini incele",
+      "prompt": "5 Ağustos 2026'daki Ay çarpma olayının uzay araştırması raporunu ve 11–12 Ağustos LRO görüntü kaydını incele. Önce/sonra görsellerini gerçek bilimsel kaynaktan bul ve kaynak belirt.",
+      "evidence": [
+        "İki ayrı tarih (olay/gözlem)",
+        "Kaynak linki",
+        "Gerçek fotoğrafı temsili şemadan ayırma"
+      ],
+      "requiresTeacherReview": true,
+      "autoGraded": false,
+      "kind": "OBSERVATION_MODEL_EVIDENCE"
+    },
+    {
+      "id": "FB512-P07",
+      "title": "Yanlış ifadeleri düzelt",
+      "prompt": "'Ay hiç dönmez', 'Ay kendi ışığını üretir', 'Ay'daki bütün koyu yerler denizdir' iddialarını kaynaklarıyla değerlendirip kanıta dayalı düzelt.",
+      "evidence": [
+        "Üç doğru düzeltme",
+        "Doğru kaynak",
+        "Gerekçeli sınırlılık"
+      ],
+      "requiresTeacherReview": true,
+      "autoGraded": false,
+      "kind": "OBSERVATION_MODEL_EVIDENCE"
+    },
+    {
+      "id": "FB512-P08",
+      "title": "Ay gözlem günlüğü",
+      "prompt": "Bir hafta boyunca Ay'ı güvenli koşullarda gözle veya öğretmenin verdiği tarihlenmiş görüntüleri karşılaştır. Görünüşü ve gözlem koşullarını yaz; hareket nedenlerini tahmin et.",
+      "evidence": [
+        "Tarihli yedi kayıt",
+        "Gözlem-tahmin ayrımı",
+        "Dönme/dolanma ilişkisini ifade etme"
+      ],
+      "requiresTeacherReview": true,
+      "autoGraded": false,
+      "kind": "OBSERVATION_MODEL_EVIDENCE"
+    },
+    {
+      "id": "FB512-P09",
+      "title": "Ay'ın uzak yüzü tartışması",
+      "prompt": "'Uzak yüz her zaman karanlık' iddiasını gerçek bilimsel bilgiye dayanarak tartış. Kendi basit iki yüzlü top modelini ve sonuç açıklamanı sun.",
+      "evidence": [
+        "Güneş ışığının her iki yüze zamanla ulaşması",
+        "Uzak/görünen yüz ayrımı",
+        "Kavram yanılgısını giderme"
+      ],
+      "requiresTeacherReview": true,
+      "autoGraded": false,
+      "kind": "OBSERVATION_MODEL_EVIDENCE"
+    },
+    {
+      "id": "FB512-P10",
+      "title": "Ay bilgilendirme posteri",
+      "prompt": "Ay'ın kayalık yüzeyi, doğal uydu oluşu, dönme ve dolanma hareketi ile yaklaşık aynı yüzünü göstermesini bir şema, kaynakça ve kısa açıklamalarla posterleştir.",
+      "evidence": [
+        "Ay'ın üç doğru özelliği",
+        "Bilimsel kaynak",
+        "Temsili görsel açıklaması"
+      ],
+      "requiresTeacherReview": true,
+      "autoGraded": false,
+      "kind": "OBSERVATION_MODEL_EVIDENCE"
+    }
+  ],
+  "rubric": {
+    "criteria": [
+      {
+        "id": "science",
+        "weight": 30,
+        "description": "Ay'ın özelliklerini ve iki hareketini bilimsel olarak açıklama"
+      },
+      {
+        "id": "evidence",
+        "weight": 25,
+        "description": "Kaynaklı gözlem ve doğrulama"
+      },
+      {
+        "id": "model",
+        "weight": 25,
+        "description": "Doğru yapı/ölçek/hareket modelini oluşturma"
+      },
+      {
+        "id": "reflection",
+        "weight": 20,
+        "description": "Hatalı çıkarımı düzeltme ve model sınırını açıklama"
+      }
+    ],
+    "teacherSignoffRequired": true
+  }
+}

@@ -1,0 +1,174 @@
+{
+  "metadata": {
+    "outcomeCode": "MAT.5.4.1",
+    "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/451",
+    "academicYearCatalog": "2027-2028",
+    "reviewStatus": "DRAFT_NOT_APPROVED",
+    "taskCount": 10,
+    "notCountedToward50Questions": true,
+    "currentImporterSupportsThese": false
+  },
+  "tasks": [
+    {
+      "id": "MAT541-P01",
+      "title": "24 cm çevreli dikdörtgen ailesi",
+      "prompt": "Kenarları pozitif doğal sayı olacak biçimde çevresi 24 cm olan en az dört farklı dikdörtgeni kareli kâğıtta çiz. Her kenar çiftini, hesabını ve çizimi tabloya geçir.",
+      "evidence": [
+        "En az dört geçerli farklı kenar çifti",
+        "Her biri için 2(a+b)=24 doğrulaması",
+        "Sıra değişiminin yeni bir ölçü sayılmadığını belirtme"
+      ],
+      "requiresStudentProduct": true,
+      "teacherReviewRequired": true,
+      "autoGraded": false
+    },
+    {
+      "id": "MAT541-P02",
+      "title": "Kare de dikdörtgendir",
+      "prompt": "Çevresi 28 cm olan kare oluştur. Ardından aynı çevreye sahip fakat kare olmayan iki farklı dikdörtgen çiz ve ortak özelliği yaz.",
+      "evidence": [
+        "7×7 kare",
+        "Aynı çevreli iki farklı kare olmayan dikdörtgen",
+        "Kareyi özel bir dikdörtgen olarak yorumlama"
+      ],
+      "requiresStudentProduct": true,
+      "teacherReviewRequired": true,
+      "autoGraded": false
+    },
+    {
+      "id": "MAT541-P03",
+      "title": "30 cm çevre ve doğal sayı",
+      "prompt": "Çevresi 30 cm olan farklı dikdörtgenler çiz. Neden aynı çevrede doğal sayı kenarlı kare oluşturulamadığını açıklayan kısa bir gerekçe yaz.",
+      "evidence": [
+        "En az üç geçerli kenar çifti",
+        "Kare kenarının 7,5 olması çıkarımı",
+        "Doğal sayı koşulunu açık belirtme"
+      ],
+      "requiresStudentProduct": true,
+      "teacherReviewRequired": true,
+      "autoGraded": false
+    },
+    {
+      "id": "MAT541-P04",
+      "title": "Kenar toplamını keşfet",
+      "prompt": "Aynı çevreye sahip dört dikdörtgenin komşu kenarlarını ölç; a+b toplamlarının aynı kaldığını tabloda göster.",
+      "evidence": [
+        "Dört ölçüm",
+        "Yarım çevreyle kenar toplamı ilişkisi",
+        "Genellemenin en az iki örnekle sınanması"
+      ],
+      "requiresStudentProduct": true,
+      "teacherReviewRequired": true,
+      "autoGraded": false
+    },
+    {
+      "id": "MAT541-P05",
+      "title": "Geometri tahtasıyla çevre",
+      "prompt": "Geometri tahtasında aynı çevreye sahip üç farklı dikdörtgen oluştur; çizimleri fotoğrafsız eskiz veya dijital kareli çizimle kaydet.",
+      "evidence": [
+        "Geçerli üç model",
+        "Çevreyi sınır boyunca birim uzunlukla ölçme",
+        "Modellerin farklı olduğunu doğrulama"
+      ],
+      "requiresStudentProduct": true,
+      "teacherReviewRequired": true,
+      "autoGraded": false
+    },
+    {
+      "id": "MAT541-P06",
+      "title": "Çit tasarımı",
+      "prompt": "24 m çitle çevrilecek dikdörtgen bir bahçe için iki farklı tam metre kenar çifti öner. Hangisini seçtiğini ve çevrelerinin neden eşit kaldığını açıkla.",
+      "evidence": [
+        "İki gerçekçi ölçü çifti",
+        "İki çevre hesabı",
+        "Seçime dayalı gerekçe"
+      ],
+      "requiresStudentProduct": true,
+      "teacherReviewRequired": true,
+      "autoGraded": false
+    },
+    {
+      "id": "MAT541-P07",
+      "title": "Olası tüm kenar çiftleri",
+      "prompt": "Çevresi 20 cm olan pozitif doğal sayı kenarlı dikdörtgenlerin sırasız tüm kenar çiftlerini listele. Kareyi unutmadığını denetle.",
+      "evidence": [
+        "(1,9),(2,8),(3,7),(4,6),(5,5)",
+        "Toplam beş ölçü",
+        "Her çiftte çevre 20 doğrulaması"
+      ],
+      "requiresStudentProduct": true,
+      "teacherReviewRequired": true,
+      "autoGraded": false
+    },
+    {
+      "id": "MAT541-P08",
+      "title": "Yanlış genellemeyi çürüt",
+      "prompt": "'Çevreleri eşit iki dikdörtgen mutlaka eş kenarlıdır' iddiasına karşı örnek oluştur ve çiz.",
+      "evidence": [
+        "İki farklı kenar çifti",
+        "Aynı çevre doğrulaması",
+        "Geçerli çürütme açıklaması"
+      ],
+      "requiresStudentProduct": true,
+      "teacherReviewRequired": true,
+      "autoGraded": false
+    },
+    {
+      "id": "MAT541-P09",
+      "title": "Toplam ve fark koşulu",
+      "prompt": "Çevresi 32 cm, komşu kenar farkı 6 cm olan dikdörtgeni çiz. Kenarlarını tablo ile açıklayıp sonucu doğrula.",
+      "evidence": [
+        "11×5 cm model",
+        "Toplam 16, fark 6",
+        "Çevre 32 ile denetim"
+      ],
+      "requiresStudentProduct": true,
+      "teacherReviewRequired": true,
+      "autoGraded": false
+    },
+    {
+      "id": "MAT541-P10",
+      "title": "Hatalı çevre hesabını düzelt",
+      "prompt": "Kenarları 6 ve 5 cm olan bir dikdörtgenin çevresini 11 cm bulan öğrencinin çözümünü incele. Hatanın nedenini açıklayan doğru işlem ve görsel çiz.",
+      "evidence": [
+        "Dört kenarın doğru sayımı",
+        "22 cm sonucuna ulaşma",
+        "Yanlış 11 cm hesabını açıklama"
+      ],
+      "requiresStudentProduct": true,
+      "teacherReviewRequired": true,
+      "autoGraded": false
+    }
+  ],
+  "rubric": {
+    "criteria": [
+      {
+        "id": "model",
+        "weight": 30,
+        "description": "Kareli kâğıt, geometri tahtası veya dijital çizimle doğru dikdörtgen oluşturma"
+      },
+      {
+        "id": "calculation",
+        "weight": 30,
+        "description": "Sabit çevre altında pozitif doğal sayı kenar çiftlerini doğrulama"
+      },
+      {
+        "id": "reason",
+        "weight": 25,
+        "description": "Farklı dikdörtgenlerin aynı çevreyi taşıdığını gerekçelendirme"
+      },
+      {
+        "id": "reflection",
+        "weight": 15,
+        "description": "Çalışmasını ölçümle denetleyip farklı örnekle sınama"
+      }
+    ],
+    "levels": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "teacherSignoffRequired": true
+  }
+}

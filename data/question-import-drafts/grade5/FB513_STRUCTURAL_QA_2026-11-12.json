@@ -1,0 +1,32 @@
+{
+  "package": "FB513_50_mixed_assessments_review_only.json",
+  "checkedAt": "2026-11-12",
+  "rowCount": 50,
+  "uniqueIds": 50,
+  "uniqueExactStems": 50,
+  "assessmentTypes": {
+    "OPEN_ENDED": 43,
+    "PERFORMANCE_TASK": 7
+  },
+  "difficultyLevelsPresent": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "rubricMaxScore": 4,
+  "rubricCriteriaPerItem": 2,
+  "assetReferencesExist": true,
+  "svgXmlValid": true,
+  "svgRenderedAndVisuallyInspected": true,
+  "verifiedHistoricalCounts": null,
+  "teacherApproved": 0,
+  "limitations": [
+    "Exact uniqueness is within this new package only; semantic/cross-pool originality pending.",
+    "Difficulty and alignment require expert review.",
+    "No real photographs attached.",
+    "No legacy MC import or full repository test/build run; content-only changes."
+  ]
+}
