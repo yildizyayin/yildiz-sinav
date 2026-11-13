@@ -702,3 +702,9 @@ Dış öneri üzerine 360 px'te kontrol edildi; tespitler doğrulandı. Yapılac
 
 - **KVKK işleri en sona alındı (şirket kurulduktan sonra):** aydınlatma metinlerinin şirket bilgileriyle doldurulup yayımlanması; giriş ekranında "Okudum ve anladım"; okul yöneticisi için Kurum Veri İşleme Sözleşmesi ve Veri Sorumlusu Taahhüdü kabul ekranı; Google Gemini / Workers AI veri işleyen ve aktarım kayıtları; avukat incelemesi. Not: Gemini API şartları 18 yaş altına yönelik uygulamalarda kullanımı yasaklıyor — öğrenci sohbeti için Gemini açılmayacak.
 - **Rehberliğim (yapıldı):** Öğrenci yalnız rehber öğretmenin gönderdiklerini görür: verilen haftalık program, açılan testler, davet edildiği anketler, sınıfla paylaşılan kaynaklar, kendisiyle paylaşılan destek planı, istenen ekran günlüğü ve planlı görüşme saati (konu/not gösterilmez). Menüde tek "Rehberliğim" + her zaman "Rehberime yaz". Test kataloğu ve RBA sekmesi öğrenciden kaldırıldı; ekran günlüğü rehber "Günlüğü aç" dediğinde açılır (0183).
+
+### 13 Kasım 2026 · Nibiru: kişisel veri göndermeyen mod
+- Karar (sahip): Gemini kapalı; Nibiru Cloudflare Workers AI ile çalışır. Modele yalnız temizlenmiş mesaj, rol, sınıf düzeyi ve uzman kişiliği gider; ad, sınav, net, puan gitmez.
+- "Netlerim nasıl", "çocuğum nasıl gidiyor", "sınıfımın durumu" gibi kendi verisi soruları ANUNEX'in doğrulanmış verisinden cevaplanır (video/plan düğmeleriyle).
+- Konu anlatımı, soru, tavsiye ve sohbet beş uzmandan uygun olanın kişiliğiyle Workers AI'a gider; bilgi sohbeti geçmişi veri cevaplarından ayrı tutulur.
+- Kazanım başarı yüzdeleri (0–1 ölçeği) artık doğru yüzde olarak gösterilir.

@@ -10,7 +10,8 @@ import { chooseNibiruModelDecision, runNibiruInference, type NibiruInferenceResu
 import { routeNibiruSpecialist } from './nibiru-specialists';
 import { clarifyAnswer, conversationAnswer, conversationKind } from './nibiru-conversation';
 import { NIBIRU_SAFETY_ANSWER, flagSafetyFromNibiru, isPersonalHarm } from './guidance-center';
-import { geminiNibiru } from './nibiru-gemini';
+import { geminiNibiru, saveTurns } from './nibiru-gemini';
+import { dataActions, dataAnswer, isDataQuestion, knowledgeAnswer } from './nibiru-knowledge';
 import type { NibiruSpecialist } from './nibiru-specialists';
 
 export type NibiruIntent =
@@ -302,7 +303,7 @@ function fallbackAnswer(intent: NibiruIntent, context: any) {
     if (intent === 'WEAK_OUTCOMES') {
       const weak = context.weakOutcomes?.slice(0,3) || [];
       if (!weak.length) return `${AI_PREFIX} ${name} için kazanım düzeyinde yeterli ölçme kanıtı henüz oluşmamış.`;
-      return `${AI_PREFIX} ${name} için pekiştirme açısından öne çıkan alanlar: ${weak.map((x:any)=>`${x.subject_name} – ${x.title} (%${trNum(x.avg_success,0)})`).join('; ')}. Bunları “başarısızlık” değil, bir sonraki öğrenme adımı için gelişim alanı olarak değerlendirmek daha doğru olur.`;
+      return `${AI_PREFIX} ${name} için pekiştirme açısından öne çıkan alanlar: ${weak.map((x:any)=>`${x.subject_name} – ${x.title} (%${trNum(Number(x.avg_success)<=1?Number(x.avg_success)*100:x.avg_success,0)})`).join('; ')}. Bunları “başarısızlık” değil, bir sonraki öğrenme adımı için gelişim alanı olarak değerlendirmek daha doğru olur.`;
     }
     if (intent === 'TODAY_PLAN') {
       const weak = context.weakOutcomes?.[0]; const worksheet = context.assignments?.[0];
@@ -377,11 +378,13 @@ export async function runNibiru(env: Env, user: AuthUser, message: string, chann
     }
   }
 
-  const talk = { role: user.role, firstName: user.role === 'STUDENT' ? context.student?.first_name ?? null : String(user.display_name || '').trim().split(/\s+/)[0] || null, gradeLevel: context.student?.grade_level ?? null };
+  const talk = { role: user.role, firstName: (user.role === 'STUDENT' ? trName(context.student?.first_name) : trName(user.display_name)) || null, gradeLevel: context.student?.grade_level ?? null };
   const socialReply = social ? conversationAnswer(social,talk) : null;
   // Nibiru güvenlik bağlantısı (owner, 12 Nov 2026): words of harm or bullying from a student → safe answer + the guidance teacher is told (no text)
   const safety = user.role === 'STUDENT' && isPersonalHarm(message) ? (await flagSafetyFromNibiru(env, user).catch(() => false), NIBIRU_SAFETY_ANSWER) : null;
-  const fixed = safety || socialReply?.answer || deterministic(intent,context);
+  // 13 Nov 2026 (kişisel veri göndermeyen mod): a low mood gets a real conversation, not a stock line, when a model is there
+  const moodByModel = !safety && social === 'LOW_MOOD' && Boolean(env.AI) ? await knowledgeAnswer(env,user,message,channelKey,context,{ ...decision, specialist:'GUIDANCE_COUNSELOR' } as any).catch(() => null) : null;
+  const fixed = safety || moodByModel?.answer || socialReply?.answer || deterministic(intent,context);
   const planSummary = coachPlan?.available ? coachPlanSummary(coachPlan) : null;
   const planAnswer = planSummary
     ? AI_PREFIX + ' Bugün için doğrulanmış kısa çalışma planın hazır:\n' + planSummary + '\nGörevleri tamamladıktan sonra mini test ile pekiştirme yapabilirsin.'
@@ -400,11 +403,25 @@ export async function runNibiru(env: Env, user: AuthUser, message: string, chann
   const ai = fixed || planAnswer ? null : await aiAnswer(env,user,intent,message,context,decision);
   // without a model answer: a greeting or help gets the conversation layer, an unclear or off-topic question is asked
   // back with what can be answered — never the same exam summary for everything
-  const noModel = !(fixed || planAnswer || ai?.text);
+  // 13 Nov 2026: without the full AI layer (KVKK approval pending) — own-data questions are answered by ANUNEX from
+  // verified data, knowledge questions by Workers AI with no personal data at all (nibiru-knowledge.ts)
+  let local: { answer: string; suggestions: string[]; actions: any[] } | null = null;
+  if (!fixed && !planAnswer && !ai?.text) {
+    if (isDataQuestion(message,intent)) {
+      const d = dataAnswer(message,user,context);
+      if (d) { local = { answer: d.answer, suggestions: [], actions: await dataActions(env,user,context,d.videoOutcome).catch(() => []) }; await saveTurns(env,user.id,channelKey,message,d.answer).catch(() => undefined); }
+    } else if (intent !== 'OUT_OF_SCOPE') {
+      const k = await knowledgeAnswer(env,user,message,channelKey,context,decision).catch(() => null);
+      if (k) local = { answer: k.answer, suggestions: k.suggestions, actions: [] };
+    }
+  }
+  const moodActions = moodByModel && ['STUDENT','PARENT'].includes(user.role) ? [{ type:'WRITE_COUNSELOR', label:'Rehber öğretmenime yaz', to:'/rehberime-yaz' }] : null;
+  const noModel = !(fixed || planAnswer || ai?.text || local);
   const plain = !noModel ? null : intent === 'GREETING' ? conversationAnswer('GREETING',talk) : intent === 'HELP' ? conversationAnswer('CAPABILITIES',talk)
     : intent === 'UNKNOWN' || intent === 'OUT_OF_SCOPE' ? clarifyAnswer(talk,intent === 'OUT_OF_SCOPE') : null;
-  const answer = fixed || planAnswer || ai?.text || plain?.answer || fallbackAnswer(intent,context);
-  const suggestions = socialReply?.suggestions || plain?.suggestions;
+  const answer = fixed || planAnswer || ai?.text || local?.answer || plain?.answer || fallbackAnswer(intent,context);
+  const suggestions = (moodByModel?.suggestions?.length ? moodByModel.suggestions : null) || (local?.suggestions?.length ? local.suggestions : null) || socialReply?.suggestions || plain?.suggestions;
+  const actions = moodActions || (local?.actions?.length ? local.actions : null);
   const inference = ai?.inference || null;
   const orchestration = {
     specialist:decision.specialist,
@@ -432,5 +449,5 @@ export async function runNibiru(env: Env, user: AuthUser, message: string, chann
     persistenceWarning = 'STAGING_D1_WRITE_SKIPPED';
   }
 
-  return { answer, intent, studentId, examId, outcome, coachPlan, orchestration, persistenceWarning, ...(suggestions ? { suggestions } : {}) };
+  return { answer, intent, studentId, examId, outcome, coachPlan, orchestration, persistenceWarning, ...(suggestions ? { suggestions } : {}), ...(actions ? { actions } : {}), ...(local || moodByModel ? { engine: 'LOCAL' } : {}) } as any;
 }
