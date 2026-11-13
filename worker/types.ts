@@ -75,6 +75,8 @@ export interface Env {
   // Nibiru Voice — keep credentials in Cloudflare Secrets, not vars.
   // Explicit opt-in: paid TTS is disabled by default, including Unified Billing.
   NIBIRU_PAID_VOICE_ENABLED?: 'ON' | 'OFF';
+  NIBIRU_GOOGLE_FREE_VOICE?: 'ON' | 'OFF';
+  NIBIRU_GOOGLE_FREE_MONTHLY_CHARS?: string;
   NIBIRU_STT_MODEL?: string;
   NIBIRU_GOOGLE_TTS_VOICE?: string;
   NIBIRU_OPENAI_TTS_MODEL?: string;

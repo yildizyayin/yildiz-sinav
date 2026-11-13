@@ -1,7 +1,7 @@
 import type { AuthUser, Env } from '../types';
 import { all, json, one, uuid } from './db';
 import { probeNibiruModels } from './nibiru-model-router';
-import { recordVoiceProviderProbe, speakNibiru, transcribeNibiruAudio, voiceProviderStatus } from './nibiru-voice';
+import { googleFreeVoice, recordVoiceProviderProbe, speakNibiru, transcribeNibiruAudio, voiceProviderStatus } from './nibiru-voice';
 import { classifyVoiceActivationFailure } from './nibiru-voice-diagnostics';
 import { externalPersonalDataGate } from './privacy-external-gate';
 
@@ -77,7 +77,7 @@ export async function runNibiruHealthCheck(env: Env, actor: AuthUser): Promise<R
   // 3) Nibiru's voice: a paid provider only when switched on; otherwise say plainly that the device voice is used
   const voice = voiceProviderStatus(env);
   const keys = [voice.google.configured ? 'Google' : null, voice.openaiDirect.configured ? 'OpenAI' : null].filter(Boolean).join(', ') || 'yok';
-  if (!voice.paidProvidersAllowed) items.push({ key: 'TTS', label: 'Nibiru sesi', state: 'OFF', detail: `Doğal ses kapalı (NIBIRU_PAID_VOICE_ENABLED açık değil). Nibiru şu an cihazın kendi Türkçe sesini kullanıyor. Tanımlı ses anahtarları: ${keys}.` });
+  if (!voice.paidProvidersAllowed && !googleFreeVoice(env)) items.push({ key: 'TTS', label: 'Nibiru sesi', state: 'OFF', detail: `Doğal ses kapalı (NIBIRU_PAID_VOICE_ENABLED açık değil). Nibiru şu an cihazın kendi Türkçe sesini kullanıyor. Tanımlı ses anahtarları: ${keys}.` });
   else {
     try {
       const r = await speakNibiru(env, 'Merhaba, ben Nibiru.', 'STANDARD');

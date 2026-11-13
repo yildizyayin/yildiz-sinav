@@ -54,6 +54,7 @@
     "ENVIRONMENT": "production",
     "PRODUCT_NAME": "Anunex — Nibiru AI Destekli Ölçme ve Analiz Platformu",
     "NIBIRU_AI_MODEL": "@cf/zai-org/glm-4.7-flash",
+    "NIBIRU_GOOGLE_FREE_VOICE": "ON",
     "WHATSAPP_GRAPH_API_VERSION": "v25.0",
     "TURNSTILE_SITE_KEY": "1x00000000000000000000BB",
     "QUESTION_GENERATION_ENABLED": "false",
