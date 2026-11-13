@@ -10,7 +10,7 @@ import type { AuthUser, Env } from '../types';
 import { all, audit, json, one, uuid } from './db';
 import { guidanceStudentIds } from './guidance-records';
 import { programWarnings } from './guidance-program';
-import { screenWarnings } from './guidance-content';
+import { screenRequestFor, screenWarnings } from './guidance-content';
 
 const fail = (status: number, code: string, message: string) => json({ ok: false, error: { code, message } }, status);
 const text = (v: unknown, max: number) => (typeof v === 'string' ? v.trim().slice(0, max) : '');
@@ -281,6 +281,38 @@ async function today(env: Env, user: AuthUser) {
     warnings: warnings.slice(0, 12).map((w) => ({ ...w, ...names.get(w.studentId) })), warningCount: warnings.length });
 }
 
+/**
+ * Rehberliğim (owner, 13 Nov 2026): "öğrenci sadece rehberin ona gönderdiği işleri görebilsin". Only what the guidance
+ * teacher sent to this student: this week's given programme, tests the teacher opened, surveys they were invited to,
+ * resources shared with the class, a support plan shared with the student, a diary the teacher asked for, and the
+ * time of a planned meeting (never its topic or notes). Counts drive the menu; empty means nothing is shown.
+ */
+async function myHub(env: Env, user: AuthUser) {
+  if (user.role !== 'STUDENT' || !user.student_id || !user.institution_id) return fail(403, 'FORBIDDEN', 'Bu bölüm öğrenciler içindir.');
+  const sid = user.student_id; const d = istanbulDate();
+  const monday = (() => { const x = new Date(`${d}T12:00:00Z`); const w = (x.getUTCDay() + 6) % 7; x.setUTCDate(x.getUTCDate() - w); return x.toISOString().slice(0, 10); })();
+  const program = await one<any>(env.DB.prepare(`SELECT id,week_start,(SELECT count(*) FROM guidance_program_items i WHERE i.program_id=p.id) items FROM guidance_programs p WHERE student_id=? AND status='GIVEN' AND week_start=? LIMIT 1`).bind(sid, monday));
+  const tests = await one<any>(env.DB.prepare(`SELECT sum(status IN ('APPROVED','IN_PROGRESS')) todo,sum(status IN ('SUBMITTED','REVIEWED')) done FROM guidance_assessment_sessions WHERE student_id=?`).bind(sid));
+  const surveys = await one<any>(env.DB.prepare(`SELECT count(*) n FROM guidance_survey_invites i JOIN guidance_surveys s ON s.id=i.survey_id WHERE i.user_id=? AND i.responded=0 AND s.status='OPEN'`).bind(user.id));
+  const classIds = (await all<any>(env.DB.prepare(`SELECT class_id FROM student_enrollments WHERE student_id=? AND status='ACTIVE'`).bind(sid))).map((r) => r.class_id).filter(Boolean);
+  const resources = await one<any>(env.DB.prepare(`SELECT count(DISTINCT r.id) n FROM guidance_resources r JOIN guidance_resource_shares s ON s.resource_id=r.id AND s.institution_id=? WHERE r.active=1 AND r.audience='STUDENT' AND (s.class_id IS NULL OR s.class_id IN (${classIds.length ? classIds.map(() => '?').join(',') : "''"}))`).bind(user.institution_id, ...classIds));
+  const plan = await one<any>(env.DB.prepare(`SELECT 1 ok FROM guidance_support_plans WHERE student_id=? AND status='ACTIVE' AND shared_with_student=1`).bind(sid));
+  const diary = await screenRequestFor(env, sid);
+  const meetings = await all<any>(env.DB.prepare(`SELECT m.scheduled_at FROM guidance_meetings m JOIN guidance_meeting_students ms ON ms.meeting_id=m.id WHERE ms.student_id=? AND m.status='PLANNED' AND substr(m.scheduled_at,1,10)>=? ORDER BY m.scheduled_at LIMIT 3`).bind(sid, d));
+  const hub = {
+    program: program ? { weekStart: program.week_start, items: Number(program.items || 0) } : null,
+    tests: { todo: Number(tests?.todo || 0), done: Number(tests?.done || 0) },
+    surveys: Number(surveys?.n || 0),
+    resources: Number(resources?.n || 0),
+    supportPlan: Boolean(plan),
+    diary: diary ? { until: diary.end_date, note: diary.note || null } : null,
+    meetings: meetings.map((m) => m.scheduled_at),
+  };
+  const pending = (hub.program ? 1 : 0) + hub.tests.todo + hub.surveys + (hub.diary ? 1 : 0) + hub.meetings.length;
+  const any = pending + hub.tests.done + hub.resources + (hub.supportPlan ? 1 : 0) > 0;
+  return json({ ok: true, ...hub, pending, any });
+}
+
 export async function handleGuidanceCenter(request: Request, env: Env): Promise<Response | null> {
   const url = new URL(request.url);
   if (!url.pathname.startsWith('/api/guidance-center')) return null;
@@ -292,6 +324,7 @@ export async function handleGuidanceCenter(request: Request, env: Env): Promise<
   const p = url.pathname.replace(/\/+$/, '');
   // the sender side: students, parents and teachers
   if (p === '/api/guidance-center/messages' && request.method === 'POST') return sendMessage(request, env, user);
+  if (p === '/api/guidance-center/my-hub' && request.method === 'GET') return myHub(env, user);
   if (p === '/api/guidance-center/messages/mine' && request.method === 'GET') {
     if (!['STUDENT', 'PARENT', 'TEACHER'].includes(user.role)) return fail(403, 'FORBIDDEN', 'Bu bölüm öğrenci, veli ve öğretmenler içindir.');
     return myMessages(env, user);
