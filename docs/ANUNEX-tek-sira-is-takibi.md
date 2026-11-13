@@ -697,3 +697,8 @@ Dış öneri üzerine 360 px'te kontrol edildi; tespitler doğrulandı. Yapılac
 - Kural tabanlı yol düzeltmeleri: her cevaba plan eklenmez (yalnız plan sorulunca), sayılar Türkçe (4,67), isimler Türkçe ekle (Ali'nin), "canım sıkkın…" gibi cümleler duygu cevabı alır.
 - Sohbet ekranı yenilendi: sade akış, yazarak gelen cevap, kalın/madde biçimi, takip çipleri, video bölümü ekranda oynar, aşağıda sabit yazma kutusu.
 - Öğrenci panelinde sürüklenebilir Nibiru gezegeni: parmakla taşınır, hareketle döner, kenara yapışır, iki kez dokununca döner, dokununca Nibiru açılır; yeri cihazda hatırlanır.
+
+## 13 Kasım 2026 akşam: öğrenci rehberliği ve KVKK sırası
+
+- **KVKK işleri en sona alındı (şirket kurulduktan sonra):** aydınlatma metinlerinin şirket bilgileriyle doldurulup yayımlanması; giriş ekranında "Okudum ve anladım"; okul yöneticisi için Kurum Veri İşleme Sözleşmesi ve Veri Sorumlusu Taahhüdü kabul ekranı; Google Gemini / Workers AI veri işleyen ve aktarım kayıtları; avukat incelemesi. Not: Gemini API şartları 18 yaş altına yönelik uygulamalarda kullanımı yasaklıyor — öğrenci sohbeti için Gemini açılmayacak.
+- **Rehberliğim (yapıldı):** Öğrenci yalnız rehber öğretmenin gönderdiklerini görür: verilen haftalık program, açılan testler, davet edildiği anketler, sınıfla paylaşılan kaynaklar, kendisiyle paylaşılan destek planı, istenen ekran günlüğü ve planlı görüşme saati (konu/not gösterilmez). Menüde tek "Rehberliğim" + her zaman "Rehberime yaz". Test kataloğu ve RBA sekmesi öğrenciden kaldırıldı; ekran günlüğü rehber "Günlüğü aç" dediğinde açılır (0183).

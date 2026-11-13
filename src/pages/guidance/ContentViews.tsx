@@ -113,6 +113,21 @@ export function ResourceLibrary() {
 }
 
 // ------------------------------------------------------------------ Dijital Sağlık (counsellor)
+/** Owner 13 Nov 2026: the diary opens for students only when the guidance teacher asks for it. */
+function ScreenRequest({ classId }: { classId: string }) {
+  const [list, setList] = useState<any[]>([]); const [days, setDays] = useState('7'); const [note, setNote] = useState(''); const [msg, setMsg] = useState(''); const [err, setErr] = useState('');
+  const load = () => api<any>(`/api/guidance-content/screen/requests?classId=${encodeURIComponent(classId)}`).then((r) => setList(r.requests || [])).catch(() => setList([]));
+  useEffect(() => { void load(); }, [classId]); // eslint-disable-line react-hooks/exhaustive-deps
+  const ask = async () => { setErr(''); setMsg(''); try { const r = await api<any>('/api/guidance-content/screen/requests', { method: 'POST', body: JSON.stringify({ classId, days: Number(days), note }) }); setMsg(`Günlük açıldı: öğrenciler ve veliler ${dateTr(r.endDate)} tarihine kadar doldurabilir.`); setNote(''); await load(); } catch (e: any) { setErr(e.message); } };
+  const active = list[0];
+  return <section className="gd-card gd-form"><h2>Ekran günlüğü iste</h2>
+    {active ? <p className="muted">Bu sınıfta açık günlük var: {dateTr(active.end_date)} tarihine kadar.</p> : <p className="muted">Öğrenciler ve veliler günlüğü yalnız siz istediğinizde görür ve doldurur.</p>}
+    {err && <div className="alert error">{err}</div>}{msg && <div className="alert success" role="status">{msg}</div>}
+    <div className="two"><label>Süre<select value={days} onChange={(e) => setDays(e.target.value)}><option value="7">1 hafta</option><option value="14">2 hafta</option><option value="21">3 hafta</option></select></label>
+      <label>Not (isteğe bağlı)<input maxLength={300} value={note} onChange={(e) => setNote(e.target.value)} placeholder="Örn. Sınav haftası öncesi" /></label></div>
+    <div className="gd-actions"><button type="button" className="primary" onClick={ask}>Günlüğü aç</button></div></section>;
+}
+
 export function DigitalHealth() {
   const classes = useClasses();
   const [classId, setClassId] = useState(''); const [data, setData] = useState<any>(null); const [error, setError] = useState('');
@@ -122,6 +137,7 @@ export function DigitalHealth() {
     <div className="page-head"><div><span className="eyebrow">Rehberlik</span><h1>Dijital Sağlık</h1><p className="muted">Öğrencilerin ve velilerin tuttuğu ekran ve uyku günlüğünün son 7 günü. Bu bir öz bildirimdir, bağımlılık tanısı değildir; yüksek değerler bir konuşma başlangıcıdır. Günlüğü yaygınlaştırmak için “Ekran saatimi ben yönetirim” etkinliğini ve veli rehberini kullanabilirsiniz.</p></div></div>
     {error && <div className="alert error">{error}</div>}
     <label style={{ maxWidth: 260 }}>Sınıf<select value={classId} onChange={(e) => setClassId(e.target.value)}>{classes.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}</select></label>
+    {classId && <ScreenRequest classId={classId} />}
     {data && <><div className="gd-stats"><div className="gd-stat"><strong>{data.loggedStudents}</strong><span>öğrenci günlük tuttu</span></div><div className="gd-stat"><strong>{hm(data.classAvgMinutes)}</strong><span>sınıf günlük ortalaması</span></div></div>
       <div className="gd-card gd-scroll"><table className="gd-table"><thead><tr><th>Öğrenci</th><th>Kayıt</th><th>Günlük ortalama</th><th>Geç yatış (23.30 sonrası)</th></tr></thead><tbody>
         {data.students.map((s: any) => <tr key={s.id}><td>{properCase(s.name)}</td><td>{s.days || '—'}</td><td>{s.days ? <span className={`gd-chip ${s.avgMinutes > 240 ? 'medium' : ''}`}>{hm(s.avgMinutes)}</span> : '—'}</td><td>{s.days ? s.lateNights : '—'}</td></tr>)}
@@ -162,11 +178,13 @@ export function ScreenDiary() {
     <div className="page-head"><div><span className="eyebrow">Dijital sağlık</span><h1>{parent ? 'Ekran ve Uyku Günlüğü' : 'Ekran ve Uyku Günlüğüm'}</h1><p className="muted">{parent ? 'Çocuğunuzun ders dışı ekran süresini ve yatış saatini günde bir kez yazın. Amaç yasaklamak değil, birlikte fark etmek.' : 'Ders dışı ekran süreni (telefon, tablet, oyun, TV) ve yatış saatini günde bir kez yaz. Kendi alışkanlığını görmek ilk adım.'}</p></div></div>
     {parent && data?.children?.length > 1 && <label style={{ maxWidth: 280 }}>Çocuğunuz<select value={studentId} onChange={(e) => setStudentId(e.target.value)}>{data.children.map((c: any) => <option key={c.id} value={c.id}>{properCase(c.name)}</option>)}</select></label>}
     {error && <div className="alert error">{error}</div>}{notice && <div className="alert success" role="status">{notice}</div>}
-    <section className="gd-card gd-form"><div className="two">
+    {data && !data.requested && <section className="gd-card"><h2>Şu an açık bir ekran günlüğü yok</h2><p className="muted">Rehber öğretmenin bir ekran ve uyku günlüğü istediğinde burada açılır; o zaman günde bir kez doldurman yeterli.</p></section>}
+    {data?.requested && <div className="alert">Rehber öğretmenin {dateTr(data.requested.end_date || data.requested.until || '')} tarihine kadar bu günlüğü doldurmanı istedi.{data.requested.note ? ` Not: ${data.requested.note}` : ''}</div>}
+    {data?.requested && <section className="gd-card gd-form"><div className="two">
       <label>Gün<input type="date" value={form.date} max={nowLocal().date} onChange={(e) => setForm({ ...form, date: e.target.value })} /></label>
       <label>Ekran süresi<span style={{ display: 'flex', gap: 6, alignItems: 'center' }}><input inputMode="numeric" value={form.hours} onChange={(e) => setForm({ ...form, hours: e.target.value.replace(/\D/g, '') })} aria-label="Saat" /> sa <input inputMode="numeric" value={form.minutes} onChange={(e) => setForm({ ...form, minutes: e.target.value.replace(/\D/g, '') })} aria-label="Dakika" /> dk</span></label>
       <label>Yatış saati<input type="time" value={form.bedtime} onChange={(e) => setForm({ ...form, bedtime: e.target.value })} /></label></div>
-      <div className="gd-actions"><button type="button" className="primary" onClick={save}>Kaydet</button></div></section>
+      <div className="gd-actions"><button type="button" className="primary" onClick={save}>Kaydet</button></div></section>}
     {week.length > 0 && <section className="gd-card"><h2>Son günler <small>ortalama {hm(avg)}</small></h2>
       <ul className="gd-list">{week.map((l: any) => <li key={l.log_date} className="gd-item"><div className="row"><strong>{dateTr(l.log_date)}</strong><span className={`gd-chip ${l.screen_minutes > 240 ? 'medium' : 'ok'}`}>{hm(l.screen_minutes)}</span></div>{l.bedtime && <small>Yatış: {l.bedtime}</small>}</li>)}</ul>
       <p className="gd-note">İpucu: yatmadan önceki son yarım saati ekransız geçirmek uykuya dalmayı kolaylaştırır. Ekran dışı sevdiğin bir etkinlik planla.</p></section>}
