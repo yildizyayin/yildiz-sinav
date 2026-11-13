@@ -708,3 +708,8 @@ Dış öneri üzerine 360 px'te kontrol edildi; tespitler doğrulandı. Yapılac
 - "Netlerim nasıl", "çocuğum nasıl gidiyor", "sınıfımın durumu" gibi kendi verisi soruları ANUNEX'in doğrulanmış verisinden cevaplanır (video/plan düğmeleriyle).
 - Konu anlatımı, soru, tavsiye ve sohbet beş uzmandan uygun olanın kişiliğiyle Workers AI'a gider; bilgi sohbeti geçmişi veri cevaplarından ayrı tutulur.
 - Kazanım başarı yüzdeleri (0–1 ölçeği) artık doğru yüzde olarak gösterilir.
+
+### 13 Kasım 2026 · Nibiru'nun doğal sesi geri geldi (ücretsiz Google WaveNet)
+- Tespit: Ağustos'tan beri ses Google WaveNet (tr-TR-Wavenet-E) idi; 9 Ekim'deki "ücretli sesi koru" değişikliği tüm bulut seslerini NIBIRU_PAID_VOICE_ENABLED'a bağladı, o günden beri cihaz sesi kullanılıyordu.
+- Karar (sahip onayı): NIBIRU_GOOGLE_FREE_VOICE=ON ile yalnız Google WaveNet; ücretli sağlayıcı yok. Platform geneli aylık 3,5 milyon karakter tavanı (Google'ın ücretsiz WaveNet kotası 4 milyon); tavanda ay sonuna kadar cihaz sesi.
+- Google'a giden metinden ad çıkarılır; madde işaretleri, "%", "·" ve emojiler sesli okumaya uygun hale getirilir. Doğal ses alınamazsa cihaz sesi okur.

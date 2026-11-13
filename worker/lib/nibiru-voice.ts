@@ -22,12 +22,42 @@ export function prepareNibiruSpeechText(value:string){
  return String(value||'')
   .replace(/^\s*(?:\u{1F916}\s*)?Nibiru\s*:\s*/iu,'')
   .replace(/```[\s\S]*?```/g,' ')
+  // 13 Nov 2026 (owner: "ses çok kötü"): written marks are turned into what a listener expects
+  .replace(/\[([^\]]+)\]\((?:https?:)?[^)]*\)/g,'$1')
+  .replace(/^\s*(?:[-•–]|\d+[.)])\s+/gm,'')
+  .replace(/%\s?(\d+(?:[.,]\d+)?)/g,'yüzde $1')
+  .replace(/\s*·\s*/g,', ')
+  .replace(/\s*[—–]\s*/g,', ')
+  .replace(/([^.!?:;,\s])[ \t]*\n+/g,'$1.\n')
+  .replace(/\p{Extended_Pictographic}\uFE0F?/gu,'')
   .replace(/[*_#>`~]/g,'')
   .replace(/https?:\/\/\S+/g,'bağlantı')
   .replace(/[📋🎯✅○🔊🎙️]/g,'')
   .replace(/\s+/g,' ')
   .trim()
   .slice(0,3600);
+}
+
+/**
+ * Free Google voice (owner, 13 Nov 2026: "daha önce doğal bir ses vardı … onayladım"): with NIBIRU_GOOGLE_FREE_VOICE=ON
+ * only Google WaveNet is used — no paid provider — and the whole platform stays under a monthly character ceiling below
+ * Google's free WaveNet allowance (4 million characters a month). At the ceiling Nibiru uses the device voice until
+ * the next month, so no charge can arise.
+ */
+export const GOOGLE_FREE_MONTHLY_CHARS=3_500_000;
+export function googleFreeVoice(env:Env){return env.NIBIRU_GOOGLE_FREE_VOICE==='ON'&&Boolean(env.GOOGLE_TTS_SERVICE_ACCOUNT_JSON)}
+const freeVoiceName=(env:Env)=>/wavenet|standard/i.test(String(env.NIBIRU_GOOGLE_TTS_VOICE||''))?String(env.NIBIRU_GOOGLE_TTS_VOICE):'tr-TR-Wavenet-E';
+const freeCap=(env:Env)=>{const n=Number(env.NIBIRU_GOOGLE_FREE_MONTHLY_CHARS);return Number.isFinite(n)&&n>0?Math.min(n,GOOGLE_FREE_MONTHLY_CHARS):GOOGLE_FREE_MONTHLY_CHARS};
+const thisMonth=()=>new Date().toISOString().slice(0,7);
+/** Reserves characters of this month's free allowance; false when the ceiling would be passed. */
+export async function reserveGoogleFreeChars(env:Env,chars:number){
+ const cap=freeCap(env);if(chars>cap)return false;
+ const row=await env.DB.prepare(`INSERT INTO nibiru_voice_monthly_chars(month,chars) VALUES(?,?) ON CONFLICT(month) DO UPDATE SET chars=chars+excluded.chars,updated_at=CURRENT_TIMESTAMP WHERE nibiru_voice_monthly_chars.chars+excluded.chars<=? RETURNING chars`).bind(thisMonth(),chars,cap).first<{chars:number}>();
+ return Boolean(row);
+}
+export async function googleFreeUsage(env:Env){
+ const row=await env.DB.prepare(`SELECT chars FROM nibiru_voice_monthly_chars WHERE month=?`).bind(thisMonth()).first<{chars:number}>().catch(()=>null);
+ return{month:thisMonth(),chars:Number(row?.chars||0),cap:freeCap(env)};
 }
 
 export function voiceProviderStatus(env:Env){
@@ -52,6 +82,7 @@ export function voiceProviderStatus(env:Env){
 export function buildVoiceProviderPlan(env:Env,mode:NibiruVoiceMode):VoiceProviderPlan{
  const s=voiceProviderStatus(env);
  const rows:NibiruVoiceProvider[]=[];
+ if(!s.paidProvidersAllowed&&googleFreeVoice(env))return{mode,providers:['GOOGLE_WAVENET'],reason:'Ücretsiz Google WaveNet sesi; aylık ücretsiz kotanın altında kalınır, dolunca cihaz sesi kullanılır.'};
  if(!s.paidProvidersAllowed)return{mode,providers:rows,reason:'Ücretli Türkçe ses sağlayıcıları kapalı. NIBIRU_PAID_VOICE_ENABLED=ON ile açıkça etkinleştirilmelidir.'};
  if(mode==='PREMIUM'){
   if(s.openaiDirect.configured)rows.push('OPENAI_GPT4O_MINI_TTS');
@@ -95,9 +126,9 @@ async function googleAccessToken(env:Env){
  googleTokenCache={token:payload.access_token,expiresAt:Date.now()+Math.max(300,Number(payload.expires_in||3600)-120)*1000};return googleTokenCache.token;
 }
 
-async function googleSpeak(env:Env,text:string,speed:number):Promise<VoiceAudio>{
+async function googleSpeak(env:Env,text:string,speed:number,voiceName?:string):Promise<VoiceAudio>{
  const raw=env.GOOGLE_TTS_SERVICE_ACCOUNT_JSON;if(!raw)throw new Error('GOOGLE_TTS_NOT_CONFIGURED');let account:any;try{account=JSON.parse(raw)}catch{throw new Error('GOOGLE_TTS_CREDENTIAL_INVALID')}
- const token=await googleAccessToken(env);const voice=env.NIBIRU_GOOGLE_TTS_VOICE||'tr-TR-Wavenet-E';
+ const token=await googleAccessToken(env);const voice=voiceName||env.NIBIRU_GOOGLE_TTS_VOICE||'tr-TR-Wavenet-E';
  const response=await fetch('https://texttospeech.googleapis.com/v1/text:synthesize',{method:'POST',headers:{authorization:`Bearer ${token}`,'content-type':'application/json','x-goog-user-project':String(account.project_id||'')},body:JSON.stringify({input:{text},voice:{languageCode:'tr-TR',name:voice},audioConfig:{audioEncoding:'MP3',speakingRate:speed,pitch:0}})});
  if(!response.ok)throw new Error(`GOOGLE_TTS_FAILED_${response.status}`);const payload:any=await response.json();if(!payload.audioContent)throw new Error('GOOGLE_TTS_EMPTY');
  return{bytes:bytesFromBase64(payload.audioContent),contentType:'audio/mpeg',provider:'GOOGLE_WAVENET',model:voice};
@@ -128,11 +159,13 @@ async function unifiedOpenAiSpeak(env:Env,text:string,speed:number,hd:boolean):P
 }
 
 export async function speakNibiru(env:Env,value:string,mode:NibiruVoiceMode='STANDARD'){
- if(env.NIBIRU_PAID_VOICE_ENABLED!=='ON')throw new Error('VOICE_PAID_PROVIDERS_DISABLED');
+ const free=env.NIBIRU_PAID_VOICE_ENABLED!=='ON'&&googleFreeVoice(env);
+ if(env.NIBIRU_PAID_VOICE_ENABLED!=='ON'&&!free)throw new Error('VOICE_PAID_PROVIDERS_DISABLED');
  const text=prepareNibiruSpeechText(value);if(!text)throw new Error('VOICE_TEXT_EMPTY');const speed=mode==='PREMIUM'?0.93:0.96,plan=buildVoiceProviderPlan(env,mode);const attempts:string[]=[];
  for(const provider of plan.providers){try{
   let audio:VoiceAudio;
-  if(provider==='GOOGLE_WAVENET')audio=await googleSpeak(env,text,speed);
+  if(provider==='GOOGLE_WAVENET'&&free){if(!await reserveGoogleFreeChars(env,text.length))throw new Error('GOOGLE_FREE_MONTHLY_LIMIT');audio=await googleSpeak(env,text,speed,freeVoiceName(env));}
+  else if(provider==='GOOGLE_WAVENET')audio=await googleSpeak(env,text,speed);
   else if(provider==='OPENAI_GPT4O_MINI_TTS')audio=await directOpenAiSpeak(env,text,speed);
   else audio=await unifiedOpenAiSpeak(env,text,speed,provider==='OPENAI_UNIFIED_TTS_HD');
   if(!audio.contentType.toLowerCase().startsWith('audio/')||audio.bytes.length<=100)throw new Error('VOICE_PROVIDER_NOT_AUDIO');
@@ -166,12 +199,13 @@ export async function voiceProviderStatusWithHealth(env:Env){
  const directLive=recentlyVerified(rows.filter(row=>row.model===base.openaiDirect.model),'OPENAI_GPT4O_MINI_TTS',base.openaiDirect.configured);
  const unifiedLive=recentlyVerified(rows.filter(row=>row.model===base.openaiUnified.standardModel),'OPENAI_UNIFIED_TTS',base.openaiUnified.configured);
  const unifiedHdLive=recentlyVerified(rows.filter(row=>row.model===base.openaiUnified.premiumModel),'OPENAI_UNIFIED_TTS_HD',base.openaiUnified.configured);
- const standardLive=base.paidProvidersAllowed&&(googleLive||directLive||unifiedLive);
+ const free=!base.paidProvidersAllowed&&googleFreeVoice(env)&&(await googleFreeUsage(env)).chars<freeCap(env)-200;
+ const standardLive=(base.paidProvidersAllowed&&(googleLive||directLive||unifiedLive))||free;
  const premiumLive=base.paidProvidersAllowed&&(googleLive||directLive||unifiedHdLive);
  return {
   ...base,
   stt:{...base.stt,ready:sttLive,liveVerified:sttLive},
-  google:{...base.google,ready:base.paidProvidersAllowed&&googleLive},
+  google:{...base.google,ready:(base.paidProvidersAllowed&&googleLive)||free},
   openaiDirect:{...base.openaiDirect,ready:base.paidProvidersAllowed&&directLive},
   openaiUnified:{...base.openaiUnified,ready:base.paidProvidersAllowed&&(unifiedLive||unifiedHdLive)},
   standardReady:standardLive,
