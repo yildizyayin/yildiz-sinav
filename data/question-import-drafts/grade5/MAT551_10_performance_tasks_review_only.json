@@ -1,0 +1,200 @@
+{
+  "metadata": {
+    "outcomeCode": "MAT.5.5.1",
+    "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/452",
+    "academicYearCatalog": "2027-2028",
+    "reviewStatus": "DRAFT_NOT_APPROVED",
+    "taskCount": 10,
+    "notCountedToward50Questions": true,
+    "currentMCImporterCompatible": false,
+    "noStudentDataCollected": true
+  },
+  "tasks": [
+    {
+      "id": "MAT551-P01",
+      "title": "Okul içi kulüp tercihleri araştırması",
+      "prompt": "Gönüllü katılımla ve kimlik bilgisi toplamadan '5. sınıflarda tercih edilen kulüpler' araştırması yap. Soruyu, grubu ve kategorileri belirt; sıklık tablosu ve sütun grafiği oluştur; sonuçları yorumla.",
+      "evidence": [
+        "Açık araştırma sorusu",
+        "Gönüllü, mahremiyet dostu veri toplama",
+        "Tablo-grafik tutarlılığı",
+        "Yorumun yalnız örnekleme ilişkin olması"
+      ],
+      "taskType": "STATISTICAL_RESEARCH_AND_CRITIQUE",
+      "manualTeacherAssessment": true,
+      "autoGraded": false,
+      "syntheticExampleDataOnly": true
+    },
+    {
+      "id": "MAT551-P02",
+      "title": "Çevre için geri dönüşüm tercihleri",
+      "prompt": "Kâğıt, plastik, cam, metal ve 'diğer' seçeneklerini içeren tarafsız anket tasarla. Bir örnek veri kümesini sıklık tablosu ve nokta grafiğine dönüştür.",
+      "evidence": [
+        "Anlaşılır tarafsız soru",
+        "Kategorilerin yeterliliği",
+        "Sıklıkların doğru sayılması",
+        "İki gösterimin karşılaştırılması"
+      ],
+      "taskType": "STATISTICAL_RESEARCH_AND_CRITIQUE",
+      "manualTeacherAssessment": true,
+      "autoGraded": false,
+      "syntheticExampleDataOnly": true
+    },
+    {
+      "id": "MAT551-P03",
+      "title": "Ulaşım yöntemleri ve güvenlik",
+      "prompt": "Okula geliş biçimi kategorilerini belirle. Kendi sınıfında gerçek veri toplayamıyorsan sentetik öğretmen veri seti kullan. En yüksek kategoriye göre hangi güvenlik ihtiyacı araştırılabilir, gerekçelendir.",
+      "evidence": [
+        "Veri kaynağı işareti",
+        "Doğru sınıflama",
+        "Gerekçeli sınırlı öneri",
+        "Aşırı genellemeye düşmeme"
+      ],
+      "taskType": "STATISTICAL_RESEARCH_AND_CRITIQUE",
+      "manualTeacherAssessment": true,
+      "autoGraded": false,
+      "syntheticExampleDataOnly": true
+    },
+    {
+      "id": "MAT551-P04",
+      "title": "Aynı soruyu iki şubede sor",
+      "prompt": "İki şube için aynı etkinlik tercih sorusunu tasarla ve öğretmenin sağladığı farklı büyüklükte iki sentetik veri tablosunu karşılaştır. Ham sayı ve payları ayrı yorumla.",
+      "evidence": [
+        "Aynı kategori tanımları",
+        "İki tablo",
+        "Grup büyüklüğünün yoruma etkisi",
+        "Sınırlılıklar"
+      ],
+      "taskType": "STATISTICAL_RESEARCH_AND_CRITIQUE",
+      "manualTeacherAssessment": true,
+      "autoGraded": false,
+      "syntheticExampleDataOnly": true
+    },
+    {
+      "id": "MAT551-P05",
+      "title": "Kareli kâğıtta kategorik sütun grafiği",
+      "prompt": "Öğretmenin verdiği Meyve A=8, B=12, C=5, D=10 sıklıklarını kullan. Sıfırdan başlayan eş ölçekli sütun grafiği çiz, tabloyla denetle.",
+      "evidence": [
+        "Başlık ve etiket",
+        "Uygun ölçek",
+        "8,12,5,10 doğru sütunları",
+        "En çok/en az çıkarımı"
+      ],
+      "taskType": "STATISTICAL_RESEARCH_AND_CRITIQUE",
+      "manualTeacherAssessment": true,
+      "autoGraded": false,
+      "syntheticExampleDataOnly": true
+    },
+    {
+      "id": "MAT551-P06",
+      "title": "Anket sorusu iyileştirme",
+      "prompt": "'Sporun herkes için en iyi etkinlik olduğunu kabul ediyor musun?' sorusunu tarafsızlaştır. Hedef grubu ve muhtemel seçenekleri yazıp yeni sorunun neden daha iyi olduğunu belirt.",
+      "evidence": [
+        "Yönlendirmenin fark edilmesi",
+        "Tarafsız soru",
+        "Uygun seçenekler",
+        "Gerekçeli revizyon"
+      ],
+      "taskType": "STATISTICAL_RESEARCH_AND_CRITIQUE",
+      "manualTeacherAssessment": true,
+      "autoGraded": false,
+      "syntheticExampleDataOnly": true
+    },
+    {
+      "id": "MAT551-P07",
+      "title": "Araştırma günlüğü ve eksik yanıt",
+      "prompt": "Tek cevaplı 30 kişilik sentetik veri setinde beş yanıta ulaşılmadığı durumu incele. Toplamları kontrol edip eksikliğin sonucu nasıl etkileyebileceğini tartış.",
+      "evidence": [
+        "Veri kontrol listesi",
+        "Eksik yanıt sayısı",
+        "Uygun yeniden planlama",
+        "Güvenilirlik sınırı"
+      ],
+      "taskType": "STATISTICAL_RESEARCH_AND_CRITIQUE",
+      "manualTeacherAssessment": true,
+      "autoGraded": false,
+      "syntheticExampleDataOnly": true
+    },
+    {
+      "id": "MAT551-P08",
+      "title": "Grafik seçimi posteri",
+      "prompt": "Aynı kategorik veriyi sıklık tablosunda ve sütun grafiğinde göster. İki gösterimden hangisini hangi amaç için seçtiğini bir posterle açıkla.",
+      "evidence": [
+        "İki doğru görselleştirme",
+        "Kategori/sıklık doğruluğu",
+        "Seçim gerekçesi",
+        "Sunum düzeni"
+      ],
+      "taskType": "STATISTICAL_RESEARCH_AND_CRITIQUE",
+      "manualTeacherAssessment": true,
+      "autoGraded": false,
+      "syntheticExampleDataOnly": true
+    },
+    {
+      "id": "MAT551-P09",
+      "title": "Sürdürülebilir tüketim gözlemi",
+      "prompt": "Gönüllü katılımcılara en çok hangi yeniden kullanılabilir eşya türünü tercih ettiklerini soran bir araştırma planı hazırla. Kişisel ve hassas veri istemeden tablo/grafik ve sonuç hazırla.",
+      "evidence": [
+        "Mahremiyet",
+        "Kategoriler",
+        "Toplama ve analiz planı",
+        "Veriye dayalı sınırlı karar"
+      ],
+      "taskType": "STATISTICAL_RESEARCH_AND_CRITIQUE",
+      "manualTeacherAssessment": true,
+      "autoGraded": false,
+      "syntheticExampleDataOnly": true
+    },
+    {
+      "id": "MAT551-P10",
+      "title": "Tüm araştırmayı öz değerlendirme",
+      "prompt": "Seçtiğin kategorik araştırma sorusuyla anket, veri toplama, tablo, grafik, çıkarım ve yeniden planlama adımlarını içeren dosya oluştur. Hangi aşamayı neden geliştireceğini açıklayarak öz değerlendirme yap.",
+      "evidence": [
+        "Tam araştırma döngüsü",
+        "Sıklık ve grafik tutarlılığı",
+        "Gerekçeli karar",
+        "Öz değerlendirme"
+      ],
+      "taskType": "STATISTICAL_RESEARCH_AND_CRITIQUE",
+      "manualTeacherAssessment": true,
+      "autoGraded": false,
+      "syntheticExampleDataOnly": true
+    }
+  ],
+  "rubric": {
+    "criteria": [
+      {
+        "id": "question",
+        "weight": 20,
+        "description": "Soru, grup ve kategorilerin açık ölçülebilir tanımı"
+      },
+      {
+        "id": "collection",
+        "weight": 25,
+        "description": "Mahremiyet ve veri toplama planının uygunluğu"
+      },
+      {
+        "id": "visualization",
+        "weight": 25,
+        "description": "Doğru sıklık, tablo ve seçilen grafik gerekçesi"
+      },
+      {
+        "id": "conclusion",
+        "weight": 20,
+        "description": "Veriye dayalı sonuç ve sınırlılık farkındalığı"
+      },
+      {
+        "id": "reflection",
+        "weight": 10,
+        "description": "Eksikleri yeniden planlama"
+      }
+    ],
+    "levels": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "teacherSignoffRequired": true
+  }
+}

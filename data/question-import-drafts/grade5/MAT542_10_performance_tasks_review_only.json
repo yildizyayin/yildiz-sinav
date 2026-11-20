@@ -1,0 +1,174 @@
+{
+  "metadata": {
+    "outcomeCode": "MAT.5.4.2",
+    "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/451",
+    "academicYearCatalog": "2027-2028",
+    "reviewStatus": "DRAFT_NOT_APPROVED",
+    "taskCount": 10,
+    "notCountedToward50Questions": true,
+    "currentImporterSupportsThese": false
+  },
+  "tasks": [
+    {
+      "id": "MAT542-P01",
+      "title": "Eş karelerle alan ölç",
+      "prompt": "Bir kitap kapağının dikdörtgen yüzeyini seçtiğin eş birim karelerle kaplayarak satır, sütun ve toplam kare sayısını kaydet.",
+      "evidence": [
+        "Birim karelerin eş büyüklükte olması",
+        "Boşluk/çakışma olmadan kaplama",
+        "Satır-sütun-tablosu"
+      ],
+      "requiresStudentProduct": true,
+      "teacherReviewRequired": true,
+      "autoGraded": false
+    },
+    {
+      "id": "MAT542-P02",
+      "title": "Aynı alanın farklı modelleri",
+      "prompt": "24 eş kareyi 2×12, 3×8 ve 4×6 dikdörtgenlerine dönüştür. Alanın değişmediğini çizimlerle gerekçelendir.",
+      "evidence": [
+        "Üç doğru model",
+        "Her birinde 24 kare",
+        "Alan korunumu gerekçesi"
+      ],
+      "requiresStudentProduct": true,
+      "teacherReviewRequired": true,
+      "autoGraded": false
+    },
+    {
+      "id": "MAT542-P03",
+      "title": "Çarpma bağıntısını keşfet",
+      "prompt": "Kareli kâğıtta 4 satır ve 7 sütundan oluşan dikdörtgen çiz. Kareleri önce tek tek say, sonra çarparak sonucu kontrol et.",
+      "evidence": [
+        "4×7 model",
+        "28 birim kare sayımı",
+        "4×7=28 ile açıklama"
+      ],
+      "requiresStudentProduct": true,
+      "teacherReviewRequired": true,
+      "autoGraded": false
+    },
+    {
+      "id": "MAT542-P04",
+      "title": "Birimlerin anlamı",
+      "prompt": "Kareli bir yüzeyin kenarlarını cm ile, alanını cm² ile ölçerek uzunluk ve alan birimlerinin neden farklı yazıldığını açıkla.",
+      "evidence": [
+        "Uzunluk/alan ayrımı",
+        "Doğru cm ve cm² yazımı",
+        "Birim karenin 1 cm×1 cm açıklaması"
+      ],
+      "requiresStudentProduct": true,
+      "teacherReviewRequired": true,
+      "autoGraded": false
+    },
+    {
+      "id": "MAT542-P05",
+      "title": "Boyalı bölümler",
+      "prompt": "6×8 birim kareli bir yüzeyin 2×3'lük bölümünü boya. Boyalı ve boyasız alanı iki farklı işlemle hesapla.",
+      "evidence": [
+        "48 toplam birim kare",
+        "6 boyalı ve 42 boyasız kare",
+        "Çarpma ve çıkarma stratejisi"
+      ],
+      "requiresStudentProduct": true,
+      "teacherReviewRequired": true,
+      "autoGraded": false
+    },
+    {
+      "id": "MAT542-P06",
+      "title": "Büyük alanı hızlı say",
+      "prompt": "7 satır ve 9 sütun birim kareli tablo hazırla. Kareleri tek tek saymadan toplam sayıya ulaşma yöntemini sınıfa açıkla.",
+      "evidence": [
+        "7×9 tablo",
+        "63 kare",
+        "Satır gruplama gerekçesi"
+      ],
+      "requiresStudentProduct": true,
+      "teacherReviewRequired": true,
+      "autoGraded": false
+    },
+    {
+      "id": "MAT542-P07",
+      "title": "Piksel sanatı",
+      "prompt": "En az iki farklı renkte 5×8 kareli bir piksel deseni oluştur. Her rengin kaç kare kapladığını sayıp toplam alanın 40 olduğunu doğrula.",
+      "evidence": [
+        "5×8 kareli çizim",
+        "Her rengin alan kaydı",
+        "Toplam 40 birim kare"
+      ],
+      "requiresStudentProduct": true,
+      "teacherReviewRequired": true,
+      "autoGraded": false
+    },
+    {
+      "id": "MAT542-P08",
+      "title": "Kes-yeniden kur",
+      "prompt": "3×12 kareli bir dikdörtgeni kesilebilir kareli parçalar gibi çiz. Aynı 36 kareyi 4×9 dikdörtgene dönüştürmenin alanı neden koruduğunu açıklayarak göster.",
+      "evidence": [
+        "36 kareden oluşan iki model",
+        "Eş karelerin korunması",
+        "Alan değişmeme gerekçesi"
+      ],
+      "requiresStudentProduct": true,
+      "teacherReviewRequired": true,
+      "autoGraded": false
+    },
+    {
+      "id": "MAT542-P09",
+      "title": "Eksik kare deneyi",
+      "prompt": "6×6 birim kareli karenin bir satırını çıkar. Önce-sonra alan tablosu oluştur ve değişen sayıyı açıklayarak yaz.",
+      "evidence": [
+        "36 başlangıç",
+        "30 kalan",
+        "6 kare çıkarma gerekçesi"
+      ],
+      "requiresStudentProduct": true,
+      "teacherReviewRequired": true,
+      "autoGraded": false
+    },
+    {
+      "id": "MAT542-P10",
+      "title": "Kare boyutu tuzağı",
+      "prompt": "Aynı çizilmiş yüzeyi bir kez büyük, bir kez küçük eş karelerle kapla. Kare sayıları farklı olsa da yüzeyin gerçek alanının neden değişmediğini açıkla.",
+      "evidence": [
+        "İki farklı eş kare seçimi",
+        "Farklı birim sayısı",
+        "Sabit yüzey alanı ve birim seçimi açıklaması"
+      ],
+      "requiresStudentProduct": true,
+      "teacherReviewRequired": true,
+      "autoGraded": false
+    }
+  ],
+  "rubric": {
+    "criteria": [
+      {
+        "id": "unit",
+        "weight": 25,
+        "description": "Uygun eş birim kareleri seçme ve alan birimini doğru ifade etme"
+      },
+      {
+        "id": "model",
+        "weight": 30,
+        "description": "Birim karelerle dikdörtgen yüzeyi boşluksuz ve doğru ölçme"
+      },
+      {
+        "id": "inference",
+        "weight": 30,
+        "description": "Satır-sütun çarpımından alan bağıntısına gerekçeli ulaşma"
+      },
+      {
+        "id": "reflection",
+        "weight": 15,
+        "description": "Parçalama ve yeniden düzenlemede alan korunumu üzerine öz değerlendirme"
+      }
+    ],
+    "levels": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "teacherSignoffRequired": true
+  }
+}

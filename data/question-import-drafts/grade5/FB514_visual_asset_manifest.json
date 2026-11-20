@@ -1,0 +1,86 @@
+{
+  "outcomeCode": "FB.5.1.4",
+  "generatedDate": "2026-11-12",
+  "assetCount": 3,
+  "photoLinkedItemCount": 8,
+  "assets": [
+    {
+      "path": "data/question-import-drafts/grade5/assets/FB514_earthrise_1968.jpg",
+      "url": "https://assets.science.nasa.gov/content/dam/science/psd/solar/2023/09/a/as08-14-2383.jpg",
+      "width": 1400,
+      "height": 1400,
+      "bytes": 117178,
+      "sourceSha256": "4b1484e9bb55652e30a56c03c27141938885a09e4b3c0bcabb8841e1e94ed9d9",
+      "sha256": "8d816abdd8c4b5dfe392383b44e14fdefe17ee48f73171240731ee255db37bdd",
+      "mediaType": "HISTORICAL_SPACECRAFT_PHOTOGRAPH",
+      "captureDate": "1968-12-24",
+      "credit": "NASA/Bill Anders",
+      "sourcePage": "https://science.nasa.gov/resource/apollo-8s-iconic-earthrise/",
+      "processing": "JPEG downsample to 1400px; no crop/retouch/generated content.",
+      "intendedUse": "Factual educational/editorial context inside question; not promotion or endorsement.",
+      "rightsEvidence": {
+        "guidelineUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+        "checkedAt": "2026-11-12",
+        "status": "NASA_EDITORIAL_GUIDELINES_CHECKED_FINAL_REVIEW_PENDING",
+        "notice": "NASA imagery credit retained; ANUNEX wrote questions. No NASA approval or endorsement claimed."
+      },
+      "scientificReviewStatus": "EXPERT_REVIEW_PENDING",
+      "frameExactTime": null
+    },
+    {
+      "path": "data/question-import-drafts/grade5/assets/FB514_dscovr_2015_frame06.jpg",
+      "url": "https://assets.science.nasa.gov/content/dam/science/psd/solar/2023/09/m/MillionMilesMoon.gif",
+      "frameIndex": 6,
+      "totalFrames": 20,
+      "width": 900,
+      "height": 506,
+      "bytes": 50979,
+      "sourceSha256": "c8bb3d8bcc51a3b197fb14353034f9108b6b93cb7c1be2155729e9bfa768318f",
+      "sha256": "e2793cf9d2810f32a74b8b65c1ed6a147391c80fee81c0be666237bc3b36ac25",
+      "mediaType": "REAL_SPACECRAFT_OBSERVATION_FRAME_NATURAL_COLOR_COMPOSITE",
+      "captureDate": "2015-07-16",
+      "credit": "NASA/NOAA",
+      "sourcePage": "https://science.nasa.gov/resource/from-a-million-miles-away-nasa-camera-shows-moon-crossing-face-of-earth/",
+      "processing": "Extracted one original observation frame from 20-frame GIF; JPEG downsample to 900px; no crop/retouch/generated content.",
+      "intendedUse": "Factual educational/editorial context inside question; not promotion or endorsement.",
+      "rightsEvidence": {
+        "guidelineUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+        "checkedAt": "2026-11-12",
+        "status": "NASA_EDITORIAL_GUIDELINES_CHECKED_FINAL_REVIEW_PENDING",
+        "notice": "NASA imagery credit retained; ANUNEX wrote questions. No NASA approval or endorsement claimed."
+      },
+      "scientificReviewStatus": "EXPERT_REVIEW_PENDING",
+      "frameExactTime": null
+    },
+    {
+      "path": "data/question-import-drafts/grade5/assets/FB514_dscovr_2015_frame12.jpg",
+      "url": "https://assets.science.nasa.gov/content/dam/science/psd/solar/2023/09/m/MillionMilesMoon.gif",
+      "frameIndex": 12,
+      "totalFrames": 20,
+      "width": 900,
+      "height": 506,
+      "bytes": 49677,
+      "sourceSha256": "c8bb3d8bcc51a3b197fb14353034f9108b6b93cb7c1be2155729e9bfa768318f",
+      "sha256": "75a05680cd668450601d4b889ed9e021dedc8d3fe5521513f94ac8a55fbe74e2",
+      "mediaType": "REAL_SPACECRAFT_OBSERVATION_FRAME_NATURAL_COLOR_COMPOSITE",
+      "captureDate": "2015-07-16",
+      "credit": "NASA/NOAA",
+      "sourcePage": "https://science.nasa.gov/resource/from-a-million-miles-away-nasa-camera-shows-moon-crossing-face-of-earth/",
+      "processing": "Extracted one original observation frame from 20-frame GIF; JPEG downsample to 900px; no crop/retouch/generated content.",
+      "intendedUse": "Factual educational/editorial context inside question; not promotion or endorsement.",
+      "rightsEvidence": {
+        "guidelineUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+        "checkedAt": "2026-11-12",
+        "status": "NASA_EDITORIAL_GUIDELINES_CHECKED_FINAL_REVIEW_PENDING",
+        "notice": "NASA imagery credit retained; ANUNEX wrote questions. No NASA approval or endorsement claimed."
+      },
+      "scientificReviewStatus": "EXPERT_REVIEW_PENDING",
+      "frameExactTime": null
+    }
+  ],
+  "exclusions": [
+    "Unused source GIF and first/last preview frames are not part of this committed package.",
+    "Historical observation images are never marked as 2026 captures.",
+    "Apparent sizes in photographs do not alone establish physical volume ratios."
+  ]
+}

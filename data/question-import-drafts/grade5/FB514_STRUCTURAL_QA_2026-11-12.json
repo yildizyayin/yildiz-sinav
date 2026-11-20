@@ -1,0 +1,19 @@
+{
+  "package": "FB514",
+  "rows": 50,
+  "openEnded": 44,
+  "performanceTasks": 6,
+  "photoAssets": 3,
+  "photoLinkedItems": 8,
+  "exactStemUniqueWithinThisPackage": true,
+  "exactStemOverlapWithFB513": 0,
+  "rubricsAndMediaReferences": "PASS",
+  "assetChecksumsAndDecoding": "PASS",
+  "manifestTypedCounts": "PASS",
+  "teacherApproved": 0,
+  "limitations": [
+    "Semantic originality against entire pool not tested.",
+    "Expert science, rubric, curriculum year/code, difficulty calibration and final media review pending.",
+    "No application code changed; full app test/build not run."
+  ]
+}

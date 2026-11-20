@@ -1,0 +1,1032 @@
+[
+  {
+    "grade": 4,
+    "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/352",
+    "sectionSha256": "47621fd45c3f4c389074445f96a1f89c0e4b69d29c4e971a4a32bff2883c717e",
+    "outcomes": [
+      {
+        "grade": 4,
+        "code": "FB.4.1.1",
+        "title": "Bilimin özellikleri ile ilgili deneyimlerini yansıtabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/352"
+      },
+      {
+        "grade": 4,
+        "code": "FB.4.1.2",
+        "title": "Bilgi kaynağının güvenilirliğini sorgulayabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/352"
+      }
+    ],
+    "status": "READ"
+  },
+  {
+    "grade": 4,
+    "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/356",
+    "sectionSha256": "4d73d2c9627576c0e186ab3634967cb73fd395136725c7b8bf3ecdd44d653652",
+    "outcomes": [
+      {
+        "grade": 4,
+        "code": "FB.4.2.1",
+        "title": "Besin içeriklerini ayırt etmek için deney yapabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/356"
+      },
+      {
+        "grade": 4,
+        "code": "FB.4.2.2",
+        "title": "Besinlerde vitamin ve/veya mineral bulunduğuna ilişkin genelleme yapabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/356"
+      },
+      {
+        "grade": 4,
+        "code": "FB.4.2.3",
+        "title": "Besinlerin işlevleri ile ilgili hipotez oluşturabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/356"
+      }
+    ],
+    "status": "READ"
+  },
+  {
+    "grade": 4,
+    "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/359",
+    "sectionSha256": "b76ca3b319def4e27bf0f140f4e350f721b56137f202d3f3a7bfdbde2c173ffb",
+    "outcomes": [
+      {
+        "grade": 4,
+        "code": "FB.4.3.1",
+        "title": "Dünya’nın şekli ile ilgili bilimsel gözleme dayalı tahmin yapabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/359"
+      },
+      {
+        "grade": 4,
+        "code": "FB.4.3.2",
+        "title": "Dünya’nın yapısıyla ilgili bilimsel model oluşturabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/359"
+      },
+      {
+        "grade": 4,
+        "code": "FB.4.3.3",
+        "title": "Dünya’nın hareketlerini gözlemlerine dayanarak tahmin edebilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/359"
+      }
+    ],
+    "status": "READ"
+  },
+  {
+    "grade": 4,
+    "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361",
+    "sectionSha256": "04f3b9ea6e383fe74d1ee59ac892a3a7f9c7a204483b6ea16ac3afd90a5beb68",
+    "outcomes": [
+      {
+        "grade": 4,
+        "code": "FB.4.4.1",
+        "title": "Maddelerin hâl değişimine yönelik bilimsel çıkarım yapabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361"
+      },
+      {
+        "grade": 4,
+        "code": "FB.4.4.2",
+        "title": "Maddelerin ısı etkisiyle değişimine yönelik deney yapabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/361"
+      }
+    ],
+    "status": "READ"
+  },
+  {
+    "grade": 4,
+    "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/363",
+    "sectionSha256": "ae716282ccc36be35434fd88cf0b6eb52e9ee3679d6c1746a75c94800cabcc5d",
+    "outcomes": [
+      {
+        "grade": 4,
+        "code": "FB.4.5.1",
+        "title": "Mıknatısın kutupları ve birbirleriyle etkileşimleri ile ilgili tümevarımsal akıl yürütebilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/363"
+      },
+      {
+        "grade": 4,
+        "code": "FB.4.5.2",
+        "title": "Mıknatısın etki ettiği maddelere ilişkin bilimsel gözleme dayalı tahmin yapabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/363"
+      },
+      {
+        "grade": 4,
+        "code": "FB.4.5.3",
+        "title": "Mıknatısın kullanım alanlarına yönelik bilimsel olarak sorgulayabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/363"
+      }
+    ],
+    "status": "READ"
+  },
+  {
+    "grade": 4,
+    "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364",
+    "sectionSha256": "35b2687404b598ef04be36b3d2aac12fc80f9fbaca9d789236da9030f214974e",
+    "outcomes": [
+      {
+        "grade": 4,
+        "code": "FB.4.6.1",
+        "title": "Basit bir elektrik devresi kurmaya ilişkin bilimsel olarak sorgulayabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364"
+      },
+      {
+        "grade": 4,
+        "code": "FB.4.6.2",
+        "title": "Elektrik üretiminde yenilenebilir ve yenilenemeyen enerji kaynaklarını kullanmaya ilişkin eleştirel düşünebilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/364"
+      }
+    ],
+    "status": "READ"
+  },
+  {
+    "grade": 4,
+    "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/365",
+    "sectionSha256": "4ccd4c37f8e8351d5dbe123120e183c6d00532b26a4340d14e89b89dea4f8fb4",
+    "outcomes": [
+      {
+        "grade": 4,
+        "code": "FB.4.7.1",
+        "title": "Görme olayının gerçekleşebilmesi için ışığın rolüne ilişkin deney yapabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/365"
+      },
+      {
+        "grade": 4,
+        "code": "FB.4.7.2",
+        "title": "Doğal ve yapay ışık kaynaklarını karşılaştırabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/365"
+      },
+      {
+        "grade": 4,
+        "code": "FB.4.7.3",
+        "title": "Işık kirliliğinin canlılara etkisine ilişkin problemleri çözebilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/365"
+      }
+    ],
+    "status": "READ"
+  },
+  {
+    "grade": 4,
+    "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/366",
+    "sectionSha256": "35977c28818dfbda825b9e52c5011a3697a3bd157fdb314ae83d87bb04f7053f",
+    "outcomes": [
+      {
+        "grade": 4,
+        "code": "FB.4.8.1",
+        "title": "Sürdürülebilir bir yaşam alanı kurmaya ilişkin bilimsel sorgulama yapabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/366"
+      }
+    ],
+    "status": "READ"
+  },
+  {
+    "grade": 6,
+    "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/409",
+    "sectionSha256": "1c0ecdd18ffb4365500e897473c961c2b75f935dd19bf63a9a910f8e3e19367f",
+    "outcomes": [
+      {
+        "grade": 6,
+        "code": "FB.6.1.1",
+        "title": "Güneş sistemindeki gezegenleri niteliklerine göre sınıflandırabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/409"
+      },
+      {
+        "grade": 6,
+        "code": "FB.6.1.2",
+        "title": "Güneş sistemi ile ilgili bilimsel model oluşturabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/409"
+      },
+      {
+        "grade": 6,
+        "code": "FB.6.1.3",
+        "title": "Güneş ve Ay tutulması ile ilgili bilimsel çıkarım yapabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/409"
+      },
+      {
+        "grade": 6,
+        "code": "FB.6.1.4",
+        "title": "Güneş ve Ay tutulması ile ilgili bilimsel model oluşturabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/409"
+      }
+    ],
+    "status": "READ"
+  },
+  {
+    "grade": 6,
+    "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/410",
+    "sectionSha256": "cb0187b64fd135deffc05b71be2a803014aeaa493b6e2f3c9c8e084ca866d8ad",
+    "outcomes": [
+      {
+        "grade": 6,
+        "code": "FB.6.2.1",
+        "title": "Bir cisme etki eden aynı doğrultudaki kuvvetler arasındaki ilişkileri açıklayarak bileşke kuvveti yapılandırabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/410"
+      },
+      {
+        "grade": 6,
+        "code": "FB.6.2.2",
+        "title": "Dengelenmiş ve dengelenmemiş kuvvetlerin etkisi altındaki bir cismin hareketine yönelik deney yapabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/410"
+      },
+      {
+        "grade": 6,
+        "code": "FB.6.2.3",
+        "title": "Sürat ve hız kavramlarını karşılaştırabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/410"
+      }
+    ],
+    "status": "READ"
+  },
+  {
+    "grade": 6,
+    "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/411",
+    "sectionSha256": "32993797ed7583c0e103719ab7b314cd182be1285dd57f0552b7c42f279f2209",
+    "outcomes": [
+      {
+        "grade": 6,
+        "code": "FB.6.3.1",
+        "title": "Eşeyli ve eşeysiz üremeyi karşılaştırabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/411"
+      },
+      {
+        "grade": 6,
+        "code": "FB.6.3.2",
+        "title": "Bitkilerde üreme, büyüme ve gelişme hakkında bilimsel çıkarım yapabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/411"
+      },
+      {
+        "grade": 6,
+        "code": "FB.6.3.3",
+        "title": "Tohumun çimlenmesine etki eden faktörlere ilişkin hipotez oluşturabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/411"
+      },
+      {
+        "grade": 6,
+        "code": "FB.6.3.4",
+        "title": "Hayvanlarda üreme, büyüme ve gelişme hakkında bilimsel çıkarım yapabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/411"
+      },
+      {
+        "grade": 6,
+        "code": "FB.6.3.5",
+        "title": "İnsanda üremeyi sağlayan yapı ve organlar arasındaki ilişkileri çözümleyebilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/411"
+      },
+      {
+        "grade": 6,
+        "code": "FB.6.3.6",
+        "title": "Sinir sisteminin görevlerini model üzerinde bilimsel olarak gözlemleyebilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/411"
+      },
+      {
+        "grade": 6,
+        "code": "FB.6.3.7",
+        "title": "İç salgı bezlerinin vücut için önemini yapılandırabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/411"
+      },
+      {
+        "grade": 6,
+        "code": "FB.6.3.8",
+        "title": "Çocukluktan ergenliğe geçişte oluşan bedensel ve ruhsal değişimleri genelleyebilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/411"
+      },
+      {
+        "grade": 6,
+        "code": "FB.6.3.9",
+        "title": "Denetleyici ve düzenleyici sistemlerin sağlığı için yapılması gerekenlerle ilgili bilgi toplayabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/411"
+      }
+    ],
+    "status": "READ"
+  },
+  {
+    "grade": 6,
+    "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/412",
+    "sectionSha256": "8b88f2b03fcfeffb89319fd68ae03b05edda493e3b679ce74d763b51290314ba",
+    "outcomes": [
+      {
+        "grade": 6,
+        "code": "FB.6.4.1",
+        "title": "Işığın farklı yüzeylerdeki yansıma olaylarına ilişkin bilimsel çıkarım yapabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/412"
+      },
+      {
+        "grade": 6,
+        "code": "FB.6.4.2",
+        "title": "Işığın yansımasında gelen ışın, yansıyan ışın ve yüzeyin normali arasındaki ilişki ile ilgili kanıt kullanabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/412"
+      },
+      {
+        "grade": 6,
+        "code": "FB.6.4.3",
+        "title": "Günlük hayattaki ayna çeşitlerine ilişkin bilimsel çıkarım yapabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/412"
+      },
+      {
+        "grade": 6,
+        "code": "FB.6.4.4",
+        "title": "Işığın madde ile etkileşimi sonucunda soğurulabileceğini bilimsel olarak gözlemleyebilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/412"
+      },
+      {
+        "grade": 6,
+        "code": "FB.6.4.5",
+        "title": "Beyaz ışığın tüm ışık renklerinin bileşiminden oluştuğuna ilişkin bilimsel çıkarım yapabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/412"
+      },
+      {
+        "grade": 6,
+        "code": "FB.6.4.6",
+        "title": "Cisimlerin siyah, beyaz ve renkli görünmesinin nedenini gözlem verileriyle açıklayabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/412"
+      },
+      {
+        "grade": 6,
+        "code": "FB.6.4.7",
+        "title": "Güneş enerjisinin günlük hayat ve teknolojideki yenilikçi uygulamalarına ilişkin eleştirel düşünebilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/412"
+      }
+    ],
+    "status": "READ"
+  },
+  {
+    "grade": 6,
+    "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/413",
+    "sectionSha256": "5544716aeeee947d3379857f05b3e3f6ba014d0e7404139d3dcdbf27572cd817",
+    "outcomes": [
+      {
+        "grade": 6,
+        "code": "FB.6.5.1",
+        "title": "Isı etkisiyle maddelerin genleşip büzüleceğine yönelik bilimsel gözleme dayalı tahmin edebilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/413"
+      },
+      {
+        "grade": 6,
+        "code": "FB.6.5.2",
+        "title": "Maddelerin erime, donma ve kaynama noktasını gösteren deney yapabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/413"
+      },
+      {
+        "grade": 6,
+        "code": "FB.6.5.3",
+        "title": "Yoğunluğa ilişkin hesaplamalar yaparak bilimsel veriye dayalı tahmin edebilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/413"
+      },
+      {
+        "grade": 6,
+        "code": "FB.6.5.4",
+        "title": "Deneyler sonucunda çeşitli maddelerin yoğunluklarına ilişkin tümdengelimsel akıl yürütebilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/413"
+      },
+      {
+        "grade": 6,
+        "code": "FB.6.5.5",
+        "title": "Suyun katı ve sıvı hâllerine ait yoğunlukları karşılaştırarak bu durumun canlılar için önemi hakkında bilimsel çıkarımlar yapabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/413"
+      },
+      {
+        "grade": 6,
+        "code": "FB.6.5.6",
+        "title": "Yoğunluk ile ilgili bilimsel model oluşturabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/413"
+      }
+    ],
+    "status": "READ"
+  },
+  {
+    "grade": 6,
+    "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414",
+    "sectionSha256": "cd233180e8f1774808428a471484b1bc2f0f96f17fb7007bb5746430f72769cf",
+    "outcomes": [
+      {
+        "grade": 6,
+        "code": "FB.6.6.1",
+        "title": "Maddelerin elektriği iletme durumlarını gösteren deney yapabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414"
+      },
+      {
+        "grade": 6,
+        "code": "FB.6.6.2",
+        "title": "Elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri belirlemeye yönelik deney yapabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414"
+      },
+      {
+        "grade": 6,
+        "code": "FB.6.6.3",
+        "title": "Ayarlanabilir direncin ampulün parlaklığına etkilerine yönelik bilimsel çıkarım yapabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/414"
+      }
+    ],
+    "status": "READ"
+  },
+  {
+    "grade": 6,
+    "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/415",
+    "sectionSha256": "beea3d230c5dcfde8a6ccf914d093a12201a3bab5c4cbe295ce49f96e7f96c4c",
+    "outcomes": [
+      {
+        "grade": 6,
+        "code": "FB.6.7.1",
+        "title": "Biyoçeşitliliğin doğal yaşam için önemini sorgulayabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/415"
+      },
+      {
+        "grade": 6,
+        "code": "FB.6.7.2",
+        "title": "Biyoçeşitliliği tehdit eden faktörleri araştırma verilerine dayalı tahmin edebilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/415"
+      },
+      {
+        "grade": 6,
+        "code": "FB.6.7.3",
+        "title": "Isınma amaçlı yakıt kullanımının insan ve çevre üzerine etkilerini tartışabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/415"
+      },
+      {
+        "grade": 6,
+        "code": "FB.6.7.4",
+        "title": "Yakın çevresindeki veya ülkemizdeki bir çevre problemini çözebilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/415"
+      }
+    ],
+    "status": "READ"
+  },
+  {
+    "grade": 7,
+    "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/416",
+    "sectionSha256": "8893956f20ada1f41981b17bc68651019638d3ae908aaed14ddeaf1d034bc946",
+    "outcomes": [
+      {
+        "grade": 7,
+        "code": "FB.7.1.1",
+        "title": "Uzay araştırmaları için geliştirilen teknolojileri karşılaştırabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/416"
+      },
+      {
+        "grade": 7,
+        "code": "FB.7.1.2",
+        "title": "Uzay gözlem araçları ile ilgili bilimsel model oluşturabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/416"
+      },
+      {
+        "grade": 7,
+        "code": "FB.7.1.3",
+        "title": "Uzay araştırmalarının yol açabileceği problemleri çözebilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/416"
+      },
+      {
+        "grade": 7,
+        "code": "FB.7.1.4",
+        "title": "Yıldızların yaşamını açıklayarak yapılandırabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/416"
+      },
+      {
+        "grade": 7,
+        "code": "FB.7.1.5",
+        "title": "Yıldız, galaksi ve evren kavramlarını açıklayarak yapılandırabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/416"
+      }
+    ],
+    "status": "READ"
+  },
+  {
+    "grade": 7,
+    "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/429",
+    "sectionSha256": "e166800d149a5e6ee82fc228bcec64913e3541f535165dd16f3189782aaa0521",
+    "outcomes": [
+      {
+        "grade": 7,
+        "code": "FB.7.2.1",
+        "title": "Fiziksel anlamda yapılan işin bağlı olduğu faktörlere ilişkin bilimsel çıkarım yapabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/429"
+      },
+      {
+        "grade": 7,
+        "code": "FB.7.2.2",
+        "title": "Enerji çeşitlerinden kinetik ve potansiyel enerjiyi karşılaştırabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/429"
+      },
+      {
+        "grade": 7,
+        "code": "FB.7.2.3",
+        "title": "Enerji dönüşümünden hareketle enerjinin korunduğuna tümevarımsal akıl yürütebilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/429"
+      }
+    ],
+    "status": "READ"
+  },
+  {
+    "grade": 7,
+    "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/430",
+    "sectionSha256": "6c347f9713206d8cf470db035c2d1b48d45f18f186453118391aa51d84f79bbb",
+    "outcomes": [
+      {
+        "grade": 7,
+        "code": "FB.7.3.1",
+        "title": "Sindirim sistemini oluşturan yapı ve organların görevlerini model üzerinde gözlemleyebilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/430"
+      },
+      {
+        "grade": 7,
+        "code": "FB.7.3.2",
+        "title": "Sindirim sisteminin sağlığı için yapılması gerekenler konusunda bilgi toplayabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/430"
+      },
+      {
+        "grade": 7,
+        "code": "FB.7.3.3",
+        "title": "Dolaşım sistemini oluşturan yapı ve organların görevlerini model üzerinde bilimsel olarak gözlemleyebilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/430"
+      },
+      {
+        "grade": 7,
+        "code": "FB.7.3.4",
+        "title": "Kan bağışının toplumsal dayanışma açısından önemini tartışabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/430"
+      },
+      {
+        "grade": 7,
+        "code": "FB.7.3.5",
+        "title": "Dolaşım sisteminin sağlığı için yapılması gerekenler konusunda bilgi toplayabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/430"
+      },
+      {
+        "grade": 7,
+        "code": "FB.7.3.6",
+        "title": "Solunum sistemini oluşturan yapı ve organların görevlerini model üzerinde bilimsel olarak gözlemleyebilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/430"
+      },
+      {
+        "grade": 7,
+        "code": "FB.7.3.7",
+        "title": "Solunum sisteminin sağlığı için yapılması gerekenler konusunda bilgi toplayabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/430"
+      },
+      {
+        "grade": 7,
+        "code": "FB.7.3.8",
+        "title": "Boşaltım sistemini oluşturan yapı ve organları model üzerinde bilimsel olarak gözlemleyebilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/430"
+      },
+      {
+        "grade": 7,
+        "code": "FB.7.3.9",
+        "title": "Boşaltım sisteminin sağlığı için yapılması gerekenler konusunda bilgi toplayabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/430"
+      }
+    ],
+    "status": "READ"
+  },
+  {
+    "grade": 7,
+    "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/431",
+    "sectionSha256": "d9852590333fabefff9cf2114d8ad1a9a7d217023e148fc8f14f97d16048cfae",
+    "outcomes": [
+      {
+        "grade": 7,
+        "code": "FB.7.4.1",
+        "title": "Ortam değiştiren ışığın izlediği yolu gözlemleyerek kırılma olayına yönelik bilimsel çıkarım yapabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/431"
+      },
+      {
+        "grade": 7,
+        "code": "FB.7.4.2",
+        "title": "Mercek çeşitlerine yönelik bilimsel çıkarım yapabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/431"
+      },
+      {
+        "grade": 7,
+        "code": "FB.7.4.3",
+        "title": "Merceklerin günlük hayatta kullanım alanlarını örneklerle sınıflandırabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/431"
+      }
+    ],
+    "status": "READ"
+  },
+  {
+    "grade": 7,
+    "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/432",
+    "sectionSha256": "58b43fe92025a3a0cb882671195f52f275d80c785aa738d165da992536694b2c",
+    "outcomes": [
+      {
+        "grade": 7,
+        "code": "FB.7.5.1",
+        "title": "Atomun yapısını ve yapısındaki temel parçacıkları çözümleyebilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/432"
+      },
+      {
+        "grade": 7,
+        "code": "FB.7.5.2",
+        "title": "Geçmişten günümüze atom kavramı ile ilgili bilimsel bilgilerin değişebileceğini sorgulayabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/432"
+      },
+      {
+        "grade": 7,
+        "code": "FB.7.5.3",
+        "title": "Farklı moleküllere ait bilimsel model oluşturabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/432"
+      },
+      {
+        "grade": 7,
+        "code": "FB.7.5.4",
+        "title": "Saf maddeleri element ve bileşik olarak sınıflandırabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/432"
+      },
+      {
+        "grade": 7,
+        "code": "FB.7.5.5",
+        "title": "Periyodik tablodaki ilk 18 elementin isimlerini sembolleriyle yapılandırabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/432"
+      },
+      {
+        "grade": 7,
+        "code": "FB.7.5.6",
+        "title": "Periyodik tabloda grup ve periyotları karşılaştırabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/432"
+      },
+      {
+        "grade": 7,
+        "code": "FB.7.5.7",
+        "title": "Bileşiklerin isimlerini formülleriyle yapılandırabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/432"
+      },
+      {
+        "grade": 7,
+        "code": "FB.7.5.8",
+        "title": "Karışımları homojen ve heterojen olarak sınıflandırabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/432"
+      },
+      {
+        "grade": 7,
+        "code": "FB.7.5.9",
+        "title": "Çözünme hızına etki eden faktörler ile ilgili hipotez oluşturabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/432"
+      },
+      {
+        "grade": 7,
+        "code": "FB.7.5.10",
+        "title": "Karışımları ayırmak için çeşitli deney yapabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/432"
+      }
+    ],
+    "status": "READ"
+  },
+  {
+    "grade": 7,
+    "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/433",
+    "sectionSha256": "0156c18347332dba2959ab0b12a603a20083be0a1885c0a2f78ea10d9eb3ffc3",
+    "outcomes": [
+      {
+        "grade": 7,
+        "code": "FB.7.6.1",
+        "title": "Elektriklenme ile ilgili bilgi toplayabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/433"
+      },
+      {
+        "grade": 7,
+        "code": "FB.7.6.2",
+        "title": "Elektriklenme çeşitlerini belirlemeye yönelik deney yapabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/433"
+      },
+      {
+        "grade": 7,
+        "code": "FB.7.6.3",
+        "title": "Cisimlerin elektrik yüklerini sınıflandırabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/433"
+      }
+    ],
+    "status": "READ"
+  },
+  {
+    "grade": 7,
+    "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/434",
+    "sectionSha256": "f6b7cd9852efe93398902117c47eaee0f7848beb7e199e170465a6529f9b308a",
+    "outcomes": [
+      {
+        "grade": 7,
+        "code": "FB.7.7.1",
+        "title": "Besin zincirindeki canlılar arasındaki ilişkileri yapılandırabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/434"
+      },
+      {
+        "grade": 7,
+        "code": "FB.7.7.2",
+        "title": "Kaynakların tasarruflu kullanımının önemini sorgulayabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/434"
+      }
+    ],
+    "status": "READ"
+  },
+  {
+    "grade": 8,
+    "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/435",
+    "sectionSha256": "f0d526ce1547c63d05c7c2f89844826b3f6ccb01988ca3cce3992a9f3a452e35",
+    "outcomes": [
+      {
+        "grade": 8,
+        "code": "FB.8.1.1",
+        "title": "Dünya’nın Güneş etrafındaki hareketi ve eksen eğikliğinin sonuçları ile ilgili bilimsel çıkarım yapabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/435"
+      },
+      {
+        "grade": 8,
+        "code": "FB.8.1.2",
+        "title": "İklim ve hava olaylarını karşılaştırabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/435"
+      }
+    ],
+    "status": "READ"
+  },
+  {
+    "grade": 8,
+    "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/436",
+    "sectionSha256": "1eb39d29f92e8c2eae066536c6dc8bb5ecafa6874ce0b5f1735f9f7721b1f66a",
+    "outcomes": [
+      {
+        "grade": 8,
+        "code": "FB.8.2.1",
+        "title": "Basit makineleri sınıflandırabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/436"
+      },
+      {
+        "grade": 8,
+        "code": "FB.8.2.2",
+        "title": "Günlük yaşamda iş kolaylığı sağlayacak bilimsel model oluşturabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/436"
+      }
+    ],
+    "status": "READ"
+  },
+  {
+    "grade": 8,
+    "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/437",
+    "sectionSha256": "f76d7354b7adc0b81489db61bbc98181d5ac6bcc6e6381e13742bb744d5023a0",
+    "outcomes": [
+      {
+        "grade": 8,
+        "code": "FB.8.3.1",
+        "title": "Nükleotid, gen, DNA ve kromozom kavramları arasındaki ilişkiyi yapılandırabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/437"
+      },
+      {
+        "grade": 8,
+        "code": "FB.8.3.2",
+        "title": "DNA’nın yapısını model üzerinde bilimsel olarak gözlemleyebilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/437"
+      },
+      {
+        "grade": 8,
+        "code": "FB.8.3.3",
+        "title": "Mitoz ve mayoz kavramları arasındaki ilişkiyi karşılaştırabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/437"
+      },
+      {
+        "grade": 8,
+        "code": "FB.8.3.4",
+        "title": "Kalıtımla ilgili kavramları yapılandırabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/437"
+      },
+      {
+        "grade": 8,
+        "code": "FB.8.3.5",
+        "title": "Tek karakter çaprazlamaları ile ilgili problemler çözerek sonuçlarına ilişkin bilimsel çıkarım yapabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/437"
+      },
+      {
+        "grade": 8,
+        "code": "FB.8.3.6",
+        "title": "Akraba evliliklerinin genetik sonuçlarını tartışabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/437"
+      },
+      {
+        "grade": 8,
+        "code": "FB.8.3.7",
+        "title": "Mutasyonla ilgili bilgi toplayabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/437"
+      },
+      {
+        "grade": 8,
+        "code": "FB.8.3.8",
+        "title": "Canlıların yaşadıkları çevreye uyumlarına ilişkin bilimsel çıkarım yapabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/437"
+      }
+    ],
+    "status": "READ"
+  },
+  {
+    "grade": 8,
+    "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/438",
+    "sectionSha256": "c7eaade2ce78d056658c7c1dff7dd6d28d2fa74b471f3e7334c6bb1f877a0d47",
+    "outcomes": [
+      {
+        "grade": 8,
+        "code": "FB.8.4.1",
+        "title": "Sesin oluşumuna yönelik bilimsel çıkarım yapabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/438"
+      },
+      {
+        "grade": 8,
+        "code": "FB.8.4.2",
+        "title": "Sesin yayılabildiği ortamlara yönelik deney yapabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/438"
+      },
+      {
+        "grade": 8,
+        "code": "FB.8.4.3",
+        "title": "Sesin frekansına göre ince veya kalın olarak işitilmesine neden olan ses özellikleri ile ilgili deney yapabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/438"
+      },
+      {
+        "grade": 8,
+        "code": "FB.8.4.4",
+        "title": "Ses ile ilgili değişkenlerin işitmeye etkisi hakkında hipotez oluşturabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/438"
+      },
+      {
+        "grade": 8,
+        "code": "FB.8.4.5",
+        "title": "Farklı maddeler ile etkileşimi sonucunda sesin iletilmesi, yansıması ve soğurulmasına ilişkin bilimsel çıkarım yapabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/438"
+      },
+      {
+        "grade": 8,
+        "code": "FB.8.4.6",
+        "title": "Ses kirliliğini önlemeye yönelik önlemleri bilimsel olarak sorgulayabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/438"
+      }
+    ],
+    "status": "READ"
+  },
+  {
+    "grade": 8,
+    "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/439",
+    "sectionSha256": "43740ea27c4fa03afb8d6fcb27206571f8805c705d6c0d947ded82d2513f76d5",
+    "outcomes": [
+      {
+        "grade": 8,
+        "code": "FB.8.5.1",
+        "title": "Elementleri periyodik tablo üzerinde metal, ametal, yarımetal ve soy gaz olarak sınıflandırabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/439"
+      },
+      {
+        "grade": 8,
+        "code": "FB.8.5.2",
+        "title": "Fiziksel ve kimyasal değişimler ile ilgili bilimsel gözleme dayalı tahmin edebilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/439"
+      },
+      {
+        "grade": 8,
+        "code": "FB.8.5.3",
+        "title": "Kimyasal tepkimelerle ilgili bilimsel çıkarım yapabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/439"
+      },
+      {
+        "grade": 8,
+        "code": "FB.8.5.4",
+        "title": "Kimyasal tepkimelerin günlük yaşamdaki etkilerine yönelik bilgi toplayabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/439"
+      },
+      {
+        "grade": 8,
+        "code": "FB.8.5.5",
+        "title": "Asit ve bazların genel özelliklerini karşılaştırabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/439"
+      },
+      {
+        "grade": 8,
+        "code": "FB.8.5.6",
+        "title": "Maddelerin asit veya baz olduğunu çeşitli ayıraçlar kullanarak bilimsel gözleme dayalı tahmin edebilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/439"
+      },
+      {
+        "grade": 8,
+        "code": "FB.8.5.7",
+        "title": "Maddelerin asitlik ve bazlık durumlarına ilişkin “pH” değerlerini kullanarak tümevarımsal akıl yürütebilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/439"
+      },
+      {
+        "grade": 8,
+        "code": "FB.8.5.8",
+        "title": "Asit ve bazların çeşitli maddeler üzerindeki etkilerine yönelik deney yapabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/439"
+      }
+    ],
+    "status": "READ"
+  },
+  {
+    "grade": 8,
+    "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/440",
+    "sectionSha256": "e0ee7ce980efe75082a819a3b7fe1f6a27d276b2f7992350647da704ecd45b61",
+    "outcomes": [
+      {
+        "grade": 8,
+        "code": "FB.8.6.1",
+        "title": "Ampullerin bağlanma durumunun ampul parlaklığına etkisine yönelik deney yapabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/440"
+      },
+      {
+        "grade": 8,
+        "code": "FB.8.6.2",
+        "title": "Elektrik akımını operasyonel olarak tanımlayabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/440"
+      },
+      {
+        "grade": 8,
+        "code": "FB.8.6.3",
+        "title": "Bir devre elemanının uçları arasındaki potansiyel farkı (gerilimi) operasyonel olarak tanımlayabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/440"
+      },
+      {
+        "grade": 8,
+        "code": "FB.8.6.4",
+        "title": "Bir devre elemanının uçları arasındaki gerilim ile üzerinden geçen akım ilişkisine yönelik tümevarımsal akıl yürütebilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/440"
+      },
+      {
+        "grade": 8,
+        "code": "FB.8.6.5",
+        "title": "Özgün bir aydınlatma aracı modeli oluşturabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/440"
+      },
+      {
+        "grade": 8,
+        "code": "FB.8.6.6",
+        "title": "Elektrik enerjisinin dönüştüğü enerjileri sınıflandırabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/440"
+      },
+      {
+        "grade": 8,
+        "code": "FB.8.6.7",
+        "title": "Elektrik enerjisinin ısı, ışık, ses veya hareket enerjisine dönüşümüne yönelik bilimsel model oluşturabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/440"
+      },
+      {
+        "grade": 8,
+        "code": "FB.8.6.8",
+        "title": "Elektrik enerjisi üretim santrallerini sınıflandırabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/440"
+      },
+      {
+        "grade": 8,
+        "code": "FB.8.6.9",
+        "title": "Elektrik enerjisi üretim santrallerinin avantaj ve dezavantajlarını tartışabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/440"
+      },
+      {
+        "grade": 8,
+        "code": "FB.8.6.10",
+        "title": "Elektrik enerjisinin bilinçli ve tasarruflu kullanılmasının önemini tartışabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/440"
+      }
+    ],
+    "status": "READ"
+  },
+  {
+    "grade": 8,
+    "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/441",
+    "sectionSha256": "99754b80414e4a1da58716016e059d4ebddfd2d396996ba077b3cb6fb24593e4",
+    "outcomes": [
+      {
+        "grade": 8,
+        "code": "FB.8.7.1",
+        "title": "Bitkilerde besin üretiminde fotosentezin önemini yapılandırabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/441"
+      },
+      {
+        "grade": 8,
+        "code": "FB.8.7.2",
+        "title": "Fotosentez hızını etkileyen faktörler ile ilgili hipotez oluşturabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/441"
+      },
+      {
+        "grade": 8,
+        "code": "FB.8.7.3",
+        "title": "Canlılarda solunumun önemini yapılandırabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/441"
+      },
+      {
+        "grade": 8,
+        "code": "FB.8.7.4",
+        "title": "Madde döngülerine ilişkin şema üzerinden bilimsel çıkarım yapabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/441"
+      },
+      {
+        "grade": 8,
+        "code": "FB.8.7.5",
+        "title": "Madde döngülerinin yaşam açısından önemini yapılandırabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/441"
+      },
+      {
+        "grade": 8,
+        "code": "FB.8.7.6",
+        "title": "Küresel iklim değişikliklerinin nedenlerini ve olası sonuçlarını tartışabilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/441"
+      },
+      {
+        "grade": 8,
+        "code": "FB.8.7.7",
+        "title": "Ülkemizdeki küresel iklim değişikliğinin sebep olduğu bir problemi çözebilme",
+        "sourceUrl": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/441"
+      }
+    ],
+    "status": "READ"
+  }
+]

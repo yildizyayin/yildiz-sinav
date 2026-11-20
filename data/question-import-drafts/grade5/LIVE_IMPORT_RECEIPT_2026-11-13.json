@@ -1,0 +1,65 @@
+{
+  "checkedAt": "2026-11-13",
+  "scope": "GRADE_5_MATH_AND_SCIENCE",
+  "userPolicy": {
+    "independentTeacherApprovalRequiredBeforeImport": false,
+    "teacherMustApproveBeforeStudentDelivery": true,
+    "automaticStudentPublication": false
+  },
+  "liveImport": {
+    "mathematics": {
+      "sourceRows": 1150,
+      "outcomes": 23,
+      "added": 1150,
+      "status": "REVIEW",
+      "difficultyBasis": "EDITORIAL_ESTIMATE_NOT_EMPIRICALLY_CALIBRATED",
+      "difficultyCounts": {
+        "1": 133,
+        "2": 432,
+        "3": 411,
+        "4": 149,
+        "5": 21,
+        "6": 4
+      }
+    },
+    "science": {
+      "sourceRows": 1350,
+      "outcomes": 27,
+      "added": 0,
+      "status": "BLOCKED_BY_IMPORTER_ASSESSMENT_TYPE_SUPPORT",
+      "requiredPreservation": [
+        "OPEN_ENDED",
+        "PERFORMANCE_TASK",
+        "RUBRICS",
+        "SHARED_CONTEXTS",
+        "MEDIA",
+        "VERTICAL_LINKS",
+        "BOUNDED_HISTORICAL_EVIDENCE"
+      ]
+    }
+  },
+  "evidence": {
+    "beforeTotal": 36,
+    "afterTotal": 1186,
+    "beforeStudentApproved": 12,
+    "afterStudentApproved": 12,
+    "first50ReuploadPreview": {
+      "duplicates": 50,
+      "ready": 0,
+      "invalid": 0
+    },
+    "lastQuestionChecked": {
+      "outcomeCode": "MAT.5.6.2",
+      "difficulty": 3,
+      "status": "REVIEW",
+      "source": "OWNED"
+    }
+  },
+  "observedApplicationLimitations": [
+    "Bulk import accepts MULTIPLE_CHOICE only and drops non-whitelisted metadata.",
+    "The live teacher UI uses approved questions; question approval is SUPER_ADMIN-only. Teacher-scoped review/approval before delivery is not implemented.",
+    "400-row commit returned an error after storing all 400 rows. Actual persistence was verified by bank total and duplicate preview; remaining groups used <=100 rows."
+  ],
+  "studentPublicationPerformed": false,
+  "applicationCodeChanged": false
+}

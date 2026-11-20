@@ -1,0 +1,165 @@
+{
+  "metadata": {
+    "outcomeCode": "MAT.5.3.6",
+    "academicYearCatalog": "2027-2028",
+    "officialSource": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/448",
+    "status": "DRAFT_NOT_APPROVED",
+    "taskCount": 10,
+    "notIncludedInFiftyQuestionQuota": true,
+    "importableByExistingMultipleChoiceAPI": false,
+    "requiresPhysicalOrDigitalConstruction": true
+  },
+  "tasks": [
+    {
+      "id": "MAT536-P01",
+      "title": "Üçgende açı toplamını keşfet",
+      "prompt": "Bir üçgen çizip üç açısını ölç. Köşelerini keserek açıları yan yana yerleştir; toplamlarının 180° olmasını çizim ve ölçümle açıkla.",
+      "evidence": [
+        "Üç ölçüm",
+        "Fiziksel açı birleştirme",
+        "180° gerekçesi"
+      ],
+      "teacherReviewRequired": true,
+      "automaticallyGradable": false
+    },
+    {
+      "id": "MAT536-P02",
+      "title": "Üçgen türleriyle açı toplamı",
+      "prompt": "Dar, dik ve geniş açılı üçer farklı üçgen çizip her birinin üç iç açısını ölç ve sonuçları tabloya geçir.",
+      "evidence": [
+        "Üç çeşit açı durumunu ayırt etme",
+        "Dokuz doğru açı ölçümü",
+        "Her üçgen için 180° karşılaştırması"
+      ],
+      "teacherReviewRequired": true,
+      "automaticallyGradable": false
+    },
+    {
+      "id": "MAT536-P03",
+      "title": "Dik ve geniş açı karşı örneği",
+      "prompt": "İki dik açılı veya iki geniş açılı bir üçgen çizmeyi dene. Neden mümkün olmadığını açı toplamıyla açıklayan kısa rapor oluştur.",
+      "evidence": [
+        "İki çizim denemesi",
+        "İç açı toplamı argümanı",
+        "Geçerli karşı örnek açıklaması"
+      ],
+      "teacherReviewRequired": true,
+      "automaticallyGradable": false
+    },
+    {
+      "id": "MAT536-P04",
+      "title": "İkizkenar açı ilişkisi",
+      "prompt": "İki kenarı eşit bir üçgen çiz ve kenarları, bu kenarların karşılarındaki açıları ölç. Eşlik ilişkisini açıklayıp başka çizimde kontrol et.",
+      "evidence": [
+        "Eş kenarların belirlenmesi",
+        "İki karşı açının ölçümü",
+        "İkinci örnekle doğrulama"
+      ],
+      "teacherReviewRequired": true,
+      "automaticallyGradable": false
+    },
+    {
+      "id": "MAT536-P05",
+      "title": "Eşkenar üçgen testi",
+      "prompt": "Eşkenar bir üçgen oluştur. Üç kenarı ve üç iç açıyı ölçüp 60° çıkarımını destekle.",
+      "evidence": [
+        "Üç eş kenar",
+        "Üç eş 60° açı",
+        "Doğrulama ve ölçüm hassasiyeti"
+      ],
+      "teacherReviewRequired": true,
+      "automaticallyGradable": false
+    },
+    {
+      "id": "MAT536-P06",
+      "title": "Düzgün çokgen karar tablosu",
+      "prompt": "Kare, kare olmayan eşkenar dörtgen ve eş kenarlı olmayan dikdörtgen çizip kenar/açı ölçümlerini tabloya yaz. Hangisinin düzgün çokgen olduğunu savun.",
+      "evidence": [
+        "Kenar/açı ölçümleri",
+        "Düzgün tanımı",
+        "En az iki karşı örnek"
+      ],
+      "teacherReviewRequired": true,
+      "automaticallyGradable": false
+    },
+    {
+      "id": "MAT536-P07",
+      "title": "İç ve dış açı",
+      "prompt": "Bir üçgenin bir kenarını köşeden uzat. Yanındaki iç ve dış açıyı ölçüp toplamının 180° olmasını açıkla.",
+      "evidence": [
+        "İç ve dış açıyı işaretleme",
+        "Açı ölçüleri",
+        "Bütünlerlik gerekçesi"
+      ],
+      "teacherReviewRequired": true,
+      "automaticallyGradable": false
+    },
+    {
+      "id": "MAT536-P08",
+      "title": "Köşegen ve kenarı ayır",
+      "prompt": "Bir üçgen, dörtgen ve beşgen çiz. Her birinde komşu ve komşu olmayan köşeleri gösterip uygun köşegen örneklerini işaretle; sayı formülü kullanma.",
+      "evidence": [
+        "Üç şekil",
+        "Kenar-köşegen ayrımı",
+        "Üçgende köşegen bulunmama açıklaması"
+      ],
+      "teacherReviewRequired": true,
+      "automaticallyGradable": false
+    },
+    {
+      "id": "MAT536-P09",
+      "title": "Çizim günlüğü",
+      "prompt": "Dört farklı üçgen için ilk açı tahminlerini, gerçek ölçümleri ve çıkarımındaki değişiklikleri kaydet.",
+      "evidence": [
+        "Dört üçgen kaydı",
+        "Tahmin/ölçüm karşılaştırma",
+        "Öz değerlendirme"
+      ],
+      "teacherReviewRequired": true,
+      "automaticallyGradable": false
+    },
+    {
+      "id": "MAT536-P10",
+      "title": "Zihin haritası akran değerlendirmesi",
+      "prompt": "Çokgen, düzgün çokgen, kenar, köşe, iç-dış açı ve üçgen türlerini içeren bir zihin haritası hazırla. Arkadaşının geri bildirimine göre en az bir düzeltme yap.",
+      "evidence": [
+        "Doğru kavram haritası",
+        "Geri bildirim kaydı",
+        "Gerekçeli düzeltme"
+      ],
+      "teacherReviewRequired": true,
+      "automaticallyGradable": false
+    }
+  ],
+  "rubric": {
+    "criteria": [
+      {
+        "id": "construction",
+        "weight": 25,
+        "description": "Çokgen ve üçgen örneklerini doğru oluşturma"
+      },
+      {
+        "id": "measurement",
+        "weight": 30,
+        "description": "Kenar ve açı ölçümlerini doğru kaydetme"
+      },
+      {
+        "id": "inference",
+        "weight": 30,
+        "description": "Geçerli matematiksel çıkarım ve karşı örnek kurma"
+      },
+      {
+        "id": "reflection",
+        "weight": 15,
+        "description": "Ölçüm veya akran geri bildirimiyle yansıtma"
+      }
+    ],
+    "levels": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "teacherSignoffRequired": true
+  }
+}

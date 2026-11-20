@@ -1,0 +1,175 @@
+{
+  "metadata": {
+    "outcomeCode": "MAT.5.6.2",
+    "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/455",
+    "academicYearCatalog": "2027-2028",
+    "reviewStatus": "DRAFT_NOT_APPROVED",
+    "taskCount": 10,
+    "notCountedToward50Questions": true,
+    "currentMultipleChoiceImporterSupports": false
+  },
+  "tasks": [
+    {
+      "id": "MAT562-P01",
+      "title": "Adil torba oyunu",
+      "prompt": "Özdeş toplarla iki oyuncunun eş şansla kazanacağı bir renk oyunu tasarla; ardından aynı oyunu bilinçli biçimde adaletsiz yap ve nedenini yaz.",
+      "evidence": [
+        "İlkinde eş sayıda top",
+        "İkincide eş olmayan oran",
+        "İki oyunun karşılaştırması"
+      ],
+      "taskType": "PROBABILITY_REASON_AND_REFLECTION",
+      "teacherReviewRequired": true,
+      "automaticScoringAllowed": false
+    },
+    {
+      "id": "MAT562-P02",
+      "title": "Şanslı renk iddiası",
+      "prompt": "'Mavi şanslı rengim, bu yüzden her torbada daha sık gelir' iddiasına iki farklı renk dağılımı kullanarak açıklama ve karşı örnek üret.",
+      "evidence": [
+        "İki geçerli dağılım",
+        "Renk sayısı gerekçesi",
+        "Öznel inanç ile mantıksal olasılık ayrımı"
+      ],
+      "taskType": "PROBABILITY_REASON_AND_REFLECTION",
+      "teacherReviewRequired": true,
+      "automaticScoringAllowed": false
+    },
+    {
+      "id": "MAT562-P03",
+      "title": "Çarkı yeniden tasarla",
+      "prompt": "Dört eş bölmeli, üçü bir oyuncunun diğeri ötekinin olduğu çarkı adil hâle getir. İlk/son çizimler ile gerekçe hazırla.",
+      "evidence": [
+        "3/1 adaletsiz çizim",
+        "2/2 adil çizim",
+        "Gerekçe"
+      ],
+      "taskType": "PROBABILITY_REASON_AND_REFLECTION",
+      "teacherReviewRequired": true,
+      "automaticScoringAllowed": false
+    },
+    {
+      "id": "MAT562-P04",
+      "title": "Az ve çok olasıya örnekler",
+      "prompt": "Günlük yaşamdan az olası ve çok olası olarak yorumladığın ikişer olay yaz. Tahminleri hangi koşullarda değiştireceğini açıkla.",
+      "evidence": [
+        "Dört olay",
+        "Koşula bağlı açıklama",
+        "Kesinlikten kaçınma"
+      ],
+      "taskType": "PROBABILITY_REASON_AND_REFLECTION",
+      "teacherReviewRequired": true,
+      "automaticScoringAllowed": false
+    },
+    {
+      "id": "MAT562-P05",
+      "title": "İki farklı torba",
+      "prompt": "A: 3 kırmızı 2 mavi, B: 3 kırmızı 7 mavi torbalarının kırmızı seçilme ihtimallerini karşılaştır ve nedenini renk sayılarıyla yaz.",
+      "evidence": [
+        "3/5 ve 3/10 oranlarını ilişkilendirme",
+        "A'da daha olası sonucu",
+        "Açık gerekçe"
+      ],
+      "taskType": "PROBABILITY_REASON_AND_REFLECTION",
+      "teacherReviewRequired": true,
+      "automaticScoringAllowed": false
+    },
+    {
+      "id": "MAT562-P06",
+      "title": "Kırmızı sayısını artır",
+      "prompt": "Bir torbada 2 kırmızı ve 4 yeşil top bulunurken önce bir, sonra iki kırmızı ekleyerek kırmızı gelme ihtimalini karşılaştır.",
+      "evidence": [
+        "Önce ve sonra sayıları",
+        "Olasılık artışı",
+        "Diğer renklerin sabit tutulması"
+      ],
+      "taskType": "PROBABILITY_REASON_AND_REFLECTION",
+      "teacherReviewRequired": true,
+      "automaticScoringAllowed": false
+    },
+    {
+      "id": "MAT562-P07",
+      "title": "Oyun sonuç günlüğü",
+      "prompt": "Eş olasılıklı iki renkli bir oyun oluştur. On denemeyi kaydet ve tek bir kısa seride sonuçların farklı olabileceğini tartış.",
+      "evidence": [
+        "On gerçek veya öğretmen-sentetik deneme kaydı",
+        "Adil kural",
+        "Kısa seriden kesin sonuç çıkarmama"
+      ],
+      "taskType": "PROBABILITY_REASON_AND_REFLECTION",
+      "teacherReviewRequired": true,
+      "automaticScoringAllowed": false
+    },
+    {
+      "id": "MAT562-P08",
+      "title": "Dart alan modeli",
+      "prompt": "Bir dart hedefini eş büyüklükte alanlara ayır. Ödül ve boş alan oranlarını değiştirerek az/çok olasılıklı durumları çizimle karşılaştır.",
+      "evidence": [
+        "Eş alan gösterimi",
+        "İki farklı düzen",
+        "Sınır/olasılık çıkarımı"
+      ],
+      "taskType": "PROBABILITY_REASON_AND_REFLECTION",
+      "teacherReviewRequired": true,
+      "automaticScoringAllowed": false
+    },
+    {
+      "id": "MAT562-P09",
+      "title": "Akran gerekçe tartışması",
+      "prompt": "Bir arkadaşın 'Az olası bir renk geldiği için oyun bozuk' diyor. Bu iddiayı mantıksal gerekçeler ve farklı sonuçlarla tartışan bir rapor yaz.",
+      "evidence": [
+        "Olasılık ile tek olay ayrımı",
+        "Geçerli karşı örnek",
+        "Saygılı tartışma"
+      ],
+      "taskType": "PROBABILITY_REASON_AND_REFLECTION",
+      "teacherReviewRequired": true,
+      "automaticScoringAllowed": false
+    },
+    {
+      "id": "MAT562-P10",
+      "title": "Adil oyun posteri",
+      "prompt": "Kendi tasarladığın torba veya çark oyununu kuralları, kazanma olasılığına ilişkin gerekçeler ve adalet ölçütleriyle bir posterde anlat; akranından kontrol iste.",
+      "evidence": [
+        "Açık kurallar",
+        "Adalet gerekçesi",
+        "Oyun tasarımı",
+        "Akran kontrolü"
+      ],
+      "taskType": "PROBABILITY_REASON_AND_REFLECTION",
+      "teacherReviewRequired": true,
+      "automaticScoringAllowed": false
+    }
+  ],
+  "rubric": {
+    "criteria": [
+      {
+        "id": "comparison",
+        "weight": 30,
+        "description": "Az/çok olasılıklı olayları tutarlı karşılaştırma"
+      },
+      {
+        "id": "reason",
+        "weight": 30,
+        "description": "Nedensel veya mantıksal gerekçelendirme"
+      },
+      {
+        "id": "fairness",
+        "weight": 25,
+        "description": "Oyunun adilliğini ve kazanma koşullarını doğru değerlendirme"
+      },
+      {
+        "id": "reflection",
+        "weight": 15,
+        "description": "Oyun sonrası tahmini ve geribildirimi değerlendirme"
+      }
+    ],
+    "levels": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "teacherSignoffRequired": true
+  }
+}

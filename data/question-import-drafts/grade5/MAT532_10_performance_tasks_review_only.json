@@ -1,0 +1,224 @@
+{
+  "metadata": {
+    "outcomeCode": "MAT.5.3.2",
+    "academicYearCatalog": "2027-2028",
+    "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/448",
+    "reviewStatus": "DRAFT_NOT_APPROVED",
+    "taskCount": 10,
+    "notCountedTowardMCQuota": true,
+    "currentImporterSupportsThese": false
+  },
+  "tasks": [
+    {
+      "id": "MAT532-P01",
+      "title": "İki noktadan tek doğru",
+      "taskType": "DRAW_EXPLAIN_REVIEW",
+      "prompt": "Kâğıda birbirinden farklı A ve B noktaları koy. Çizgeci yeniden yerleştirerek ikisinden birlikte geçen ikinci farklı bir doğru çizmeyi dene. Deneyinin sonucunu ve nedenini iki cümleyle yaz.",
+      "evidence": [
+        "Sabit A/B noktaları",
+        "En az iki çizim denemesi",
+        "Yalnız bir doğrunun mümkün olduğunu açıklama"
+      ],
+      "processComponents": [
+        "a",
+        "b",
+        "c"
+      ],
+      "requiresRealStudentWork": true,
+      "automaticallyGradable": false
+    },
+    {
+      "id": "MAT532-P02",
+      "title": "Çemberde yarıçap eşitliği",
+      "taskType": "DRAW_EXPLAIN_REVIEW",
+      "prompt": "O merkezli 4 cm yarıçaplı çember çiz. Çember üzerinde üç nokta seç. Merkezden bu noktalara parçalar çizip ölçümleri tabloya kaydet; çıkarımını yaz.",
+      "evidence": [
+        "Düzgün çember",
+        "Üç yarıçap ölçümü",
+        "Ölçümlerin eşit olduğu çıkarımı ve olası ölçüm hatası değerlendirmesi"
+      ],
+      "processComponents": [
+        "a",
+        "b",
+        "c"
+      ],
+      "requiresRealStudentWork": true,
+      "automaticallyGradable": false
+    },
+    {
+      "id": "MAT532-P03",
+      "title": "Farklı merkez, eş yarıçap",
+      "taskType": "DRAW_EXPLAIN_REVIEW",
+      "prompt": "Pergel açıklığını değiştirmeden iki farklı merkezde çember çiz. Çap ve yarıçaplarını ölçerek iki sonucu karşılaştır.",
+      "evidence": [
+        "İki farklı merkez",
+        "Eş yarıçap ölçümü",
+        "Çemberlerin boyut/konum farklılıklarını açıklama"
+      ],
+      "processComponents": [
+        "a",
+        "b",
+        "c"
+      ],
+      "requiresRealStudentWork": true,
+      "automaticallyGradable": false
+    },
+    {
+      "id": "MAT532-P04",
+      "title": "Tek dikme deneyi",
+      "taskType": "DRAW_EXPLAIN_REVIEW",
+      "prompt": "d doğrusu dışında P noktası belirle. P'den d'ye gönye kullanarak dikme indir. Aynı P'den d'ye başka bir dikme çizip çizemeyeceğini sınayıp gerekçeni yaz.",
+      "evidence": [
+        "Doğru ve dış nokta",
+        "Gönyeyle doğru dikme",
+        "Dikmenin tek olduğu gerekçesi"
+      ],
+      "processComponents": [
+        "a",
+        "b",
+        "c"
+      ],
+      "requiresRealStudentWork": true,
+      "automaticallyGradable": false
+    },
+    {
+      "id": "MAT532-P05",
+      "title": "Eş/farklı dik uzaklıklar",
+      "taskType": "DRAW_EXPLAIN_REVIEW",
+      "prompt": "d doğrusu dışında üç nokta belirle: ikisi d'ye aynı, biri farklı uzaklıkta olsun. Dikmeleri çiz, uzunluklarını ölç ve genelleme yaz.",
+      "evidence": [
+        "Dik uzaklıkların gösterimi",
+        "En az iki eş ve bir farklı uzaklık",
+        "Farklı noktalarda eşit veya farklı dikmeler çıkarımı"
+      ],
+      "processComponents": [
+        "a",
+        "b",
+        "c"
+      ],
+      "requiresRealStudentWork": true,
+      "automaticallyGradable": false
+    },
+    {
+      "id": "MAT532-P06",
+      "title": "Işında eş uzunluk aktarımı",
+      "taskType": "DRAW_EXPLAIN_REVIEW",
+      "prompt": "Bir ışın çiz. Pergeli 3 cm'ye açıp ışın boyunca üç eş parçayı art arda işaretle. Uzunlukları ölç ve aktarım sırasında açıklığı nasıl koruduğunu yaz.",
+      "evidence": [
+        "Işın başlangıcı/ok yönü",
+        "Üç ardışık eş parça",
+        "Açıklığı sabitleme ve öz denetim"
+      ],
+      "processComponents": [
+        "a",
+        "b",
+        "c"
+      ],
+      "requiresRealStudentWork": true,
+      "automaticallyGradable": false
+    },
+    {
+      "id": "MAT532-P07",
+      "title": "Açı kollarında eş mesafe",
+      "taskType": "DRAW_EXPLAIN_REVIEW",
+      "prompt": "K köşeli bir açı çiz. K'den başlayarak her kolda aynı pergel açıklığıyla birer nokta işaretle. İki mesafeyi ölç; açının büyüklüğünün bundan etkilenip etkilenmediğini tartış.",
+      "evidence": [
+        "Aynı köşeli iki ışın",
+        "Eş uzaklıktaki noktalar",
+        "Uzunluk eşitliği ve açı ölçüsü arasındaki ayrım"
+      ],
+      "processComponents": [
+        "a",
+        "b",
+        "c"
+      ],
+      "requiresRealStudentWork": true,
+      "automaticallyGradable": false
+    },
+    {
+      "id": "MAT532-P08",
+      "title": "Paralel doğruları deneyle kurma",
+      "taskType": "DRAW_EXPLAIN_REVIEW",
+      "prompt": "d doğrusu çiz. Aynı tarafta üç farklı noktada gönye kullanarak d'ye 2 cm uzaklıktaki noktaları işaretle; bu noktaları birleştir ve neden paralel olduğunu açıkla.",
+      "evidence": [
+        "Aynı taraf ve eş dik uzaklık",
+        "Üç noktanın doğrusal olması",
+        "Paralellik gerekçesi ve farklı noktalarda ölçüm"
+      ],
+      "processComponents": [
+        "a",
+        "b",
+        "c"
+      ],
+      "requiresRealStudentWork": true,
+      "automaticallyGradable": false
+    },
+    {
+      "id": "MAT532-P09",
+      "title": "Dijital sürükleme ile genelleme",
+      "taskType": "DRAW_EXPLAIN_REVIEW",
+      "prompt": "Bir geometri yazılımında doğru dışında P noktası ve P'den doğruya dikme oluştur. P'yi farklı yerlere sürükleyip dikme uzunluğunu ve tekliğini değerlendir.",
+      "evidence": [
+        "Sürükleme kaydı",
+        "Dik mesafe değişiminin incelenmesi",
+        "Her konumda tek dikme ilkesi"
+      ],
+      "processComponents": [
+        "a",
+        "b",
+        "c"
+      ],
+      "requiresRealStudentWork": true,
+      "automaticallyGradable": false
+    },
+    {
+      "id": "MAT532-P10",
+      "title": "Kesişmeme ve eş uzaklık",
+      "taskType": "DRAW_EXPLAIN_REVIEW",
+      "prompt": "Düz bir tren rayı çiftini ölçeğe bağlı olmadan çiz. İki noktada raylar arası dik mesafeyi ölç ve bunun paralellik açısından ne anlama geldiğini anlat.",
+      "evidence": [
+        "İki düz ray temsili",
+        "Dik mesafenin en az iki ölçümü",
+        "Ölçümlere dayalı paralellik tartışması"
+      ],
+      "processComponents": [
+        "a",
+        "b",
+        "c"
+      ],
+      "requiresRealStudentWork": true,
+      "automaticallyGradable": false
+    }
+  ],
+  "rubric": {
+    "levels": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "criteria": [
+      {
+        "id": "construction",
+        "weight": 30,
+        "description": "Düzlem araçlarıyla doğru inşa ve ölçüm"
+      },
+      {
+        "id": "record",
+        "weight": 20,
+        "description": "Deney veya ölçüm sonuçlarını izlenebilir kaydetme"
+      },
+      {
+        "id": "inference",
+        "weight": 30,
+        "description": "Geometrik özellikten gerekçeli çıkarım"
+      },
+      {
+        "id": "reflection",
+        "weight": 20,
+        "description": "Farklı örnek/karşı örnekle çıkarımı sınama ve öz değerlendirme"
+      }
+    ],
+    "teacherApprovalRequired": true
+  }
+}

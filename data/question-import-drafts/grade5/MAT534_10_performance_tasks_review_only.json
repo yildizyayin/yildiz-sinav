@@ -1,0 +1,175 @@
+{
+  "metadata": {
+    "outcomeCode": "MAT.5.3.4",
+    "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/448",
+    "academicYearCatalog": "2027-2028",
+    "reviewStatus": "DRAFT_NOT_APPROVED",
+    "supplementaryTaskCount": 10,
+    "notCountedToward50Questions": true,
+    "currentImporterSupportsThese": false,
+    "media": "STUDENT_GENERATED_OR_RIGHTS_CLEARED_ONLY"
+  },
+  "tasks": [
+    {
+      "taskId": "MAT534-P01",
+      "type": "DRAW_MEASURE_LIST_INFER_EXPLAIN",
+      "title": "İki doğruyu incele",
+      "prompt": "Kareli kâğıda dik olmayan iki kesişen doğru çiz. Kesişimdeki dört küçük açıyı 1–4 olarak numaralandır, açıölçerle ölç, tablolaştır ve eş açılar ile toplamı 180° olan çiftlere ilişkin önerme yaz.",
+      "expectedEvidence": [
+        "Dört ölçüm ve tablo",
+        "İki ters açı eşitliği",
+        "Doğrusal komşu açıların 180° oluşuna gerekçe"
+      ],
+      "teacherReviewRequired": true,
+      "autoGraded": false
+    },
+    {
+      "taskId": "MAT534-P02",
+      "type": "DRAW_MEASURE_LIST_INFER_EXPLAIN",
+      "title": "Dik kesişimle karşılaştır",
+      "prompt": "İki dik doğru çiz. Dört küçük açı ölçüsünü tabloya yaz. Önceki dik olmayan kesişim deneyinle karşılaştırarak hangi özelliklerin korunduğunu açıkla.",
+      "expectedEvidence": [
+        "Dört 90° açıyı kaydetme",
+        "Dik olmayan durumla karşılaştırma",
+        "Ölçüm üzerinden gerekçelendirme"
+      ],
+      "teacherReviewRequired": true,
+      "autoGraded": false
+    },
+    {
+      "taskId": "MAT534-P03",
+      "type": "DRAW_MEASURE_LIST_INFER_EXPLAIN",
+      "title": "Paralel doğru deneyi",
+      "prompt": "İki farklı paralel doğru çiz, kesişim aramayı dene ve oluşmayan açıları not et. Ardından üçüncü kesen doğru ekleyerek değişen durumu tabloya aktar.",
+      "expectedEvidence": [
+        "Paralellerin kesişmemesi",
+        "Kesenin iki ayrı kesişim noktası",
+        "Her kesişimdeki dört küçük açıyı işaretleme"
+      ],
+      "teacherReviewRequired": true,
+      "autoGraded": false
+    },
+    {
+      "taskId": "MAT534-P04",
+      "type": "DRAW_MEASURE_LIST_INFER_EXPLAIN",
+      "title": "Çakışık ve paralel ayrımı",
+      "prompt": "Aynı doğruyu iki renkle üst üste çizerek çakışıklığı göster. Sonra ayrı paralel doğrular çiz. Ortak nokta durumlarını ve açı oluşumunu karşılaştır.",
+      "expectedEvidence": [
+        "Çakışık için tüm noktaların ortak olması",
+        "Farklı paralel için sıfır ortak nokta",
+        "Kesişen durumla ayrım"
+      ],
+      "teacherReviewRequired": true,
+      "autoGraded": false
+    },
+    {
+      "taskId": "MAT534-P05",
+      "type": "DRAW_MEASURE_LIST_INFER_EXPLAIN",
+      "title": "Üç doğruda altı küçük açı",
+      "prompt": "Üç farklı doğruyu aynı noktadan geçir; hiçbir çifti çakışık olmasın. Ardışık ışınların arasındaki altı küçük açıyı ölç, sırasıyla tabloya yaz ve toplamı kontrol et.",
+      "expectedEvidence": [
+        "Altı açı bölgesini işaretleme",
+        "Toplam 360° kontrolü",
+        "Karşılıklı eş açılara gerekçe"
+      ],
+      "teacherReviewRequired": true,
+      "autoGraded": false
+    },
+    {
+      "taskId": "MAT534-P06",
+      "type": "DRAW_MEASURE_LIST_INFER_EXPLAIN",
+      "title": "Üç doğruda farklı konumlar",
+      "prompt": "Üç doğruyla önce tek ortak noktalı, sonra üç farklı çiftler-arası kesişim noktalı ve sonra iki paralel-bir kesenli çizim oluştur. Kesişim noktalarını ve açı bölgelerini karşılaştır.",
+      "expectedEvidence": [
+        "Üç farklı çizim",
+        "Ortak nokta sayısını doğrulama",
+        "Varsayım ve sonuç farkını açıklama"
+      ],
+      "teacherReviewRequired": true,
+      "autoGraded": false
+    },
+    {
+      "taskId": "MAT534-P07",
+      "type": "DRAW_MEASURE_LIST_INFER_EXPLAIN",
+      "title": "Komşu tümler açı oluştur",
+      "prompt": "Bir dik açı çiz. Bu açıyı bir iç ışınla 30° ve 60° komşu açılara ayır. Ölçerek ikisinin hem komşu hem tümler olduğuna kanıt göster.",
+      "expectedEvidence": [
+        "İki iç açı 30° ve 60°",
+        "Ortak köşe/kol",
+        "Toplam 90° ölçüm kontrolü"
+      ],
+      "teacherReviewRequired": true,
+      "autoGraded": false
+    },
+    {
+      "taskId": "MAT534-P08",
+      "type": "DRAW_MEASURE_LIST_INFER_EXPLAIN",
+      "title": "Komşu bütünler açı oluştur",
+      "prompt": "Doğru açı üzerinde ortak O köşeli bir iç ışın çiz. Açıölçerle 75° ve 105° olarak ayrıldığını doğrula ve ilişkiyi yaz.",
+      "expectedEvidence": [
+        "180° doğru açı",
+        "75° ve 105° ölçümleri",
+        "Komşu ve bütünler açıklaması"
+      ],
+      "teacherReviewRequired": true,
+      "autoGraded": false
+    },
+    {
+      "taskId": "MAT534-P09",
+      "type": "DRAW_MEASURE_LIST_INFER_EXPLAIN",
+      "title": "Zihin haritası ve karşı örnek",
+      "prompt": "Ters, komşu, tümler, bütünler, komşu tümler ve komşu bütünler için bir zihin haritası hazırla. 'Her komşu açı bütünlerdir' iddiasına karşı örnek ekle.",
+      "expectedEvidence": [
+        "Altı kavramın doğru ayrımı",
+        "Karşı örnek olarak 20°+30° komşu açı",
+        "Kavramlar arası doğru bağlantı"
+      ],
+      "teacherReviewRequired": true,
+      "autoGraded": false
+    },
+    {
+      "taskId": "MAT534-P10",
+      "type": "DRAW_MEASURE_LIST_INFER_EXPLAIN",
+      "title": "Gerçek yaşam çizim analizi",
+      "prompt": "İzinli veya kendin çizdiğin bir yol kesişimi planında kesişen, dik veya paralel doğru çiftlerini belirle. Açıölçer yardımıyla uygun köşelerde açıları ölç ve hangi genellemelerin geçerli olduğunu yaz.",
+      "expectedEvidence": [
+        "Doğruların doğru temsili",
+        "En az dört ölçüm ve tablo",
+        "Günlük yaşam konumuna dayalı geçerli çıkarım"
+      ],
+      "teacherReviewRequired": true,
+      "autoGraded": false
+    }
+  ],
+  "rubric": {
+    "criteria": [
+      {
+        "id": "correct_construction",
+        "weight": 25,
+        "description": "Doğruların farklı durumlarını doğru çizme"
+      },
+      {
+        "id": "measurement_table",
+        "weight": 25,
+        "description": "Açıların doğru ölçülüp tablolaştırılması"
+      },
+      {
+        "id": "proposition",
+        "weight": 25,
+        "description": "Varsayım ve önermelerin doğruluğu"
+      },
+      {
+        "id": "justification",
+        "weight": 25,
+        "description": "Farklı örnek ve karşı örnekle gerekçe oluşturma"
+      }
+    ],
+    "ratingLevels": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "qualifiedTeacherSignoff": true
+  }
+}

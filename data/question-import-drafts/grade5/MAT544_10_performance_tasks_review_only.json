@@ -1,0 +1,176 @@
+{
+  "metadata": {
+    "outcomeCode": "MAT.5.4.4",
+    "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/451",
+    "status": "DRAFT_NOT_APPROVED",
+    "sourceDate": "2026-08-28",
+    "curriculumTargetYear": "2027-2028",
+    "count": 10,
+    "notCountedToward50Questions": true,
+    "multipleChoiceImporterSupports": false,
+    "noAssetFilesAttached": true
+  },
+  "tasks": [
+    {
+      "taskId": "MAT544-P01",
+      "title": "Bahçe çiti ve çim",
+      "prompt": "8 m × 12 m bir bahçenin etrafına çit çekilecek ve içine çim ekilecek. İki işi ayrı ayrı modelle; gerekli çit uzunluğu ve çim alanını hesapla.",
+      "expectedEvidence": [
+        "40 m çevre",
+        "96 m² alan",
+        "Birimlerin neden farklı olduğunu gerekçelendirme"
+      ],
+      "taskType": "REAL_WORLD_MODEL_REASON_EXPLAIN",
+      "teacherAssessmentRequired": true,
+      "autoGraded": false
+    },
+    {
+      "taskId": "MAT544-P02",
+      "title": "Zemin karo planı",
+      "prompt": "6 m × 8 m dikdörtgen zemini 1 m²'lik eş kare karolarla kaplama planı çiz. Gerekli karoları sayma ve çarpma stratejileriyle doğrula.",
+      "expectedEvidence": [
+        "48 karo",
+        "Düzgün 6×8 model",
+        "İki farklı doğrulama"
+      ],
+      "taskType": "REAL_WORLD_MODEL_REASON_EXPLAIN",
+      "teacherAssessmentRequired": true,
+      "autoGraded": false
+    },
+    {
+      "taskId": "MAT544-P03",
+      "title": "Çerçeve ile poster",
+      "prompt": "Kenarları 5 cm ve 9 cm olan bir posterin etrafına 1 cm genişliğinde çerçeve eklenecek. İç ve dış ölçüleri, kapladıkları alanları hesapla.",
+      "expectedEvidence": [
+        "İç alan 45 cm²",
+        "Dış boyut 7×11 ve dış alan 77 cm²",
+        "Farkın 32 cm² açıklaması"
+      ],
+      "taskType": "REAL_WORLD_MODEL_REASON_EXPLAIN",
+      "teacherAssessmentRequired": true,
+      "autoGraded": false
+    },
+    {
+      "taskId": "MAT544-P04",
+      "title": "Aynı çit farklı düzen",
+      "prompt": "24 m çitle üç farklı doğal sayı kenarlı dikdörtgen bahçe çiz. Kapladıkları alanları tabloyla karşılaştır ve neden aynı çevre olduklarını açıkla.",
+      "expectedEvidence": [
+        "En az üç ölçü",
+        "Doğru 24 m çevre",
+        "Farklı alanlara gerekçe"
+      ],
+      "taskType": "REAL_WORLD_MODEL_REASON_EXPLAIN",
+      "teacherAssessmentRequired": true,
+      "autoGraded": false
+    },
+    {
+      "taskId": "MAT544-P05",
+      "title": "Çit satın alma",
+      "prompt": "9 m × 6 m bahçe çevresini metre başına 15 TL malzemeyle bir tur kaplamak için maliyet hesabını yap. Sonucu iki ayrı yöntemle kontrol et.",
+      "expectedEvidence": [
+        "Çevre 30 m",
+        "Maliyet 450 TL",
+        "İki yöntemle kontrol"
+      ],
+      "taskType": "REAL_WORLD_MODEL_REASON_EXPLAIN",
+      "teacherAssessmentRequired": true,
+      "autoGraded": false
+    },
+    {
+      "taskId": "MAT544-P06",
+      "title": "Hatalı işlem denetimi",
+      "prompt": "7 cm × 11 cm kartonun çevresini 77 cm bulan öğrencinin çözümünü incele. Neyin alan, neyin çevre olduğunu diyagramla açıkla.",
+      "expectedEvidence": [
+        "Alan 77 cm²",
+        "Çevre 36 cm",
+        "Hatanın açık gerekçesi"
+      ],
+      "taskType": "REAL_WORLD_MODEL_REASON_EXPLAIN",
+      "teacherAssessmentRequired": true,
+      "autoGraded": false
+    },
+    {
+      "taskId": "MAT544-P07",
+      "title": "Şeridi kes ve yeniden ölç",
+      "prompt": "10 cm × 6 cm kartondan kısa kenar boyunca 2 cm genişliğinde şerit çıkar. Kalan kartonun yeni alanını ve çevresini iki yöntemle hesapla.",
+      "expectedEvidence": [
+        "Kalan 8×6",
+        "Alan 48 cm²",
+        "Çevre 28 cm"
+      ],
+      "taskType": "REAL_WORLD_MODEL_REASON_EXPLAIN",
+      "teacherAssessmentRequired": true,
+      "autoGraded": false
+    },
+    {
+      "taskId": "MAT544-P08",
+      "title": "Alanı sabit tasarım",
+      "prompt": "Alanı 24 m² olan iki farklı dikdörtgen oda planı çiz (3×8 ve 4×6). Halı alanı aynıyken süpürgelik uzunluğunun neden farklı olduğunu açıkla.",
+      "expectedEvidence": [
+        "Alanlar 24 m²",
+        "Çevreler 22 ve 20 m",
+        "Farklı malzeme ihtiyacını açıklama"
+      ],
+      "taskType": "REAL_WORLD_MODEL_REASON_EXPLAIN",
+      "teacherAssessmentRequired": true,
+      "autoGraded": false
+    },
+    {
+      "taskId": "MAT544-P09",
+      "title": "Öğrenci problemi tasarla",
+      "prompt": "Alan ve çevreyi aynı anda kullanmayı gerektiren, en fazla iki adımlı özgün bir günlük yaşam problemi yaz. Problemi bir şekil, tablo ve sayı cümlesi ile çöz.",
+      "expectedEvidence": [
+        "Eksiksiz problem metni",
+        "Üç temsilin tutarlılığı",
+        "Gerekçeli çözüm ve kontrol"
+      ],
+      "taskType": "REAL_WORLD_MODEL_REASON_EXPLAIN",
+      "teacherAssessmentRequired": true,
+      "autoGraded": false
+    },
+    {
+      "taskId": "MAT544-P10",
+      "title": "Strateji değişimi günlüğü",
+      "prompt": "Bir kenarı 4 m, çevresi 30 m olan dikdörtgen yüzeyin alanını bulun. İlk stratejini, kontrolünü ve varsa alternatif stratejini yaz; arkadaşınla karşılaştır.",
+      "expectedEvidence": [
+        "Diğer kenar 11 m",
+        "Alan 44 m²",
+        "En az iki mantıklı yaklaşımın değerlendirilmesi"
+      ],
+      "taskType": "REAL_WORLD_MODEL_REASON_EXPLAIN",
+      "teacherAssessmentRequired": true,
+      "autoGraded": false
+    }
+  ],
+  "rubric": {
+    "criteria": [
+      {
+        "id": "problem",
+        "weight": 25,
+        "description": "Problemde verilenleri/istenenleri ve uygun birimleri doğru belirleme"
+      },
+      {
+        "id": "representation",
+        "weight": 25,
+        "description": "Sözlü, tablo, çizim ve sayı cümlesi temsilleri arasında doğru geçiş"
+      },
+      {
+        "id": "solution",
+        "weight": 30,
+        "description": "Gerekçeli çözüm, ara işlem, tahmin ve kontrol"
+      },
+      {
+        "id": "reflection",
+        "weight": 20,
+        "description": "Alternatif stratejiyi değerlendirme, genelleme veya yanlış çözümü düzeltme"
+      }
+    ],
+    "performanceLevels": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "teacherApprovalRequired": true
+  }
+}

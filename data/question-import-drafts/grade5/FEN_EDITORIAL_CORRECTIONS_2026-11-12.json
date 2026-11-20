@@ -1,0 +1,122 @@
+{
+  "sharedPromptSlotsRevised": 9,
+  "affectedPromptRows": 90,
+  "electricalContextsWithTwoRevisedAnswerSlots": 10,
+  "additionalAnswerRowsRevised": 20,
+  "totalRevisedRows": 110,
+  "changes": [
+    {
+      "code": "FB.5.2.3",
+      "questionSlot": 4,
+      "reason": "Avoid assuming an unstated error or measured result.",
+      "before": "Verilen ifadeyi bilimsel olarak düzelt.",
+      "after": "Bu durum hangi yanlış yoruma yol açabilir? Doğru açıklamayı yaz."
+    },
+    {
+      "code": "FB.5.3.1",
+      "questionSlot": 4,
+      "reason": "Avoid assuming an unstated error or measured result.",
+      "before": "Verilen çıkarımın sınırını veya yanlışını açıkla.",
+      "after": "Bu gözlem veya modelden hangi aşırı genelleme yapılamaz? Gerekçelendir."
+    },
+    {
+      "code": "FB.5.3.2",
+      "questionSlot": 4,
+      "reason": "Avoid assuming an unstated error or measured result.",
+      "before": "Bağlamdaki hatalı sıralamayı veya benzetmenin sınırını belirt.",
+      "after": "Bağlamı kullanırken hangi kavram karışıklığından kaçınılmalı? Hatalı bir ifade varsa düzelt."
+    },
+    {
+      "code": "FB.5.3.3",
+      "questionSlot": 4,
+      "reason": "Avoid assuming an unstated error or measured result.",
+      "before": "Yanlış etiketin neden uygun olmadığını açıkla.",
+      "after": "Bu örnekler sınıflandırılırken hangi yanlış etiketten kaçınılmalı? Neden?"
+    },
+    {
+      "code": "FB.5.5.1",
+      "questionSlot": 4,
+      "reason": "Avoid assuming an unstated error or measured result.",
+      "before": "Verilen yanlış çıkarımı düzelt; modelin sınırını belirt.",
+      "after": "Bu gözlemden hangi yanlış çıkarım yapılmamalı? Model kullanıyorsan bir temsil sınırı ekle."
+    },
+    {
+      "code": "FB.5.5.4",
+      "questionSlot": 2,
+      "reason": "Avoid assuming an unstated error or measured result.",
+      "before": "Hangi kayıt gözleme, hangisi tahmine dayanır?",
+      "after": "Doğrudan gözlenen kısmı belirt. Henüz gözlenmemiş bir önerme varsa onu ayrı etiketle."
+    },
+    {
+      "code": "FB.5.5.6",
+      "questionSlot": 3,
+      "reason": "Avoid assuming an unstated error or measured result.",
+      "before": "Verilen kanıt modelin başarısı hakkında ne söyler?",
+      "after": "Bu modeli sınarken hangi gözlem başarıyı destekler? Veri verilmişse o veriyi kullan; yoksa beklenen kanıtı öner."
+    },
+    {
+      "code": "FB.5.5.6",
+      "questionSlot": 4,
+      "reason": "Avoid assuming an unstated error or measured result.",
+      "before": "Modeli yeni kanıta göre nasıl yenilersin; hangi iddiadan kaçınırsın?",
+      "after": "Modeli değerlendirmek veya yenilemek için hangi düzeltme ya da sınır notu gerekir?"
+    },
+    {
+      "code": "FB.5.6.1",
+      "questionSlot": 3,
+      "reason": "Avoid assuming an unstated error or measured result.",
+      "before": "Her grubu uygun adla etiketle; bir eşleştirmeyi gerekçelendir.",
+      "after": "Yaptığın eşleştirme veya gruplandırmanın gerekçesini açıkla."
+    },
+    {
+      "code": "FB.5.6.3",
+      "context": 1,
+      "reason": "Answer key now contains a testable hypothesis and all variable roles."
+    },
+    {
+      "code": "FB.5.6.3",
+      "context": 2,
+      "reason": "Answer key now contains a testable hypothesis and all variable roles."
+    },
+    {
+      "code": "FB.5.6.3",
+      "context": 3,
+      "reason": "Answer key now contains a testable hypothesis and all variable roles."
+    },
+    {
+      "code": "FB.5.6.3",
+      "context": 4,
+      "reason": "Answer key now contains a testable hypothesis and all variable roles."
+    },
+    {
+      "code": "FB.5.6.3",
+      "context": 5,
+      "reason": "Answer key now contains a testable hypothesis and all variable roles."
+    },
+    {
+      "code": "FB.5.6.3",
+      "context": 6,
+      "reason": "Answer key now contains a testable hypothesis and all variable roles."
+    },
+    {
+      "code": "FB.5.6.3",
+      "context": 7,
+      "reason": "Answer key now contains a testable hypothesis and all variable roles."
+    },
+    {
+      "code": "FB.5.6.3",
+      "context": 8,
+      "reason": "Answer key now contains a testable hypothesis and all variable roles."
+    },
+    {
+      "code": "FB.5.6.3",
+      "context": 9,
+      "reason": "Answer key now contains a testable hypothesis and all variable roles."
+    },
+    {
+      "code": "FB.5.6.3",
+      "context": 10,
+      "reason": "Answer key now contains a testable hypothesis and all variable roles."
+    }
+  ]
+}

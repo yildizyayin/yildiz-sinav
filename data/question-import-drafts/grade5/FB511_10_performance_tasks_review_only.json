@@ -1,0 +1,184 @@
+{
+  "metadata": {
+    "outcomeCode": "FB.5.1.1",
+    "officialSource": "https://tymm.meb.gov.tr/fen-bilimleri-dersi/unite/367",
+    "reviewStatus": "DRAFT_NOT_APPROVED",
+    "taskCount": 10,
+    "notCountedTowardQuestionQuota": true,
+    "currentMCImporterCompatible": false,
+    "teacherSignoffRequired": true
+  },
+  "tasks": [
+    {
+      "id": "FB511-P01",
+      "title": "Tarihli Güneş görüntüsü arşivi",
+      "prompt": "NASA/SDO arşivindeki en az iki farklı tarihli gerçek Güneş görüntüsünü öğretmen rehberliğinde ekrandan incele. Görselin tarihini, kaynağını, gördüğün lekeyi ve her görüntüdeki konumu tabloya yaz. Güneş'e doğrudan bakma.",
+      "evidence": [
+        "En az iki gerçek kaynağa ait tarih ve URL",
+        "Aynı lekeye ait görsel konumun tutarlı tanımı",
+        "Model ile gerçek gözlemi ayırma",
+        "Güvenli inceleme"
+      ],
+      "taskType": "RESEARCH_OBSERVATION_RECORD_VERIFY",
+      "teacherAssessed": true,
+      "automaticallyGradable": false,
+      "actualSolarObservationMethod": "ONLY_OFFICIAL_IMAGE_ARCHIVES; NEVER_DIRECT_SUN_VIEWING"
+    },
+    {
+      "id": "FB511-P02",
+      "title": "Leke izleme modeli",
+      "prompt": "Kaynak görüntüdeki leke konumlarını gösteren iki veya üç daireli özgün bir model çiz. Modelde 'gerçek fotoğraf değildir' etiketi bulunmalı. Dönme hareketine ilişkin bir tahmin ve doğrulama ihtiyacını yaz.",
+      "evidence": [
+        "Gözlemi temsil eden anlaşılır çizim",
+        "Kaynak/tarih",
+        "Tahminle doğrulanmış sonucu ayırma"
+      ],
+      "taskType": "RESEARCH_OBSERVATION_RECORD_VERIFY",
+      "teacherAssessed": true,
+      "automaticallyGradable": false,
+      "actualSolarObservationMethod": "ONLY_OFFICIAL_IMAGE_ARCHIVES; NEVER_DIRECT_SUN_VIEWING"
+    },
+    {
+      "id": "FB511-P03",
+      "title": "Bilgi kaynağı puanlama",
+      "prompt": "Bilim kurumu tarafından hazırlanan tarihli bir görselle kaynağı belirtilmemiş benzer paylaşımı 'kurum, tarih, yöntem ve kanıt' ölçütlerine göre tabloda karşılaştır.",
+      "evidence": [
+        "Dört ölçütle değerlendirme",
+        "Bilgi doğrulama gerekçesi",
+        "Kaynağı bilinmeyen iddiaya ihtiyat"
+      ],
+      "taskType": "RESEARCH_OBSERVATION_RECORD_VERIFY",
+      "teacherAssessed": true,
+      "automaticallyGradable": false,
+      "actualSolarObservationMethod": "ONLY_OFFICIAL_IMAGE_ARCHIVES; NEVER_DIRECT_SUN_VIEWING"
+    },
+    {
+      "id": "FB511-P04",
+      "title": "Güneş yapısı posteri",
+      "prompt": "Güneş'in çok sıcak gaz yapısını ve katmanlı oluşunu kendi özgün kesit şemanla anlat. Katman isimlerini ezberletmeden resim, bilgi notu ve kaynak ekle.",
+      "evidence": [
+        "Güneş'in katmanlı oluşu",
+        "Katı kaya yüzeyli gezegen olmadığını açıklama",
+        "Açık kaynak bilgisi"
+      ],
+      "taskType": "RESEARCH_OBSERVATION_RECORD_VERIFY",
+      "teacherAssessed": true,
+      "automaticallyGradable": false,
+      "actualSolarObservationMethod": "ONLY_OFFICIAL_IMAGE_ARCHIVES; NEVER_DIRECT_SUN_VIEWING"
+    },
+    {
+      "id": "FB511-P05",
+      "title": "Görünür boyut deneyi",
+      "prompt": "Öğretmen rehberliğinde farklı boyda iki topu farklı uzaklıklara koyarak görünen boylarının nasıl değiştiğini kaydet. Güneş'in büyük ama uzak olduğu için küçük görünmesiyle ilişkilendir.",
+      "evidence": [
+        "Ölçekle ilgili açık not",
+        "Deney gözlemi ve tablo",
+        "Büyüklük-uzaklık çıkarımı"
+      ],
+      "taskType": "RESEARCH_OBSERVATION_RECORD_VERIFY",
+      "teacherAssessed": true,
+      "automaticallyGradable": false,
+      "actualSolarObservationMethod": "ONLY_OFFICIAL_IMAGE_ARCHIVES; NEVER_DIRECT_SUN_VIEWING"
+    },
+    {
+      "id": "FB511-P06",
+      "title": "Güvenli gözlem kontrol listesi",
+      "prompt": "Güneş fotoğraflarını inceleme, çıplak gözle doğrudan bakma, filtresiz teleskop kullanma ve öğretmen gözetiminde arşiv izleme yöntemlerini güvenlik açısından sınıflandır.",
+      "evidence": [
+        "Uygun ve tehlikeli yöntemleri ayırma",
+        "Göz sağlığı açıklaması",
+        "Güvenli alternatif"
+      ],
+      "taskType": "RESEARCH_OBSERVATION_RECORD_VERIFY",
+      "teacherAssessed": true,
+      "automaticallyGradable": false,
+      "actualSolarObservationMethod": "ONLY_OFFICIAL_IMAGE_ARCHIVES; NEVER_DIRECT_SUN_VIEWING"
+    },
+    {
+      "id": "FB511-P07",
+      "title": "Bilimsel haber doğrulama",
+      "prompt": "2026 tarihli gerçek bir NASA Güneş görüntüsünün yayımlandığı sayfayı incele. Kaynak, tarih ve açıklama bilgilerini çıkar. Fotoğrafın göstermediği bir özelliği kanıtlamadığını örnekle açıkla.",
+      "evidence": [
+        "Gerçek NASA kaynak bağlantısı",
+        "Doğru tarih ve içerik",
+        "Görselden yapılamayan çıkarıma örnek"
+      ],
+      "taskType": "RESEARCH_OBSERVATION_RECORD_VERIFY",
+      "teacherAssessed": true,
+      "automaticallyGradable": false,
+      "actualSolarObservationMethod": "ONLY_OFFICIAL_IMAGE_ARCHIVES; NEVER_DIRECT_SUN_VIEWING"
+    },
+    {
+      "id": "FB511-P08",
+      "title": "Konum tablosu çiz",
+      "prompt": "Temsili sol-orta-sağ leke hareketi tablosundan kendi basit yatay konum çizelgeni oluştur. Sonra bunu gerçek arşivden bir leke dizisinin konumlarıyla karşılaştır.",
+      "evidence": [
+        "Temsili/gerçek veri ayrımı",
+        "Doğru sıra",
+        "Karşılaştırmalı kısa rapor"
+      ],
+      "taskType": "RESEARCH_OBSERVATION_RECORD_VERIFY",
+      "teacherAssessed": true,
+      "automaticallyGradable": false,
+      "actualSolarObservationMethod": "ONLY_OFFICIAL_IMAGE_ARCHIVES; NEVER_DIRECT_SUN_VIEWING"
+    },
+    {
+      "id": "FB511-P09",
+      "title": "Bilgi notuna dönüt",
+      "prompt": "Öğretmenin hazırladığı içinde yanlışlık olan 'Güneş küçük, kaya yüzeyli ve dönmez' metnini bulduğun en az iki güvenilir kaynakla denetle; düzeltmeleri gerekçeli yaz.",
+      "evidence": [
+        "Üç yanlış bilginin düzeltilmesi",
+        "İki bilimsel kaynak",
+        "Gerekçeli not"
+      ],
+      "taskType": "RESEARCH_OBSERVATION_RECORD_VERIFY",
+      "teacherAssessed": true,
+      "automaticallyGradable": false,
+      "actualSolarObservationMethod": "ONLY_OFFICIAL_IMAGE_ARCHIVES; NEVER_DIRECT_SUN_VIEWING"
+    },
+    {
+      "id": "FB511-P10",
+      "title": "Araştırma ürün dosyası",
+      "prompt": "'Güneş'in yapısı ve dönme hareketi' için merak sorusu, kaynak seçimi, veriyi bulma, doğrulama, kayıt ve sonuç bölümleri olan beşinci sınıf düzeyinde bir ürün dosyası hazırla.",
+      "evidence": [
+        "Dört süreç bileşeninin tamamı",
+        "Tarihli bilimsel kaynaklar",
+        "Kişisel değerlendirme ve geliştirme adımı"
+      ],
+      "taskType": "RESEARCH_OBSERVATION_RECORD_VERIFY",
+      "teacherAssessed": true,
+      "automaticallyGradable": false,
+      "actualSolarObservationMethod": "ONLY_OFFICIAL_IMAGE_ARCHIVES; NEVER_DIRECT_SUN_VIEWING"
+    }
+  ],
+  "rubric": {
+    "criteria": [
+      {
+        "id": "find_sources",
+        "weight": 25,
+        "description": "Uygun araçları ve güvenilir kaynakları belirleyebilme"
+      },
+      {
+        "id": "record_observations",
+        "weight": 25,
+        "description": "Tarih, görsel ve gözlem bulgularını izlenebilir biçimde kaydetme"
+      },
+      {
+        "id": "verify",
+        "weight": 25,
+        "description": "En az iki bilimsel kaynakla doğrulama ve modeli veriden ayırma"
+      },
+      {
+        "id": "communicate_safely",
+        "weight": 25,
+        "description": "Yaşa uygun bilimsel gerekçeyi ve güvenli gözlem yaklaşımını sunma"
+      }
+    ],
+    "levels": [
+      1,
+      2,
+      3,
+      4
+    ]
+  }
+}

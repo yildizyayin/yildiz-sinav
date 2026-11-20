@@ -1,0 +1,176 @@
+{
+  "metadata": {
+    "outcomeCode": "MAT.5.6.1",
+    "sourceUrl": "https://tymm.meb.gov.tr/ortaokul-matematik-dersi/unite/455",
+    "academicYearCatalog": "2027-2028",
+    "reviewStatus": "DRAFT_NOT_APPROVED",
+    "taskCount": 10,
+    "notCountedToward50Questions": true,
+    "currentMultipleChoiceImporterSupports": false
+  },
+  "tasks": [
+    {
+      "id": "MAT561-P01",
+      "title": "Olasılık spektrumu posteri",
+      "prompt": "0 ile 1 arasında imkânsız, az olası, yarım, çok olası ve kesin olayları işaretleyen bir poster hazırla. Her biri için kendi günlük yaşamından bir örnek yaz.",
+      "evidence": [
+        "0 ve 1 uç noktaları",
+        "0,25/0,5/0,75 gibi ara tahminler",
+        "Gerçekçi olaylar",
+        "Gerekçeler"
+      ],
+      "taskType": "PROBABILITY_REASON_AND_REFLECTION",
+      "teacherReviewRequired": true,
+      "automaticScoringAllowed": false
+    },
+    {
+      "id": "MAT561-P02",
+      "title": "Yüzde-kesir eşleştir",
+      "prompt": "Öğretmenin hazırladığı 0, 0,1, 0,25, 0,5, 0,75, 0,9 ve 1 kartlarını yüzde ve basit kesir gösterimleriyle eşleştir.",
+      "evidence": [
+        "Doğru yedi eşleştirme",
+        "Kesir-yüzde açıklaması",
+        "0 ile 1 sınırının vurgulanması"
+      ],
+      "taskType": "PROBABILITY_REASON_AND_REFLECTION",
+      "teacherReviewRequired": true,
+      "automaticScoringAllowed": false
+    },
+    {
+      "id": "MAT561-P03",
+      "title": "Kesin ve imkânsızı ayır",
+      "prompt": "Yalnız mavi boncuklu torba ve 1–6 zar örneklerinden ikişer kesin ve imkânsız olay üret. Her birini 0 veya 1 ile açıkla.",
+      "evidence": [
+        "Dört tutarlı olay",
+        "0/1 gösterimi",
+        "Olası durumları açıklama"
+      ],
+      "taskType": "PROBABILITY_REASON_AND_REFLECTION",
+      "teacherReviewRequired": true,
+      "automaticScoringAllowed": false
+    },
+    {
+      "id": "MAT561-P04",
+      "title": "Çark modeli tasarla",
+      "prompt": "Dört eş bölmeli bir çark çiz; bir bölgeyi kırmızı yap. Kırmızıya gelme tahminini yüzde, kesir ve ondalıkla göster; farklı renk düzeniyle karşılaştır.",
+      "evidence": [
+        "1/4=%25=0,25",
+        "Dört eş dilim",
+        "Karşılaştırma"
+      ],
+      "taskType": "PROBABILITY_REASON_AND_REFLECTION",
+      "teacherReviewRequired": true,
+      "automaticScoringAllowed": false
+    },
+    {
+      "id": "MAT561-P05",
+      "title": "0'dan 1'e tahminleri sırala",
+      "prompt": "Öğretmenin sağladığı %10, %30, %50, %70, %90 tahminlerini spektrumda sırala; bu tahminleri gündelik olasılık cümleleriyle ilişkilendir.",
+      "evidence": [
+        "Artan sıralama",
+        "Doğru konum",
+        "Sınırlılık ve örnekler"
+      ],
+      "taskType": "PROBABILITY_REASON_AND_REFLECTION",
+      "teacherReviewRequired": true,
+      "automaticScoringAllowed": false
+    },
+    {
+      "id": "MAT561-P06",
+      "title": "Yarını tahmin et",
+      "prompt": "'Yarın yağmur yağar' gibi belirsiz bir olay için kişisel tahminini spektrumda işaretle. Hangi bilgilerin tahmini geliştirebileceğini tartış, kesinlikle karıştırma.",
+      "evidence": [
+        "0–1 arasında geçerli tahmin",
+        "Bilgi kaynağı değerlendirmesi",
+        "Kesinlik ayrımı"
+      ],
+      "taskType": "PROBABILITY_REASON_AND_REFLECTION",
+      "teacherReviewRequired": true,
+      "automaticScoringAllowed": false
+    },
+    {
+      "id": "MAT561-P07",
+      "title": "Hatalı olasılıkları bul",
+      "prompt": "Öğretmenin verdiği −0,2, 0,6, 1, 1,3, %125 olasılık kartlarını incele. Geçersiz değerleri ve gerekçelerini tabloya yaz.",
+      "evidence": [
+        "Aralık dışı değerleri saptama",
+        "0,6 ve 1 kabulü",
+        "Doğru sınır gerekçesi"
+      ],
+      "taskType": "PROBABILITY_REASON_AND_REFLECTION",
+      "teacherReviewRequired": true,
+      "automaticScoringAllowed": false
+    },
+    {
+      "id": "MAT561-P08",
+      "title": "Eşdeğer gösterimler günlüğü",
+      "prompt": "%20, 1/5 ve 0,2 temsilleriyle aynı olasılığı anlatan üç ayrı cümle yaz; sonra 0,8 ve %80 için aynı işi yap.",
+      "evidence": [
+        "1/5=%20=0,2",
+        "0,8=%80",
+        "Günlük örnekler"
+      ],
+      "taskType": "PROBABILITY_REASON_AND_REFLECTION",
+      "teacherReviewRequired": true,
+      "automaticScoringAllowed": false
+    },
+    {
+      "id": "MAT561-P09",
+      "title": "Öz değerlendirme",
+      "prompt": "İmkânsız ve az olası olaylar arasındaki farkı açıkladığın iki örnek oluştur. Arkadaşından geri bildirim alıp açıklamanı düzelt.",
+      "evidence": [
+        "İki farklı olay",
+        "Kesin ve imkânsız ayrımı",
+        "Akran geri bildirimi"
+      ],
+      "taskType": "PROBABILITY_REASON_AND_REFLECTION",
+      "teacherReviewRequired": true,
+      "automaticScoringAllowed": false
+    },
+    {
+      "id": "MAT561-P10",
+      "title": "Alan modelinde olasılık",
+      "prompt": "10 eş kutucuktan 3'ünü boyayarak bir alan modeli kur. Boyanan bölgenin olasılığını kesir, ondalık ve yüzdeyle yaz.",
+      "evidence": [
+        "3/10",
+        "0,3",
+        "%30",
+        "Eş alan koşulunun gerekçesi"
+      ],
+      "taskType": "PROBABILITY_REASON_AND_REFLECTION",
+      "teacherReviewRequired": true,
+      "automaticScoringAllowed": false
+    }
+  ],
+  "rubric": {
+    "criteria": [
+      {
+        "id": "spectrum",
+        "weight": 30,
+        "description": "0 ve 1 uçları ile ara olasılıkların doğru işaretlenmesi"
+      },
+      {
+        "id": "representation",
+        "weight": 25,
+        "description": "Kesir, yüzde, ondalık gösterimler arası tutarlılık"
+      },
+      {
+        "id": "reason",
+        "weight": 25,
+        "description": "İmkânsız, mümkün, kesin ayrımının açıklanması"
+      },
+      {
+        "id": "reflection",
+        "weight": 20,
+        "description": "Tahminin ve kendi kanıtının kontrolü"
+      }
+    ],
+    "levels": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "teacherSignoffRequired": true
+  }
+}

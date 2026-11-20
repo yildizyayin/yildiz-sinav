@@ -1,0 +1,2107 @@
+{
+  "scope": "2022–2026 İOKBS 5. sınıf A kitapçığı Fen testleri, 110 soru",
+  "method": "Her soruya en fazla bir birincil güncel çıktı; içerik ilişkisi editoryaldir, resmî kazanım etiketi değildir. Tam süreç becerisi ölçümü iddiası yoktur. Tam metin ve sınav görselleri yeniden yayımlanmaz.",
+  "items": [
+    {
+      "exam": "İOKBS",
+      "year": 2022,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 1,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+      "candidatePdfPages": [
+        18
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.1.1",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "CONCEPT_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRE_MAARIF_CONCEPT_RELATION",
+      "sourcePdfSha256": "6e7656b34afbdd583b151f2fe33336c565f84753e713da967d0f95476f3263cf"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2022,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 2,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+      "candidatePdfPages": [
+        18
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.1.4",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "CONCEPT_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRE_MAARIF_CONCEPT_RELATION",
+      "sourcePdfSha256": "6e7656b34afbdd583b151f2fe33336c565f84753e713da967d0f95476f3263cf"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2022,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 3,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+      "candidatePdfPages": [
+        18
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.1.2",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "CONCEPT_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRE_MAARIF_CONCEPT_RELATION",
+      "sourcePdfSha256": "6e7656b34afbdd583b151f2fe33336c565f84753e713da967d0f95476f3263cf"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2022,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 4,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+      "candidatePdfPages": [
+        18
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.1.3",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "CONCEPT_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRE_MAARIF_CONCEPT_RELATION",
+      "sourcePdfSha256": "6e7656b34afbdd583b151f2fe33336c565f84753e713da967d0f95476f3263cf"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2022,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 5,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+      "candidatePdfPages": [
+        19
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.1.2",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "CONCEPT_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRE_MAARIF_CONCEPT_RELATION",
+      "sourcePdfSha256": "6e7656b34afbdd583b151f2fe33336c565f84753e713da967d0f95476f3263cf"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2022,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 6,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+      "candidatePdfPages": [
+        19
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.2.1",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "CONCEPT_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRE_MAARIF_CONCEPT_RELATION",
+      "sourcePdfSha256": "6e7656b34afbdd583b151f2fe33336c565f84753e713da967d0f95476f3263cf"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2022,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 7,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+      "candidatePdfPages": [
+        19
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.2.4",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "CONCEPT_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRE_MAARIF_CONCEPT_RELATION",
+      "sourcePdfSha256": "6e7656b34afbdd583b151f2fe33336c565f84753e713da967d0f95476f3263cf"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2022,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 8,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+      "candidatePdfPages": [
+        20
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.4.1",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "CONCEPT_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRE_MAARIF_CONCEPT_RELATION",
+      "sourcePdfSha256": "6e7656b34afbdd583b151f2fe33336c565f84753e713da967d0f95476f3263cf"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2022,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 9,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+      "candidatePdfPages": [
+        20
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.4.3",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "CONCEPT_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRE_MAARIF_CONCEPT_RELATION",
+      "sourcePdfSha256": "6e7656b34afbdd583b151f2fe33336c565f84753e713da967d0f95476f3263cf"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2022,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 10,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+      "candidatePdfPages": [
+        21
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": null,
+      "mappingStatus": "OUTSIDE_CURRENT_GRADE5_SCOPE",
+      "matchExtent": null,
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRE_MAARIF_CONCEPT_RELATION",
+      "sourcePdfSha256": "6e7656b34afbdd583b151f2fe33336c565f84753e713da967d0f95476f3263cf"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2022,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 11,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+      "candidatePdfPages": [
+        21
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.4.2",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "CONCEPT_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRE_MAARIF_CONCEPT_RELATION",
+      "sourcePdfSha256": "6e7656b34afbdd583b151f2fe33336c565f84753e713da967d0f95476f3263cf"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2022,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 12,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+      "candidatePdfPages": [
+        21
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.6.1",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "CONCEPT_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRE_MAARIF_CONCEPT_RELATION",
+      "sourcePdfSha256": "6e7656b34afbdd583b151f2fe33336c565f84753e713da967d0f95476f3263cf"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2022,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 13,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+      "candidatePdfPages": [
+        22
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.6.3",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "CONCEPT_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRE_MAARIF_CONCEPT_RELATION",
+      "sourcePdfSha256": "6e7656b34afbdd583b151f2fe33336c565f84753e713da967d0f95476f3263cf"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2022,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 14,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+      "candidatePdfPages": [
+        22
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.6.3",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "CONCEPT_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRE_MAARIF_CONCEPT_RELATION",
+      "sourcePdfSha256": "6e7656b34afbdd583b151f2fe33336c565f84753e713da967d0f95476f3263cf"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2022,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 15,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+      "candidatePdfPages": [
+        22
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.5.4",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "CONCEPT_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRE_MAARIF_CONCEPT_RELATION",
+      "sourcePdfSha256": "6e7656b34afbdd583b151f2fe33336c565f84753e713da967d0f95476f3263cf"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2022,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 16,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+      "candidatePdfPages": [
+        22
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.5.4",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "PARTIAL_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRE_MAARIF_CONCEPT_RELATION",
+      "sourcePdfSha256": "6e7656b34afbdd583b151f2fe33336c565f84753e713da967d0f95476f3263cf"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2022,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 17,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+      "candidatePdfPages": [
+        23
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.5.2",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "CONCEPT_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRE_MAARIF_CONCEPT_RELATION",
+      "sourcePdfSha256": "6e7656b34afbdd583b151f2fe33336c565f84753e713da967d0f95476f3263cf"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2022,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 18,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+      "candidatePdfPages": [
+        23
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.5.3",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "CONCEPT_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRE_MAARIF_CONCEPT_RELATION",
+      "sourcePdfSha256": "6e7656b34afbdd583b151f2fe33336c565f84753e713da967d0f95476f3263cf"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2022,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 19,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+      "candidatePdfPages": [
+        23
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": null,
+      "mappingStatus": "OUTSIDE_CURRENT_GRADE5_SCOPE",
+      "matchExtent": null,
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRE_MAARIF_CONCEPT_RELATION",
+      "sourcePdfSha256": "6e7656b34afbdd583b151f2fe33336c565f84753e713da967d0f95476f3263cf"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2022,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 20,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+      "candidatePdfPages": [
+        23
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": null,
+      "mappingStatus": "OUTSIDE_CURRENT_GRADE5_SCOPE",
+      "matchExtent": null,
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRE_MAARIF_CONCEPT_RELATION",
+      "sourcePdfSha256": "6e7656b34afbdd583b151f2fe33336c565f84753e713da967d0f95476f3263cf"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2022,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 21,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+      "candidatePdfPages": [
+        24
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": null,
+      "mappingStatus": "OUTSIDE_CURRENT_GRADE5_SCOPE",
+      "matchExtent": null,
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRE_MAARIF_CONCEPT_RELATION",
+      "sourcePdfSha256": "6e7656b34afbdd583b151f2fe33336c565f84753e713da967d0f95476f3263cf"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2022,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 22,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+      "candidatePdfPages": [
+        24
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": null,
+      "mappingStatus": "OUTSIDE_CURRENT_GRADE5_SCOPE",
+      "matchExtent": null,
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRE_MAARIF_CONCEPT_RELATION",
+      "sourcePdfSha256": "6e7656b34afbdd583b151f2fe33336c565f84753e713da967d0f95476f3263cf"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2022,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 23,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+      "candidatePdfPages": [
+        24
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": null,
+      "mappingStatus": "OUTSIDE_CURRENT_GRADE5_SCOPE",
+      "matchExtent": null,
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRE_MAARIF_CONCEPT_RELATION",
+      "sourcePdfSha256": "6e7656b34afbdd583b151f2fe33336c565f84753e713da967d0f95476f3263cf"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2022,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 24,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+      "candidatePdfPages": [
+        24
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": null,
+      "mappingStatus": "OUTSIDE_CURRENT_GRADE5_SCOPE",
+      "matchExtent": null,
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRE_MAARIF_CONCEPT_RELATION",
+      "sourcePdfSha256": "6e7656b34afbdd583b151f2fe33336c565f84753e713da967d0f95476f3263cf"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2022,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 25,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2022_09/05173504_5_SINIF_A.pdf",
+      "candidatePdfPages": [
+        24
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": null,
+      "mappingStatus": "OUTSIDE_CURRENT_GRADE5_SCOPE",
+      "matchExtent": null,
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRE_MAARIF_CONCEPT_RELATION",
+      "sourcePdfSha256": "6e7656b34afbdd583b151f2fe33336c565f84753e713da967d0f95476f3263cf"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2023,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 1,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2023_09/04171811_5_SINIF_YOKBS.pdf",
+      "candidatePdfPages": [
+        17
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.1.1",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "CONCEPT_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRE_MAARIF_CONCEPT_RELATION",
+      "sourcePdfSha256": "8c062ef8aff104bbb1f55cbe7e7a339eb1f092d00190e4a0465f0d224e4c883a"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2023,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 2,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2023_09/04171811_5_SINIF_YOKBS.pdf",
+      "candidatePdfPages": [
+        17
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.1.2",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "CONCEPT_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRE_MAARIF_CONCEPT_RELATION",
+      "sourcePdfSha256": "8c062ef8aff104bbb1f55cbe7e7a339eb1f092d00190e4a0465f0d224e4c883a"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2023,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 3,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2023_09/04171811_5_SINIF_YOKBS.pdf",
+      "candidatePdfPages": [
+        17
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.1.2",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "CONCEPT_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRE_MAARIF_CONCEPT_RELATION",
+      "sourcePdfSha256": "8c062ef8aff104bbb1f55cbe7e7a339eb1f092d00190e4a0465f0d224e4c883a"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2023,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 4,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2023_09/04171811_5_SINIF_YOKBS.pdf",
+      "candidatePdfPages": [
+        17
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.1.3",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "CONCEPT_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRE_MAARIF_CONCEPT_RELATION",
+      "sourcePdfSha256": "8c062ef8aff104bbb1f55cbe7e7a339eb1f092d00190e4a0465f0d224e4c883a"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2023,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 5,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2023_09/04171811_5_SINIF_YOKBS.pdf",
+      "candidatePdfPages": [
+        18
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.1.3",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "CONCEPT_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRE_MAARIF_CONCEPT_RELATION",
+      "sourcePdfSha256": "8c062ef8aff104bbb1f55cbe7e7a339eb1f092d00190e4a0465f0d224e4c883a"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2023,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 6,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2023_09/04171811_5_SINIF_YOKBS.pdf",
+      "candidatePdfPages": [
+        18
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.1.4",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "CONCEPT_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRE_MAARIF_CONCEPT_RELATION",
+      "sourcePdfSha256": "8c062ef8aff104bbb1f55cbe7e7a339eb1f092d00190e4a0465f0d224e4c883a"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2023,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 7,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2023_09/04171811_5_SINIF_YOKBS.pdf",
+      "candidatePdfPages": [
+        19
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.2.1",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "CONCEPT_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRE_MAARIF_CONCEPT_RELATION",
+      "sourcePdfSha256": "8c062ef8aff104bbb1f55cbe7e7a339eb1f092d00190e4a0465f0d224e4c883a"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2023,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 8,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2023_09/04171811_5_SINIF_YOKBS.pdf",
+      "candidatePdfPages": [
+        19
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.2.4",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "CONCEPT_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRE_MAARIF_CONCEPT_RELATION",
+      "sourcePdfSha256": "8c062ef8aff104bbb1f55cbe7e7a339eb1f092d00190e4a0465f0d224e4c883a"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2023,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 9,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2023_09/04171811_5_SINIF_YOKBS.pdf",
+      "candidatePdfPages": [
+        20
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.2.4",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "CONCEPT_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRE_MAARIF_CONCEPT_RELATION",
+      "sourcePdfSha256": "8c062ef8aff104bbb1f55cbe7e7a339eb1f092d00190e4a0465f0d224e4c883a"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2023,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 10,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2023_09/04171811_5_SINIF_YOKBS.pdf",
+      "candidatePdfPages": [
+        20
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.2.1",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "CONCEPT_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRE_MAARIF_CONCEPT_RELATION",
+      "sourcePdfSha256": "8c062ef8aff104bbb1f55cbe7e7a339eb1f092d00190e4a0465f0d224e4c883a"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2023,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 11,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2023_09/04171811_5_SINIF_YOKBS.pdf",
+      "candidatePdfPages": [
+        20
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.2.4",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "CONCEPT_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRE_MAARIF_CONCEPT_RELATION",
+      "sourcePdfSha256": "8c062ef8aff104bbb1f55cbe7e7a339eb1f092d00190e4a0465f0d224e4c883a"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2023,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 12,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2023_09/04171811_5_SINIF_YOKBS.pdf",
+      "candidatePdfPages": [
+        20
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.5.4",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "CONCEPT_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRE_MAARIF_CONCEPT_RELATION",
+      "sourcePdfSha256": "8c062ef8aff104bbb1f55cbe7e7a339eb1f092d00190e4a0465f0d224e4c883a"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2023,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 13,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2023_09/04171811_5_SINIF_YOKBS.pdf",
+      "candidatePdfPages": [
+        21
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.5.2",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "CONCEPT_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRE_MAARIF_CONCEPT_RELATION",
+      "sourcePdfSha256": "8c062ef8aff104bbb1f55cbe7e7a339eb1f092d00190e4a0465f0d224e4c883a"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2023,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 14,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2023_09/04171811_5_SINIF_YOKBS.pdf",
+      "candidatePdfPages": [
+        21
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.5.4",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "PARTIAL_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRE_MAARIF_CONCEPT_RELATION",
+      "sourcePdfSha256": "8c062ef8aff104bbb1f55cbe7e7a339eb1f092d00190e4a0465f0d224e4c883a"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2023,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 15,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2023_09/04171811_5_SINIF_YOKBS.pdf",
+      "candidatePdfPages": [
+        21
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.5.4",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "PARTIAL_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRE_MAARIF_CONCEPT_RELATION",
+      "sourcePdfSha256": "8c062ef8aff104bbb1f55cbe7e7a339eb1f092d00190e4a0465f0d224e4c883a"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2023,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 16,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2023_09/04171811_5_SINIF_YOKBS.pdf",
+      "candidatePdfPages": [
+        22
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.5.4",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "CONCEPT_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRE_MAARIF_CONCEPT_RELATION",
+      "sourcePdfSha256": "8c062ef8aff104bbb1f55cbe7e7a339eb1f092d00190e4a0465f0d224e4c883a"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2023,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 17,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2023_09/04171811_5_SINIF_YOKBS.pdf",
+      "candidatePdfPages": [
+        22
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": null,
+      "mappingStatus": "OUTSIDE_CURRENT_GRADE5_SCOPE",
+      "matchExtent": null,
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRE_MAARIF_CONCEPT_RELATION",
+      "sourcePdfSha256": "8c062ef8aff104bbb1f55cbe7e7a339eb1f092d00190e4a0465f0d224e4c883a"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2023,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 18,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2023_09/04171811_5_SINIF_YOKBS.pdf",
+      "candidatePdfPages": [
+        22
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": null,
+      "mappingStatus": "OUTSIDE_CURRENT_GRADE5_SCOPE",
+      "matchExtent": null,
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRE_MAARIF_CONCEPT_RELATION",
+      "sourcePdfSha256": "8c062ef8aff104bbb1f55cbe7e7a339eb1f092d00190e4a0465f0d224e4c883a"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2023,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 19,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2023_09/04171811_5_SINIF_YOKBS.pdf",
+      "candidatePdfPages": [
+        22
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.5.3",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "CONCEPT_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRE_MAARIF_CONCEPT_RELATION",
+      "sourcePdfSha256": "8c062ef8aff104bbb1f55cbe7e7a339eb1f092d00190e4a0465f0d224e4c883a"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2023,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 20,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2023_09/04171811_5_SINIF_YOKBS.pdf",
+      "candidatePdfPages": [
+        23
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": null,
+      "mappingStatus": "OUTSIDE_CURRENT_GRADE5_SCOPE",
+      "matchExtent": null,
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRE_MAARIF_CONCEPT_RELATION",
+      "sourcePdfSha256": "8c062ef8aff104bbb1f55cbe7e7a339eb1f092d00190e4a0465f0d224e4c883a"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2023,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 21,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2023_09/04171811_5_SINIF_YOKBS.pdf",
+      "candidatePdfPages": [
+        23
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": null,
+      "mappingStatus": "OUTSIDE_CURRENT_GRADE5_SCOPE",
+      "matchExtent": null,
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRE_MAARIF_CONCEPT_RELATION",
+      "sourcePdfSha256": "8c062ef8aff104bbb1f55cbe7e7a339eb1f092d00190e4a0465f0d224e4c883a"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2023,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 22,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2023_09/04171811_5_SINIF_YOKBS.pdf",
+      "candidatePdfPages": [
+        23
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": null,
+      "mappingStatus": "OUTSIDE_CURRENT_GRADE5_SCOPE",
+      "matchExtent": null,
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRE_MAARIF_CONCEPT_RELATION",
+      "sourcePdfSha256": "8c062ef8aff104bbb1f55cbe7e7a339eb1f092d00190e4a0465f0d224e4c883a"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2023,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 23,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2023_09/04171811_5_SINIF_YOKBS.pdf",
+      "candidatePdfPages": [
+        23
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": null,
+      "mappingStatus": "OUTSIDE_CURRENT_GRADE5_SCOPE",
+      "matchExtent": null,
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRE_MAARIF_CONCEPT_RELATION",
+      "sourcePdfSha256": "8c062ef8aff104bbb1f55cbe7e7a339eb1f092d00190e4a0465f0d224e4c883a"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2023,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 24,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2023_09/04171811_5_SINIF_YOKBS.pdf",
+      "candidatePdfPages": [
+        24
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": null,
+      "mappingStatus": "OUTSIDE_CURRENT_GRADE5_SCOPE",
+      "matchExtent": null,
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRE_MAARIF_CONCEPT_RELATION",
+      "sourcePdfSha256": "8c062ef8aff104bbb1f55cbe7e7a339eb1f092d00190e4a0465f0d224e4c883a"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2023,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 25,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2023_09/04171811_5_SINIF_YOKBS.pdf",
+      "candidatePdfPages": [
+        24
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": null,
+      "mappingStatus": "OUTSIDE_CURRENT_GRADE5_SCOPE",
+      "matchExtent": null,
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRE_MAARIF_CONCEPT_RELATION",
+      "sourcePdfSha256": "8c062ef8aff104bbb1f55cbe7e7a339eb1f092d00190e4a0465f0d224e4c883a"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2024,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 1,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2024_04/22174119_5_sinif_a_24.pdf",
+      "candidatePdfPages": [
+        12,
+        15
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.1.1",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "CONCEPT_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRE_MAARIF_CONCEPT_RELATION",
+      "sourcePdfSha256": "6c0715782a1677eaa9861c9f0a6a11467a00df9b6060c5f4d7fff39ac6244dbe"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2024,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 2,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2024_04/22174119_5_sinif_a_24.pdf",
+      "candidatePdfPages": [
+        12,
+        15
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.1.2",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "CONCEPT_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRE_MAARIF_CONCEPT_RELATION",
+      "sourcePdfSha256": "6c0715782a1677eaa9861c9f0a6a11467a00df9b6060c5f4d7fff39ac6244dbe"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2024,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 3,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2024_04/22174119_5_sinif_a_24.pdf",
+      "candidatePdfPages": [
+        12
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.1.4",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "CONCEPT_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRE_MAARIF_CONCEPT_RELATION",
+      "sourcePdfSha256": "6c0715782a1677eaa9861c9f0a6a11467a00df9b6060c5f4d7fff39ac6244dbe"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2024,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 4,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2024_04/22174119_5_sinif_a_24.pdf",
+      "candidatePdfPages": [
+        13
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.1.3",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "CONCEPT_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRE_MAARIF_CONCEPT_RELATION",
+      "sourcePdfSha256": "6c0715782a1677eaa9861c9f0a6a11467a00df9b6060c5f4d7fff39ac6244dbe"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2024,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 5,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2024_04/22174119_5_sinif_a_24.pdf",
+      "candidatePdfPages": [
+        13
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.2.1",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "CONCEPT_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRE_MAARIF_CONCEPT_RELATION",
+      "sourcePdfSha256": "6c0715782a1677eaa9861c9f0a6a11467a00df9b6060c5f4d7fff39ac6244dbe"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2024,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 6,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2024_04/22174119_5_sinif_a_24.pdf",
+      "candidatePdfPages": [
+        14
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.2.1",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "CONCEPT_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRE_MAARIF_CONCEPT_RELATION",
+      "sourcePdfSha256": "6c0715782a1677eaa9861c9f0a6a11467a00df9b6060c5f4d7fff39ac6244dbe"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2024,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 7,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2024_04/22174119_5_sinif_a_24.pdf",
+      "candidatePdfPages": [
+        14
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.2.4",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "CONCEPT_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRE_MAARIF_CONCEPT_RELATION",
+      "sourcePdfSha256": "6c0715782a1677eaa9861c9f0a6a11467a00df9b6060c5f4d7fff39ac6244dbe"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2024,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 8,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2024_04/22174119_5_sinif_a_24.pdf",
+      "candidatePdfPages": [
+        15
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": null,
+      "mappingStatus": "OUTSIDE_CURRENT_GRADE5_SCOPE",
+      "matchExtent": null,
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRE_MAARIF_CONCEPT_RELATION",
+      "sourcePdfSha256": "6c0715782a1677eaa9861c9f0a6a11467a00df9b6060c5f4d7fff39ac6244dbe"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2024,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 9,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2024_04/22174119_5_sinif_a_24.pdf",
+      "candidatePdfPages": [
+        15
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": null,
+      "mappingStatus": "OUTSIDE_CURRENT_GRADE5_SCOPE",
+      "matchExtent": null,
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRE_MAARIF_CONCEPT_RELATION",
+      "sourcePdfSha256": "6c0715782a1677eaa9861c9f0a6a11467a00df9b6060c5f4d7fff39ac6244dbe"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2024,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 10,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2024_04/22174119_5_sinif_a_24.pdf",
+      "candidatePdfPages": [
+        15
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.4.2",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "CONCEPT_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRE_MAARIF_CONCEPT_RELATION",
+      "sourcePdfSha256": "6c0715782a1677eaa9861c9f0a6a11467a00df9b6060c5f4d7fff39ac6244dbe"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2024,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 11,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2024_04/22174119_5_sinif_a_24.pdf",
+      "candidatePdfPages": [
+        16
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.4.3",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "CONCEPT_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRE_MAARIF_CONCEPT_RELATION",
+      "sourcePdfSha256": "6c0715782a1677eaa9861c9f0a6a11467a00df9b6060c5f4d7fff39ac6244dbe"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2024,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 12,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2024_04/22174119_5_sinif_a_24.pdf",
+      "candidatePdfPages": [
+        16
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.5.3",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "PARTIAL_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRE_MAARIF_CONCEPT_RELATION",
+      "sourcePdfSha256": "6c0715782a1677eaa9861c9f0a6a11467a00df9b6060c5f4d7fff39ac6244dbe"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2024,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 13,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2024_04/22174119_5_sinif_a_24.pdf",
+      "candidatePdfPages": [
+        16
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.5.4",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "PARTIAL_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRE_MAARIF_CONCEPT_RELATION",
+      "sourcePdfSha256": "6c0715782a1677eaa9861c9f0a6a11467a00df9b6060c5f4d7fff39ac6244dbe"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2024,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 14,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2024_04/22174119_5_sinif_a_24.pdf",
+      "candidatePdfPages": [
+        17
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.5.4",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "CONCEPT_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRE_MAARIF_CONCEPT_RELATION",
+      "sourcePdfSha256": "6c0715782a1677eaa9861c9f0a6a11467a00df9b6060c5f4d7fff39ac6244dbe"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2024,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 15,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2024_04/22174119_5_sinif_a_24.pdf",
+      "candidatePdfPages": [
+        17
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.5.2",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "CONCEPT_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRE_MAARIF_CONCEPT_RELATION",
+      "sourcePdfSha256": "6c0715782a1677eaa9861c9f0a6a11467a00df9b6060c5f4d7fff39ac6244dbe"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2024,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 16,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2024_04/22174119_5_sinif_a_24.pdf",
+      "candidatePdfPages": [
+        17
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.5.4",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "PARTIAL_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRE_MAARIF_CONCEPT_RELATION",
+      "sourcePdfSha256": "6c0715782a1677eaa9861c9f0a6a11467a00df9b6060c5f4d7fff39ac6244dbe"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2024,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 17,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2024_04/22174119_5_sinif_a_24.pdf",
+      "candidatePdfPages": [
+        17
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": null,
+      "mappingStatus": "OUTSIDE_CURRENT_GRADE5_SCOPE",
+      "matchExtent": null,
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRE_MAARIF_CONCEPT_RELATION",
+      "sourcePdfSha256": "6c0715782a1677eaa9861c9f0a6a11467a00df9b6060c5f4d7fff39ac6244dbe"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2024,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 18,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2024_04/22174119_5_sinif_a_24.pdf",
+      "candidatePdfPages": [
+        18
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": null,
+      "mappingStatus": "OUTSIDE_CURRENT_GRADE5_SCOPE",
+      "matchExtent": null,
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRE_MAARIF_CONCEPT_RELATION",
+      "sourcePdfSha256": "6c0715782a1677eaa9861c9f0a6a11467a00df9b6060c5f4d7fff39ac6244dbe"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2024,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 19,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2024_04/22174119_5_sinif_a_24.pdf",
+      "candidatePdfPages": [
+        18
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": null,
+      "mappingStatus": "OUTSIDE_CURRENT_GRADE5_SCOPE",
+      "matchExtent": null,
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRE_MAARIF_CONCEPT_RELATION",
+      "sourcePdfSha256": "6c0715782a1677eaa9861c9f0a6a11467a00df9b6060c5f4d7fff39ac6244dbe"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2024,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 20,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2024_04/22174119_5_sinif_a_24.pdf",
+      "candidatePdfPages": [
+        18
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": null,
+      "mappingStatus": "OUTSIDE_CURRENT_GRADE5_SCOPE",
+      "matchExtent": null,
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRE_MAARIF_CONCEPT_RELATION",
+      "sourcePdfSha256": "6c0715782a1677eaa9861c9f0a6a11467a00df9b6060c5f4d7fff39ac6244dbe"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2025,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 1,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+      "candidatePdfPages": [
+        16,
+        17
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.1.1",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "CONCEPT_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRIOR_CODE_VERSION_CONCEPT_RELATION",
+      "sourcePdfSha256": "fe694b24fe4fd8e20703e369ae13ac50ead93a609cf7cab9f247cfaa04f5c837"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2025,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 2,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+      "candidatePdfPages": [
+        16,
+        17
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.1.2",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "CONCEPT_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRIOR_CODE_VERSION_CONCEPT_RELATION",
+      "sourcePdfSha256": "fe694b24fe4fd8e20703e369ae13ac50ead93a609cf7cab9f247cfaa04f5c837"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2025,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 3,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+      "candidatePdfPages": [
+        17
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.1.4",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "CONCEPT_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRIOR_CODE_VERSION_CONCEPT_RELATION",
+      "sourcePdfSha256": "fe694b24fe4fd8e20703e369ae13ac50ead93a609cf7cab9f247cfaa04f5c837"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2025,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 4,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+      "candidatePdfPages": [
+        17
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.1.3",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "CONCEPT_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRIOR_CODE_VERSION_CONCEPT_RELATION",
+      "sourcePdfSha256": "fe694b24fe4fd8e20703e369ae13ac50ead93a609cf7cab9f247cfaa04f5c837"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2025,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 5,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+      "candidatePdfPages": [
+        18
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.2.4",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "CONCEPT_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRIOR_CODE_VERSION_CONCEPT_RELATION",
+      "sourcePdfSha256": "fe694b24fe4fd8e20703e369ae13ac50ead93a609cf7cab9f247cfaa04f5c837"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2025,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 6,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+      "candidatePdfPages": [
+        18
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.2.2",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "CONCEPT_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRIOR_CODE_VERSION_CONCEPT_RELATION",
+      "sourcePdfSha256": "fe694b24fe4fd8e20703e369ae13ac50ead93a609cf7cab9f247cfaa04f5c837"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2025,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 7,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+      "candidatePdfPages": [
+        19
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.2.1",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "CONCEPT_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRIOR_CODE_VERSION_CONCEPT_RELATION",
+      "sourcePdfSha256": "fe694b24fe4fd8e20703e369ae13ac50ead93a609cf7cab9f247cfaa04f5c837"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2025,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 8,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+      "candidatePdfPages": [
+        19
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.2.3",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "CONCEPT_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRIOR_CODE_VERSION_CONCEPT_RELATION",
+      "sourcePdfSha256": "fe694b24fe4fd8e20703e369ae13ac50ead93a609cf7cab9f247cfaa04f5c837"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2025,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 9,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+      "candidatePdfPages": [
+        20
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.4.1",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "CONCEPT_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRIOR_CODE_VERSION_CONCEPT_RELATION",
+      "sourcePdfSha256": "fe694b24fe4fd8e20703e369ae13ac50ead93a609cf7cab9f247cfaa04f5c837"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2025,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 10,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+      "candidatePdfPages": [
+        20
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.4.2",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "CONCEPT_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRIOR_CODE_VERSION_CONCEPT_RELATION",
+      "sourcePdfSha256": "fe694b24fe4fd8e20703e369ae13ac50ead93a609cf7cab9f247cfaa04f5c837"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2025,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 11,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+      "candidatePdfPages": [
+        21
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.4.3",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "CONCEPT_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRIOR_CODE_VERSION_CONCEPT_RELATION",
+      "sourcePdfSha256": "fe694b24fe4fd8e20703e369ae13ac50ead93a609cf7cab9f247cfaa04f5c837"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2025,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 12,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+      "candidatePdfPages": [
+        21
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.5.1",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "CONCEPT_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRIOR_CODE_VERSION_CONCEPT_RELATION",
+      "sourcePdfSha256": "fe694b24fe4fd8e20703e369ae13ac50ead93a609cf7cab9f247cfaa04f5c837"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2025,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 13,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+      "candidatePdfPages": [
+        21
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.5.2",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "CONCEPT_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRIOR_CODE_VERSION_CONCEPT_RELATION",
+      "sourcePdfSha256": "fe694b24fe4fd8e20703e369ae13ac50ead93a609cf7cab9f247cfaa04f5c837"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2025,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 14,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+      "candidatePdfPages": [
+        22
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.5.1",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "CONCEPT_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRIOR_CODE_VERSION_CONCEPT_RELATION",
+      "sourcePdfSha256": "fe694b24fe4fd8e20703e369ae13ac50ead93a609cf7cab9f247cfaa04f5c837"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2025,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 15,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+      "candidatePdfPages": [
+        22
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.5.3",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "CONCEPT_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRIOR_CODE_VERSION_CONCEPT_RELATION",
+      "sourcePdfSha256": "fe694b24fe4fd8e20703e369ae13ac50ead93a609cf7cab9f247cfaa04f5c837"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2025,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 16,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+      "candidatePdfPages": [
+        22
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.3.1",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "CONCEPT_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRIOR_CODE_VERSION_CONCEPT_RELATION",
+      "sourcePdfSha256": "fe694b24fe4fd8e20703e369ae13ac50ead93a609cf7cab9f247cfaa04f5c837"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2025,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 17,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+      "candidatePdfPages": [
+        22
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.3.1",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "CONCEPT_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRIOR_CODE_VERSION_CONCEPT_RELATION",
+      "sourcePdfSha256": "fe694b24fe4fd8e20703e369ae13ac50ead93a609cf7cab9f247cfaa04f5c837"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2025,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 18,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+      "candidatePdfPages": [
+        23
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.3.3",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "CONCEPT_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRIOR_CODE_VERSION_CONCEPT_RELATION",
+      "sourcePdfSha256": "fe694b24fe4fd8e20703e369ae13ac50ead93a609cf7cab9f247cfaa04f5c837"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2025,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 19,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+      "candidatePdfPages": [
+        23
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.3.3",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "CONCEPT_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRIOR_CODE_VERSION_CONCEPT_RELATION",
+      "sourcePdfSha256": "fe694b24fe4fd8e20703e369ae13ac50ead93a609cf7cab9f247cfaa04f5c837"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2025,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 20,
+      "sourceUrl": "https://odsgm.meb.gov.tr/meb_iys_dosyalar/2025_04/28174038_5_sinif_a_25.pdf",
+      "candidatePdfPages": [
+        23
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.3.4",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "CONCEPT_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRIOR_CODE_VERSION_CONCEPT_RELATION",
+      "sourcePdfSha256": "fe694b24fe4fd8e20703e369ae13ac50ead93a609cf7cab9f247cfaa04f5c837"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2026,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 1,
+      "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+      "candidatePdfPages": [
+        20,
+        23,
+        25,
+        27
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.1.2",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "CONCEPT_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRIOR_CODE_VERSION_CONCEPT_RELATION",
+      "sourcePdfSha256": "ca6ba34756a6dfdea89a2f473d1b04245382450ba9ebb34c6fbb9fcb3dac4080"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2026,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 2,
+      "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+      "candidatePdfPages": [
+        20,
+        23,
+        25,
+        27
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.1.3",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "CONCEPT_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRIOR_CODE_VERSION_CONCEPT_RELATION",
+      "sourcePdfSha256": "ca6ba34756a6dfdea89a2f473d1b04245382450ba9ebb34c6fbb9fcb3dac4080"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2026,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 3,
+      "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+      "candidatePdfPages": [
+        21,
+        23
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.1.4",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "CONCEPT_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRIOR_CODE_VERSION_CONCEPT_RELATION",
+      "sourcePdfSha256": "ca6ba34756a6dfdea89a2f473d1b04245382450ba9ebb34c6fbb9fcb3dac4080"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2026,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 4,
+      "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+      "candidatePdfPages": [
+        21
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.1.4",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "CONCEPT_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRIOR_CODE_VERSION_CONCEPT_RELATION",
+      "sourcePdfSha256": "ca6ba34756a6dfdea89a2f473d1b04245382450ba9ebb34c6fbb9fcb3dac4080"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2026,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 5,
+      "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+      "candidatePdfPages": [
+        22
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.2.2",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "CONCEPT_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRIOR_CODE_VERSION_CONCEPT_RELATION",
+      "sourcePdfSha256": "ca6ba34756a6dfdea89a2f473d1b04245382450ba9ebb34c6fbb9fcb3dac4080"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2026,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 6,
+      "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+      "candidatePdfPages": [
+        22
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.2.2",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "CONCEPT_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRIOR_CODE_VERSION_CONCEPT_RELATION",
+      "sourcePdfSha256": "ca6ba34756a6dfdea89a2f473d1b04245382450ba9ebb34c6fbb9fcb3dac4080"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2026,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 7,
+      "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+      "candidatePdfPages": [
+        23
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.2.4",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "CONCEPT_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRIOR_CODE_VERSION_CONCEPT_RELATION",
+      "sourcePdfSha256": "ca6ba34756a6dfdea89a2f473d1b04245382450ba9ebb34c6fbb9fcb3dac4080"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2026,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 8,
+      "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+      "candidatePdfPages": [
+        23
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.2.4",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "CONCEPT_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRIOR_CODE_VERSION_CONCEPT_RELATION",
+      "sourcePdfSha256": "ca6ba34756a6dfdea89a2f473d1b04245382450ba9ebb34c6fbb9fcb3dac4080"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2026,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 9,
+      "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+      "candidatePdfPages": [
+        24
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.2.3",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "CONCEPT_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRIOR_CODE_VERSION_CONCEPT_RELATION",
+      "sourcePdfSha256": "ca6ba34756a6dfdea89a2f473d1b04245382450ba9ebb34c6fbb9fcb3dac4080"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2026,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 10,
+      "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+      "candidatePdfPages": [
+        25
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.4.1",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "CONCEPT_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRIOR_CODE_VERSION_CONCEPT_RELATION",
+      "sourcePdfSha256": "ca6ba34756a6dfdea89a2f473d1b04245382450ba9ebb34c6fbb9fcb3dac4080"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2026,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 11,
+      "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+      "candidatePdfPages": [
+        26
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.4.2",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "CONCEPT_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRIOR_CODE_VERSION_CONCEPT_RELATION",
+      "sourcePdfSha256": "ca6ba34756a6dfdea89a2f473d1b04245382450ba9ebb34c6fbb9fcb3dac4080"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2026,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 12,
+      "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+      "candidatePdfPages": [
+        26
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.4.3",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "CONCEPT_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRIOR_CODE_VERSION_CONCEPT_RELATION",
+      "sourcePdfSha256": "ca6ba34756a6dfdea89a2f473d1b04245382450ba9ebb34c6fbb9fcb3dac4080"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2026,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 13,
+      "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+      "candidatePdfPages": [
+        27
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.5.1",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "CONCEPT_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRIOR_CODE_VERSION_CONCEPT_RELATION",
+      "sourcePdfSha256": "ca6ba34756a6dfdea89a2f473d1b04245382450ba9ebb34c6fbb9fcb3dac4080"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2026,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 14,
+      "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+      "candidatePdfPages": [
+        27
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.5.2",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "CONCEPT_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRIOR_CODE_VERSION_CONCEPT_RELATION",
+      "sourcePdfSha256": "ca6ba34756a6dfdea89a2f473d1b04245382450ba9ebb34c6fbb9fcb3dac4080"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2026,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 15,
+      "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+      "candidatePdfPages": [
+        27
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.5.3",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "CONCEPT_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRIOR_CODE_VERSION_CONCEPT_RELATION",
+      "sourcePdfSha256": "ca6ba34756a6dfdea89a2f473d1b04245382450ba9ebb34c6fbb9fcb3dac4080"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2026,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 16,
+      "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+      "candidatePdfPages": [
+        28
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.3.1",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "CONCEPT_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRIOR_CODE_VERSION_CONCEPT_RELATION",
+      "sourcePdfSha256": "ca6ba34756a6dfdea89a2f473d1b04245382450ba9ebb34c6fbb9fcb3dac4080"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2026,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 17,
+      "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+      "candidatePdfPages": [
+        28
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.3.2",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "CONCEPT_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRIOR_CODE_VERSION_CONCEPT_RELATION",
+      "sourcePdfSha256": "ca6ba34756a6dfdea89a2f473d1b04245382450ba9ebb34c6fbb9fcb3dac4080"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2026,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 18,
+      "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+      "candidatePdfPages": [
+        29
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.3.3",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "CONCEPT_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRIOR_CODE_VERSION_CONCEPT_RELATION",
+      "sourcePdfSha256": "ca6ba34756a6dfdea89a2f473d1b04245382450ba9ebb34c6fbb9fcb3dac4080"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2026,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 19,
+      "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+      "candidatePdfPages": [
+        29
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.3.4",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "CONCEPT_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRIOR_CODE_VERSION_CONCEPT_RELATION",
+      "sourcePdfSha256": "ca6ba34756a6dfdea89a2f473d1b04245382450ba9ebb34c6fbb9fcb3dac4080"
+    },
+    {
+      "exam": "İOKBS",
+      "year": 2026,
+      "grade": 5,
+      "booklet": "A",
+      "scienceQuestionNumber": 20,
+      "sourceUrl": "https://cdn.eba.gov.tr/yardimcikaynaklar/2026/04/bursluluk/5_sinifA_26.pdf",
+      "candidatePdfPages": [
+        29
+      ],
+      "pageLocatorStatus": "TEXT_EXTRACTION_CANDIDATES_NOT_ALL_VISUALLY_VERIFIED",
+      "primaryOutcomeCode": "FB.5.3.1",
+      "mappingStatus": "CONTENT_RELATED_EDITORIAL",
+      "matchExtent": "CONCEPT_CONTENT",
+      "officialOutcomeTag": false,
+      "fullProcessSkillMeasured": false,
+      "curriculumVersionRelation": "PRIOR_CODE_VERSION_CONCEPT_RELATION",
+      "sourcePdfSha256": "ca6ba34756a6dfdea89a2f473d1b04245382450ba9ebb34c6fbb9fcb3dac4080"
+    }
+  ]
+}
