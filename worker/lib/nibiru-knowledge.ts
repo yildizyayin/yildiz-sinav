@@ -105,6 +105,9 @@ function knownNames(user: AuthUser, context: any) {
 const ratePct = (v: unknown) => trNum2(Number(v) <= 1 ? Number(v) * 100 : Number(v), 0);
 export function clean(text: string, names: string[]) { return redactDirectIdentifiers(String(text || ''), names).text.replace(/\b0?5\d{2}[\s-]?\d{3}[\s-]?\d{2}[\s-]?\d{2}\b/g, '[telefon]'); }
 
+/** Time for one model, and for the whole knowledge answer. */
+export const MODEL_TIMEOUT_MS = 15_000, KNOWLEDGE_BUDGET_MS = 32_000;
+
 export async function knowledgeAnswer(env: Env, user: AuthUser, message: string, channelKey: string, context: any, decision: ReturnType<typeof chooseNibiruModelDecision>): Promise<{ answer: string; suggestions: string[] } | null> {
   if (!env.AI) return null;
   const settings = await one<any>(env.DB.prepare(`SELECT enabled FROM nibiru_settings WHERE id='platform'`)).catch(() => null);
@@ -120,8 +123,22 @@ export async function knowledgeAnswer(env: Env, user: AuthUser, message: string,
   // Workers AI only — no external provider ever gets this conversation
   const local = { ...decision, candidates: decision.candidates.filter((c) => !['GROQ', 'CUSTOM'].includes(String(c.family))) };
   if (!local.candidates.length) return null;
-  const inference = await runNibiruInference(env, local, messages as any, { role: user.role, intent: 'KNOWLEDGE', environment: env.ENVIRONMENT || 'unknown', privacyRedactions: 0 } as any).catch(() => null);
-  const raw = String(inference?.text || '').trim();
+  // 23 Nov 2026: a question reached the model and never came back (no answer, no record). Each model gets a short time,
+  // the whole answer a budget; past it the conversation layer answers and the request is still recorded.
+  let raw = '';
+  const started = Date.now();
+  for (const c of local.candidates.slice(0, 3)) {
+    const left = KNOWLEDGE_BUDGET_MS - (Date.now() - started);
+    if (left < 3000) break;
+    const one = { ...local, candidates: [c] };
+    const inference = await Promise.race([
+      runNibiruInference(env, one, messages as any, { role: user.role, intent: 'KNOWLEDGE', environment: env.ENVIRONMENT || 'unknown', privacyRedactions: 0 } as any).catch(() => null),
+      new Promise<null>((resolve) => setTimeout(() => resolve(null), Math.min(MODEL_TIMEOUT_MS, left))),
+    ]);
+    raw = String(inference?.text || '').trim();
+    if (raw) break;
+    console.warn(JSON.stringify({ event: 'nibiru_knowledge_model_miss', model: c.model, ms: Date.now() - started }));
+  }
   if (!raw) return null;
   const lines = raw.split('\n');
   const suggestions = lines.filter((l) => /^\s*ÖNERİ\s*:/i.test(l)).map((l) => l.replace(/^\s*ÖNERİ\s*:\s*/i, '').replace(/^["“]|["”]$/g, '').trim()).filter(Boolean).slice(0, 3);
