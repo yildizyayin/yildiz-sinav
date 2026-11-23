@@ -86,6 +86,7 @@ export interface Env {
   GOOGLE_TTS_SERVICE_ACCOUNT_JSON?: string;
   OPENAI_TTS_API_KEY?: string;
   YOUTUBE_API_KEY?: string;
+  OUTCOME_VIDEO_SKIP_GRADES?: string;
   GEMINI_API_KEY?: string;
   GEMINI_MODEL?: string;
   NIBIRU_GEMINI_MODEL?: string;
