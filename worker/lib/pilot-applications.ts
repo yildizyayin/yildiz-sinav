@@ -9,7 +9,8 @@ import { all, audit, json, one, uuid } from './db';
 
 export const PILOT_KVKK_VERSION = 'pilot-2026-11-12';
 const ORIGINS = new Set(['https://anunex.com', 'https://www.anunex.com', 'http://localhost:5173', 'http://127.0.0.1:5173']);
-const TYPES = ['DEVLET_OKULU', 'OZEL_OKUL', 'KURS', 'ETUT_MERKEZI', 'DIGER'];
+// owner, 23 Nov 2026: pilot is for state schools, private schools and courses
+const TYPES = ['DEVLET_OKULU', 'OZEL_OKUL', 'KURS'];
 const STATUSES = ['NEW', 'CONTACTED', 'PILOT', 'DECLINED'];
 const text = (v: unknown, max: number) => (typeof v === 'string' ? v.replace(/\s+/g, ' ').trim().slice(0, max) : '');
 

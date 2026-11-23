@@ -162,6 +162,8 @@ async function screenMine(request: Request, env: Env, user: AuthUser, url: URL) 
     if (request.method === 'GET') return json({ ok: true, children, studentId, requested: await screenRequestFor(env, studentId), logs: await all<any>(env.DB.prepare(`SELECT * FROM guidance_screen_logs WHERE student_id=? AND log_date>=? ORDER BY log_date DESC`).bind(studentId, addDays(today(), -13))) });
   } else if (user.role !== 'STUDENT' || !studentId) return fail(403, 'FORBIDDEN', 'Ekran günlüğü öğrenci ve veliler içindir.');
   if (request.method === 'GET') return json({ ok: true, requested: await screenRequestFor(env, studentId), logs: await all<any>(env.DB.prepare(`SELECT * FROM guidance_screen_logs WHERE student_id=? AND log_date>=? ORDER BY log_date DESC`).bind(studentId, addDays(today(), -13))) });
+  // owner, 13/23 Nov 2026: the diary opens only when the guidance teacher asks for it — on the server too, not only on screen
+  if (!(await screenRequestFor(env, studentId))) return fail(403, 'SCREEN_NOT_REQUESTED', 'Ekran günlüğü rehber öğretmeninin isteğiyle açılır.');
   const b = await request.json().catch(() => ({})) as any;
   const date = text(b?.date, 10) || today();
   if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || date > today() || date < addDays(today(), -6)) return fail(400, 'VALIDATION_ERROR', 'Kayıt yalnız son yedi gün için girilebilir.');
