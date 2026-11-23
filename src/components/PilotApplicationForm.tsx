@@ -7,7 +7,7 @@ import './PilotApplicationForm.css';
  * KVKK notice shown right under the form. No student data is asked.
  */
 const ENDPOINT = 'https://app.anunex.com/api/public/pilot-applications';
-const TYPES: [string, string][] = [['DEVLET_OKULU', 'Devlet okulu'], ['OZEL_OKUL', 'Özel okul'], ['KURS', 'Kurs / dershane'], ['ETUT_MERKEZI', 'Etüt merkezi'], ['DIGER', 'Diğer']];
+const TYPES: [string, string][] = [['DEVLET_OKULU', 'Devlet okulu'], ['OZEL_OKUL', 'Özel okul'], ['KURS', 'Kurs / dershane']];
 const COUNTS = ['0-100', '100-300', '300-500', '500-1000', '1000+'];
 
 export function PilotApplicationForm() {

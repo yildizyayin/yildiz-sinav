@@ -76,6 +76,9 @@ describe('guidance content R4', () => {
 
   it('keeps the screen & sleep diary and raises a reasoned signal only after a week of high use', async () => {
     const t = await setup();
+    // owner, 23 Nov 2026: the diary is open only after the guidance teacher asks for it
+    expect((await t.as('stuuser', '/api/guidance-content/screen/mine', 'POST', { date: day(0), screenMinutes: 60 })).response.status).toBe(403);
+    expect((await t.as('gt', '/api/guidance-content/screen/requests', 'POST', { classId: 'c8a', days: 14 })).response.status).toBeLessThan(300);
     expect((await t.as('stuuser', '/api/guidance-content/screen/mine', 'POST', { date: day(9), screenMinutes: 60 })).response.status).toBe(400);
     expect((await t.as('stuuser', '/api/guidance-content/screen/mine', 'POST', { screenMinutes: 2000 })).response.status).toBe(400);
     for (const n of [0, 1, 2, 3]) expect((await t.as('stuuser', '/api/guidance-content/screen/mine', 'POST', { date: day(n), screenMinutes: 300, bedtime: '00:15' })).response.status).toBe(200);
