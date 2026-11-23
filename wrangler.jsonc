@@ -49,6 +49,7 @@
   },
   "vars": {
     "OUTCOME_VIDEO_GEMINI": "off",
+    "OUTCOME_VIDEO_SKIP_GRADES": "8,12",
     "SCHEDULED_JOBS_PAUSED": "true",
     "QUESTION_TEAM_CONTROLS_ENABLED": "true",
     "QUESTION_VIDEO_RENDER_ENABLED": "false",

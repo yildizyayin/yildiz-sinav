@@ -713,3 +713,10 @@ Dış öneri üzerine 360 px'te kontrol edildi; tespitler doğrulandı. Yapılac
 - Tespit: Ağustos'tan beri ses Google WaveNet (tr-TR-Wavenet-E) idi; 9 Ekim'deki "ücretli sesi koru" değişikliği tüm bulut seslerini NIBIRU_PAID_VOICE_ENABLED'a bağladı, o günden beri cihaz sesi kullanılıyordu.
 - Karar (sahip onayı): NIBIRU_GOOGLE_FREE_VOICE=ON ile yalnız Google WaveNet; ücretli sağlayıcı yok. Platform geneli aylık 3,5 milyon karakter tavanı (Google'ın ücretsiz WaveNet kotası 4 milyon); tavanda ay sonuna kadar cihaz sesi.
 - Google'a giden metinden ad çıkarılır; madde işaretleri, "%", "·" ve emojiler sesli okumaya uygun hale getirilir. Doğal ses alınamazsa cihaz sesi okur.
+
+### 23 Kasım 2026 · Kazanım videoları: kalite ve hız
+- Karar (sahip): 8. ve 12. sınıf müfredatı 2027-2028'de Maarif modeline geçiyor; bu sınıflarda otomatik video aranmaz (`OUTCOME_VIDEO_SKIP_GRADES=8,12`). Öğretmen yine okulun videosunu ekleyebilir.
+- Kalite kuralları: başka sınıfın ya da başka dersin videosu, eğitim dışı kanal ve kazanımı adıyla söylemeyen kısa video kabul edilmez. Daha önce bulunan videolar bir kez bu kurallarla denetlenir (8. sınıf hariç); uymayan kaldırılır, o kazanım için bir daha gelmez ve yeniden aranır. Ön inceleme: 247 videodan 20'si kalkar.
+- Hız: bir aramadan gelen videolar aynı sınıf ve dersteki diğer kazanımlar için de denenir (ek kota harcanmaz).
+- Sıra: sorusu olan kazanımlar, sonra 5–7, sonra 9–11; Matematik/Fen/Türkçe önce, İngilizce en son.
+- Not (23 Kasım): Node 22.23.5 ile gelen SQLite 3.54 alt sorgu JSON'unu metin yaptı; sonuç arşivi kaydı `json()` ile düzeltildi (PR #557).

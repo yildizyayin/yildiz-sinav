@@ -21,6 +21,12 @@ import { fetchYoutubeMetadata, youtubeCandidateAvailable } from './youtube-candi
 
 export const geminiOn = (env: Env) => Boolean(env.GEMINI_API_KEY) && (env as any).OUTCOME_VIDEO_GEMINI !== 'off';
 export const SEARCH_CAP = 80;               // YouTube Data API: 100 units a search, 10 000 units a day shared with others
+/**
+ * Owner, 23 Nov 2026: 8th and 12th grades move to the Maarif model in 2027-2028; no videos exist for them yet, so they
+ * are not searched. The list is the wrangler var OUTCOME_VIDEO_SKIP_GRADES ("8,12").
+ */
+export const skipGrades = (env: Env) => String(env.OUTCOME_VIDEO_SKIP_GRADES || '').split(',').map((x) => Number(x.trim())).filter((n) => Number.isInteger(n) && n > 0 && n <= 12);
+const skipSql = (env: Env) => { const g = skipGrades(env); return g.length ? `coalesce(o.grade_level,0) NOT IN (${g.join(',')})` : '1=1'; };
 export const GEMINI_SECONDS_CAP = 7 * 3600;  // Gemini YouTube input: 8 hours of video a day on the free tier
 export const REPORTS_TO_REMOVE = 3;
 const MIN_VIDEO = 45, MIN_CLIP = 30, MAX_CLIP = 20 * 60, MAX_VIDEO = 40 * 60, SHORT_VIDEO = 7 * 60;
@@ -35,10 +41,39 @@ const today = () => new Date(Date.now() + 3 * 3600_000).toISOString().slice(0, 1
 const FOLD: Record<string, string> = { ç: 'c', ğ: 'g', ı: 'i', ö: 'o', ş: 's', ü: 'u', â: 'a', î: 'i', û: 'u' };
 const STOP = new Set(['ve', 'ile', 'bir', 'bu', 'icin', 'ilgili', 'olan', 'eder', 'yapar', 'aciklar', 'belirler', 'kullanir', 'cozer', 'gosterir', 'konu', 'anlatim', 'anlatimi', 'sinif', 'ders', 'soru', 'sorulari', 'ornek', 'ornekler', 'unite', 'giris', 'tekrar', 'ozet', 'test', 'cozum', 'cozumu', 'lgs', 'yks', 'tyt', 'ayt', 'meb', 'kazanim', 'ile', 'gibi', 'arasindaki', 'iliskiyi', 'farki', 'nedir', 'nasil', 'part', 'bolum', 'kisim', 'sonuc', 'final', 'kapanis', 'abone', 'olun']);
 export function stems(value: string): string[] {
-  const words = String(value || '').toLocaleLowerCase('tr-TR').replace(/[çğıöşüâîû]/g, (c) => FOLD[c] || c).split(/[^a-z0-9]+/);
+  const words = String(value || '').normalize('NFC').toLocaleLowerCase('tr-TR').replace(/[çğıöşüâîû]/g, (c) => FOLD[c] || c).split(/[^a-z0-9]+/);
   return [...new Set(words.filter((w) => w.length >= 3 && !STOP.has(w) && !/^\d+$/.test(w)).map((w) => w.slice(0, 5)))];
 }
 const overlap = (a: string[], b: string[]) => { const s = new Set(b); return a.filter((x) => s.has(x)).length; };
+
+// ------------------------------------------------------------------ quality (owner, 23 Nov 2026: "gerçek video kesitleri")
+// Words that every outcome uses ("…belirlemeye yönelik…yapabilme") say nothing about the topic; only the rest counts.
+const GENERIC = new Set(['yonel', 'belir', 'yapab', 'edebi', 'ebilm', 'abilm', 'kulla', 'olust', 'ifade', 'uygul', 'acikl', 'gelis', 'deger', 'kendi', 'uyarl', 'temel', 'farkl', 'uygun', 'cesit', 'durum', 'calis', 'bilgi', 'turlu', 'yazil', 'sozlu', 'genel', 'yapil', 'cikar', 'bulun', 'verir', 'eder', 'ozell', 'ornek']);
+/** The words of the outcome sentence itself that carry its topic. */
+export const distinctive = (title: string) => stems(cleanTitle(title)).filter((w) => !GENERIC.has(w));
+const SUBJECTS: [RegExp, string][] = [[/matemat/i, 'Matematik'], [/\bfen\b|fen bilim/i, 'Fen Bilimleri'], [/türkçe|turkce/i, 'Türkçe'], [/ingilizce|english/i, 'İngilizce'], [/sosyal bilg/i, 'Sosyal Bilgiler'], [/din kült|din kult/i, 'Din Kültürü'], [/inkılap|inkilap/i, 'İnkılap Tarihi'], [/fizik/i, 'Fizik'], [/kimya/i, 'Kimya'], [/biyoloji/i, 'Biyoloji'], [/coğrafya|cografya/i, 'Coğrafya'], [/tarih/i, 'Tarih'], [/edebiyat/i, 'Türk Dili ve Edebiyatı'], [/felsefe/i, 'Felsefe']];
+/** Channels whose name says entertainment, not teaching. */
+export const NOT_TEACHING = /\b(funn|funny|meme|prank|asmr|cartoon|gaming|gamer|minecraft|roblox|music|müzik|vlog|tiktok|comedy|kids tv|nursery|facts)\b|funnies/i;
+/** Why a found clip should not be shown, or null when it is fine. Checks what is known without another API call. */
+export function qualityIssue(v: { title: string; channel?: string | null; method: string; chapterTitle?: string | null }, o: { title: string; topic?: string | null; subtopic?: string | null; grade_level?: number | null; subject_name?: string | null }): string | null {
+  const t = String(v.title || '');
+  if (v.channel && NOT_TEACHING.test(v.channel)) return `eğitim dışı kanal (${v.channel})`;
+  const grades = [...t.matchAll(/(?:^|\D)(\d{1,2})\s*\.?\s*(?:sınıf|sinif|SINIF|Sınıf)/g)].map((m) => Number(m[1]));
+  if (o.grade_level && grades.length && !grades.includes(Number(o.grade_level))) return `başka sınıfın videosu (${grades.join(', ')}. sınıf)`;
+  const own = SUBJECTS.find(([, n]) => n === o.subject_name);
+  const named = SUBJECTS.filter(([re]) => re.test(t)).map(([, n]) => n);
+  // "Türk Dili ve Edebiyatı" and "İnkılap Tarihi" also match their parent words; only a clearly different subject counts
+  const other = named.filter((n) => n !== o.subject_name && !(o.subject_name || '').includes(n) && !n.includes(o.subject_name || '~'));
+  if (own && other.length && !named.includes(own[1])) return `başka dersin videosu (${other.join(', ')})`;
+  const keys = distinctive(o.title);
+  if (v.method === 'SHORT_TITLE' && keys.length) {
+    const hit = overlap(stems(t), keys);
+    const need = keys.length <= 1 ? 1 : keys.length <= 7 ? 2 : 3;
+    if (hit < need) return `başlık kazanımı tam söylemiyor (${hit}/${keys.length} anahtar kelime)`;
+  }
+  if (v.method === 'CHAPTER' && v.chapterTitle != null && keys.length && !overlap(stems(v.chapterTitle), keys)) return 'bölüm başlığı kazanımın kendi kelimelerini içermiyor';
+  return null;
+}
 
 /** Chapters from a video description: lines that start (or end) with a timestamp, as YouTube itself reads them. */
 export function parseChapters(description: string, duration: number) {
@@ -173,7 +208,7 @@ export function searchQueries(o: any) {
 }
 export const searchQuery = (o: any) => searchQueries(o)[0];
 
-export async function findOutcomeVideo(env: Env, outcomeId: string): Promise<{ status: 'FOUND' | 'NOT_FOUND' | 'ERROR' | 'QUOTA'; reason: string; geminiTried?: boolean; detail?: string }> {
+export async function findOutcomeVideo(env: Env, outcomeId: string): Promise<{ status: 'FOUND' | 'NOT_FOUND' | 'ERROR' | 'QUOTA'; reason: string; geminiTried?: boolean; detail?: string; shared?: number }> {
   if (!env.YOUTUBE_API_KEY) return { status: 'QUOTA', reason: 'YOUTUBE_NOT_CONFIGURED' };
   const o = await one<any>(env.DB.prepare(`SELECT o.id,o.code,o.title,o.topic,o.subtopic,o.grade_level,s.name subject_name FROM outcomes o LEFT JOIN subjects s ON s.id=o.subject_id WHERE o.id=?`).bind(outcomeId));
   if (!o) return { status: 'NOT_FOUND', reason: 'OUTCOME_MISSING' };
@@ -181,7 +216,7 @@ export async function findOutcomeVideo(env: Env, outcomeId: string): Promise<{ s
   if (u.searches >= SEARCH_CAP) return { status: 'QUOTA', reason: 'SEARCH_QUOTA' };
   const blocked = new Set((await all<any>(env.DB.prepare(`SELECT youtube_video_id FROM outcome_video_blocks WHERE outcome_id=?`).bind(outcomeId))).map((b) => b.youtube_video_id));
   const keys = stems([cleanTopic(o.topic), cleanTopic(o.subtopic), o.title].filter(Boolean).join(' '));
-  let query = '', cands: any[] = [], detail = '', searches = 0;
+  let query = '', cands: any[] = [], detail = '', searches = 0; const lastDetails: any[] = [];
   for (const q of searchQueries(o)) {
     if (searches && (await usage(env)).searches >= SEARCH_CAP) break;
     query = q; searches++;
@@ -201,8 +236,9 @@ export async function findOutcomeVideo(env: Env, outcomeId: string): Promise<{ s
       const duration = iso(v.contentDetails?.duration);
       const chapter = matchChapter(parseChapters(v.snippet?.description || '', duration), keys);
       const titleHit = overlap(stems(v.snippet?.title || ''), keys);
+      lastDetails.push(v);
       return { id: v.id as string, title: String(v.snippet?.title || 'Konu anlatımı').slice(0, 200), channel: String(v.snippet?.channelTitle || '').slice(0, 120), duration, chapter, titleHit, views: Number(v.statistics?.viewCount || 0) };
-    }).filter((c: any) => c.duration >= MIN_VIDEO && c.duration <= MAX_VIDEO)
+    }).filter((c: any) => c.duration >= MIN_VIDEO && c.duration <= MAX_VIDEO && !qualityIssue({ title: c.title, channel: c.channel, method: 'ANY' }, o))
       .sort((a: any, b: any) => ((b.chapter ? 2 : 0) + b.titleHit + Math.log10(b.views + 1) / 3) - ((a.chapter ? 2 : 0) + a.titleHit + Math.log10(a.views + 1) / 3));
     detail = `"${q}": ${ids.length} sonuç, ${available.length} güvenli, ${cands.length} uygun süreli`;
     if (cands.length) break;
@@ -233,12 +269,68 @@ export async function findOutcomeVideo(env: Env, outcomeId: string): Promise<{ s
     }
   }
   // 2. the video's own chapter that names the outcome
-  const byChapter = cands.find((c: any) => c.chapter);
-  if (byChapter) return save(byChapter, byChapter.chapter.start, byChapter.chapter.end, 'CHAPTER', Math.min(1, byChapter.chapter.score));
-  // 3. a short video whose title clearly names the outcome is itself the segment
-  const short = cands.find((c: any) => c.duration <= SHORT_VIDEO && c.titleHit >= Math.min(3, Math.max(2, keys.length)));
-  if (short) return save(short, 0, short.duration, 'SHORT_TITLE', 0.6);
-  return { status: 'NOT_FOUND', reason: 'NO_SEGMENT', geminiTried, detail: [detail, ...verdicts].join(' | ') };
+  const pick = pickClip(cands, keys, o);
+  // the same search often holds other outcomes of this grade and subject: no extra quota is spent on them
+  const shared = await shareSearch(env, o, lastDetails, query).catch(() => 0);
+  if (pick) return save(pick.c, pick.start, pick.end, pick.method, pick.confidence).then((r) => ({ ...r, shared }));
+  return { status: 'NOT_FOUND', reason: 'NO_SEGMENT', geminiTried, detail: [detail, ...verdicts, shared ? `aynı aramadan ${shared} başka kazanım bulundu` : ''].filter(Boolean).join(' | ') };
+}
+
+/** 2. the video's own chapter that names the outcome; 3. a short video whose title clearly names it. Both pass the quality rules. */
+function pickClip(cands: any[], keys: string[], o: any): { c: any; start: number; end: number; method: 'CHAPTER' | 'SHORT_TITLE'; confidence: number } | null {
+  for (const c of cands) if (c.chapter && !qualityIssue({ title: c.title, channel: c.channel, method: 'CHAPTER', chapterTitle: c.chapter.title }, o)) return { c, start: c.chapter.start, end: c.chapter.end, method: 'CHAPTER', confidence: Math.min(1, c.chapter.score) };
+  for (const c of cands) if (c.duration <= SHORT_VIDEO && c.titleHit >= Math.min(3, Math.max(2, keys.length)) && !qualityIssue({ title: c.title, channel: c.channel, method: 'SHORT_TITLE' }, o)) return { c, start: 0, end: c.duration, method: 'SHORT_TITLE', confidence: 0.6 };
+  return null;
+}
+
+/** Tries the videos of one search for the other outcomes of the same grade and subject that have no clip yet. */
+async function shareSearch(env: Env, o: any, videos: any[], query: string) {
+  if (!videos.length || !o.grade_level) return 0;
+  const others = await all<any>(env.DB.prepare(`SELECT o.id,o.code,o.title,o.topic,o.subtopic,o.grade_level,s.name subject_name FROM outcomes o LEFT JOIN subjects s ON s.id=o.subject_id
+    WHERE o.subject_id=(SELECT subject_id FROM outcomes WHERE id=?) AND o.grade_level=? AND o.id<>? AND o.active=1 AND coalesce(o.node_type,'OUTCOME')='OUTCOME'
+      AND NOT EXISTS (SELECT 1 FROM outcome_auto_videos a WHERE a.outcome_id=o.id AND a.status='ACTIVE') LIMIT 300`).bind(o.id, o.grade_level, o.id));
+  let n = 0;
+  for (const x of others) {
+    const keys = stems([cleanTopic(x.topic), cleanTopic(x.subtopic), x.title].filter(Boolean).join(' '));
+    const blocked = new Set((await all<any>(env.DB.prepare(`SELECT youtube_video_id FROM outcome_video_blocks WHERE outcome_id=?`).bind(x.id))).map((b) => b.youtube_video_id));
+    const cands = videos.filter((v) => !blocked.has(v.id)).map((v) => {
+      const duration = iso(v.contentDetails?.duration);
+      return { id: v.id as string, title: String(v.snippet?.title || 'Konu anlatımı').slice(0, 200), channel: String(v.snippet?.channelTitle || '').slice(0, 120), duration, chapter: matchChapter(parseChapters(v.snippet?.description || '', duration), keys), titleHit: overlap(stems(v.snippet?.title || ''), keys) };
+    }).filter((c) => c.duration >= MIN_VIDEO && c.duration <= MAX_VIDEO && !qualityIssue({ title: c.title, channel: c.channel, method: 'ANY' }, x))
+      // a shared find must be at least as clear as a searched one: a chapter, or a short video naming the outcome
+      .sort((a, b) => (b.chapter ? 2 : 0) + b.titleHit - ((a.chapter ? 2 : 0) + a.titleHit));
+    const pick = pickClip(cands, keys, x);
+    if (!pick) continue;
+    await env.DB.batch([
+      env.DB.prepare(`INSERT INTO outcome_auto_videos(id,outcome_id,youtube_video_id,title,channel_title,duration_seconds,start_seconds,end_seconds,method,confidence,search_query) VALUES(?,?,?,?,?,?,?,?,?,?,?)`)
+        .bind(uuid('oav'), x.id, pick.c.id, pick.c.title, pick.c.channel || null, pick.c.duration, pick.start, pick.end, pick.method, Math.round(pick.confidence * 100) / 100, `${query} (aynı arama)`.slice(0, 220)),
+      env.DB.prepare(`INSERT INTO outcome_video_queue(outcome_id,priority,status,attempts,last_reason) VALUES(?,0,'FOUND',0,?) ON CONFLICT(outcome_id) DO UPDATE SET status='FOUND',last_reason=excluded.last_reason,next_try_at=NULL,updated_at=CURRENT_TIMESTAMP`).bind(x.id, `SHARED · ${pick.method}`),
+    ]);
+    n++;
+  }
+  return n;
+}
+
+/**
+ * Quality check of clips found before the rules of 23 Nov 2026: a clip that fails is removed, never comes back for that
+ * outcome, and the outcome is searched again. Each clip is checked once.
+ */
+export async function recheckAutoVideos(env: Env, limit = 100) {
+  const rows = await all<any>(env.DB.prepare(`SELECT a.id,a.outcome_id,a.youtube_video_id,a.title,a.channel_title,a.method,o.title outcome_title,o.topic,o.subtopic,o.grade_level,s.name subject_name
+    FROM outcome_auto_videos a JOIN outcomes o ON o.id=a.outcome_id LEFT JOIN subjects s ON s.id=o.subject_id
+    WHERE a.status='ACTIVE' AND a.quality_checked_at IS NULL AND ${skipSql(env)} LIMIT ?`).bind(limit));
+  let removed = 0;
+  for (const r of rows) {
+    const why = qualityIssue({ title: r.title, channel: r.channel_title, method: r.method }, { title: r.outcome_title, topic: r.topic, subtopic: r.subtopic, grade_level: r.grade_level, subject_name: r.subject_name });
+    if (!why) { await env.DB.prepare(`UPDATE outcome_auto_videos SET quality_checked_at=CURRENT_TIMESTAMP WHERE id=?`).bind(r.id).run(); continue; }
+    await env.DB.batch([
+      env.DB.prepare(`UPDATE outcome_auto_videos SET status='REMOVED',removed_reason=?,removed_at=CURRENT_TIMESTAMP,quality_checked_at=CURRENT_TIMESTAMP WHERE id=?`).bind(`KALITE: ${why}`.slice(0, 300), r.id),
+      env.DB.prepare(`INSERT OR IGNORE INTO outcome_video_blocks(outcome_id,youtube_video_id) VALUES(?,?)`).bind(r.outcome_id, r.youtube_video_id),
+    ]);
+    await enqueueOutcome(env, r.outcome_id, 5, true);
+    removed++;
+  }
+  return { checked: rows.length, removed };
 }
 
 /** Ask for an outcome to be searched (a learner needed it, or a teacher removed its video). */
@@ -249,19 +341,22 @@ export async function enqueueOutcome(env: Env, outcomeId: string, priority = 10,
     .bind(outcomeId, priority, force ? 1 : 0, force ? 1 : 0).run();
 }
 
-/** Cron: search the next outcome(s). Needed outcomes first, then outcomes with questions, grades 8→5, Matematik/Fen/Türkçe first; misses are retried later. */
+/** Cron: search the next outcome(s). Needed outcomes first, then outcomes with questions, grades 5–7 then 9–11 (8 and 12 skipped), Matematik/Fen/Türkçe first and İngilizce last; misses are retried later. */
 export async function runOutcomeVideoQueue(env: Env, max = 1) {
   if (!env.YOUTUBE_API_KEY) return 0;
+  await recheckAutoVideos(env).catch(() => undefined);
   let done = 0;
   for (let i = 0; i < max; i++) {
-    let next = await one<any>(env.DB.prepare(`SELECT q.outcome_id FROM outcome_video_queue q WHERE (q.status='WAITING' OR (q.status IN ('NOT_FOUND','ERROR') AND q.next_try_at<=datetime('now')))
-      AND NOT EXISTS (SELECT 1 FROM outcome_auto_videos a WHERE a.outcome_id=q.outcome_id AND a.status='ACTIVE') ORDER BY q.status='WAITING' DESC,q.priority DESC,q.updated_at LIMIT 1`));
+    let next = await one<any>(env.DB.prepare(`SELECT q.outcome_id FROM outcome_video_queue q JOIN outcomes o ON o.id=q.outcome_id WHERE (q.status='WAITING' OR (q.status IN ('NOT_FOUND','ERROR') AND q.next_try_at<=datetime('now')))
+      AND ${skipSql(env)} AND NOT EXISTS (SELECT 1 FROM outcome_auto_videos a WHERE a.outcome_id=q.outcome_id AND a.status='ACTIVE') ORDER BY q.status='WAITING' DESC,q.priority DESC,q.updated_at LIMIT 1`));
     if (!next) {
       next = await one<any>(env.DB.prepare(`SELECT o.id outcome_id FROM outcomes o WHERE o.active=1 AND coalesce(o.node_type,'OUTCOME')='OUTCOME'
         AND NOT EXISTS (SELECT 1 FROM outcome_video_queue q WHERE q.outcome_id=o.id)
         AND NOT EXISTS (SELECT 1 FROM video_links vl WHERE vl.outcome_id=o.id AND vl.link_type='TOPIC' AND vl.approved=1)
-        ORDER BY EXISTS (SELECT 1 FROM question_outcomes qo WHERE qo.outcome_id=o.id) DESC, CASE WHEN o.grade_level BETWEEN 5 AND 8 THEN 0 ELSE 1 END, o.grade_level DESC,
-          CASE WHEN (SELECT s.name FROM subjects s WHERE s.id=o.subject_id) IN ('Matematik','Fen Bilimleri','Türkçe') THEN 0 ELSE 1 END, o.subject_id,o.code,o.id LIMIT 1`));
+        AND ${skipSql(env)}
+        ORDER BY EXISTS (SELECT 1 FROM question_outcomes qo WHERE qo.outcome_id=o.id) DESC, CASE WHEN o.grade_level BETWEEN 5 AND 7 THEN 0 WHEN o.grade_level BETWEEN 9 AND 11 THEN 1 ELSE 2 END,
+          CASE (SELECT s.name FROM subjects s WHERE s.id=o.subject_id) WHEN 'Matematik' THEN 0 WHEN 'Fen Bilimleri' THEN 0 WHEN 'Türkçe' THEN 0 WHEN 'İngilizce' THEN 2 ELSE 1 END,
+          o.grade_level, o.subject_id,o.code,o.id LIMIT 1`));
       if (!next) break;
       await enqueueOutcome(env, next.outcome_id, 0);
     }
@@ -397,7 +492,9 @@ export async function handleOutcomeVideos(request: Request, env: Env): Promise<R
   }
   m = p.match(/^\/api\/outcome-videos\/search\/([^/]+)$/);
   if (m && request.method === 'POST') {
-    if (!(await one(env.DB.prepare(`SELECT 1 FROM outcomes WHERE id=?`).bind(m[1])))) return fail(404, 'NOT_FOUND', 'Kazanım bulunamadı.');
+    const oc = await one<any>(env.DB.prepare(`SELECT grade_level FROM outcomes WHERE id=?`).bind(m[1]));
+    if (!oc) return fail(404, 'NOT_FOUND', 'Kazanım bulunamadı.');
+    if (skipGrades(env).includes(Number(oc.grade_level))) return fail(409, 'GRADE_SKIPPED', `${oc.grade_level}. sınıf müfredatı 2027-2028'de Maarif modeline geçiyor; bu sınıf için otomatik video aranmıyor. Okulunuzun videosunu ekleyebilirsiniz.`);
     await enqueueOutcome(env, m[1], 30, true);
     return json({ ok: true });
   }

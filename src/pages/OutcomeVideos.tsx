@@ -39,7 +39,7 @@ export function OutcomeVideos() {
 
   return <div className="ov">
     <div className="page-head"><div><span className="eyebrow">İçerik</span><h1>Kazanım Videoları</h1>
-      <p className="muted">Öğrenci bir kazanımda zorlandığında önce sistemdeki video, yoksa okulunuzun eklediği video, o da yoksa YouTube’dan otomatik bulunan ve yalnız o kazanımın anlatıldığı bölüm gösterilir. Otomatik videolar onay beklemez; uygun bulmadığınızı kaldırabilirsiniz.</p></div></div>
+      <p className="muted">Öğrenci bir kazanımda zorlandığında önce sistemdeki video, yoksa okulunuzun eklediği video, o da yoksa YouTube’dan otomatik bulunan ve yalnız o kazanımın anlatıldığı bölüm gösterilir. Otomatik videolar onay beklemez; uygun bulmadığınızı kaldırabilirsiniz. 8. ve 12. sınıf müfredatı 2027-2028’de Maarif modeline geçtiği için bu sınıflarda otomatik arama yapılmaz.</p></div></div>
     {error && <div className="alert error" role="alert">{error}</div>}{notice && <div className="alert success">{notice}</div>}
 
     {st && <div className="ov-stats">
