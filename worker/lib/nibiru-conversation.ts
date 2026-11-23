@@ -5,12 +5,14 @@
  * what can you do, goodbye, a low mood — in the user's role and the student's age group, with a few varied phrasings,
  * and offers clickable next questions. Pure functions: no data is read or invented here.
  */
-export type ConversationKind = 'GREETING' | 'HOW_ARE_YOU' | 'THANKS' | 'WHO' | 'CAPABILITIES' | 'BYE' | 'LOW_MOOD';
+export type ConversationKind = 'GREETING' | 'HOW_ARE_YOU' | 'THANKS' | 'WHO' | 'CAPABILITIES' | 'BYE' | 'LOW_MOOD' | 'RUDE';
 export type ConversationContext = { role: string; firstName?: string | null; gradeLevel?: number | null; hour?: number };
 
 const clean = (m: string) => m.toLocaleLowerCase('tr-TR').replace(/[!?.,;:…"'()]+/g, ' ').replace(/\s+/g, ' ').trim();
 
 const PATTERNS: Array<[ConversationKind, RegExp]> = [
+  // 23 Nov 2026: a short insult ('salak', 'aptalsın') got a broken model answer; a calm, fixed reply instead
+  ['RUDE', /^(sen )?(çok )?(salak|aptal|gerizekalı|geri zekalı|mal|ahmak|beyinsiz|dangalak|embesil|budala|işe yaramaz|saçma|berbat|kötü|yararsız|rezil)(sın|sin|sun|sün|sınız|siniz|sunuz|sünüz)?( nibiru)?( sen)?$|^(sus|kapa çeneni|çeneni kapa|defol|siktir|nefret ediyorum senden|senden nefret ediyorum|seni sevmiyorum)( nibiru)?$/],
   // 13 Nov 2026: a low mood inside a longer sentence ('canım sıkkın hiç ders çalışmak istemiyorum') counts too
   ['LOW_MOOD', /(sıkıldım|yoruldum|bıktım|canım sıkkın|canım sıkılıyor|moralim bozuk|üzgünüm|(ders )?çalışmak istemiyorum|çalışasım yok|motivasyonum yok|motive olamıyorum|stresliyim|çok gerginim)/],
   ['HOW_ARE_YOU', /^(merhaba |selam |slm |hey )?(nasılsın|nasılsınız|naber|ne haber|nbr|iyi misin|ne var ne yok|keyifler nasıl|naptın|napıyorsun|ne yapıyorsun)( nibiru)?$/],
@@ -76,6 +78,11 @@ export function conversationAnswer(kind: ConversationKind, c: ConversationContex
       answer = student ? `Şunlarda yardımcı olabilirim${name}: son sınavını açıklamak, zorlandığın kazanımları bulmak, bugün için kısa bir çalışma planı çıkarmak. Aşağıdakilerden birine dokunabilirsin.`
         : parent ? 'Çocuğunuzun son sınavını, gelişimini ve desteğe ihtiyaç duyduğu konuları açıklayabilirim. Aşağıdan bir soru seçebilirsiniz.'
           : 'Sınıf ve kurum özetleri, zorlanılan kazanımlar ve günün durumu hakkında doğrulanmış verilerle yanıt verebilirim. Aşağıdan bir soru seçebilirsiniz.';
+      break;
+    case 'RUDE':
+      answer = student
+        ? pick([`Sorun değil${name}, bazen sinir bozucu olabiliyorum. Bir şey canını sıktıysa anlat, birlikte çözelim.`, `Anlıyorum, belki istediğin cevabı veremedim. Ne sormak istemiştin? Yeniden deneyelim.`, `Kızgın görünüyorsun${name}. İstersen biraz mola ver; hazır olduğunda buradayım.`], rnd)
+        : pick(['Anlıyorum, belki beklediğiniz cevabı veremedim. Sorunuzu biraz farklı yazarsanız yeniden deneyeyim.', 'Yanıtım işinize yaramadıysa üzgünüm. Ne öğrenmek istediğinizi kısaca yazarsanız yardımcı olayım.'], rnd);
       break;
     case 'LOW_MOOD':
       answer = student
