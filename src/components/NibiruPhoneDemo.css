@@ -1,0 +1,57 @@
+/* anunex.com · canlı Nibiru veli uygulaması telefonu (24 Nov 2026) */
+.npd{display:grid;place-items:center}
+.npd-phone{position:relative;width:min(340px,100%);aspect-ratio:9/18.6;border:10px solid #0d1424;border-radius:50px;background:#eef2fa;overflow:hidden;box-shadow:0 40px 90px rgba(12,29,63,.3),0 0 0 1px #5d6780,inset 0 0 0 1px rgba(255,255,255,.08);font-family:inherit;color:#14254a}
+.npd-island{position:absolute;z-index:9;left:50%;top:9px;width:92px;height:25px;transform:translateX(-50%);border-radius:99px;background:#05070d}
+/* lock screen */
+.npd-lock{position:absolute;inset:0;z-index:6;display:flex;flex-direction:column;align-items:center;padding:64px 12px 0;background:radial-gradient(120% 70% at 30% 10%,#3f5bb8 0,#1c2a66 45%,#0a1030 100%);color:#fff;transition:opacity .45s ease,transform .45s ease}
+.npd-lock.gone{opacity:0;transform:scale(1.06);pointer-events:none}
+.npd-lock-time{display:grid;justify-items:center}.npd-lock-time b{font-size:64px;font-weight:300;letter-spacing:-.03em;line-height:1}.npd-lock-time span{font-size:14px;opacity:.85;margin-top:4px}
+.npd-notif{display:flex;gap:10px;align-items:center;width:100%;margin-top:26px;padding:11px 12px;border-radius:18px;background:rgba(240,244,255,.9);color:#14254a;backdrop-filter:blur(10px);opacity:0;transform:translateY(-24px) scale(.96);transition:opacity .4s ease,transform .5s cubic-bezier(.2,1.3,.4,1)}
+.npd-notif.on{opacity:1;transform:none}
+.npd-notif.tap{transform:scale(.96);box-shadow:0 0 0 4px rgba(255,255,255,.35)}
+.npd-notif-icon{flex:0 0 36px;height:36px;display:grid;place-items:center;border-radius:9px;background:linear-gradient(140deg,#071b46,#14267a)}
+.npd-notif>div:last-child{display:grid;font-size:12.5px;line-height:1.3}.npd-notif strong{display:flex;justify-content:space-between;font-size:13px}.npd-notif small{font-weight:500;opacity:.6}
+.npd-lock-hint{margin-top:auto;margin-bottom:26px;padding:6px 10px;border-radius:99px;background:rgba(255,255,255,.12);font-size:10.5px;opacity:.85;text-align:center}
+/* app */
+.npd-app{position:absolute;inset:0;display:flex;flex-direction:column;opacity:0;transform:scale(.92);transition:opacity .45s ease .1s,transform .5s cubic-bezier(.2,1,.3,1) .1s}
+.npd-app.open{opacity:1;transform:none}
+.npd-head{display:flex;align-items:center;gap:8px;padding:40px 10px 9px;background:linear-gradient(120deg,#071b46,#14267a);color:#fff}
+.npd-head>div{display:grid;flex:1;line-height:1.15}.npd-head strong{font-size:14px}.npd-head small{font-size:10.5px;color:#a9c6ff}
+.npd-anunex{display:inline-flex;align-items:center;gap:4px;padding:5px 8px;border-radius:9px;background:#fff;color:#14267a;font-size:10px;font-weight:900;letter-spacing:.03em}
+.npd-kids{display:flex;gap:5px;padding:6px 10px;background:#0d2160}.npd-kids span{padding:4px 9px;border-radius:99px;border:1px solid rgba(160,190,255,.4);color:#d7e4ff;font-size:10.5px;font-weight:700}.npd-kids span.on{background:#fff;color:#14267a;border-color:#fff}
+.npd-thread{flex:1;overflow:hidden;padding:8px 8px 4px;display:flex;flex-direction:column;gap:6px;background:#eef2fa url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='50' height='50'%3E%3Ccircle cx='8' cy='10' r='1' fill='%23c9d4ec'/%3E%3Ccircle cx='34' cy='30' r='.9' fill='%23c9d4ec'/%3E%3C/svg%3E")}
+.npd-day{align-self:center;padding:2px 8px;border-radius:7px;background:#dfe6f4;color:#5d6f95;font-size:9.5px;font-weight:800}
+.npd-msg{max-width:86%;padding:6px 9px 4px;border-radius:13px;font-size:11.5px;line-height:1.4;box-shadow:0 1px 1px rgba(15,30,70,.07);display:none;animation:npd-in .35s cubic-bezier(.2,1.2,.4,1)}
+.npd-msg.on{display:block}
+.npd-msg p{margin:0}
+.npd-msg.nb{align-self:flex-start;background:#fff;border-bottom-left-radius:4px}
+.npd-msg.nb.first{border-left:3px solid #1d4ed8}
+.npd-msg.me{align-self:flex-end;background:#1d4ed8;color:#fff;border-bottom-right-radius:4px}
+.npd-time{display:flex;justify-content:flex-end;align-items:center;gap:2px;margin-top:2px;font-size:9px;opacity:.6}.npd-msg.me .npd-time{opacity:.9;color:#dbe6ff}
+.npd-foot{display:flex;justify-content:space-between;align-items:center}
+.npd-like{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:7px;color:#9aa6c2;transition:all .3s}.npd-like.on{background:#eaf0ff;color:#1d4ed8;transform:scale(1.15)}
+.npd-card{margin-top:6px;padding:7px 8px;border-radius:10px;background:#eaf0ff}
+.npd-card-top{display:flex;justify-content:space-between;font-size:9.5px;font-weight:800;opacity:.85}.npd-card-top span{display:inline-flex;align-items:center;gap:4px}.npd-card-top small{font-weight:600}
+.npd-card-row{display:flex;align-items:center;gap:7px;margin-top:3px}
+.npd-card-row>div{display:grid;line-height:1.05}.npd-card-row strong{font-size:22px;letter-spacing:-.02em;font-variant-numeric:tabular-nums}.npd-card-row small{font-size:9px;opacity:.7;white-space:nowrap}
+.npd-delta{display:inline-flex;align-items:center;gap:2px;padding:2px 6px;border-radius:99px;background:#dcfce7;color:#166534;font-size:10.5px;font-weight:900;white-space:nowrap;opacity:0;transform:scale(.6);transition:all .4s cubic-bezier(.2,1.6,.4,1) .9s}.npd-delta.on{opacity:1;transform:none}
+.npd-spark{margin-left:auto;width:78px;height:28px;color:#1d4ed8}
+.npd-spark path{fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset 1.2s ease .3s}
+.npd-spark circle{fill:currentColor;opacity:0;transition:opacity .3s ease 1.4s}
+.npd-spark.on path{stroke-dashoffset:0}.npd-spark.on circle{opacity:1}
+.npd-topic{display:grid;grid-template-columns:1fr 26px;gap:1px 6px;margin-top:4px;font-size:10px}
+.npd-topic>span{grid-column:1/-1}
+.npd-topic i{display:block;height:5px;border-radius:9px;background:rgba(120,140,180,.25);overflow:hidden;align-self:center}
+.npd-topic em{display:block;height:100%;border-radius:9px;transition:width 1s cubic-bezier(.2,1,.3,1) .2s}.npd-topic em.low{background:#ef4444}.npd-topic em.mid{background:#f59e0b}.npd-topic em.ok{background:#22c55e}
+.npd-topic small{font-weight:800;text-align:right}
+.npd-chip{display:inline-flex;align-items:center;gap:4px;margin-top:6px;padding:4px 9px;border-radius:99px;background:#fff4e5;color:#a24b00;font-size:10px;font-weight:800}
+.npd-card.guide{display:grid;gap:2px}.npd-card.guide b{font-size:11px}.npd-card.guide small{font-size:10px;opacity:.8}
+.npd-msg.typing.on{display:flex;gap:3px;padding:9px 10px}.npd-msg.typing i{width:5px;height:5px;border-radius:50%;background:#7d93c4;animation:npd-dot 1s infinite}.npd-msg.typing i:nth-child(2){animation-delay:.15s}.npd-msg.typing i:nth-child(3){animation-delay:.3s}
+.npd-bar{display:flex;gap:6px;align-items:center;padding:6px 8px 18px;background:#f7f9ff;border-top:1px solid #e3e9f5}
+.npd-input{flex:1;display:flex;align-items:center;height:32px;padding:0 11px;border-radius:18px;background:#fff;border:1px solid #cfd9ee;font-size:11.5px;white-space:nowrap;overflow:hidden}
+.npd-input span{color:#8a97b3}.npd-caret{display:inline-block;width:1.5px;height:14px;margin-left:1px;background:#1d4ed8;animation:npd-blink .9s steps(2) infinite}
+.npd-mic{display:grid;place-items:center;width:32px;height:32px;border-radius:50%;background:#1d4ed8;color:#fff}
+@keyframes npd-in{from{opacity:0;transform:translateY(10px) scale(.96)}to{opacity:1;transform:none}}
+@keyframes npd-dot{0%,100%{opacity:.3;transform:translateY(0)}50%{opacity:1;transform:translateY(-3px)}}
+@keyframes npd-blink{50%{opacity:0}}
+@media(prefers-reduced-motion:reduce){.npd *{animation:none!important;transition:none!important}}
