@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { api } from '../api';
 import { useAuth } from '../auth';
 import { clipEmbed } from '../lib/physicalLink';
+import { QuestionTopicVideos, type TopicVideo } from '../components/QuestionTopicVideos';
 import './outcome-videos.css';
 
 /**
@@ -19,6 +20,7 @@ export function OutcomeVideos() {
   const [data, setData] = useState<any>(null);
   const [error, setError] = useState(''); const [notice, setNotice] = useState('');
   const [watch, setWatch] = useState<string | null>(null);
+  const [catalog, setCatalog] = useState<{id:string;videos:TopicVideo[]} | null>(null);
   const [adding, setAdding] = useState<string | null>(null);
   const [form, setForm] = useState({ url: '', title: '', start: '', end: '' });
   const [busy, setBusy] = useState(false);
@@ -33,13 +35,20 @@ export function OutcomeVideos() {
     setBusy(true); setError(''); setNotice('');
     try { await fn(); setNotice(done); await load(); } catch (e: any) { setError(e.message); } finally { setBusy(false); }
   };
+  const loadCatalog = async (id: string, force = false) => {
+    if (!force && catalog?.id === id) { setCatalog(null); return; }
+    try {
+      const result = await api<{videos:TopicVideo[]}>(`/api/outcome-videos/catalog/${encodeURIComponent(id)}`);
+      setCatalog({id,videos:result.videos});
+    } catch (e: any) { setError(e.message); }
+  };
   const st = data?.status;
   const [cov, setCov] = useState<any[] | null>(null);
-  const loadCoverage = async () => { try { setCov((await api<any>('/api/outcome-videos/coverage')).rows); } catch (e: any) { setError(e.message); } };
+  const loadCoverage = async () => { try { setCov((await api<any>('/api/outcome-videos/catalog-coverage')).rows); } catch (e: any) { setError(e.message); } };
 
   return <div className="ov">
     <div className="page-head"><div><span className="eyebrow">İçerik</span><h1>Kazanım Videoları</h1>
-      <p className="muted">Öğrenci bir kazanımda zorlandığında önce sistemdeki video, yoksa okulunuzun eklediği video, o da yoksa YouTube’dan otomatik bulunan ve yalnız o kazanımın anlatıldığı bölüm gösterilir. Otomatik videolar onay beklemez; uygun bulmadığınızı kaldırabilirsiniz. 8. ve 12. sınıf müfredatı 2027-2028’de Maarif modeline geçtiği için bu sınıflarda otomatik arama yapılmaz.</p></div></div>
+      <p className="muted">Bir kazanıma bağlı 3–5 dakikalık YouTube seçenekleri soru havuzunda ortak kullanılır. Öğrenci hazır olan seçeneklerden birini seçer.</p></div></div>
     {error && <div className="alert error" role="alert">{error}</div>}{notice && <div className="alert success">{notice}</div>}
 
     {st && <div className="ov-stats">
@@ -52,8 +61,11 @@ export function OutcomeVideos() {
 
     <details className="ov-coverage" onToggle={(e) => { if ((e.target as HTMLDetailsElement).open && !cov) void loadCoverage(); }}>
       <summary>Kapsam: sınıf ve derse göre video durumu</summary>
-      {cov && <div className="ov-table"><table><thead><tr><th>Sınıf</th><th>Ders</th><th>Kazanım</th><th>Sistem</th><th>Okulunuz</th><th>Otomatik</th><th>Videosu olan</th><th>Bulunamadı</th></tr></thead>
-        <tbody>{cov.map((r) => { const has = Math.min(r.total, r.system + r.teacher + r.auto); return <tr key={`${r.grade}-${r.subject}`}><td>{r.grade ?? '—'}</td><td>{r.subject}</td><td>{r.total}</td><td>{r.system}</td><td>{r.teacher}</td><td>{r.auto}</td><td><b>%{r.total ? Math.round(has * 100 / r.total) : 0}</b></td><td>{r.missed}</td></tr>; })}</tbody></table></div>}
+      {cov && <div className="ov-table"><table><thead><tr><th>Program</th><th>Sınıf</th><th>Ders</th><th>Kazanım</th><th>0 seçenek</th><th>1–3 seçenek</th><th>4–5 seçenek</th>{user?.role === 'SUPER_ADMIN' && <th>Toplu arama</th>}</tr></thead>
+        <tbody>{cov.map(r => <tr key={JSON.stringify([r.academicYear,r.programVersion,r.grade,r.subject])}><td>{r.academicYear} · {r.programVersion}</td><td>{r.grade}</td><td>{r.subject}</td><td>{r.total}</td><td>{r.none}</td><td>{r.partial}</td><td>{r.ready}</td>{user?.role === 'SUPER_ADMIN' && <td>{r.subjectId && r.total > r.ready && <button type="button" disabled={busy || !st?.youtube} onClick={() => void act(async () => {
+          await api('/api/outcome-videos/catalog-queue',{method:'POST',body:JSON.stringify(r)});
+          await loadCoverage();
+        }, 'Eksik kazanımlar arama sırasına alındı.')}>Eksikleri sıraya al</button>}</td>}</tr>)}</tbody></table></div>}
       {cov && !cov.length && <div className="empty">Kazanım yok.</div>}
     </details>
 
@@ -81,10 +93,16 @@ export function OutcomeVideos() {
         <div className="ov-actions">
           {embed && <button type="button" onClick={() => setWatch(watch === o.id ? null : o.id)}>{watch === o.id ? 'Kapat' : 'İzle'}</button>}
           {o.auto && <button type="button" disabled={busy} onClick={() => act(() => api(`/api/outcome-videos/auto/${encodeURIComponent(o.auto.id)}/remove`, { method: 'POST', body: '{}' }), 'Video kaldırıldı; bu kazanım için başka bir video aranacak.')}>Kaldır, başka video bul</button>}
-          {!o.auto && !o.system && !o.teacher && <button type="button" disabled={busy} onClick={() => act(() => api(`/api/outcome-videos/search/${encodeURIComponent(o.id)}`, { method: 'POST', body: '{}' }), 'Kazanım aramada öne alındı; 15 dakika içinde aranır.')}>Şimdi aramaya al</button>}
+          <button type="button" onClick={() => void loadCatalog(o.id)}>{catalog?.id === o.id ? 'Seçenekleri kapat' : 'Kazanım seçenekleri'}</button>
+          {user?.role === 'SUPER_ADMIN' && <button type="button" disabled={busy} onClick={() => act(() => api(`/api/outcome-videos/search/${encodeURIComponent(o.id)}`, { method: 'POST', body: '{}' }), 'Kazanım video arama sırasına alındı.')}>Şimdi aramaya al</button>}
           {canAdd && !o.teacher && <button type="button" onClick={() => { setAdding(adding === o.id ? null : o.id); setForm({ url: '', title: '', start: '', end: '' }); }}>Okulun videosunu ekle</button>}
           {canAdd && o.teacher && <button type="button" disabled={busy} onClick={() => act(() => api(`/api/outcome-videos/teacher/${encodeURIComponent(o.teacher.id)}`, { method: 'DELETE' }), 'Okulunuzun videosu kaldırıldı.')}>Okulun videosunu kaldır</button>}
         </div>
+        {catalog?.id === o.id && <QuestionTopicVideos key={o.id} videos={catalog.videos} onRemove={user?.role === 'SUPER_ADMIN' && !busy ? videoId => void act(async () => {
+          await api(`/api/outcome-videos/catalog/${encodeURIComponent(o.id)}/${encodeURIComponent(videoId)}`,{method:'DELETE'});
+          await loadCatalog(o.id, true);
+          if (cov) await loadCoverage();
+        }, 'Video kaldırıldı ve kazanım yeniden aramaya alındı.') : undefined}/>}
         {watch === o.id && embed && <div className="ov-player"><iframe title={shown!.title} src={embed} allow="encrypted-media; picture-in-picture" allowFullScreen loading="lazy" referrerPolicy="strict-origin-when-cross-origin" /></div>}
         {adding === o.id && <form className="ov-form" onSubmit={(e) => { e.preventDefault(); void act(() => api('/api/outcome-videos/teacher', { method: 'POST', body: JSON.stringify({ outcomeId: o.id, ...form }) }), 'Video eklendi; okulunuzun öğrencileri bu kazanımda artık bu videoyu görür.').then(() => setAdding(null)); }}>
           <label className="wide">Video bağlantısı<input required value={form.url} placeholder="https://www.youtube.com/watch?v=…" onChange={(e) => setForm({ ...form, url: e.target.value })} /></label>

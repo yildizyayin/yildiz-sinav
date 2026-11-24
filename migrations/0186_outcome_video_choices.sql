@@ -9,3 +9,7 @@ CREATE TABLE IF NOT EXISTS outcome_video_choices (
 );
 
 ALTER TABLE outcome_video_queue ADD COLUMN choices_checked_at TEXT;
+
+ALTER TABLE outcome_video_choices ADD COLUMN channel_title TEXT;
+ALTER TABLE outcome_video_choices ADD COLUMN checked_at TEXT;
+CREATE INDEX IF NOT EXISTS idx_outcome_video_choices_checked ON outcome_video_choices(checked_at);
