@@ -34,7 +34,7 @@ const STAFF = ['SUPER_ADMIN', 'INSTITUTION_MANAGER', 'TEACHER', 'GUIDANCE_TEACHE
 
 const fail = (status: number, code: string, message: string) => json({ ok: false, error: { code, message } }, status);
 const text = (v: unknown, max: number) => (typeof v === 'string' ? v.trim().slice(0, max) : '');
-export const youtubeId = (url: string) => url.match(/^https:\/\/(?:www\.|m\.)?(?:youtube\.com\/(?:watch\?(?:.*&)?v=|shorts\/|embed\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/)?.[1] || null;
+export const youtubeId = (url: string) => url.match(/^https:\/\/(?:www\.|m\.)?(?:youtube\.com\/(?:watch\?(?:.*&)?v=|shorts\/|embed\/)|youtu\.be\/)([A-Za-z0-9_-]{11})(?=[?&#/]|$)/)?.[1] || null;
 const today = () => new Date(Date.now() + 3 * 3600_000).toISOString().slice(0, 10);
 
 // ------------------------------------------------------------------ text matching (Turkish, no AI)
@@ -245,8 +245,24 @@ export async function findOutcomeVideo(env: Env, outcomeId: string): Promise<{ s
   }
   if (!cands.length) return { status: 'NOT_FOUND', reason: detail.includes('sonuç yok') ? 'NO_CANDIDATE' : 'NO_SAFE_CANDIDATE', detail };
 
+  const choices = cands.flatMap(c => {
+    const chapter = c.chapter;
+    const choice = chapter && chapter.end - chapter.start >= 180 && chapter.end - chapter.start <= 300
+      && !qualityIssue({ title: c.title, channel: c.channel, method: 'CHAPTER', chapterTitle: chapter.title }, o)
+      ? { start: chapter.start, end: chapter.end }
+      : c.duration >= 180 && c.duration <= 300 && pickClip([{ ...c, chapter: null }], keys, o)
+        ? { start: 0, end: c.duration } : null;
+    return choice ? [{ ...choice, id: c.id, title: c.title }] : [];
+  }).slice(0, 5);
+  await env.DB.batch([
+    env.DB.prepare('DELETE FROM outcome_video_choices WHERE outcome_id=?').bind(outcomeId),
+    ...choices.map((c, position) => env.DB.prepare(
+      'INSERT INTO outcome_video_choices(outcome_id,youtube_video_id,title,start_seconds,end_seconds,position) VALUES(?,?,?,?,?,?)'
+    ).bind(outcomeId,c.id,c.title,c.start,c.end,position)),
+  ]);
+
   const save = async (c: any, start: number, end: number, method: 'GEMINI' | 'CHAPTER' | 'SHORT_TITLE', confidence: number) => {
-    await env.DB.prepare(`INSERT INTO outcome_auto_videos(id,outcome_id,youtube_video_id,title,channel_title,duration_seconds,start_seconds,end_seconds,method,confidence,search_query) VALUES(?,?,?,?,?,?,?,?,?,?,?)`)
+    await env.DB.prepare(`INSERT OR IGNORE INTO outcome_auto_videos(id,outcome_id,youtube_video_id,title,channel_title,duration_seconds,start_seconds,end_seconds,method,confidence,search_query) VALUES(?,?,?,?,?,?,?,?,?,?,?)`)
       .bind(uuid('oav'), outcomeId, c.id, c.title, c.channel || null, c.duration, start, end, method, Math.round(confidence * 100) / 100, query).run();
     return { status: 'FOUND' as const, reason: method };
   };
@@ -348,7 +364,13 @@ export async function runOutcomeVideoQueue(env: Env, max = 1) {
   let done = 0;
   for (let i = 0; i < max; i++) {
     let next = await one<any>(env.DB.prepare(`SELECT q.outcome_id FROM outcome_video_queue q JOIN outcomes o ON o.id=q.outcome_id WHERE (q.status='WAITING' OR (q.status IN ('NOT_FOUND','ERROR') AND q.next_try_at<=datetime('now')))
-      AND ${skipSql(env)} AND NOT EXISTS (SELECT 1 FROM outcome_auto_videos a WHERE a.outcome_id=q.outcome_id AND a.status='ACTIVE') ORDER BY q.status='WAITING' DESC,q.priority DESC,q.updated_at LIMIT 1`));
+      AND ${skipSql(env)} AND (q.choices_checked_at IS NULL OR NOT EXISTS (
+        SELECT 1 FROM outcome_auto_videos a WHERE a.outcome_id=q.outcome_id AND a.status='ACTIVE'
+      )) ORDER BY q.status='WAITING' DESC,q.priority DESC,q.updated_at LIMIT 1`));
+    if (!next) next = await one<any>(env.DB.prepare(`SELECT q.outcome_id FROM outcome_video_queue q
+      JOIN outcomes o ON o.id=q.outcome_id
+      WHERE q.status='FOUND' AND q.choices_checked_at IS NULL AND o.active=1 AND ${skipSql(env)}
+      ORDER BY q.priority DESC,q.updated_at LIMIT 1`));
     if (!next) {
       next = await one<any>(env.DB.prepare(`SELECT o.id outcome_id FROM outcomes o WHERE o.active=1 AND coalesce(o.node_type,'OUTCOME')='OUTCOME'
         AND NOT EXISTS (SELECT 1 FROM outcome_video_queue q WHERE q.outcome_id=o.id)
@@ -364,8 +386,8 @@ export async function runOutcomeVideoQueue(env: Env, max = 1) {
     if (r.status === 'QUOTA') break;
     // a miss without Gemini's look is tried again soon (Gemini may have a free quota tomorrow); a real miss after 60 days
     const retryDays = r.status === 'FOUND' ? null : r.status === 'ERROR' ? 1 : r.reason === 'NO_SEGMENT' && !r.geminiTried ? (geminiOn(env) ? 2 : 14) : 60;
-    await env.DB.prepare(`UPDATE outcome_video_queue SET status=?,attempts=attempts+1,last_reason=?,next_try_at=?,updated_at=CURRENT_TIMESTAMP WHERE outcome_id=?`)
-      .bind(r.status, (r.detail ? `${r.reason} · ${r.detail}` : r.reason).slice(0, 600), retryDays == null ? null : new Date(Date.now() + retryDays * 86400_000).toISOString().replace('T', ' ').slice(0, 19), next.outcome_id).run();
+    await env.DB.prepare(`UPDATE outcome_video_queue SET status=?,attempts=attempts+1,last_reason=?,next_try_at=?,choices_checked_at=CASE WHEN ? THEN CURRENT_TIMESTAMP ELSE choices_checked_at END,updated_at=CURRENT_TIMESTAMP WHERE outcome_id=?`)
+      .bind(r.status, (r.detail ? `${r.reason} · ${r.detail}` : r.reason).slice(0, 600), retryDays == null ? null : new Date(Date.now() + retryDays * 86400_000).toISOString().replace('T', ' ').slice(0, 19), r.status==='ERROR'?0:1, next.outcome_id).run();
     done++;
   }
   return done;

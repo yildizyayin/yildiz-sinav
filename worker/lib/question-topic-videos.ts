@@ -1,0 +1,43 @@
+import type { Env } from '../types';
+import { all } from './db';
+import { youtubeId, watchUrl } from './outcome-videos';
+
+type Candidate = { url: string; title: string; start: number; seconds: number };
+export function selectTopicVideos(rows: Candidate[]) {
+  const ids = new Set<string>();
+  const videos = [];
+  for (const row of rows) {
+    const id = youtubeId(row.url);
+    if (!id || ids.has(id) || !Number.isInteger(row.seconds) || row.seconds < 180 || row.seconds > 300 ||
+        !Number.isInteger(row.start) || row.start < 0) continue;
+    ids.add(id);
+    videos.push({ id, title: row.title, url: watchUrl(id, row.start), start: row.start,
+      end: row.start + row.seconds, durationSeconds: row.seconds });
+    if (videos.length === 5) break;
+  }
+  return videos;
+}
+
+export async function questionTopicVideos(env: Env, outcomeId: string | null, institutionId: string | null) {
+  if (!outcomeId) return [];
+  const rows = await all<Candidate>(env.DB.prepare(`
+    SELECT url,title,start,seconds FROM (
+      SELECT url,title,COALESCE(start_seconds,0) start,end_seconds-COALESCE(start_seconds,0) seconds,0 priority,id
+      FROM outcome_teacher_videos WHERE outcome_id=? AND institution_id=? AND active=1
+      UNION ALL
+      SELECT url,title,0 start,duration_seconds seconds,1 priority,id
+      FROM learning_videos WHERE node_id=? AND provider='YOUTUBE' AND approved=1 AND active=1
+      UNION ALL
+      SELECT 'https://www.youtube.com/watch?v='||youtube_video_id,title,COALESCE(start_seconds,0),
+        COALESCE(end_seconds-COALESCE(start_seconds,0),duration_seconds),2,id
+      FROM outcome_auto_videos WHERE outcome_id=? AND status='ACTIVE'
+      UNION ALL
+      SELECT 'https://www.youtube.com/watch?v='||c.youtube_video_id,c.title,c.start_seconds,
+        c.end_seconds-c.start_seconds,3,printf('%02d',c.position)
+      FROM outcome_video_choices c WHERE c.outcome_id=?
+        AND NOT EXISTS (SELECT 1 FROM outcome_video_blocks b
+          WHERE b.outcome_id=c.outcome_id AND b.youtube_video_id=c.youtube_video_id)
+    ) WHERE seconds BETWEEN 180 AND 300 ORDER BY priority,id
+  `).bind(outcomeId,institutionId,`ln_${outcomeId}`,outcomeId,outcomeId));
+  return selectTopicVideos(rows);
+}
