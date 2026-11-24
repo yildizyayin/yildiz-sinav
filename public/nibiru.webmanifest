@@ -1,0 +1,18 @@
+{
+  "id": "/nibiru",
+  "name": "Nibiru · ANUNEX",
+  "short_name": "Nibiru",
+  "description": "ANUNEX'in akademik asistanı Nibiru: sınav sonuçları, zorlanılan konular ve evde destek için sohbet.",
+  "lang": "tr",
+  "start_url": "/nibiru?kaynak=ana-ekran",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#071b46",
+  "theme_color": "#071b46",
+  "icons": [
+    {"src":"/nibiru-icon-192.png","sizes":"192x192","type":"image/png","purpose":"any"},
+    {"src":"/nibiru-icon-512.png","sizes":"512x512","type":"image/png","purpose":"any"},
+    {"src":"/nibiru-icon-maskable-512.png","sizes":"512x512","type":"image/png","purpose":"maskable"}
+  ]
+}

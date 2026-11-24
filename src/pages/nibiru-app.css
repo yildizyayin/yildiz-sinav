@@ -1,0 +1,59 @@
+/* Nibiru, WhatsApp gibi (owner, 24 Nov 2026): a full-screen conversation in anunex.com's Nibiru style. */
+.nbx{position:fixed;inset:0;display:flex;flex-direction:column;background:#eef2fa;color:#14254a;z-index:40;font-size:15px}
+.nbx-head{display:flex;align-items:center;gap:10px;padding:calc(8px + env(safe-area-inset-top,0px)) 10px 10px 12px;background:linear-gradient(120deg,#071b46,#14267a);color:#fff;flex:0 0 auto}
+.nbx-who{display:grid;flex:1;min-width:0;line-height:1.15}.nbx-who strong{font-size:17px}.nbx-who small{color:#a9c6ff;font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nbx-icon{display:grid;place-items:center;width:38px;height:38px;border:0;border-radius:12px;background:rgba(255,255,255,.1);color:#fff;cursor:pointer}
+.nbx-anunex{display:inline-flex;align-items:center;gap:6px;height:38px;padding:0 12px;border-radius:12px;background:#fff;color:#14267a;font-weight:800;font-size:13px;letter-spacing:.02em;text-decoration:none}
+.nbx-anunex:focus-visible,.nbx-icon:focus-visible{outline:3px solid #8ec5ff;outline-offset:2px}
+.nbx-kids{display:flex;gap:6px;overflow-x:auto;padding:8px 12px;background:#0d2160;flex:0 0 auto;scrollbar-width:none}.nbx-kids::-webkit-scrollbar{display:none}
+.nbx-kids button{flex:0 0 auto;min-height:34px;padding:0 13px;border-radius:999px;border:1px solid rgba(160,190,255,.4);background:transparent;color:#d7e4ff;font:inherit;font-size:13px;font-weight:700;cursor:pointer}
+.nbx-kids button.on{background:#fff;color:#14267a;border-color:#fff}
+.nbx-menu{position:absolute;top:calc(60px + env(safe-area-inset-top,0px));right:10px;z-index:6;width:min(320px,calc(100vw - 20px));display:grid;gap:4px;padding:8px;border-radius:16px;background:#fff;box-shadow:0 18px 50px rgba(8,22,64,.3)}
+.nbx-menu>button{display:flex;align-items:center;gap:10px;min-height:44px;padding:0 12px;border:0;border-radius:10px;background:transparent;color:#14254a;font:inherit;font-weight:600;text-align:left;cursor:pointer}
+.nbx-menu>button:hover{background:#f1f5ff}
+.nbx-menu-passkey{border-top:1px solid #e3e9f5;padding-top:6px}.nbx-menu-passkey:empty{display:none}
+.nbx-sheet{position:absolute;inset:auto 0 0 0;z-index:7;max-height:80%;overflow:auto;background:#fff;border-radius:20px 20px 0 0;padding:14px;box-shadow:0 -12px 40px rgba(8,22,64,.25)}
+.nbx-lab{display:flex;align-items:center;gap:8px;padding:6px 12px;background:#f4f8ff;border-bottom:1px solid #d7e1f5;font-size:13px;font-weight:600}.nbx-lab select{flex:1;min-width:0}
+.nbx-thread{flex:1;overflow-y:auto;overscroll-behavior:contain;padding:12px 12px 8px;display:flex;flex-direction:column;gap:8px;
+  background:#eef2fa url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Ccircle cx='8' cy='10' r='1.2' fill='%23c9d4ec'/%3E%3Ccircle cx='38' cy='34' r='1' fill='%23c9d4ec'/%3E%3Ccircle cx='52' cy='8' r='.8' fill='%23c9d4ec'/%3E%3C/svg%3E")}
+.nbx-day{align-self:center;font-size:11.5px;font-weight:700;color:#5d6f95;background:#dfe6f4;padding:4px 10px;border-radius:8px}
+.nbx-note{align-self:center;max-width:520px;margin:0 0 4px;padding:6px 10px;border-radius:10px;background:#fff6d8;color:#6b5a1e;font-size:11.5px;line-height:1.4;text-align:center}
+.nbx-msg{max-width:min(82%,640px);padding:8px 11px 5px;border-radius:16px;line-height:1.45;box-shadow:0 1px 1px rgba(15,30,70,.07);overflow-wrap:anywhere;animation:nbx-in .18s ease-out}
+.nbx-msg p{margin:0}
+.nbx-msg.nibiru{align-self:flex-start;background:#fff;border-bottom-left-radius:5px}
+.nbx-msg.me{align-self:flex-end;background:#1d4ed8;color:#fff;border-bottom-right-radius:5px;white-space:pre-wrap}
+.nbx-msg .nbc-text{font-size:15px;line-height:1.5}.nbx-msg .nbc-text ul{margin:.25em 0 .5em}
+.nbx-specialist{font-size:11px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:#3b5bb5;margin-bottom:2px}
+.nbx-time{display:inline-flex;align-items:center;gap:3px;font-size:10.5px;opacity:.65;white-space:nowrap}
+.nbx-msg.me .nbx-time{display:flex;justify-content:flex-end;margin-top:2px;color:#dbe6ff;opacity:.95}
+.nbx-foot{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:4px}
+.nbx-listen{display:inline-flex;align-items:center;gap:4px;min-height:28px;padding:0 8px;border:0;border-radius:999px;background:#eef3ff;color:#2b4aa0;font:inherit;font-size:12px;font-weight:700;cursor:pointer}
+.nbx-listen:disabled{opacity:.45;cursor:default}
+.nbx-actions{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.nbx-action{display:inline-flex;align-items:center;gap:5px;min-height:34px;padding:0 12px;border:0;border-radius:999px;background:#eaf0ff;color:#1d4ed8;font:inherit;font-size:13px;font-weight:700;text-decoration:none;cursor:pointer}
+.nbx-action.video{background:#fff4e5;color:#a24b00}
+.nbx-msg.typing{display:flex;gap:4px;padding:12px 14px}.nbx-msg.typing i{width:7px;height:7px;border-radius:50%;background:#7d93c4;animation:nbc-dot 1.2s infinite ease-in-out}.nbx-msg.typing i:nth-child(2){animation-delay:.15s}.nbx-msg.typing i:nth-child(3){animation-delay:.3s}
+.nbx-error{align-self:center;max-width:90%;padding:8px 12px;border-radius:12px;background:#fde8e8;color:#9b1c1c;font-size:13px}
+.nbx-chips{display:flex;gap:6px;overflow-x:auto;padding:7px 10px;background:#f7f9ff;border-top:1px solid #e3e9f5;flex:0 0 auto;scrollbar-width:none}.nbx-chips::-webkit-scrollbar{display:none}
+.nbx-chips button{flex:0 0 auto;min-height:34px;padding:0 12px;border:1px solid #d3ddf2;border-radius:999px;background:#fff;color:#22355e;font:inherit;font-size:13px;font-weight:600;cursor:pointer}
+.nbx-chips button:disabled{opacity:.5}
+.nbx-bar{display:flex;align-items:flex-end;gap:8px;padding:6px 10px calc(10px + env(safe-area-inset-bottom,0px));background:#f7f9ff;flex:0 0 auto}
+.nbx-bar textarea{flex:1;min-width:0;min-height:44px;max-height:140px;resize:none;padding:11px 16px;border:1px solid #cfd9ee!important;border-radius:22px;background:#fff;font:inherit;font-size:16px;line-height:1.35;color:#14254a;box-shadow:none!important;outline:0}
+.nbx-bar textarea:focus{border-color:#1d4ed8!important}
+.nbx-send{flex:0 0 auto;display:grid;place-items:center;width:46px;height:46px;border:0;border-radius:50%;background:#1d4ed8;color:#fff;box-shadow:0 6px 16px rgba(29,78,216,.35);cursor:pointer}
+.nbx-send.rec{background:#dc2626;box-shadow:0 0 0 6px rgba(220,38,38,.2)}
+.nbx-send:disabled{opacity:.45;cursor:default;box-shadow:none}
+.nbx-install{position:fixed;inset:0;z-index:90;display:grid;place-items:end center;background:rgba(2,8,30,.5);padding:12px}
+.nbx-install-box{position:relative;width:min(420px,100%);padding:22px 18px calc(18px + env(safe-area-inset-bottom,0px));border-radius:22px;background:#fff;color:#14254a;text-align:center;animation:nbx-in .2s ease-out}
+.nbx-install-box h2{margin:10px 0 4px;font-size:19px}.nbx-install-box p{margin:0 0 12px;color:#4b5a7a;font-size:14px}
+.nbx-install-icon{display:inline-grid;place-items:center;width:76px;height:76px;border-radius:20px;background:linear-gradient(140deg,#071b46,#14267a)}
+.nbx-install-x{position:absolute;right:10px;top:10px;display:grid;place-items:center;width:36px;height:36px;border:0;border-radius:10px;background:#f1f4fb;cursor:pointer}
+.nbx-install-go{width:100%;min-height:48px;border:0;border-radius:14px;background:#1d4ed8;color:#fff;font:inherit;font-weight:800;font-size:15px;cursor:pointer}
+.nbx-install-steps{margin:0;padding:0;list-style:none;display:grid;gap:8px;text-align:left}
+.nbx-install-steps li{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;background:#f4f7fd;font-size:14px}
+.nbx-install-steps li>span.txt{flex:1;display:block;height:auto;background:none;box-shadow:none;color:inherit;font-weight:400;text-align:left}
+.nbx-install-steps li>span:not(.txt){flex:0 0 32px;height:32px;display:grid;place-items:center;border-radius:9px;background:#fff;color:#1d4ed8;font-weight:800;box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.nbx-install-box small{display:block;margin-top:10px;color:#6a7a99}
+@keyframes nbx-in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@media(min-width:900px){.nbx-thread{padding:18px max(18px,calc(50% - 400px))}.nbx-chips,.nbx-bar{padding-left:max(10px,calc(50% - 400px));padding-right:max(10px,calc(50% - 400px))}}
+@media(prefers-reduced-motion:reduce){.nbx-msg,.nbx-install-box{animation:none}}
