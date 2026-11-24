@@ -104,6 +104,40 @@ describe('A082 bulk question import', () => {
     expect(r.data.rows[1].warnings).toEqual([]);
   });
 
+  it('seals a stem image on the original question, resets review, and attaches it only once', async () => {
+    const t = await setup();
+    const objects = new Map<string, any>();
+    t.env.FILES = {
+      put: async (key: string, bytes: Uint8Array, meta: any) => { objects.set(key, { size: bytes.length, ...meta }); },
+      head: async (key: string) => objects.get(key),
+    } as unknown as typeof t.env.FILES;
+    const original = await t.request('/api/admin/question-import/commit', 'POST', { confirm: true, rows: [row()] });
+    const id = original.data.added[0].id;
+    t.db.prepare("UPDATE question_bank SET review_status='APPROVED' WHERE id=?").run(id);
+    const bytes = new Uint8Array([255,216,255,224,0,16,74,70,73,70,0,1,1,0,255,217]);
+    const imageBase64 = btoa(String.fromCharCode(...bytes));
+    const rows = [row({ imageBase64, imageAlt: 'Temsilî çalışma düzeni' })];
+    const preview = await t.request('/api/admin/question-import/preview', 'POST', { rows });
+    expect(preview.data.rows[0]).toMatchObject({ status: 'MEDIA_READY', duplicateOf: id });
+    expect(objects.size).toBe(0);
+    const first = await t.request('/api/admin/question-import/commit', 'POST', { rows, confirm: true });
+    expect(first.response.status, first.text).toBe(200);
+    expect(first.data.summary).toMatchObject({ added: 0, mediaAdded: 1 });
+    const asset = t.db.prepare('SELECT question_id,byte_size,placement,sealed_at,r2_key FROM question_assets WHERE question_id=?').get(id) as any;
+    expect(asset).toMatchObject({ question_id: id, byte_size: bytes.length, placement: 'STEM' });
+    expect(asset.sealed_at).toBeTruthy();
+    expect(objects.get(asset.r2_key).httpMetadata.contentType).toBe('image/jpeg');
+    expect(t.db.prepare('SELECT content_mode,review_status FROM question_bank WHERE id=?').get(id)).toEqual({ content_mode: 'MIXED', review_status: 'REVIEW' });
+    const again = await t.request('/api/admin/question-import/commit', 'POST', { rows, confirm: true });
+    expect(again.data.summary).toMatchObject({ added: 0, mediaAdded: 0, duplicates: 1 });
+    const created = await t.request('/api/admin/question-import/commit', 'POST', {
+      rows: [row({ stem: 'Yeni görselli soru örneği?', imageBase64, imageAlt: 'Temsilî çalışma düzeni' })], confirm: true
+    });
+    expect(created.data.summary).toMatchObject({ added: 1, mediaAdded: 1 });
+    const details = await t.request('/api/platform/questions?questionId='+created.data.added[0].id);
+    expect(details.data.questions[0].assets[0]).toMatchObject({ asset_type: 'IMAGE', placement: 'STEM', mime_type: 'image/jpeg' });
+  });
+
   it('leaves the decision to the normal review gate: an imported question can be approved there', async () => {
     const t = await setup();
     const c = await t.request('/api/admin/question-import/commit', 'POST', { confirm: true, rows: [row({ solution: 'B şıkkı ana fikri verir çünkü metnin tamamını kapsar.' })] });

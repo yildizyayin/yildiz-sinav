@@ -10,6 +10,7 @@ const HEADERS: Record<string, string> = {
   a: 'optionA', b: 'optionB', c: 'optionC', d: 'optionD', e: 'optionE', optiona: 'optionA', optionb: 'optionB', optionc: 'optionC', optiond: 'optionD', optione: 'optionE',
   'doğru cevap': 'correctAnswer', 'dogru cevap': 'correctAnswer', cevap: 'correctAnswer', answer: 'correctAnswer', correctanswer: 'correctAnswer',
   'çözüm': 'solution', cozum: 'solution', solution: 'solution',
+  imagebase64: 'imageBase64', imagealt: 'imageAlt',
   zorluk: 'difficultyLevel', difficulty: 'difficultyLevel', difficultylevel: 'difficultyLevel',
   telif: 'copyrightStatus', 'telif durumu': 'copyrightStatus', copyright: 'copyrightStatus', copyrightstatus: 'copyrightStatus',
 };
