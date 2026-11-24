@@ -69,3 +69,29 @@ export function NibiruIntro({ role }: { role?: string }) {
     </div>
   </div>;
 }
+
+// ---------------------------------------------------------------------------------------------------- choices
+const PREF_LABELS: Record<string, { label: string; hint: string; roles: string[] }> = {
+  RESULT: { label: 'Sınav sonuçları', hint: 'Sonuç açıklanınca', roles: ['PARENT', 'STUDENT'] },
+  ABSENCE: { label: 'Devamsızlık', hint: 'Okulda devamsız işaretlenince', roles: ['PARENT'] },
+  GUIDANCE: { label: 'Rehber öğretmenden gelenler', hint: 'Haftalık program, ekran günlüğü, not, anket, mesajın okunması', roles: ['PARENT', 'STUDENT'] },
+  MEETING: { label: 'Görüşmeler', hint: 'Planlanınca ve bir gün önce hatırlatma', roles: ['PARENT', 'STUDENT'] },
+  WEEKLY: { label: 'Pazar akşamı haftalık özet', hint: 'Sınav, devamsızlık ve çalışma özeti', roles: ['PARENT'] },
+  STAFF: { label: 'Okul bildirimleri', hint: 'Acil rehberlik talebi, pilot başvurusu, lisans bitişi', roles: ['GUIDANCE_TEACHER', 'INSTITUTION_MANAGER', 'SUPER_ADMIN'] },
+};
+
+/** "Bildirim tercihlerim": which first messages Nibiru sends this person. Phones are quiet 22:00–08:00. */
+export function NibiruNotifyPrefs({ role, onClose }: { role?: string; onClose: () => void }) {
+  const [prefs, setPrefs] = useState<Record<string, boolean> | null>(null);
+  const [error, setError] = useState('');
+  useEffect(() => { api<any>('/api/nibiru/notify-prefs').then((r) => setPrefs(r.prefs)).catch((e) => setError(e.message || 'Tercihler yüklenemedi.')); }, []);
+  const set = async (k: string, v: boolean) => { setPrefs((p) => ({ ...(p || {}), [k]: v })); try { const r = await api<any>('/api/nibiru/notify-prefs', { method: 'PUT', body: JSON.stringify({ [k]: v }) }); setPrefs(r.prefs); } catch (e: any) { setError(e.message || 'Kaydedilemedi.'); } };
+  const keys = Object.keys(PREF_LABELS).filter((k) => PREF_LABELS[k].roles.includes(String(role)));
+  return <div className="nbx-prefs">
+    <div className="nbx-prefs-head"><strong>Bildirim tercihlerim</strong><button type="button" onClick={onClose}>Tamam</button></div>
+    <p>Nibiru bu durumlarda size ilk mesajı yazar. Telefon bildirimi 22:00–08:00 arasında sabaha kalır; bildirimde ad ya da not yer almaz.</p>
+    {error && <div className="nbx-error">{error}</div>}
+    {keys.map((k) => <label key={k} className="nbx-pref"><span><b>{PREF_LABELS[k].label}</b><small>{PREF_LABELS[k].hint}</small></span>
+      <input type="checkbox" role="switch" checked={prefs ? prefs[k] !== false : true} disabled={!prefs} onChange={(e) => void set(k, e.target.checked)}/></label>)}
+  </div>;
+}

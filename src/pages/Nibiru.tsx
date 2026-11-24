@@ -1,8 +1,8 @@
 import { Fragment,useEffect,useRef,useState } from 'react';
-import { Bell,BellOff,CheckCheck,LayoutGrid,Mic,MoreVertical,Palette,Send,Smartphone,Square,ThumbsDown,ThumbsUp,Volume2 } from 'lucide-react';
+import { Bell,BellOff,CheckCheck,LayoutGrid,Mic,MoreVertical,Palette,Send,SlidersHorizontal,Smartphone,Square,ThumbsDown,ThumbsUp,Volume2 } from 'lucide-react';
 import { NibiruInstallGuide,NIBIRU_INSTALL_EVENT } from '../components/NibiruInstallGuide';
 import { NibiruCards,type NibiruCard } from '../components/NibiruCards';
-import { NibiruIntro,NIBIRU_THEMES,readTheme,saveTheme,pushState,enablePush,disablePush } from '../components/NibiruExtras';
+import { NibiruIntro,NibiruNotifyPrefs,NIBIRU_THEMES,readTheme,saveTheme,pushState,enablePush,disablePush } from '../components/NibiruExtras';
 import { Link } from 'react-router-dom';
 import { PasskeyAccess } from '../components/PasskeyAccess';
 import '../nibiru-direct.css';
@@ -114,7 +114,7 @@ export function Nibiru(){
  const voiceNote=ttsReady?'':deviceVoiceReady?(voicePref.allowOnline?'Dinle düğmesi seçtiğiniz doğal çevrim içi sesi kullanır; adınız okunacak metinden çıkarılır.':'Dinle düğmesi cihazınızın yerel Türkçe sesini kullanır.'):voiceStatusLoaded?'Bu cihazda yerel Türkçe ses bulunamadı; yazılı sohbeti kullanabilirsiniz.':'';
  const pickStudent=(id:string)=>{if(id===selectedStudentId||busy)return;deviceSpeechRef.current?.cancel();audioRef.current?.pause();setPlaying(null);setSelectedStudentId(id)};
  const[menuOpen,setMenuOpen]=useState(false);
- const[theme,setTheme]=useState(()=>readTheme());const[themeOpen,setThemeOpen]=useState(false);
+ const[prefsOpen,setPrefsOpen]=useState(false);const[theme,setTheme]=useState(()=>readTheme());const[themeOpen,setThemeOpen]=useState(false);
  const[push,setPush]=useState(()=>pushState());const[pushMsg,setPushMsg]=useState('');
  const togglePush=async()=>{setPushMsg('');try{if(push==='on'){await disablePush();setPush('off')}else{await enablePush();setPush('on');setPushMsg('Bildirimler açıldı. Nibiru yazınca telefonunuz haber verir.')}}catch(e:any){setPushMsg(e?.message||'Bildirimler açılamadı.')}setPush(p=>p==='on'?'on':pushState())};
  const note=<p className="nbx-note">Nibiru yanılabilir; önemli kararları öğretmenle{user?.role==='STUDENT'?' ve rehber öğretmeninle':''} birlikte ver{user?.role==='STUDENT'?'':'in'}.{voiceNote?` ${voiceNote}`:''}</p>;
@@ -133,10 +133,12 @@ export function Nibiru(){
    {deviceVoices.length>0&&!ttsReady&&<button type="button" onClick={()=>{setVoiceSettingsOpen(true);setMenuOpen(false)}}><Volume2 size={16}/> Ses ayarları</button>}
    <button type="button" onClick={()=>{setMenuOpen(false);window.dispatchEvent(new Event(NIBIRU_INSTALL_EVENT))}}><Smartphone size={16}/> Nibiru’yu telefonuma ekle</button>
    {push!=='unsupported'&&<button type="button" onClick={()=>{setMenuOpen(false);void togglePush()}}>{push==='on'?<><BellOff size={16}/> Bildirimleri kapat</>:<><Bell size={16}/> Bildirimleri aç</>}</button>}
+   <button type="button" onClick={()=>{setMenuOpen(false);setPrefsOpen(true)}}><SlidersHorizontal size={16}/> Bildirim tercihlerim</button>
    <button type="button" aria-expanded={themeOpen} onClick={()=>setThemeOpen(v=>!v)}><Palette size={16}/> Tema</button>
    {themeOpen&&<div className="nbx-themes" role="radiogroup" aria-label="Tema">{NIBIRU_THEMES.map(t=><button key={t.id} type="button" role="radio" aria-checked={theme===t.id} className={theme===t.id?'on':''} onClick={()=>{setTheme(t.id);saveTheme(t.id)}}><i style={{background:t.swatch}}/>{t.label}</button>)}</div>}
    <div className="nbx-menu-passkey"><PasskeyAccess/></div>
   </div>}
+  {prefsOpen&&<div className="nbx-sheet"><NibiruNotifyPrefs role={user?.role} onClose={()=>setPrefsOpen(false)}/></div>}
   {voiceSettingsOpen&&<div className="nbx-sheet"><NibiruVoiceSettings voices={deviceVoices} pref={voicePref} onSave={saveVoice} onPreview={previewVoice} onClose={()=>setVoiceSettingsOpen(false)}/></div>}
   {user?.role==='SUPER_ADMIN'&&capabilityLab?.enabled&&<div className="nbx-lab"><span>Test öğrencisi</span><select value={labStudentId} onChange={e=>setLabStudentId(e.target.value)}>{(capabilityLab.students||[]).map((student:any)=><option key={student.id} value={student.id}>{student.first_name} {student.last_name} · {student.class_name||'Sınıf yok'}</option>)}</select></div>}
   <main className="nbx-thread" aria-live="polite">
