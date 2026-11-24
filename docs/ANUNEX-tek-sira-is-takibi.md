@@ -726,3 +726,10 @@ Dış öneri üzerine 360 px'te kontrol edildi; tespitler doğrulandı. Yapılac
 - Veli tarayıcıdan girişte de önce Nibiru'yu görür (oturumda bir kez).
 - Gerekçe: mesaj başına ücret yok, şirket/Meta doğrulaması gerekmez, veri kendi sistemimizde kalır. Telegram/BiP/WhatsApp/mağaza uygulaması karşılaştırıldı.
 - Sıradaki: Nibiru bildirimleri (sonuç açıklandı, rehber öğretmenden mesaj) — bildirimde kişisel bilgi yok.
+
+### 24 Kasım 2026 · Nibiru veli uygulaması 2
+- Sohbet geçmişi saklanır (çocuk başına ayrı, 180 gün); açılınca geri gelir.
+- Nibiru önce yazar: sonuç açıklandığında (son 3 gün) veli ve öğrenciye, günlük devamsızlıkta veliye; her olay kişi başına bir kez. Telefona metinsiz bildirim (VAPID anahtarı sistemde üretilir, ücret yok); telefon "Nibiru · Yeni bir mesajınız var" yazar.
+- Cevaplarda kartlar: sonuç (net, değişim, son 6 sınav çizgisi), zorlanılan konular (çubuklar), rehber öğretmen onaylı veli notları.
+- 👍/👎 değerlendirme; Süper Admin > Nibiru Yönetimi'nde son 30 gün ve 👎 alan cevaplar (ad gösterilmez). Veli deneme seti: 30 tipik soru (tests/nibiru-parent-eval-set.test.ts).
+- Son rötuş: 5 tema (Gece mavisi, Gece, Gün ışığı, Orman, Lavanta), ilk açılışta 3 kartlık tanışma, gezegende okunmamış mesaj sayısı.
