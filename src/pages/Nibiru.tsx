@@ -1,6 +1,8 @@
-import { useEffect,useRef,useState } from 'react';
-import { CheckCheck,LayoutGrid,Mic,MoreVertical,Send,Smartphone,Square,Volume2 } from 'lucide-react';
+import { Fragment,useEffect,useRef,useState } from 'react';
+import { Bell,BellOff,CheckCheck,LayoutGrid,Mic,MoreVertical,Palette,Send,Smartphone,Square,ThumbsDown,ThumbsUp,Volume2 } from 'lucide-react';
 import { NibiruInstallGuide,NIBIRU_INSTALL_EVENT } from '../components/NibiruInstallGuide';
+import { NibiruCards,type NibiruCard } from '../components/NibiruCards';
+import { NibiruIntro,NIBIRU_THEMES,readTheme,saveTheme,pushState,enablePush,disablePush } from '../components/NibiruExtras';
 import { Link } from 'react-router-dom';
 import { PasskeyAccess } from '../components/PasskeyAccess';
 import '../nibiru-direct.css';
@@ -15,7 +17,7 @@ import './nibiru-chat.css';
 import './nibiru-app.css';
 
 type Action={type:string;label:string;to?:string;url?:string;title?:string;start?:number;end?:number|null};
-type Message={role:'user'|'assistant';text:string;specialist?:string;coachPlan?:any;suggestions?:string[];actions?:Action[];fresh?:boolean;at?:number};
+type Message={role:'user'|'assistant';text:string;specialist?:string;coachPlan?:any;suggestions?:string[];actions?:Action[];fresh?:boolean;at?:number;id?:string;cards?:NibiruCard[];feedback?:number|null;origin?:string};
 
 const suggestions:Record<string,string[]>={
  PARENT:['Öğrencim nasıl?','Son sınav ne oldu?','Hangi konuda zorlanıyor?','Bugün ne çalışalım?'],
@@ -33,6 +35,10 @@ function greeting(role?:string,name?:string|null){
  return `${hello}${first?` ${first}`:''}, ben Nibiru. Sınıflarınız, sınavlar ve kazanımlar hakkında doğrulanmış verilerle yardımcı olurum.`;
 }
 
+function dayLabel(at?:number){const d=new Date(at||Date.now());const today=new Date();const y=new Date();y.setDate(today.getDate()-1);
+ if(d.toDateString()===today.toDateString())return 'Bugün';if(d.toDateString()===y.toDateString())return 'Dün';
+ return d.toLocaleDateString('tr-TR',{day:'numeric',month:'long',...(d.getFullYear()!==today.getFullYear()?{year:'numeric'}:{})});}
+
 async function responseError(response:Response,fallback:string){
  try{const payload:any=await response.json();return payload?.error?.message||fallback}catch{return fallback}
 }
@@ -44,6 +50,13 @@ export function Nibiru(){
  const[studentPrompts,setStudentPrompts]=useState<string[]|null>(null);
  useEffect(()=>{if(user?.role!=='STUDENT')return;api<any>('/api/student-standard/profile').then(r=>setStudentPrompts(Array.isArray(r.nibiruPrompts)&&r.nibiruPrompts.length?r.nibiruPrompts:null)).catch(()=>setStudentPrompts(null))},[user?.id,user?.role]);
  useEffect(()=>{api<any>('/api/nibiru/identity').then(r=>{setStudents(r.students||[]);if(r.students?.length)setSelectedStudentId((cur:string)=>cur||r.students[0].id)}).catch(()=>setStudents([]))},[user?.id]);
+ // owner, 24 Nov 2026: the conversation is kept like WhatsApp — it comes back when Nibiru opens (per child for parents)
+ const[historyFor,setHistoryFor]=useState<string|null>(null);
+ useEffect(()=>{if(!user)return;if(user.role==='PARENT'&&!selectedStudentId)return;const key=selectedStudentId||'-';let live=true;
+  api<any>(`/api/nibiru/history${selectedStudentId?`?studentId=${encodeURIComponent(selectedStudentId)}`:''}`).then(r=>{if(!live)return;const list:Message[]=(r.messages||[]).map((m:any)=>({...m,fresh:false}));setMessages(list.length?list:[{role:'assistant',text:greeting(user.role,user.display_name),specialist:'Nibiru Core',at:Date.now()}]);setHistoryFor(key)}).catch(()=>setHistoryFor(key));
+  try{(navigator as any).clearAppBadge?.()}catch{/* not supported */}
+  return()=>{live=false}},[user?.id,selectedStudentId]);
+ const rate=async(m:Message,value:number)=>{if(!m.id)return;const next=m.feedback===value?0:value;setMessages(x=>x.map(y=>y.id===m.id?{...y,feedback:next||null}:y));try{await api('/api/nibiru/feedback',{method:'POST',body:JSON.stringify({messageId:m.id,value:next})})}catch{/* the rating is a convenience */}};
  const[messages,setMessages]=useState<Message[]>(()=>[{role:'assistant',text:greeting(user?.role,user?.display_name),specialist:'Nibiru Core',at:Date.now()}]);
  const[text,setText]=useState('');const[busy,setBusy]=useState(false);const[error,setError]=useState('');const[recording,setRecording]=useState(false);const[voiceBusy,setVoiceBusy]=useState(false);const[playing,setPlaying]=useState<number|null>(null);const[voiceStatus,setVoiceStatus]=useState<any>(null);const[capabilityLab,setCapabilityLab]=useState<any>(null);const[labStudentId,setLabStudentId]=useState('');const endRef=useRef<HTMLDivElement|null>(null);
  const[deviceVoiceReady,setDeviceVoiceReady]=useState(false);const[deviceVoices,setDeviceVoices]=useState<DeviceVoiceOption[]>([]);const[voicePref,setVoicePref]=useState<DeviceVoicePreference>(()=>readVoicePreference());const voicePrefRef=useRef(voicePref);voicePrefRef.current=voicePref;const[voiceSettingsOpen,setVoiceSettingsOpen]=useState(false);const[voiceStatusLoaded,setVoiceStatusLoaded]=useState(false);const deviceSpeechRef=useRef<ReturnType<typeof createDeviceSpeech>|null>(null);const audioUrlRef=useRef<string|null>(null);const mountedRef=useRef(true);
@@ -52,7 +65,7 @@ export function Nibiru(){
  useEffect(()=>{mountedRef.current=true;api<any>('/api/nibiru/voice/status').then(setVoiceStatus).catch(()=>setVoiceStatus(null)).finally(()=>setVoiceStatusLoaded(true));return()=>{mountedRef.current=false;deviceSpeechRef.current?.cancel();if(audioUrlRef.current)URL.revokeObjectURL(audioUrlRef.current);if(timerRef.current)window.clearTimeout(timerRef.current);if(recorderRef.current){recorderRef.current.onstop=null;recorderRef.current.ondataavailable=null;if(recorderRef.current.state==='recording')recorderRef.current.stop();}streamRef.current?.getTracks().forEach(t=>t.stop());if(audioRef.current){audioRef.current.onended=null;audioRef.current.onerror=null;audioRef.current.pause();}}},[]);
  useEffect(()=>{if(!window.speechSynthesis||typeof SpeechSynthesisUtterance==='undefined')return;const synth=window.speechSynthesis;const update=()=>{const all=synth.getVoices();setDeviceVoices(turkishVoiceOptions(all));setDeviceVoiceReady(Boolean(chooseVoice(all,voicePrefRef.current)))};deviceSpeechRef.current=createDeviceSpeech(synth,SpeechSynthesisUtterance);update();synth.addEventListener('voiceschanged',update);return()=>{synth.removeEventListener('voiceschanged',update);deviceSpeechRef.current?.cancel();deviceSpeechRef.current=null}},[]);
  useEffect(()=>{if(user?.role!=='SUPER_ADMIN')return;api<any>('/api/nibiru/lab').then(result=>{setCapabilityLab(result);if(result?.students?.[0]?.id)setLabStudentId((current:string)=>current||result.students[0].id)}).catch(()=>setCapabilityLab(null))},[user?.role]);
- const ask=async(value?:string)=>{const q=(value??text).trim();if(!q||busy)return;if(user?.role==='PARENT'&&students.length>1&&!selectedStudentId){setError('Önce hakkında konuşacağınız öğrenciyi seçin.');return;}setMessages(x=>[...x,{role:'user',text:q,at:Date.now()}]);setText('');setBusy(true);setError('');try{const r=await api<any>('/api/nibiru/chat',{method:'POST',body:JSON.stringify({message:q,studentId:selectedStudentId||undefined,labStudentId:user?.role==='SUPER_ADMIN'?labStudentId||undefined:undefined})});setMessages(x=>[...x,{role:'assistant',text:r.answer,specialist:r.orchestration?.label,coachPlan:r.coachPlan?.available&&r.intent==='TODAY_PLAN'?r.coachPlan:undefined,suggestions:Array.isArray(r.suggestions)?r.suggestions:undefined,actions:Array.isArray(r.actions)?r.actions:undefined,fresh:true,at:Date.now()}])}catch(e:any){setError(e.message||'Nibiru şu anda yanıt veremedi.')}finally{setBusy(false)}};
+ const ask=async(value?:string)=>{const q=(value??text).trim();if(!q||busy)return;if(user?.role==='PARENT'&&students.length>1&&!selectedStudentId){setError('Önce hakkında konuşacağınız öğrenciyi seçin.');return;}setMessages(x=>[...x,{role:'user',text:q,at:Date.now()}]);setText('');setBusy(true);setError('');try{const r=await api<any>('/api/nibiru/chat',{method:'POST',body:JSON.stringify({message:q,studentId:selectedStudentId||undefined,labStudentId:user?.role==='SUPER_ADMIN'?labStudentId||undefined:undefined})});setMessages(x=>[...x,{role:'assistant',text:r.answer,specialist:r.orchestration?.label,coachPlan:r.coachPlan?.available&&r.intent==='TODAY_PLAN'?r.coachPlan:undefined,suggestions:Array.isArray(r.suggestions)?r.suggestions:undefined,actions:Array.isArray(r.actions)?r.actions:undefined,fresh:true,at:Date.now(),id:r.messageId,cards:Array.isArray(r.cards)?r.cards:undefined}])}catch(e:any){setError(e.message||'Nibiru şu anda yanıt veremedi.')}finally{setBusy(false)}};
  const stopRecording=()=>{if(timerRef.current){window.clearTimeout(timerRef.current);timerRef.current=null}if(recorderRef.current?.state==='recording')recorderRef.current.stop()};
  const startRecording=async()=>{
   if(recording){stopRecording();return}setError('');
@@ -88,9 +101,10 @@ export function Nibiru(){
   <div className="nbc-text">{rich(shown.replace(/^\s*Nibiru\s*:\s*/,''))}{typing&&<span className="nbc-caret" aria-hidden="true"/>}</div>
   {!typing&&<>
    {m.actions?.length?<div className="nbx-actions">{m.actions.map((a,ai)=>a.type==='VIDEO'?<button key={ai} type="button" className="nbx-action video" onClick={()=>setVideo(a)}>▶ {a.label}{a.end!=null?` · ${Math.max(1,Math.round(((a.end||0)-(a.start||0))/60))} dk`:''}</button>:<Link key={ai} className="nbx-action" to={a.to||'/'}>{a.label}</Link>)}</div>:null}
+   <NibiruCards cards={m.cards}/>
    {m.coachPlan?.available&&<CoachPlanCard plan={m.coachPlan}/>}
   </>}
-  <div className="nbx-foot"><button type="button" className="nbx-listen" disabled={(!ttsReady&&!deviceVoiceReady)||voiceBusy} onClick={()=>void speakMessage(m.text,i)} aria-label={playing===i?'Durdur':'Dinle'}><Volume2 size={14}/> {playing===i?'Durdur':'Dinle'}</button><span className="nbx-time">{clock(m.at)}</span></div>
+  <div className="nbx-foot"><button type="button" className="nbx-listen" disabled={(!ttsReady&&!deviceVoiceReady)||voiceBusy} onClick={()=>void speakMessage(m.text,i)} aria-label={playing===i?'Durdur':'Dinle'}><Volume2 size={14}/> {playing===i?'Durdur':'Dinle'}</button>{m.id&&<span className="nbx-rate"><button type="button" aria-label="Faydalı" aria-pressed={m.feedback===1} className={m.feedback===1?'on':''} onClick={()=>void rate(m,1)}><ThumbsUp size={13}/></button><button type="button" aria-label="Faydalı değil" aria-pressed={m.feedback===-1} className={m.feedback===-1?'on':''} onClick={()=>void rate(m,-1)}><ThumbsDown size={13}/></button></span>}<span className="nbx-time">{clock(m.at)}</span></div>
  </>};
  const firstName=String(user?.display_name||'').trim().split(/\s+/)[0];
  const clock=(d?:number)=>new Date(d||Date.now()).toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'});
@@ -98,10 +112,16 @@ export function Nibiru(){
  const chips=(messages.length===1?items.slice(0,4):lastSuggestions?.length?lastSuggestions:items.slice(0,4));
  const status=recording?'dinliyor…':busy||typed?'yazıyor…':voiceBusy?'ses hazırlanıyor…':user?.role==='STUDENT'?'akademik asistanın':'akademik asistanınız';
  const voiceNote=ttsReady?'':deviceVoiceReady?(voicePref.allowOnline?'Dinle düğmesi seçtiğiniz doğal çevrim içi sesi kullanır; adınız okunacak metinden çıkarılır.':'Dinle düğmesi cihazınızın yerel Türkçe sesini kullanır.'):voiceStatusLoaded?'Bu cihazda yerel Türkçe ses bulunamadı; yazılı sohbeti kullanabilirsiniz.':'';
- const pickStudent=(id:string)=>{if(id===selectedStudentId||busy)return;deviceSpeechRef.current?.cancel();audioRef.current?.pause();setPlaying(null);setSelectedStudentId(id);const s=students.find((x:any)=>x.id===id);setMessages([{role:'assistant',text:`Şimdi ${s?String(s.name).split(/\s+/)[0]:'seçtiğiniz öğrenci'} hakkında konuşuyoruz. Ne öğrenmek istersiniz?`,at:Date.now()}])};
+ const pickStudent=(id:string)=>{if(id===selectedStudentId||busy)return;deviceSpeechRef.current?.cancel();audioRef.current?.pause();setPlaying(null);setSelectedStudentId(id)};
  const[menuOpen,setMenuOpen]=useState(false);
+ const[theme,setTheme]=useState(()=>readTheme());const[themeOpen,setThemeOpen]=useState(false);
+ const[push,setPush]=useState(()=>pushState());const[pushMsg,setPushMsg]=useState('');
+ const togglePush=async()=>{setPushMsg('');try{if(push==='on'){await disablePush();setPush('off')}else{await enablePush();setPush('on');setPushMsg('Bildirimler açıldı. Nibiru yazınca telefonunuz haber verir.')}}catch(e:any){setPushMsg(e?.message||'Bildirimler açılamadı.')}setPush(p=>p==='on'?'on':pushState())};
+ const note=<p className="nbx-note">Nibiru yanılabilir; önemli kararları öğretmenle{user?.role==='STUDENT'?' ve rehber öğretmeninle':''} birlikte ver{user?.role==='STUDENT'?'':'in'}.{voiceNote?` ${voiceNote}`:''}</p>;
+ const standaloneApp=typeof window!=='undefined'&&(window.matchMedia?.('(display-mode: standalone)').matches||(navigator as any).standalone===true);
+ const pushAsk=(push==='ask'&&standaloneApp)?<div className="nbx-ask"><Bell size={16}/><span>Nibiru size yazınca telefonunuz haber versin mi?</span><button type="button" onClick={()=>void togglePush()}>Aç</button></div>:pushMsg?<div className="nbx-ask ok"><span>{pushMsg}</span></div>:null;
  // owner, 24 Nov 2026: "veli Nibiru'yu WhatsApp gibi kullansın" — a full-screen conversation; ANUNEX is one tap away
- return <div className={`nbx role-${String(user?.role||'').toLowerCase()}`}>
+ return <div className={`nbx role-${String(user?.role||'').toLowerCase()}`} data-theme={theme}>
   <header className="nbx-head">
    <NibiruMark size={42} state={visualState} title="Nibiru"/>
    <div className="nbx-who"><strong>Nibiru</strong><small aria-live="polite">{status}</small></div>
@@ -112,15 +132,17 @@ export function Nibiru(){
   {menuOpen&&<div className="nbx-menu" role="dialog" aria-label="Nibiru seçenekleri">
    {deviceVoices.length>0&&!ttsReady&&<button type="button" onClick={()=>{setVoiceSettingsOpen(true);setMenuOpen(false)}}><Volume2 size={16}/> Ses ayarları</button>}
    <button type="button" onClick={()=>{setMenuOpen(false);window.dispatchEvent(new Event(NIBIRU_INSTALL_EVENT))}}><Smartphone size={16}/> Nibiru’yu telefonuma ekle</button>
+   {push!=='unsupported'&&<button type="button" onClick={()=>{setMenuOpen(false);void togglePush()}}>{push==='on'?<><BellOff size={16}/> Bildirimleri kapat</>:<><Bell size={16}/> Bildirimleri aç</>}</button>}
+   <button type="button" aria-expanded={themeOpen} onClick={()=>setThemeOpen(v=>!v)}><Palette size={16}/> Tema</button>
+   {themeOpen&&<div className="nbx-themes" role="radiogroup" aria-label="Tema">{NIBIRU_THEMES.map(t=><button key={t.id} type="button" role="radio" aria-checked={theme===t.id} className={theme===t.id?'on':''} onClick={()=>{setTheme(t.id);saveTheme(t.id)}}><i style={{background:t.swatch}}/>{t.label}</button>)}</div>}
    <div className="nbx-menu-passkey"><PasskeyAccess/></div>
   </div>}
   {voiceSettingsOpen&&<div className="nbx-sheet"><NibiruVoiceSettings voices={deviceVoices} pref={voicePref} onSave={saveVoice} onPreview={previewVoice} onClose={()=>setVoiceSettingsOpen(false)}/></div>}
   {user?.role==='SUPER_ADMIN'&&capabilityLab?.enabled&&<div className="nbx-lab"><span>Test öğrencisi</span><select value={labStudentId} onChange={e=>setLabStudentId(e.target.value)}>{(capabilityLab.students||[]).map((student:any)=><option key={student.id} value={student.id}>{student.first_name} {student.last_name} · {student.class_name||'Sınıf yok'}</option>)}</select></div>}
   <main className="nbx-thread" aria-live="polite">
-   <span className="nbx-day">Bugün</span>
-   <p className="nbx-note">Nibiru yanılabilir; önemli kararları öğretmenle{user?.role==='STUDENT'?' ve rehber öğretmeninle':''} birlikte ver{user?.role==='STUDENT'?'':'in'}.{voiceNote?` ${voiceNote}`:''}</p>
-   {messages.map((m,i)=>m.role==='assistant'?<div key={i} className="nbx-msg nibiru">{renderAssistant(m,i)}</div>
-    :<div key={i} className="nbx-msg me"><p>{m.text}</p><span className="nbx-time">{clock(m.at)} <CheckCheck size={14} aria-label="iletildi"/></span></div>)}
+   {pushAsk}
+   {messages.map((m,i)=>{const d=dayLabel(m.at),prev=i?dayLabel(messages[i-1].at):'';return <Fragment key={m.id||i}>{d!==prev&&<span className="nbx-day">{d}</span>}{i===0&&note}{m.role==='assistant'?<div className={`nbx-msg nibiru${m.origin==='PROACTIVE'?' first':''}`}>{renderAssistant(m,i)}</div>
+    :<div className="nbx-msg me"><p>{m.text}</p><span className="nbx-time">{clock(m.at)} <CheckCheck size={14} aria-label="iletildi"/></span></div>}</Fragment>})}
    {busy&&<div className="nbx-msg nibiru typing" aria-label="Nibiru yazıyor"><i/><i/><i/></div>}
    {error&&<div className="nbx-error" role="alert">{error}</div>}
    <div ref={endRef}/>
@@ -133,5 +155,6 @@ export function Nibiru(){
     :<button type="button" className={`nbx-send${recording?' rec':''}`} onClick={()=>void startRecording()} disabled={busy||voiceBusy||(!sttConfigured&&Boolean(voiceStatus))} title="Bas-konuş; en fazla 45 saniye" aria-label={recording?'Kaydı bitir':'Konuş'}>{recording?<Square size={18}/>:<Mic size={20}/>}</button>}
   </div>
   <NibiruInstallGuide/>
+  <NibiruIntro role={user?.role}/>
  </div>;
 }

@@ -109,7 +109,7 @@ async function selectStudent(env: Env, user: AuthUser, message: string, previous
 }
 
 /** A065: a student or parent only ever gets results the school has published to them; staff keep their school view. */
-async function studentAcademicContext(env: Env, studentId: string, institutionId: string | null, learner = false) {
+export async function studentAcademicContext(env: Env, studentId: string, institutionId: string | null, learner = false) {
   const pub = (expr: string) => learner ? `AND ${publishedForLearnersSql(expr)}` : '';
   const student = await one<any>(env.DB.prepare(`SELECT s.id,s.first_name,s.last_name,e.student_number,e.grade_level,e.section,c.name class_name FROM student_entities s LEFT JOIN student_enrollments e ON e.student_id=s.id AND e.status='ACTIVE' LEFT JOIN classes c ON c.id=e.class_id WHERE s.id=? ${institutionId ? 'AND (e.institution_id=? OR e.institution_id IS NULL)' : ''} LIMIT 1`).bind(...(institutionId ? [studentId,institutionId] : [studentId])));
   const exams = await all<any>(env.DB.prepare(`SELECT e.id,e.title,e.exam_type,e.exam_date,er.correct_count,er.wrong_count,er.blank_count,er.net,er.score,er.success_percent FROM exam_participants ep JOIN exams e ON e.id=ep.exam_id JOIN exam_results er ON er.participant_id=ep.id WHERE ep.student_id=? ${institutionId ? 'AND ep.institution_id=?' : ''} ${pub('e.id')} ORDER BY coalesce(e.exam_date,e.created_at) DESC LIMIT 4`).bind(...(institutionId ? [studentId,institutionId] : [studentId])));

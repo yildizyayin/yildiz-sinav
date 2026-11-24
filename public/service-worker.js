@@ -33,3 +33,19 @@ self.addEventListener('fetch',event=>{
   }));
  }
 });
+// Nibiru bildirimleri (owner, 24 Nov 2026): the push carries no data; the phone shows a fixed, name-free line and
+// opening it goes straight to the conversation.
+self.addEventListener('push',event=>{
+ event.waitUntil(Promise.all([
+  self.registration.showNotification('Nibiru',{body:'Yeni bir mesajınız var.',icon:'/nibiru-icon-192.png',badge:'/nibiru-icon-192.png',tag:'nibiru',renotify:true,data:{url:'/nibiru'}}),
+  (self.navigator&&self.navigator.setAppBadge?self.navigator.setAppBadge().catch(()=>{}):Promise.resolve())
+ ]));
+});
+self.addEventListener('notificationclick',event=>{
+ event.notification.close();
+ const target=new URL((event.notification.data&&event.notification.data.url)||'/nibiru',self.location.origin).href;
+ event.waitUntil(self.clients.matchAll({type:'window',includeUncontrolled:true}).then(list=>{
+  for(const c of list){if(c.url.startsWith(self.location.origin)&&'focus' in c){c.navigate&&c.navigate(target);return c.focus()}}
+  return self.clients.openWindow(target);
+ }));
+});
