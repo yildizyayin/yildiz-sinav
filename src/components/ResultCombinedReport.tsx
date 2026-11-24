@@ -9,7 +9,7 @@ import { printSection } from '../lib/printSection';
  * Print opens the browser's print dialog (it is not a file download), and the button says so.
  */
 type Option = { examId: string; title: string; examDate: string | null; academicYear: string; family: string; familyLabel: string };
-const v = (x: unknown, digits = 2) => x == null || !Number.isFinite(Number(x)) ? '—' : Number(x).toLocaleString('tr-TR', { maximumFractionDigits: digits });
+const v = (x: unknown, digits = 2) => x == null || !Number.isFinite(Number(x)) ? 'Yayımlanmadı' : Number(x).toLocaleString('tr-TR', { maximumFractionDigits: digits });
 const ERR: Record<string, string> = {
   RESULT_SESSION_REQUIRED: 'Oturumunuzun süresi doldu. Yeniden giriş yapın.',
   COMBINED_NO_EXAMS: 'Bu seçimde yayımlanmış sonucunuz yok.',
@@ -73,18 +73,18 @@ export function ResultCombinedReport({ onClose }: { onClose: () => void }) {
       {!!report.warnings.length && <ul className="sr-cb-warnings">{report.warnings.map((w: string) => <li key={w}>{w}</li>)}</ul>}
 
       <section className="sr-panel"><h3>Ders ortalamaları</h3><div className="sr-cb-table-wrap"><table className="sr-cb-table"><thead><tr><th>Ders</th><th>Sınav</th><th>D</th><th>Y</th><th>B</th><th>Net</th><th>Başarı</th></tr></thead>
-        <tbody>{report.subjects.map((s: any) => <tr key={s.code || s.name}><th>{s.name}{s.questionCountsDiffer && <small>Soru sayısı farklı ({s.questionCounts.join(', ')})</small>}</th><td>{s.exams}</td><td>{v(s.avgCorrect)}</td><td>{v(s.avgWrong)}</td><td>{v(s.avgBlank)}</td><td><b>{v(s.avgNet)}</b></td><td>{s.avgSuccessPercent == null ? '—' : `%${v(s.avgSuccessPercent, 1)}`}</td></tr>)}</tbody></table></div>
+        <tbody>{report.subjects.map((s: any) => <tr key={s.code || s.name}><th>{s.name}{s.questionCountsDiffer && <small>Soru sayısı farklı ({s.questionCounts.join(', ')})</small>}</th><td>{s.exams}</td><td>{v(s.avgCorrect)}</td><td>{v(s.avgWrong)}</td><td>{v(s.avgBlank)}</td><td><b>{v(s.avgNet)}</b></td><td>{s.avgSuccessPercent == null ? 'Yayımlanmadı' : `%${v(s.avgSuccessPercent, 1)}`}</td></tr>)}</tbody></table></div>
         <p className="sr-cb-note">Başarı = net ÷ soru sayısı. Soru sayıları farklı sınavları karşılaştırırken bu sütuna bakın.</p></section>
 
       <section className="sr-panel"><h3>Gelişim</h3><ol className="sr-cb-trend">{report.trend.map((t: any) => <li key={t.examId}><span className="sr-cb-trend-label">{t.title}<small>{t.examDate || 'Tarih yok'}</small></span>
         <span className="sr-cb-bar" aria-hidden="true"><i style={{ width: `${t.successPercent == null ? 0 : Math.max(2, 100 * Number(t.successPercent) / maxPct)}%` }} /></span>
-        <span className="sr-cb-trend-value"><b>{t.successPercent == null ? '—' : `%${v(t.successPercent, 1)}`}</b><small>{v(t.net)} net{t.score != null ? ` · ${v(t.score)} puan` : ''}</small></span></li>)}</ol></section>
+        <span className="sr-cb-trend-value"><b>{t.successPercent == null ? 'Yayımlanmadı' : `%${v(t.successPercent, 1)}`}</b><small>{v(t.net)} net{t.score != null ? ` · ${v(t.score)} puan` : ''}</small></span></li>)}</ol></section>
 
       <section className="sr-panel"><h3>Kazanım özeti</h3>
         {!report.outcomes.length ? <p className="result-empty">Seçilen sınavlarda doğrulanmış kazanım verisi yok.</p> : <>
           <p className="sr-cb-note">En çok çalışılması gerekenler üstte. {report.outcomeSourceCount} sınavın kazanım kanıtına dayanır.</p>
           <div className="sr-cb-table-wrap"><table className="sr-cb-table"><thead><tr><th>Kazanım</th><th>Kanıt</th><th>D</th><th>Y</th><th>B</th><th>Başarı</th></tr></thead>
-            <tbody>{outcomes.map((o: any) => <tr key={o.outcomeId}><th>{o.title}<small>{[o.subjectName, o.code].filter(Boolean).join(' · ')}</small></th><td>{o.evidence}</td><td>{o.correct}</td><td>{o.wrong ?? '—'}</td><td>{o.blank ?? '—'}</td><td><b>{o.successPercent == null ? '—' : `%${v(o.successPercent, 0)}`}</b></td></tr>)}</tbody></table></div>
+            <tbody>{outcomes.map((o: any) => <tr key={o.outcomeId}><th>{o.title}<small>{[o.subjectName, o.code].filter(Boolean).join(' · ')}</small></th><td>{o.evidence}</td><td>{o.correct}</td><td>{o.wrong ?? 'Yayımlanmadı'}</td><td>{o.blank ?? 'Yayımlanmadı'}</td><td><b>{o.successPercent == null ? 'Yayımlanmadı' : `%${v(o.successPercent, 0)}`}</b></td></tr>)}</tbody></table></div>
           {report.outcomes.length > 10 && <button type="button" className="sr-cb-more" onClick={() => setAllOutcomes((x) => !x)}>{allOutcomes ? 'İlk 10 kazanımı göster' : `Tüm kazanımlar (${report.outcomes.length})`}</button>}
         </>}</section>
 
