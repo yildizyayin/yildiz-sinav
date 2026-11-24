@@ -1,3 +1,4 @@
+import { questionTopicVideos } from './question-topic-videos';
 import { isLearnerRole, publishedForLearnersSql } from './exam-schedule';
 import {BANDS,BAND_SQL,bandShortage,bandTargets,parseDifficultyMix,MAX_OUTCOMES,joinSteps,narrowingMessage,outcomeWhere,parseAcademicYear,parseOutcomeCodes,selectionSteps,type SelectionInput} from './studio-selection';
 import {examOutcomePayloadSql} from './exam-outcome-history';
@@ -674,7 +675,10 @@ export async function submitStudentPractice(request:Request,env:Env,user:AuthUse
       ON CONFLICT(student_id,node_id) DO UPDATE SET mastery=ROUND(((student_learning_state.mastery*student_learning_state.evidence_count)+(excluded.mastery*excluded.evidence_count))/(student_learning_state.evidence_count+excluded.evidence_count),4),confidence=MIN(1,student_learning_state.confidence+0.1),evidence_count=student_learning_state.evidence_count+1,last_evidence_at=CURRENT_TIMESTAMP,updated_at=CURRENT_TIMESTAMP`).bind(user.student_id,link.node_id,result));
   }
   await env.DB.batch(statements);await audit(env.DB,user.id,user.institution_id,'QUESTION_PRACTICE_SUBMITTED','question_bank',questionId,{attemptId,runId,correct,linkedOutcomeCount:links.length});
-  return json({ok:true,attemptId,runId,correct,correctAnswer:q.correct_answer,solutionText:q.solution_text||null});
+  const verifiedLink=links.find(link=>Number(link.verified)===1&&link.academicYear===q.academic_year&&
+    Number(link.gradeLevel)===Number(q.grade_level)&&link.subjectId===q.subject_id);
+  const topicVideos=correct ? [] : await questionTopicVideos(env,verifiedLink?.outcomeId??null,user.institution_id).catch(()=>[]);
+  return json({ok:true,attemptId,runId,correct,correctAnswer:q.correct_answer,solutionText:q.solution_text||null,topicVideos});
 }
 
 async function learningState(request:Request,env:Env,user:AuthUser):Promise<Response>{
