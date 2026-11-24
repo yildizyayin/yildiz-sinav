@@ -124,6 +124,9 @@ async function setNoticeStatus(request: Request, env: Env, admin: AuthUser, id: 
   if (next === 'ACTIVE') {
     const body = await one(env.DB.prepare(`SELECT 1 ok FROM privacy_notice_contents WHERE notice_version_id=?`).bind(id));
     if (!body) return conflict('Metni olmayan sürüm yayımlanamaz.', 'NOTICE_BODY_MISSING');
+    // 12 Nov 2026: drafts written with [ ] fields to fill (company title, address, contact) never go live unfilled
+    const text = await one<{ body: string }>(env.DB.prepare(`SELECT body FROM privacy_notice_contents WHERE notice_version_id=?`).bind(id));
+    if (/\[[^\]\n]{2,}\]/.test(text?.body || '')) return conflict('Köşeli parantezli [ ] alanlar doldurulmadan metin yayımlanamaz.', 'NOTICE_PLACEHOLDERS');
     await env.DB.batch([
       env.DB.prepare(`UPDATE privacy_notice_versions SET status='RETIRED',retired_at=CURRENT_TIMESTAMP WHERE audience=? AND status='ACTIVE' AND id<>?`).bind(row.audience, id),
       env.DB.prepare(`UPDATE privacy_notice_versions SET status='ACTIVE',effective_at=CURRENT_TIMESTAMP,retired_at=NULL WHERE id=?`).bind(id),
@@ -572,6 +575,25 @@ export default {
         return methodNotAllowed();
       }
       if (path === '/api/admin/privacy/notices' && request.method === 'POST') return createNoticeVersion(request, env, admin);
+      const noticeMatch = path.match(/^\/api\/admin\/privacy\/notices\/([^/]+)(\/body)?$/);
+      if (noticeMatch) {
+        const row = await one<any>(env.DB.prepare(`SELECT v.id,v.audience,v.version,v.title,v.status,c.body FROM privacy_notice_versions v LEFT JOIN privacy_notice_contents c ON c.notice_version_id=v.id WHERE v.id=?`).bind(noticeMatch[1]));
+        if (!row) return notFound('Metin bulunamadı.');
+        if (!noticeMatch[2] && request.method === 'GET') return json({ ok: true, notice: row });
+        if (noticeMatch[2] && request.method === 'POST') {
+          if (row.status !== 'DRAFT') return conflict('Yalnız taslak metin düzenlenebilir.', 'NOTICE_NOT_DRAFT');
+          const b = await request.json<any>().catch(() => ({}));
+          const title = String(b?.title || row.title).trim().slice(0, 200); const body = String(b?.body || '').trim();
+          if (!title || body.length < 50 || body.length > 60000) return badRequest('Başlık ve en az 50 karakterlik metin gereklidir.');
+          await env.DB.batch([
+            env.DB.prepare(`UPDATE privacy_notice_versions SET title=?,content_hash=? WHERE id=?`).bind(title, await sha256Hex(body), row.id),
+            env.DB.prepare(`INSERT INTO privacy_notice_contents(notice_version_id,body) VALUES(?,?) ON CONFLICT(notice_version_id) DO UPDATE SET body=excluded.body,updated_at=CURRENT_TIMESTAMP`).bind(row.id, body),
+          ]);
+          await audit(env.DB, admin.id, null, 'PRIVACY_NOTICE_EDITED', 'privacy_notice_version', row.id, { audience: row.audience, version: row.version });
+          return json({ ok: true });
+        }
+        return methodNotAllowed();
+      }
       const noticeStatusMatch = path.match(/^\/api\/admin\/privacy\/notices\/([^/]+)\/status$/);
       if (noticeStatusMatch) return request.method === 'POST' ? setNoticeStatus(request, env, admin, noticeStatusMatch[1]) : methodNotAllowed();
       const verifyRequestMatch = path.match(/^\/api\/admin\/privacy\/requests\/([^/]+)\/verify$/);

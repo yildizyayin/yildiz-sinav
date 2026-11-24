@@ -283,6 +283,17 @@ async function executeDeletionJob(env: Env, admin: AuthUser, jobId: string): Pro
     statements.push(env.DB.prepare(`DELETE FROM gamification_profiles WHERE student_id=?`).bind(studentId));
     statements.push(env.DB.prepare(`DELETE FROM student_achievements WHERE student_id=?`).bind(studentId));
     statements.push(env.DB.prepare(`DELETE FROM game_sessions WHERE student_id=?`).bind(studentId));
+    // a Nibiru loop may point at an Evren game (0168); release it before the games go
+    statements.push(env.DB.prepare(`UPDATE nibiru_outcome_loops SET lu_session_id=NULL WHERE student_id=?`).bind(studentId));
+    statements.push(env.DB.prepare(`DELETE FROM lu_task_recipients WHERE student_id=?`).bind(studentId));
+    statements.push(env.DB.prepare(`DELETE FROM nibiru_practice_exam_items WHERE exam_id IN (SELECT id FROM nibiru_practice_exams WHERE student_id=?)`).bind(studentId));
+    statements.push(env.DB.prepare(`DELETE FROM nibiru_practice_exams WHERE student_id=?`).bind(studentId));
+    statements.push(env.DB.prepare(`DELETE FROM lu_session_items WHERE session_id IN (SELECT id FROM lu_sessions WHERE student_id=?)`).bind(studentId));
+    statements.push(env.DB.prepare(`DELETE FROM lu_sessions WHERE student_id=?`).bind(studentId));
+    statements.push(env.DB.prepare(`DELETE FROM lu_xp_ledger WHERE student_id=?`).bind(studentId));
+    statements.push(env.DB.prepare(`DELETE FROM nibiru_game_questions WHERE round_id IN (SELECT id FROM nibiru_game_rounds WHERE student_id=?)`).bind(studentId));
+    statements.push(env.DB.prepare(`DELETE FROM nibiru_game_rounds WHERE student_id=?`).bind(studentId));
+    statements.push(env.DB.prepare(`DELETE FROM nibiru_outcome_loops WHERE student_id=?`).bind(studentId));
     statements.push(env.DB.prepare(`DELETE FROM coach_followup_actions WHERE student_id=?`).bind(studentId));
     statements.push(env.DB.prepare(`DELETE FROM student_outcome_mastery WHERE student_id=?`).bind(studentId));
     statements.push(env.DB.prepare(`DELETE FROM coach_mini_tests WHERE student_id=?`).bind(studentId));

@@ -565,3 +565,171 @@ Tasarım ekibinin aynı dönemdeki PR'ları: #423, #427, #433, #436, #440.
 - **Onay bekliyor:** Rapor Merkezi hızlı PDF yazıcısı (örnek gönderildi; `karne-writer` dalı).
 - **Kullanıcı:** 7. sınıf Fenomen denemesinin anahtarı kazanım sütunuyla yeniden yüklenmeli; ÇAP TYT'nin uygulama içi kazanım tablosu için kazanım eşleştirmesi bir kez kaydedilmeli (yeniden analiz); KVKK NIBIRU_AI kaydı, föy anahtarı, Netgsm, KVKK metinleri.
 - **Sonraki ana iş:** app öğrenci/veli panelleri.
+
+## Rehberlik paneli — kararlar ve iş sırası (11 Kasım 2026)
+
+Sahip kararı: rehberlik bölümü baştan, MEB çerçevesine uygun kurulacak. Mevcut parçalar (onay akışı, rehberlik karnesi, destek planı, özel kayıtlar, takvim, erken sinyaller) yeniden kullanılır. Çerçeve kaynakları: Rehberlik ve Psikolojik Danışma Hizmetleri Yönetmeliği (2020), RİBA açıklamaları, MEB 2026–2027 rehberlik teması.
+
+### Kararlar
+
+- **Vaka yönetimi yapılmayacak.** Akran zorbalığı takibi görüşme (konu: akran zorbalığı), destek planı ve gizli notla yürür. Okul İklimi Komisyonu ekranı ve vaka akışı yok.
+- **Önleme kalır:** kütüphanede zorbalık içerikleri, sınıf etkinlikleri ve isimsiz okul iklimi anketi.
+- **"Rehber öğretmenime yaz" kalır:** bildirim yalnız rehber öğretmenin ana sayfasına düşer, takip görüşmeyle yürür. Acil durumda ekranda 112 ve 147 yönlendirmesi çıkar; yasal bildirim kararını insan verir.
+- **RBA yeniden kurulacak.** Mevcut 9 maddelik test (her boyuta tek madde) yeterli değil. "Beyin analizi" ifadesi kullanılmayacak, çünkü öğrenme stilleri ve sağ/sol beyin eşleştirmesi bilimsel olarak desteklenmiyor. Profil üç kaynaktan oluşur: ANUNEX'in ölçülen verisi, yaşa göre üç formlu öz değerlendirme (boyut başına 4–6 madde) ve rehber öğretmen yorumu. Açılım kararı sahipte.
+- **RİBA ayrı modül olacak:** öğrenci, veli ve öğretmen formları; %30 örneklem; isimsiz; A/B seçim; sınıf ve okul sonuç çizelgesi; RAM'a Excel çıktısı.
+- **Temel ilkeler:**
+  - İnsan karar verir; sistem tanı koymaz, öğrenciyi etiketlemez.
+  - Üç gizlilik katmanı: açık (öğrenci/veli), kurum içi (rehber, sınıf rehber öğretmeni, müdür özeti), gizli (yalnız rehber).
+  - Her erişim denetim kaydına geçer.
+  - ANUNEX e-Rehberlik ve MEBBİS'in yerine geçmez, onlara giriş için çıktı üretir.
+- **Telif ve içerik:** ölçek, etkinlik ve kütüphane içerikleri yayından önce uzman onayından geçer. MEB formlarının kullanımı resmî kaynaktan teyit edilir, akademik ölçekler izinsiz kullanılmaz.
+
+### Rehber öğretmen paneli (menü)
+
+Bugün · Öğrenciler (rehberlik dosyası) · Erken Uyarı · Görüşmeler · Ölçme Araçları · RİBA · Akademik Takip · Yıllık Plan ve Etkinlikler · Kaynak Kütüphanesi · Dijital Sağlık · Kariyer · Yönlendirmeler · Raporlar.
+
+Diğer roller:
+- Sınıf rehber öğretmeni: etkinlik işaretleme, gözlem notu, RİBA öğrenci formu, sınıf soru takibi; gizli kayıt görmez.
+- Branş öğretmeni: gözlem/endişe bildirimi, ders soru hedefi.
+- Müdür: okul özeti ve isimsiz istatistik; gizli not görmez.
+- Öğrenci "Rehberlik Köşem": testlerim, destek planım, haftalık soru planım, "Rehber öğretmenime yaz", randevu, kaynaklar, ekran günlüğü.
+- Veli: sade özet, görüşme daveti/randevu, veli formları, haftalık soru özeti, veli kaynakları, endişe bildirimi.
+
+### İş sırası
+
+| Kod | İş | Kabul |
+|---|---|---|
+| R1 | Temel ve bildirim | Özellikler açılır; rehber menüsü yeniden düzenlenir; öğrenci rehberlik dosyası; görüşmeler (takvimle bağlı, gizli not ayrı); erken uyarı (nedeni görünür); gizlilik katmanları; "Rehber öğretmenime yaz" ve acil yönlendirme. |
+| R2 | Akademik takip | Haftalık soru hedefi (ders/konu/sayı); ANUNEX içi otomatik sayım ve öğrencinin doğru/yanlış/boş girişi; deneme net trendi ve hedef farkı; sınıf görünümü; veli haftalık özeti. |
+| R3 | Ölçme araçları | Yeni soru tipleri (A/B, evet/hayır, çoktan seçmeli, arkadaş seçimi, kısa açık uç); sınıfa/şubeye toplu uygulama; sınıf raporu; rehberin taslak araç hazırlaması ve uzman onayı; yeni RBA; RİBA. |
+| R4 | İçerik | Yıllık plan (MEB teması ve RİBA hedefleri), sınıf etkinliği havuzu, kaynak kütüphanesi, dijital sağlık (öz değerlendirme, ekran ve uyku günlüğü, Öğrenme Evreni süre/mola hatırlatması), kariyer. |
+| R5 | Rapor | Öğrenci/sınıf/okul raporları, dönemlik faaliyet raporu, RİBA Excel çıktısı, PDF'ler, Nibiru bağlantıları, tanıtım okuluna örnek rehberlik verisi. |
+
+### Açık kararlar (sahip)
+
+1. ~~RBA açılımı.~~ Karar (12 Kasım): Rehberlik Bilgi Anketi (PR #542).
+2. Hedef kurum türü: devlet okulu, özel okul, kurs.
+3. ~~Zorbalık bildiriminin isimsiz yapılabilmesi.~~ R1'de yapıldı: "Rehber öğretmenime yaz" isimsiz gönderilebilir, yalnız rehber görür.
+4. ~~İçerik onayı için PDR uzmanı.~~ Karar (12 Kasım): PDR uzmanı gerekmiyor; içerik Süper Admin onayından geçer.
+
+## 12 Kasım 2026: rehberlik tamamlandı, RİBA kaldırıldı, YouTube planı
+
+### Kullanıcı kararları
+
+- R1–R5 uygulandı (PR #534–#538); canlıya alma sahibin onayında.
+- **RİBA kullanılmıyor.** Şablon kaydı silinmedi, kapatıldı (0175); formu yüklenemez, anket olarak açılamaz, ekranlarda görünmez. Yıllık plandaki RİBA önerisi kaldırıldı.
+- **PDR uzmanı gerekmiyor.** Rehberlik içeriği Süper Admin onayıyla açılır.
+- **YouTube kazanım videosu, onay beklemeden:** sıra 1) sistemdeki yayın videosu, 2) öğretmenin yüklediği link, 3) YouTube'dan otomatik video. Otomatik video o kazanımın **gerçek kesiti** olmalı (başlangıç–bitiş saniyesi). Her kazanım için bir kez bulunur ve kaydedilir.
+
+### YouTube işi (sıradaki)
+
+- YouTube Data API anahtarı canlıda tanımlı (11 Kasım deploy'unda senkronlandı; 9 Ekim kabul testi geçti). Canlıda şu an video sayısı 0.
+- Kesit bulma: Gemini API'nin herkese açık YouTube linki desteği (önizleme, şimdilik ücretsiz, ücretsiz katmanda günde 8 saat video). Gemini'ye yalnız video linki ve kazanım metni gider; öğrenci verisi gitmez. Ücretsiz kota dolarsa video açıklamasındaki bölüm zamanları kullanılır.
+- Ücretli olsaydı tahmini tek seferlik maliyet (3.449 kazanım × 3 aday): Flash-Lite ~75 $, 2.5 Flash ~225 $, 3 Flash ~375 $. Ödeme yapılmayacak.
+- Korumalar: safeSearch=strict, yaş sınırlı/gömülemeyen/canlı elenir, youtube-nocookie, öğretmende "Kaldır / başka video bul", öğrencide "konuyla ilgili değil" bildirimi.
+- Gerekli: ücretsiz Gemini API anahtarı (Google AI Studio, kart istemez) — sahip ekleyecek.
+
+### YouTube işi — yapıldı (12 Kasım, PR kazanim-videolari)
+
+- Sıra: sistem videosu → okulun eklediği video (`outcome_teacher_videos`, onaysız, yalnız o okul) → otomatik YouTube bölümü (`outcome_auto_videos`, onaysız).
+- Otomatik bölüm yalnız gerçek kesitse gösterilir: Gemini'nin verdiği başlangıç–bitiş, yoksa videonun bölüm listesi, yoksa başlığı kazanımı açıkça söyleyen kısa (≤7 dk) video. Hiçbiri yoksa video gösterilmez.
+- Cron her 15 dakikada 1 kazanım arar; öğrencinin ihtiyaç duyduğu kazanım öne alınır. Günlük sınır: 80 YouTube araması, 7 saat Gemini video süresi (ücretsiz kotalar).
+- Öğretmen: "Kazanım Videoları" sayfası (/kazanim-videolari) — izle, "Kaldır, başka video bul", "Okulun videosunu ekle", "Şimdi aramaya al". Kaldırılan video o kazanıma bir daha gelmez.
+- Öğrenci: "Bu video konuyla ilgili değil"; 3 farklı öğrenci derse video kalkar ve yenisi aranır.
+- Gemini anahtarı: GitHub secret `PROD_GEMINI_API_KEY` (test için `GEMINI_API_KEY`); canlıya almada sunucuya aktarılır. Anahtar yokken bölüm listesi yöntemi çalışır.
+
+## 12 Kasım 2026 akşam: anunex.com mobil düzeltmeleri (karar, sırada)
+
+Dış öneri üzerine 360 px'te kontrol edildi; tespitler doğrulandı. Yapılacaklar:
+
+1. **Mobil taşma:** Nibiru bölümü ("Tek bir yapay zekâ değil", sekmeler, "Merhaba Efe" kartı), WhatsApp bölümü, YouTube video kartı ve "Beş aday nasıl seçilir?" kutusu sağdan kesiliyor; üst menüde "Entegrasyonlar/İletişim" sığmıyor. 360 px'e sığdırılacak.
+2. **İngilizce kazanım:** Öğrenci ekran görüntüsünde "Students can prepare…" görünüyor (örnek öğrencinin en zayıf kazanımı İngilizce). Türkçe/Matematik kazanımlı örnekle yeniden çekilecek.
+3. **"Son 2 sınavda netin" çubukları:** Uygulamadaki öğrenci ana sayfasında çubuklarda rakam yok; net değerleri yazılacak (uygulamada), görüntü yenilenecek.
+4. **Video kartları:** "1,2 Mn izlenme" gibi örnek sayılar kaldırılacak; süre + "örnek" etiketi.
+5. **"Nibiru'ya sor" düğmesi:** Mobilde yalnız simge.
+6. **Pilot okul başvurusu:** "Tanıtım için arayın" yanında "Pilot okul başvurusu" formu — kurum adı, il, kurum türü, yaklaşık öğrenci sayısı, yetkili adı, telefon, e-posta, KVKK onayı + kısa aydınlatma metni. Yeni Cloudflare kaynağı yok; kayıt app veritabanına, Süper Admin'de "Pilot Başvuruları" listesi ve bildirim; telefon başına sınır.
+7. **"X bin kazanım bazlı soru":** Soru havuzu dolunca (2027) gerçek sayı yazılacak.
+
+Önizleme gösterilmeden canlıya alınmaz.
+
+## 12 Kasım 2026 akşam: güncel iş sırası (sahip kararlarıyla)
+
+### Kararlar
+
+- **Nibiru:** Sahiple birlikte yeniden ele alınacak ("tam istediğim gibi değil"); NIBIRU_AI KVKK kaydı bu çalışmayla birlikte.
+- **KVKK metinleri:** Claude yazacak (aydınlatma metinleri, açık rıza, pilot başvuru formu metni); sahip onaylar.
+- **Föy cevap anahtarı:** Föyler basılınca kitapçıklarla eklenecek; bekliyor.
+- **Bildirimler:** Trendyol benzeri "siparişiniz alındı/teslim edildi" düzeni — WhatsApp, e-posta, SMS; Android'de marka adı/logosuyla görünen SMS (Google RCS Business Messaging) araştırılacak.
+- **ÇAP TYT ve 7. sınıf Fenomen denemesi:** Karar (13 Kasım): sistemde kalsın, silinmeyecek. Bu iki sınavla ilgili eski "bekleyen" işler (TYT puan düzeltmesi, Fenomen 7 anahtarı) listeden çıkarıldı.
+
+### Sıra
+
+1. anunex.com mobil düzeltmeleri + pilot okul başvuru formu (önizleme → onay).
+2. Gemini hata kaydı → kazanım videosu bulma oranı.
+3. KVKK metinleri (genel aydınlatma, veli/öğrenci, öğretmen, pilot başvuru, Nibiru/Gemini veri aktarımı).
+4. Bildirim kanalları araştırması ve planı (WhatsApp / e-posta / SMS / RCS; ücretsiz kalan kısım önce).
+5. Nibiru — sahiple birlikte yeniden tasarım.
+
+### Sahibin onayı bekleyenler
+
+- Canlıya alma onayları.
+- Rehberlik Onayları sayfasındaki taslaklar (testler, anket, etkinlik, kaynak).
+- Hedef kurum türü (pilot formundaki seçenekler buna göre).
+
+### Beklemede / başkasında
+
+- Föy cevap anahtarı (föy basımı).
+- ChatGPT PR'ları #519, #522, #525, #483 — bitince Claude canlıya alır.
+- Rapor Merkezi hızlı PDF yazıcısı (`karne-writer` dalı GitHub'da yok; istenirse yeniden).
+- Yanlış soru zincirinde "oyun" adımı kararı.
+- Soru havuzu dolunca (2027) sitede gerçek soru sayısı.
+
+## 13 Kasım 2026: yapılanlar
+
+- anunex.com mobil düzeltmeleri ve pilot okul başvurusu canlıda (PR #548). İngilizce kazanımlı telefon görüntüsü olduğu gibi kaldı.
+- Gemini model seçimi canlıda (PR #549).
+- KVKK aydınlatma metinleri taslak olarak yazıldı (0181, `docs/KVKK-aydinlatma-metinleri-taslak.md`): öğrenci, veli, öğretmen, rehber öğretmen, kurum yöneticisi ve Nibiru ek bilgilendirmesi. Süper Admin › KVKK Metinleri'nde okunur/düzenlenir; [ ] alanlar doldurulmadan yayımlanamaz. Hukuk incelemesi gerekir.
+## 13 Kasım 2026: Nibiru 2.0 (sahip kararları)
+
+- Kararlar: görev "hepsi dengeli", ton "samimi abi/abla", model "ücretsiz Gemini". Şikâyetler: aynı cevabı tekrarlama, robot gibi dil, ChatGPT/Claude hissi yok; gezegen sayfada sabit kalmasın, öğrenci telefonda/tablette taşıyıp döndürebilsin.
+- Yapılan (PR nibiru-2): Gemini sohbet motoru (`worker/lib/nibiru-gemini.ts`, 0182) — modele ad/numara/iletişim/rehberlik notu gitmez, {ad} yer tutucusu ANUNEX'te doldurulur; son konuşma (1 gün) bağlam olarak, 30 gün sonra silinir; eylemler yalnız gerçek veriyle (video bölümü, rehbere yaz, haftalık program); günlük 900 / kişi başı 60 çağrı sınırı; kural tabanlı yol yedek.
+- **KVKK kapısı:** Canlıda Gemini sohbeti, Süper Admin › KVKK › Veri işleyenler'de "Google Gemini" kaydı (hukuk incelemesi + DPA durumu) ve aktarım kaydı onaylanana kadar KAPALI. Kazanım videosu araması kişisel veri göndermediği için bu kapıya bağlı değil.
+- Kural tabanlı yol düzeltmeleri: her cevaba plan eklenmez (yalnız plan sorulunca), sayılar Türkçe (4,67), isimler Türkçe ekle (Ali'nin), "canım sıkkın…" gibi cümleler duygu cevabı alır.
+- Sohbet ekranı yenilendi: sade akış, yazarak gelen cevap, kalın/madde biçimi, takip çipleri, video bölümü ekranda oynar, aşağıda sabit yazma kutusu.
+- Öğrenci panelinde sürüklenebilir Nibiru gezegeni: parmakla taşınır, hareketle döner, kenara yapışır, iki kez dokununca döner, dokununca Nibiru açılır; yeri cihazda hatırlanır.
+
+## 13 Kasım 2026 akşam: öğrenci rehberliği ve KVKK sırası
+
+- **KVKK işleri en sona alındı (şirket kurulduktan sonra):** aydınlatma metinlerinin şirket bilgileriyle doldurulup yayımlanması; giriş ekranında "Okudum ve anladım"; okul yöneticisi için Kurum Veri İşleme Sözleşmesi ve Veri Sorumlusu Taahhüdü kabul ekranı; Google Gemini / Workers AI veri işleyen ve aktarım kayıtları; avukat incelemesi. Not: Gemini API şartları 18 yaş altına yönelik uygulamalarda kullanımı yasaklıyor — öğrenci sohbeti için Gemini açılmayacak.
+- **Rehberliğim (yapıldı):** Öğrenci yalnız rehber öğretmenin gönderdiklerini görür: verilen haftalık program, açılan testler, davet edildiği anketler, sınıfla paylaşılan kaynaklar, kendisiyle paylaşılan destek planı, istenen ekran günlüğü ve planlı görüşme saati (konu/not gösterilmez). Menüde tek "Rehberliğim" + her zaman "Rehberime yaz". Test kataloğu ve RBA sekmesi öğrenciden kaldırıldı; ekran günlüğü rehber "Günlüğü aç" dediğinde açılır (0183).
+
+### 13 Kasım 2026 · Nibiru: kişisel veri göndermeyen mod
+- Karar (sahip): Gemini kapalı; Nibiru Cloudflare Workers AI ile çalışır. Modele yalnız temizlenmiş mesaj, rol, sınıf düzeyi ve uzman kişiliği gider; ad, sınav, net, puan gitmez.
+- "Netlerim nasıl", "çocuğum nasıl gidiyor", "sınıfımın durumu" gibi kendi verisi soruları ANUNEX'in doğrulanmış verisinden cevaplanır (video/plan düğmeleriyle).
+- Konu anlatımı, soru, tavsiye ve sohbet beş uzmandan uygun olanın kişiliğiyle Workers AI'a gider; bilgi sohbeti geçmişi veri cevaplarından ayrı tutulur.
+- Kazanım başarı yüzdeleri (0–1 ölçeği) artık doğru yüzde olarak gösterilir.
+
+### 13 Kasım 2026 · Nibiru'nun doğal sesi geri geldi (ücretsiz Google WaveNet)
+- Tespit: Ağustos'tan beri ses Google WaveNet (tr-TR-Wavenet-E) idi; 9 Ekim'deki "ücretli sesi koru" değişikliği tüm bulut seslerini NIBIRU_PAID_VOICE_ENABLED'a bağladı, o günden beri cihaz sesi kullanılıyordu.
+- Karar (sahip onayı): NIBIRU_GOOGLE_FREE_VOICE=ON ile yalnız Google WaveNet; ücretli sağlayıcı yok. Platform geneli aylık 3,5 milyon karakter tavanı (Google'ın ücretsiz WaveNet kotası 4 milyon); tavanda ay sonuna kadar cihaz sesi.
+- Google'a giden metinden ad çıkarılır; madde işaretleri, "%", "·" ve emojiler sesli okumaya uygun hale getirilir. Doğal ses alınamazsa cihaz sesi okur.
+
+### 23 Kasım 2026 · Kazanım videoları: kalite ve hız
+- Karar (sahip): 8. ve 12. sınıf müfredatı 2027-2028'de Maarif modeline geçiyor; bu sınıflarda otomatik video aranmaz (`OUTCOME_VIDEO_SKIP_GRADES=8,12`). Öğretmen yine okulun videosunu ekleyebilir.
+- Kalite kuralları: başka sınıfın ya da başka dersin videosu, eğitim dışı kanal ve kazanımı adıyla söylemeyen kısa video kabul edilmez. Daha önce bulunan videolar bir kez bu kurallarla denetlenir (8. sınıf hariç); uymayan kaldırılır, o kazanım için bir daha gelmez ve yeniden aranır. Ön inceleme: 247 videodan 20'si kalkar.
+- Hız: bir aramadan gelen videolar aynı sınıf ve dersteki diğer kazanımlar için de denenir (ek kota harcanmaz).
+- Sıra: sorusu olan kazanımlar, sonra 5–7, sonra 9–11; Matematik/Fen/Türkçe önce, İngilizce en son.
+- Not (23 Kasım): Node 22.23.5 ile gelen SQLite 3.54 alt sorgu JSON'unu metin yaptı; sonuç arşivi kaydı `json()` ile düzeltildi (PR #557).
+
+### 24 Kasım 2026 · Nibiru veli uygulaması (WhatsApp yerine)
+- Karar (sahip): WhatsApp kanalı ekranlardan kaldırıldı (kod duruyor, sunucuda kapalı). Veli Nibiru'yu WhatsApp gibi kullanır: telefonuna "Nibiru" simgesi olarak ekler, dokununca doğrudan sohbet açılır; sağ üstteki ANUNEX düğmesiyle panele geçer, panelde sağ alttaki Nibiru gezegeniyle geri döner.
+- Veli tarayıcıdan girişte de önce Nibiru'yu görür (oturumda bir kez).
+- Gerekçe: mesaj başına ücret yok, şirket/Meta doğrulaması gerekmez, veri kendi sistemimizde kalır. Telegram/BiP/WhatsApp/mağaza uygulaması karşılaştırıldı.
+- Sıradaki: Nibiru bildirimleri (sonuç açıklandı, rehber öğretmenden mesaj) — bildirimde kişisel bilgi yok.
+
+### 24 Kasım 2026 · Nibiru veli uygulaması 2
+- Sohbet geçmişi saklanır (çocuk başına ayrı, 180 gün); açılınca geri gelir.
+- Nibiru önce yazar: sonuç açıklandığında (son 3 gün) veli ve öğrenciye, günlük devamsızlıkta veliye; her olay kişi başına bir kez. Telefona metinsiz bildirim (VAPID anahtarı sistemde üretilir, ücret yok); telefon "Nibiru · Yeni bir mesajınız var" yazar.
+- Cevaplarda kartlar: sonuç (net, değişim, son 6 sınav çizgisi), zorlanılan konular (çubuklar), rehber öğretmen onaylı veli notları.
+- 👍/👎 değerlendirme; Süper Admin > Nibiru Yönetimi'nde son 30 gün ve 👎 alan cevaplar (ad gösterilmez). Veli deneme seti: 30 tipik soru (tests/nibiru-parent-eval-set.test.ts).
+- Son rötuş: 5 tema (Gece mavisi, Gece, Gün ışığı, Orman, Lavanta), ilk açılışta 3 kartlık tanışma, gezegende okunmamış mesaj sayısı.

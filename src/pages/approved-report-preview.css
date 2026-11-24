@@ -99,3 +99,7 @@
  }
  @media(prefers-reduced-motion:reduce) { .app-shell[data-panel-theme="ANUNEX_STANDARD"] .approved-report-workspace[data-report-role="SUPER_ADMIN"] * { transition:none !important; animation:none !important; scroll-behavior:auto !important; } }
 }
+/* Exam picker: a checkbox must not stretch to full width and squeeze the exam title into a vertical column. */
+.approved-report-exams .list-card{display:flex;gap:12px}
+.approved-report-exams .list-card input[type="checkbox"]{width:20px;height:20px;min-width:20px;flex:0 0 20px;margin:0}
+.approved-report-exams .list-card>div{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}

@@ -70,3 +70,13 @@
 @media screen { .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-outcome-editor .exam-strict-toggle { min-height:40px; } }
 
 @media screen { .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-key-editor .question-meta-grid { max-height:420px; overflow-y:auto; overscroll-behavior:contain; } .app-shell[data-panel-theme="ANUNEX_STANDARD"].role-super_admin .approved-outcome-editor .table-card { max-height:640px; overflow-y:auto; } }
+
+/* Owner (5 Nov): re-upload, preview and clear actions of an exam's answer key */
+.approved-key-editor .key-manage-bar { display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin:0 0 14px; }
+.approved-key-editor .key-manage-bar .key-upload { display:inline-flex; align-items:center; gap:6px; min-height:40px; padding:8px 14px; border:1px solid var(--border,#d6dde3); border-radius:10px; cursor:pointer; font-weight:600; }
+.approved-key-editor .key-manage-bar .danger { color:#9a3442; border-color:#e5b8bf; }
+.approved-key-editor .key-import-preview { display:block!important; margin:0 0 14px; line-height:1.5; }
+.approved-key-editor .key-import-preview > * { display:block; }
+.approved-key-editor .key-import-preview .key-import-actions { display:flex; }
+.approved-key-editor .key-import-preview ul { margin:6px 0 6px 18px; }
+.approved-key-editor .key-import-actions { display:flex; flex-wrap:wrap; gap:8px; justify-content:flex-end; margin-top:8px; }

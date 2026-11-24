@@ -1,0 +1,2128 @@
+2
+İÇİNDEKİLER
+
+1. MİLLÎ EĞİTİM BAKANLIĞI ÖĞRETİM PROGRAMLARI                             4
+  1.1. ÖĞRETİM PROGRAMLARININ AMAÇLARI                                    4
+  1.2. ÖĞRETİM PROGRAMLARININ PERSPEKTİFİ                                 5
+       1.2.1. Değerlerimiz                                                5
+       1.2.2. Yetkinlikler                                                6
+  1.3. ÖĞRETİM PROGRAMLARINDA ÖLÇME VE DEĞERLENDİRME YAKLAŞIMI            8
+  1.4. BİREYSEL GELİŞİM VE ÖĞRETİM PROGRAMLARI                            9
+  1.5. SONUÇ                                                              10
+2. ÖĞRETİM PROGRAMININ UYGULANMASI                                        12
+  2.1. ÖĞRETİM PROGRAMININ ÖZEL AMAÇLARI                                  12
+  2.2. ALANA ÖZGÜ BECERİLER                                               12
+  2.3. ÖĞRETİM PROGRAMININ UYGULANMASINDA DİKKAT EDİLECEK HUSUSLAR        13
+     2.3.1. ÖĞRETİM MATERYALİ HAZIRLANMASINA İLİŞKİN AÇIKLAMALAR          14
+  2.4. KAZANIM SAYISI VE SÜRE TABLOSU                                     17
+  2.5. TÜRK DİLİ VE EDEBİYATI DERSİ KİTAP FORMA SAYILARI VE KİTAP EBADI   17
+3. ÖĞRETİM PROGRAMININ YAPISI                                             18
+  3.1. TÜRK DİLİ VE EDEBİYATI DERSİ ÖĞRETİM PROGRAMI’NIN YAPISI           18
+  3.2. KONU, KAZANIM VE AÇIKLAMALARI                                      19
+  3.3. ÜNİTE, SÜRE VE İÇERİK TABLOLARI                                    30
+
+
+
+
+                                                                               3
+    1                  MİLLÎ EĞİTİM BAKANLIĞI ÖĞRETİM PROGRAMLARI
+
+
+              Bilim ve teknolojide yaşanan hızlı değişim, bireyin ve toplumun değişen ihtiyaçları, öğrenme
+    öğretme teori ve yaklaşımlarındaki yenilik ve gelişmeler bireylerden beklenen rolleri de doğrudan
+    etkilemiştir. Bu değişim bilgiyi üreten, hayatta işlevsel olarak kullanabilen, problem çözebilen,
+    eleştirel düşünen, girişimci, kararlı, iletişim becerilerine sahip, empati yapabilen, topluma ve kültüre
+    katkı sağlayan vb. niteliklerdeki bir bireyi tanımlamaktadır. Bu nitelik dokusuna sahip bireylerin
+    yetişmesine hizmet edecek öğretim programları salt bilgi aktaran bir yapıdan ziyade bireysel
+    farklılıkları dikkate alan, değer ve beceri kazandırma hedefli, sade ve anlaşılır bir yapıda
+    hazırlanmıştır. Bu amaç doğrultusunda bir taraftan farklı konu ve sınıf düzeylerinde sarmal bir
+    yaklaşımla tekrar eden kazanımlara ve açıklamalara, diğer taraftan bütünsel ve bir kerede
+    kazandırılması hedeflenen öğrenme çıktılarına yer verilmiştir. Her iki gruptaki kazanım ve açıklamalar
+    da ilgili disiplinin yetkin, güncel, geçerli ve eğitim öğretim sürecinde hayatla ilişkileri kurulabilecek
+    niteliktedir. Bu kazanımlar ve sınırlarını belirleyen açıklamaları, sınıflar ve eğitim kademeleri
+    düzeyinde değerler, beceriler ve yetkinlikler perspektifinde bütünlük sağlayan bir bakış açısıyla yalın
+    bir içeriğe işaret etmektedir. Böylelikle üst bilişsel becerilerin kullanımına yönlendiren, anlamlı ve
+    kalıcı öğrenmeyi sağlayan, sağlam ve önceki öğrenmelerle ilişkilendirilmiş, diğer disiplinlerle ve
+    günlük hayatla değerler, beceriler ve yetkinlikler çevresinde bütünleşmiş bir öğretim programları
+    toplamı oluşturulmuştur.
+
+    1.1. ÖĞRETİM PROGRAMLARININ AMAÇLARI
+
+
+              Öğretim programları, 1739 sayılı Millî Eğitim Temel Kanununun 2. maddesinde ifade edilen
+    “Türk Millî Eğitiminin Genel Amaçları” ile “Türk Millî Eğitiminin Temel İlkeleri” esas alınarak
+    hazırlanmıştır.
+              Eğitim ve öğretim programlarıyla sürdürülen tüm çalışmalar; okul öncesi, ilköğretim ve
+    ortaöğretim seviyelerinde birbirini tamamlayıcı bir şekilde aşağıdaki amaçlara ulaşmaya yöneliktir:
+    1. Okul öncesi eğitimi tamamlayan öğrencilerin bireysel gelişim süreçleri göz önünde bulundurularak
+        bedensel, zihinsel ve duygusal alanlarda sağlıklı şekilde gelişimlerini desteklemek
+    2. İlkokulu tamamlayan öğrencilerin gelişim düzeyine ve kendi bireyselliğine uygun olarak ahlaki
+        bütünlük ve öz farkındalık çerçevesinde, öz güven ve öz disipline sahip, gündelik hayatta ihtiyaç
+        duyacağı temel düzeyde sözel, sayısal ve bilimsel akıl yürütme ile sosyal becerileri ve estetik
+        duyarlılığı kazanmış, bunları etkin bir şekilde kullanarak sağlıklı hayat yönelimli bireyler olmalarını
+        sağlamak
+
+
+
+
+4
+3. Ortaokulu tamamlayan öğrencilerin, ilkokulda kazandıkları yetkinlikleri geliştirmek suretiyle millî ve
+   manevi değerleri benimsemiş, haklarını kullanan ve sorumluluklarını yerine getiren, “Türkiye
+   Yeterlilikler Çerçevesi”nde ve ayrıca disiplinlere özgü alanlarda ifadesini bulan temel düzey beceri
+   ve yetkinlikleri kazanmış bireyler olmalarını sağlamak
+4. Liseyi tamamlayan öğrencilerin, ilkokulda ve ortaokulda kazandıkları yetkinlikleri geliştirmek
+   suretiyle, millî ve manevi değerleri benimseyip hayat tarzına dönüştürmüş, üretken ve aktif
+   vatandaşlar olarak yurdumuzun iktisadi, sosyal ve kültürel kalkınmasına katkıda bulunan, “Türkiye
+   Yeterlilikler Çerçevesi”nde ve ayrıca disiplinlere özgü alanlarda ifadesini bulan temel düzey beceri
+   ve yetkinlikleri kazanmış, ilgi ve yetenekleri doğrultusunda bir mesleğe, yükseköğretime ve hayata
+   hazır bireyler olmalarını sağlamak
+
+
+1.2. ÖĞRETİM PROGRAMLARININ PERSPEKTİFİ
+
+
+         Eğitim sistemimizin temel amacı değerlerimiz ve yetkinliklerle bütünleşmiş bilgi, beceri ve
+davranışlara sahip bireyler yetiştirmektir. Bilgi, beceri ve davranışlar öğretim programlarıyla
+kazandırılmaya çalışılırken değerlerimiz ve yetkinlikler bu bilgi, beceri ve davranışların arasındaki
+bütünlüğü kuran bağlantı ve ufuk işlevi görmektedir. Değerlerimiz toplumumuzun millî ve manevi
+kaynaklarından damıtılarak dünden bugüne ulaşmış ve yarınlarımıza aktaracağımız öz mirasımızdır.
+Yetkinlikler ise bu mirasın hayata ve insanlık ailesine katılmasını ve katkı vermesini sağlayan eylemsel
+bütünlüklerimizdir. Bu yönüyle değerlerimiz ve yetkinlikler birbirinden ayrılmaz bir şekilde teori-
+pratik bütünlüğündeki asli parçamızı oluşturur. Güncellik içinde öğrenme öğretme süreçleriyle
+kazandırmaya çalıştığımız bilgi, beceri ve davranışlar ise bizi biz yapan değerlerimizin ve yetkinliklerin
+günün şartları içinde görünürlük kazanma araç ve platformlarıdır; günün şartları içinde değişiklik
+gösterebilir yapısıyla arızîdir ve bu sebeple de sürekli gözden geçirmelerle güncellenir, yenilenir.
+
+
+1.2.1. Değerlerimiz
+
+
+         Değerlerimiz öğretim programlarının perspektifini oluşturan ilkeler toplamıdır. Kökleri
+geleneklerimiz ve dünümüz içinde, gövdesi ve dalları bu köklerden beslenerek bugünümüze ve
+yarınlarımıza uzanmaktadır. Temel insani özelliklerimizi oluşturan değerlerimiz, hayatımızın rutin
+akışında ve karşılaştığımız sorunlarla başa çıkmada eyleme geçmemizi sağlayan kudretin ve gücün
+kaynağıdır.
+         Bir toplumun geleceğinin, değerlerini benimsemiş ve bu değerleri sahip olduğu yetkinliklerle
+ete kemiğe büründüren insanlarına bağlı olduğu tartışma götürmez bir gerçektir. Bundan dolayı
+
+
+
+                                                                                                             5
+    eğitim sistemimiz her bir üyesine uygun ahlaki kararlar alma ve bunları davranışlarında sergileme
+    yeterliliğini kazandırma amacıyla hareket eder. Eğitim sistemi sadece akademik açıdan başarılı,
+    belirlenmiş bazı bilgi, beceri ve davranışları kazandıran bir yapı değildir. Temel değerleri benimsemiş
+    bireyler yetiştirmek asli görevidir; yeni neslin değerlerini, alışkanlıklarını ve davranışlarını
+    etkileyebilmelidir. Eğitim sistemi değerleri kazandırma amacı çerçevesindeki işlevini, öğretim
+    programlarını da kapsayan eğitim programıyla yerine getirir. “Eğitim programı”; öğretim programları,
+    öğrenme öğretme ortamları, eğitim araç gereçleri, ders dışı etkinlikler, mevzuat gibi eğitim sisteminin
+    tüm unsurları göz önünde bulundurularak oluşturulur. Öğretim programlarında bu anlayışla
+    değerlerimiz, ayrı bir program veya öğrenme alanı, ünite, konu vb. olarak görülmemiştir. Tam aksine
+    bütün eğitim sürecinin nihai gayesi ve ruhu olan değerlerimiz, öğretim programlarının her birinde ve
+    her bir biriminde yer almıştır.
+              Öğretim programlarında yer alan “kök değerler” şunlardır: adalet, dostluk, dürüstlük, öz
+    denetim, sabır, saygı, sevgi, sorumluluk, vatanseverlik, yardımseverlik. Bu değerler, öğrenme öğretme
+    sürecinde hem kendi başlarına, hem ilişkili olduğu alt değerlerle ve hem de öteki kök değerlerle
+    birlikte ele alınarak hayat bulacaktır.
+
+
+    1.2.2. Yetkinlikler
+
+
+              Eğitim sistemimiz yetkinliklerde bütünleşmiş bilgi, beceri ve davranışlara sahip karakterde
+    bireyler yetiştirmeyi amaçlar. Öğrencilerin hem ulusal hem de uluslararası düzeyde; kişisel, sosyal,
+    akademik ve iş hayatlarında ihtiyaç duyacakları beceri yelpazeleri olan yetkinlikler Türkiye Yeterlilikler
+    Çerçevesinde (TYÇ) belirlenmiştir. TYÇ sekiz anahtar yetkinlik belirlemekte ve aşağıdaki gibi
+    tanımlamaktadır:
+    1) Anadilde iletişim: Kavram, düşünce, görüş, duygu ve olguları hem sözlü hem de yazılı olarak ifade
+       etme ve yorumlama (dinleme, konuşma, okuma ve yazma); eğitim ve öğretim, iş yeri, ev ve
+       eğlence gibi her türlü sosyal ve kültürel bağlamda uygun ve yaratıcı bir şekilde dilsel etkileşimde
+       bulunmaktır.
+    2) Yabancı dillerde iletişim: Çoğunlukla ana dilde iletişimin temel beceri boyutlarını paylaşmakta olup
+       duygu, düşünce, kavram, olgu ve görüşleri hem sözlü hem de yazılı olarak kişinin istek ve
+       ihtiyaçlarına göre eğitim, öğretim, iş yeri, ev ve eğlence gibi uygun bir dizi sosyal ve kültürel
+       bağlamda anlama, ifade etme ve yorumlama becerisine dayalıdır. Yabancı dillerde iletişim, aracılık
+       etme ve kültürlerarası anlayış becerilerini de gerektirmektedir. Bireyin yeterlilik seviyesi, bireyin
+       sosyal ve kültürel geçmişi, çevresi, ihtiyaçları ve ilgilerine bağlı olarak dinleme, konuşma, okuma
+       ve yazma boyutları ile farklı diller arasında değişkenlik gösterecektir.
+
+
+
+
+6
+3) Matematiksel yetkinlik ve bilim/teknolojide temel yetkinlikler: Matematiksel yetkinlik, günlük
+   hayatta karşılaşılan bir dizi problemi çözmek için matematiksel düşünme tarzını geliştirme ve
+   uygulamadır. Sağlam bir aritmetik becerisi üzerine inşa edilen süreç, faaliyet ve bilgiye vurgu
+   yapılmaktadır. Matematiksel yetkinlik, düşünme (mantıksal ve uzamsal düşünme) ve sunmanın
+   (formüller, modeller, kurgular, grafikler ve tablolar) matematiksel modlarını farklı derecelerde
+   kullanma beceri ve isteğini içermektedir.
+   Bilimde yetkinlik, soruları tanımlamak ve kanıta dayalı sonuçlar üretmek amacıyla doğal dünyanın
+   açıklanmasına yönelik bilgi varlığına ve metodolojiden yararlanma beceri ve arzusuna atıfta
+   bulunmaktadır. Teknolojide yetkinlik, algılanan insan istek ve ihtiyaçlarını karşılama bağlamında
+   bilgi ve metodolojinin uygulanması olarak görülmektedir. Bilim ve teknolojide yetkinlik, insan
+   etkinliklerinden kaynaklanan değişimleri ve her bireyin vatandaş olarak sorumluluklarını kavrama
+   gücünü kapsamaktadır.
+4) Dijital yetkinlik: İş, günlük hayat ve iletişim için bilgi iletişim teknolojilerinin güvenli ve eleştirel
+   şekilde kullanılmasını kapsar. Söz konusu yetkinlik, bilgiye erişim ve bilginin değerlendirilmesi,
+   saklanması, üretimi, sunulması ve alışverişi için bilgisayarların kullanılması ayrıca internet
+   aracılığıyla ortak ağlara katılım sağlanması ve iletişim kurulması gibi temel beceriler yoluyla
+   desteklenmektedir.
+5) Öğrenmeyi öğrenme: Bireyin kendi öğrenme eylemini etkili zaman ve bilgi yönetimini de
+   kapsayacak şekilde bireysel olarak veya grup hâlinde düzenleyebilmesi için öğrenmenin peşine
+   düşme ve bu konuda ısrarcı olma yetkinliğidir. Bu yetkinlik, bireyin var olan imkânları tanıyarak
+   öğrenme ihtiyaç ve süreçlerinin farkında olmasını ve başarılı bir öğrenme eylemi için zorluklarla
+   başa çıkma yeteneğini kapsamaktadır. Yeni bilgi ve beceriler kazanmak, işlemek ve kendine
+   uyarlamak kadar rehberlik desteği aramak ve bundan yararlanmak anlamına da gelir. Öğrenmeyi
+   öğrenme, bilgi ve becerilerin ev, iş yeri, eğitim ve öğretim ortamı gibi çeşitli bağlamlarda
+   kullanılması ve uygulanması için önceki öğrenme ve hayat tecrübelerine dayanılması yönünde
+   öğrenenleri harekete geçirir.
+6) Sosyal ve vatandaşlıkla ilgili yetkinlikler: Bu yetkinlikler kişisel, kişilerarası ve kültürlerarası
+   yetkinlikleri içermekte; bireylerin farklılaşan toplum ve çalışma hayatına etkili ve yapıcı biçimde
+   katılmalarına imkân tanıyacak; gerektiğinde çatışmaları çözecek özelliklerle donatılmasını sağlayan
+   tüm davranış biçimlerini kapsar. Vatandaşlıkla ilgili yetkinlik ise bireyleri, toplumsal ve siyasal
+   kavram ve yapılara ilişkin bilgiye, demokratik ve aktif katılım kararlılığına dayalı olarak medeni
+   hayata tam olarak katılmaları için donatmaktadır.
+7) İnisiyatif alma ve girişimcilik: Bireyin düşüncelerini eyleme dönüştürme becerisini ifade eder.
+   Yaratıcılık, yenilik ve risk almanın yanında hedeflere ulaşmak için planlama yapma ve proje
+   yönetme yeteneğini de içerir. Bu yetkinlik, herkesi sadece evde ve toplumda değil işlerine ait
+
+
+
+                                                                                                               7
+         bağlam ve şartların farkında olabilmeleri ve iş fırsatlarını yakalayabilmeleri için aynı zamanda iş
+         hayatında desteklemekte; toplumsal ve ticari etkinliklere girişen veya katkıda bulunan kişilerin
+         ihtiyaç duydukları daha özgün bilgi ve beceriler için de bir temel teşkil etmektedir. Etik değerlerin
+         farkında olma ve iyi yönetişimi desteklemeyi de kapsar.
+    8) Kültürel farkındalık ve ifade: Müzik, sahne sanatları, edebiyat ve görsel sanatlar dâhil olmak üzere
+         çeşitli kitle iletişim araçları kullanılarak görüş, deneyim ve duyguların yaratıcı bir şekilde ifade
+         edilmesinin öneminin takdiridir.
+
+
+     1.3. ÖĞRETİM PROGRAMLARINDA ÖLÇME VE DEĞERLENDİRME YAKLAŞIMI
+
+
+               Hiçbir insan bir başkasının birebir aynısı değildir. Bu sebeple öğretim programlarının ve
+    buna bağlı olarak ölçme ve değerlendirme sürecinin “herkese uygun”, “herkes için geçerli ve standart
+    olması” insanın doğasına terstir. Bu sebeple ölçme ve değerlendirme sürecinde azami çeşitlilik ve
+    esneklik anlayışıyla hareket edilmesi şarttır. Öğretim programları bu açıdan bir yol göstericidir.
+    Öğretim programlarından ölçme değerlendirmeye ait bütün unsurları içermesini beklemek gerçekçi
+    bir beklenti olarak değerlendirilemez. Eğitimde çeşitlilik; birey, eğitim düzeyi, ders içeriği, sosyal
+    ortam, okul imkânları vb. iç ve dış dinamiklerden ciddi şekilde etkilendiği için, ölçme ve
+    değerlendirme uygulamalarının etkililiğini sağlamada öncelik öğretim programlarından değil
+    öğretmen ve eğitim uygulayıcılarından beklenir. Bu noktada özgünlük ve yaratıcılık öğretmenlerden
+    temel beklentidir.
+
+               Bu bakış açısından hareketle öğretim programlarında ölçme ve değerlendirme
+    uygulamalarına yön veren ilkeleri aşağıdaki gibi özetlemek mümkündür:
+
+    1.    Ölçme ve değerlendirme çalışmaları öğretim programının tüm bileşenleri ile azami uyum
+          sağlamalı, kazanım ve açıklamaların sınırları esas alınmalıdır.
+    2.    Öğretim programı, ölçme sürecinde kullanılabilecek ölçme araç ve yöntemleri açısından
+          uygulayıcılara kesin sınırlar çizmez, sadece yol gösterir. Ancak tercih edilen ölçme ve
+          değerlendirme araç ve yönteminde, gereken teknik ve akademik standartlara uyulmalıdır.
+    3.    Eğitimde ölçme ve değerlendirme uygulamaları eğitimin ayrılmaz bir parçasıdır ve eğitim süreci
+          boyunca yapılır. Ölçme sonuçları tek başına değil izlenen süreçlerle birlikte bütünlük içinde ele
+          alınır.
+    4.    Bireysel farklılıklar gerçeğinden dolayı bütün öğrencileri kapsayan, bütün öğrenciler için genel
+          geçer, tek tip bir ölçme ve değerlendirme yönteminden söz etmek uygun değildir. Öğrencinin
+          akademik gelişimi tek bir yöntemle veya teknikle ölçülüp değerlendirilmez.
+
+
+
+
+8
+5.   Eğitim sadece “bilme (düşünce)” için değil, “hissetme (duygu)” ve “yapma (eylem)” için de verilir;
+     dolayısıyla sadece bilişsel ölçümler yeterli kabul edilemez.
+6.   Çok odaklı ölçme değerlendirme esastır. Ölçme ve değerlendirme uygulamaları öğretmen ve
+     öğrencilerin aktif katılımıyla gerçekleştirilir.
+7.   Bireylerin ölçme ve değerlendirmeye konu olan ilgi, tutum, değer ve başarı gibi özellikleri
+     zamanla değişebilir. Bu sebeple söz konusu özellikleri tek bir zamanda ölçmek yerine süreç
+     içindeki değişimleri dikkate alan ölçümler kullanmak esastır.
+
+
+
+1.4. BİREYSEL GELİŞİM VE ÖĞRETİM PROGRAMLARI
+
+
+             Öğretim programlarının geliştirilmesi sürecinde insanın çok yönlü gelişimsel özelliklerine
+dair mevcut bilimsel bilgi ve birikim dikkate alınarak bütün bileşenler arasında ahengi dikkate alan
+harmonik bir yaklaşım benimsenmiştir. Bu bağlamda bazı temel gelişim ilkelerine değinmek yerinde
+olacaktır.
+
+             Öğretim programları, insan gelişiminin belirli bir dönemde sonlanmadığı ve gelişimin hayat
+boyu sürdüğü ilkesi ile hazırlanmıştır. Bu sebeple öğretim programlarında, her yaş döneminde
+bireylerin gelişim özelliklerini dikkate alarak destekleyici önlemler alınması önerilmektedir.
+
+             Gelişim, hayat boyu sürse de tek ve bir örnek yapıda değildir. Evreler hâlinde ilerler ve her
+evrede bireylerin gelişim özellikleri farklıdır. Evreler de başlangıç ve bitişleri açısından homojen
+değildir. Bu sebeple programlar olabildiğince bunu göz önünde bulunduran bir hassasiyetle
+yapılandırılmıştır. Programların amaçlarını ve kazanımlarını gerçekleştirme sürecinde gerekli
+uyarlamaların öğretmen tarafından yapılması beklenir.
+
+             Gelişim dönemleri ardışık ve değişmeyen bir sıra izler. Her evrede olup bitenler takip eden
+evreleri etkiler. Öte yandan bu ardışıklık belirli yönelimlerle karakterize edilir: basitten karmaşığa,
+genelden özele ve somuttan soyuta doğru gelişim gibi. Program geliştirme sürecinde söz konusu
+yönelimler hem bir alandaki yeterliliği oluşturan kazanım ve becerilerin ön şart ve ardıllığı noktasında
+dikkate alınmış hem de sınıflar düzeyinde derslerin dağılımlarında ve birbirleriyle ilişkilerinde göz
+önünde bulundurulmuştur.
+
+             Öğretim programlarında insan gelişiminin bir bütün olduğu ilkesi ile hareket edilmiştir.
+İnsanın farklı gelişim alanlarındaki özellikleri birbirleri ile etkileşim hâlindedir. Söz gelimi dil gelişimi
+düşünce gelişimini etkiler ve düşünce gelişiminden etkilenir. Bu sebeple öğretmenlerden, öğrencinin
+edindiği bir kazanımın, gelişimde başka bir alanı da etkileyeceğini dikkate alması beklenir.
+
+
+
+
+                                                                                                                9
+               Öğretim programları bireysel farklılıklara ilişkin hassasiyetler göz önünde bulundurularak
+     yapılandırılmıştır. Kalıtımsal, çevresel ve kültürel faktörlerden kaynaklanan bireysel farklılıklar ilgi,
+     ihtiyaç ve yönlenme açısından da kendini belli eder. Öte yandan bu durum bireylerarası ve bireyin
+     kendi içindeki farklılıkları da kapsar. Bireyler hem başkalarından farklılık gösterir hem de kendi
+     içindeki özellikleri ile farklıdır. Örneğin bir bireyin soyut düşünme yeteneği güçlü iken aynı bireyin
+     resim yeteneği zayıf olabilir.
+
+               Gelişim hayat boyu sürmekle birlikte bu gelişimin hızı evrelere göre değişkendir. Hızın
+     yüksek olduğu zamanlar gelişim açısından riskli ve kritik zamanlardır. Bu sebeple öğretmenlerin
+     gelişim hızının yüksek olduğu zamanlarda öğrencinin durumuna daha duyarlı davranması beklenir.
+     Söz gelimi ergenlik dönemi kimlik edinimi için kritik dönemdir ve eğitim bu dönemde kimlik edinimini
+     destekleyici sosyal etkileşimleri artırır ve yönetir.
+
+     1.5. SONUÇ
+
+
+               Elimizdeki programları güncelleme sürecinde hangi işlemlerden ve aşamalardan geçtiğimiz
+     üzerine bilgi vermek de yerinde olacaktır. Bu bağlamda:
+
+         Farklı ülkelerin son yıllarda benzer gerekçelerle yenilenip güncellenen öğretim programları
+          incelenmiş,
+         Yurt içinde ve yurt dışında eğitim öğretim ve programlar üzerine yapılan akademik çalışmalar
+          taranmış,
+         Başta Anayasamız olmak üzere ilgili mevzuat, kalkınma planları, hükûmet programları, şûra
+          kararları, siyasi partilerin programları, sivil toplum kuruluşları ve sivil araştırma kurumları
+          tarafından hazırlanan raporlar vb. dokümanlar analiz edilmiş,
+         Millî Eğitim Bakanlığı programlar ve öğretim materyalleri daire başkanlıkları tarafından
+          geliştirilen anketler aracılığıyla öğretmen ve yöneticilerin programlar ve haftalık ders
+          çizelgelerine yönelik görüşleri toplanmış,
+         İllerden gelen her bir branşla ilgili zümre raporları incelenmiş,
+         Branşlara yönelik açık uçlu sorulardan oluşan ve elektronik ortamda erişime açılan anket verileri
+          derlenmiş,
+         Eğitim fakültelerimizin branşlar ölçeğinde hazırladıkları raporlar incelenmiş,
+     Bütün görüş, öneri, eleştiri ve beklentiler, Bakanlığımızın ilgili birimlerinden uzman personel,
+     öğretmen ve akademisyenlerden oluşan çalışma gruplarınca değerlendirilmiştir.
+
+
+
+
+10
+         Yapılan tespitler doğrultusunda öğretim programlarımız gözden geçirilip güncellenmiş ve
+yenilenmiştir. Programların uygulanmasına 2018-2019 eğitim öğretim yılı itibarıyla topyekûn
+geçilecek ve sonrasında yapılacak izleme değerlendirme sonuçlarına göre yine gerekli güncellemeler
+yapılacaktır. Böylelikle programlarımızın gelişmelerle ve bilimsel, sosyal, teknolojik vb. ihtiyaçlarla
+koşutluğunun sürekliliği sağlanmış olacaktır.
+
+
+
+
+                                                                                                          11
+     2                                 ÖĞRETİM PROGRAMININ UYGULANMASI
+
+
+     2.1. ÖĞRETİM PROGRAMININ ÖZEL AMAÇLARI
+
+
+      Bu programla öğrencilerin;
+
+          Edebiyatın doğasını, işlevini, birey ve toplum için önemini kavramaları,
+
+          Edebî metinler aracılığıyla Türkçenin inceliklerini, Türk edebiyatının tarih içinde gösterdiği
+
+              değişim ve gelişimi tanımaları,
+
+          Türk edebiyatına ait eserler aracılığıyla millî, manevi, ahlaki, kültürel ve evrensel değerleri
+
+              anlamaları,
+
+          Dinleme, okuma, yazma ve konuşma stratejilerini doğru ve uygun şekilde kullanarak etkili
+
+              iletişimciler olmaları,
+
+          Metinler aracılığıyla okuduğunu anlama ve eleştirel okuma becerilerini geliştirmeleri ve okuma
+
+              alışkanlığı kazanmaları,
+
+          Çeşitli kaynaklardan elde ettikleri bilgileri, soruları cevaplamak, çözüm önerileri üretmek,
+
+              bulgularını paylaşmak vb. amaçlar için analiz etmeleri ve değerlendirmeleri amaçlanmaktadır.
+
+
+
+     2.2. ALANA ÖZGÜ BECERİLER
+
+                 Türk Dili ve Edebiyatı Dersi Öğretim Programı ile dört temel dil becerisinin yanı sıra
+
+                  öğrencilere kazandırılması hedeflenen yeterlilik ve beceriler, aşağıda sunulmuştur.
+
+                   Bilgi Okuryazarlığı
+                   Eleştirel düşünme
+                   Görsel Okuryazarlık
+                   İletişim ve İş birliği
+                   Medya okuryazarlığı 
+                   Yaratıcı düşünme
+              
+
+
+
+
+12
+    Bu yeterlilik ve beceriler, ünite süre ve içerikler tablosunda okuma, yazma, ve sözlü iletişim
+
+     başlıkları altındaki açıklama ve etkinlikler ile doğal olarak ilişkilidir.
+
+    Programın daha etkili sonuçlar verebilmesi amacıyla uygulayıcıların dikkat etmeleri gereken
+     hususlar aşağıda verilmiştir.
+
+
+
+
+    2.3. ÖĞRETİM PROGRAMININ UYGULANMASINDA DİKKAT EDİLECEK
+                                           HUSUSLAR
+
+
+1. Programdaki okuma çalışmalarında metinleri anlamak ve değerlendirmek esastır.
+Değerlendirmenin bir parçası olarak metinlerin edebiyat geleneği içindeki yerini belirlemek üzere
+edebiyat tarihinden yararlanılmalıdır. Ancak bu yararlanma, edebiyat tarihinde bütün türlerin
+gelişimini bir arada vermek yerine, her türün içinde edebiyat geleneğinin yansıtılması şeklinde
+gerçekleşmelidir.
+2. “Giriş” üniteleri ünite tablosunda belirtilen kendi konuları çerçevesinde ele alınacaktır.
+3. Edebiyat eğitimi, edebiyatla ilgili bilgilerin yanı sıra öğrencilerin dilin inceliklerini
+keşfedecekleri, dil bilincini ve becerilerini geliştirecekleri bir zemindir. Bu bilincin ve becerilerin
+geliştirilmesi için öğrencilerin edebiyatla temasının okuyucu rolüyle sınırlanmaması, yazma,
+dinleme ve konuşma yoluyla dil ve edebiyat bilgilerini hayatlarında kullanmalarına olanak
+sağlayacak çalışmalara yer verilmesi önemlidir.
+4. Zümre öğretmenlerince “Ünite, Konu ve İçerikler” tablosu dikkate alınarak belirlenecek
+kitapların okunup tartışılması, öğrencilerin okuma alışkanlığını geliştirecektir. Buna göre Türk Dili
+ve Edebiyatı dersi kapsamında öğrencilerin farklı türlerde yazılmış kitapları okumaları
+sağlanacaktır.
+5.    Türk Dili ve Edebiyatı derslerinde dil bilgisi çalışmaları, öğrencilerin temel eğitimden
+edindikleri bilgilerden hareketle ünitelerdeki ilgili metinler üzerinde yaptırılacaktır. Konu
+anlatımına girilmeyecektir. Temel eğitimde görmüş oldukları konulara yönelik olarak
+gerektiğinde hatırlatma amaçlı kısa açıklamalar yapılabilir.
+6. Ünitelerdeki sözlü iletişim çalışmalarına ait açıklamalar dikkate alınarak konuşma ve dinleme
+uygulamaları aşamalı biçimde gerçekleştirilir. Her ünitenin başında, yapılacak sözlü iletişim
+çalışmaları planlanır, her öğrencinin bir dönemde en az bir sözlü iletişim uygulamasına katılması
+sağlanmalıdır. Ünitelerdeki sözlü iletişim tür ve tekniklerine dair tanıtıcı bilgiler verilmeli, gerekli
+görüldüğünde konuyla ilgili örnek video ve uygulamalardan yararlanılarak öğrencilerin konuşma
+ve dinleme tekniklerini kavramaları sağlanmalıdır.
+
+
+
+
+                                                                                                           13
+          7. Ders işleniş sürecinde kelime veya kelime gruplarının doğru telaffuzuna yönelik çalışmalara
+          yer verilmelidir.
+          8. Dersin işlenişinde ve uygulamalarda görsel iletişim araçlarına yer verilmeli; slayt, bilgisayar,
+          televizyon, etkileşimli tahta, Genel Ağ, EBA uygulamaları vb. etkin olarak kullanılmalıdır.
+          Kazanımlarla ilgili belgesel ve film gibi materyallerden yararlanılmalıdır. Millî Eğitim Bakanlığı
+          tarafından belirlenen dijital kaynakların kullanımı ile ilgili kurallara, güvenlik tedbirlerine
+          uyulmalıdır.
+
+
+            2.3.1. ÖĞRETİM MATERYALİ HAZIRLANMASINA İLİŞKİN AÇIKLAMALAR
+
+     • Öğretim materyali/ders kitabı öğretim programında ifade edilen kazanımların tümünü karşılayacak
+
+         şekilde tasarlanmalıdır.
+
+     • Kitaplardaki metinleri anlamak, çözümlemek ve eleştirel bakışla değerlendirebilmek için öğrenciler
+
+         metin türü, yazarlar, şairler, edebî dönemler, akımlar, kavramlar vb. hakkında bazı temel bilgilere
+
+         ihtiyaç duymaktadırlar. Bu bilgiler metnin işlenişini destekleyecek şekilde ders kitaplarında
+
+         doğrudan verilmelidir.
+
+     •   Ders kitaplarında yazma çalışmaları için ünitelerde verilen etkinlik ve açıklamalar doğrultusunda
+
+         tür ve tekniklere yönelik bilgiler ve örnekler verilir, daha sonra yazma çalışmalarının nasıl
+
+         yürütüleceği açıklanır. Öğrencilerin kendi yazılarını kitap üzerine değil, defterlerine veya bağımsız
+
+         kâğıtlara yazmaları istenir.
+
+     •   Sözlü iletişim kazanımları, dinleme ve konuşma çalışmaları içerisinde birbirini tamamlayacak
+
+         şekilde uygulanır. Bu çalışmalar için ünitelerde verilen etkinlik ve açıklamalara bağlı olarak ders
+
+         kitabında gerekli bilgiler ve açıklamalar örneklerle gösterilir.
+
+     • Her kitabın sonunda kitap içerisinde geçen edebiyat terimlerinden oluşan bir sözlük yer almalıdır.
+
+     • Ders kitabına seçilen metinler, temaya uygun görsel unsurlarla desteklenmelidir. Ancak bu durum
+
+         her metin için zorunlu değildir.
+
+     • Metinde öğrencilerin bilemeyeceği kelimelerin anlamları metinden sonra verilmelidir.
+
+     •   Her ünitenin sonunda, o ünitede kazandırılması amaçlanan bilgi ve becerileri değerlendirmeye
+
+         yönelik olarak "Ünite Değerlendirme Çalışmaları"na yer verilir. Sorular ünitede işlenen konuları
+
+         kapsar nitelikte olmalıdır.
+
+     • Metin türleri, nazım şekilleri ve türleriyle ilgili açıklamalara (yapısal özelliklere ve içeriğe) o türün
+
+         ilk işleneceği yerde yer verilir.
+
+
+
+
+14
+• Kitaba tamamı veya bir kısmı alınan eserlerin yazarı ve alındığı kaynak, metnin altında belirtilmeli,
+
+   yararlanılan kaynakların listesi kitabın sonunda verilmelidir. Metinler öncelikli olarak birincil
+
+   kaynaklardan alınmalı, yazım ve noktalama açısından alıntı metinlerin aslına sadık kalınmalıdır.
+
+• Seçilen metinlerdeki dizgiden kaynaklı yazım ve noktalama hataları düzeltilmelidir. Seçilen
+
+   metinlerdeki standart dışı kullanımların, yazarın tercihi veya döneme özgü olduğu hususu
+
+   belirtilmelidir.
+
+• Ders kitabı/öğretim materyalinde “ders işleniş süreci” aşağıda belirtilen aşamalara göre
+
+   yapılandırılır:
+
+1. Hazırlık: Bu aşamada, işlenecek metne dikkat çekmek ve okuma çalışmalarıyla ulaşılacak bilgi ve
+
+   becerilere yönelik olarak öğrencilerde bir beklenti ve merak oluşturmak amacıyla kısa bir çalışma
+
+   planlanır ve uygulanır.
+
+2. Metin: "Ünite, Süre ve İçerikleri" başlıklı tabloda verilen esaslara göre seçilen metinlere yer verilir.
+
+3. Metinde Geçen Bazı Kelime ve Kelime Grupları: Metinde öğrencilerin cümlenin bağlamından
+
+   hareketle tahmin edemeyeceği kelimeler metinden sonra verilir. Ancak bu amaca yönelik
+
+   tasarlanan etkinlikte kullanılan kelimeler sözlükte yer almaz.
+
+4. Metin ve Türle İlgili Açıklamalar: Bu bölümde metin ve metnin türü ile ilgili temel bilgiler metne
+
+   atıflar yapılarak açıklanır.
+
+5. Metni Anlama ve Çözümleme: Bu bölümde kazanımlar çerçevesinde metne yönelik soru ve
+
+   etkinliklere yer verilir. Bu bölümde gerektiğinde kısa, açıklayıcı bilgilere yer verilebilir.
+
+6. Yazarın/Şairin Biyografisi: Metin yazarının kısa biyografisi ve önemli eserlerine yer verilir. Çeviri
+
+   metinlerde çevirmenin biyografisine yer verilmez.
+
+7. Dil Bilgisi: "Ünite Süre ve İçerikleri" başlıklı tabloda belirtilen dil bilgisi konuları işlenen metin veya
+
+   metnin uygun bölümü/bölümleri üzerinde gösterilir, konu anlatımına girilmez.
+
+8. Yazma: Yazma çalışmaları "Yazma Tür ve Tekniklerini Tanıma" ve "Uygulama" şeklinde iki aşamada
+
+   gerçekleştirilir. Yazma çalışmalarında her kazanım için ayrı etkinliklerin yapılması yerine,
+
+   ünitelerde verilen açıklamalar doğrultusunda her öğrencinin metin üretmesine yönelik çalışmalar
+
+   yapılır. Yazma çalışmaları her metinden sonra yapılmaz, her ünitede bir kez yapılır. Bu çalışmalar
+
+   "Ünite Süre ve İçerikleri" başlıklı tabloda belirtilen hususlara dikkat edilerek gerçekleştirilir.
+
+   Ünitede ele alınan türle ilgili yazma çalışmalarının dışında, incelenen metinlerden edinilen
+
+   düşünce ve izlenimleri konu alan farklı türlerde yazma çalışmaları yaptırılabilir.
+
+
+
+
+                                                                                                                 15
+     9. Sözlü İletişim: Sözlü iletişim çalışmaları "Sözlü İletişim Tür ve Tekniklerini Tanıma" ve "Uygulama"
+
+        şeklinde iki aşamada gerçekleştirilir. Sözlü iletişim çalışmaları her metinden sonra yapılmaz, "Ünite
+
+        Süre ve İçerikleri" başlıklı tabloda belirtilen yerlerde yapılır.
+
+     10. Ünite Ölçme ve Değerlendirme Çalışmaları: Her ünitenin sonunda o ünitede kazandırılması
+
+          amaçlanan bilgi ve becerileri değerlendirmeye yönelik olarak "Ünite Ölçme ve Değerlendirme
+
+          Çalışmaları"na yer verilir. Sorular ünitede işlenen konuları kapsar nitelikte olmalıdır.
+
+
+
+     Ders Kitabına Alınacak Metinlerin Nitelikleri
+     Türk Dili ve Edebiyatı ders kitaplarına alınacak metinlerin aşağıdaki nitelikleri taşıması gerekir:
+
+     • Metinler, "Türk Millî Eğitiminin Genel Amaçları ve Temel İlkeleri”ne uygun olmalıdır.
+
+     • Metinlerde Türk milletinin bölünmez bütünlüğüne; millî, manevi, kültürel ve ahlaki değerlerine
+
+        aykırı unsurlar yer almamalıdır.
+
+     • Metinlerde ayrıştırıcı, bölücü, siyasi ve ideolojik ifadelere yer verilmemelidir.
+
+     • Metinler, dersin amaç ve kazanımlarını gerçekleştirecek özelliklere sahip olmalıdır.
+
+     • Metinler, öğrencilerin sınıf düzeylerine ve yaş seviyelerine uygun olmalıdır.
+
+     • Metinler, öğrencilerin ruh dünyalarını olumsuz yönde etkileyecek nitelikte olmamalıdır.
+
+     • Metinler dil, anlatım ve içerik açısından yazıldığı dönem ve anlayışın karakteristik özelliklerini
+
+        yansıtan seçkin eserlerden alınmalıdır.
+
+     • Dünya edebiyatından seçilen metinler nitelikli çevirilerden alınmalıdır.
+
+     • Seçilen metinler, öğrencilerin duygu, düşünce ve hayal dünyalarını zenginleştirecek; bilgi, beceri,
+
+        dil ve estetik zevk düzeylerini geliştirecek nitelikte olmalıdır.
+
+     • Bir sınıfa ait ders kitabında kullanılan bir metin, aynı yayınevinin başka bir sınıfa ait kitabında
+
+        kullanılmamalıdır.
+
+     • Bir sınıfta aynı sanatçıdan, farklı türlerde olmak koşuluyla, en fazla iki metin alınabilir.
+
+     • ”Giriş” ünitesinde belirtilen metinlerin yanı sıra gazete haberi, dilekçe, tutanak ve öz geçmiş gibi
+
+        türlerde özgün metinlerin yanı sıra ders kitabının yazarı/yazarları tarafından üretilen metinler de
+
+        kullanılabilir. Bu durumlar dışında ders kitabı yazarları tarafından yazılan metinlere yer verilmez.
+
+     • Türkçenin tarihî değişim ve gelişimini öğrencilerin daha iyi anlamalarını sağlamak amacıyla
+
+        İslamiyet öncesi Türk edebiyatından seçilen metinlerin bir kısmı hem asıllarına uygun dil ve
+
+        söyleyişiyle hem de günümüz Türkçesiyle verilmelidir.
+
+
+
+
+16
+• Divan edebiyatından seçilen metinler, dil yönüyle daha sade olan örneklerden tercih edilmelidir.
+
+   Metnin günümüz Türkçesine çevrilmiş şekli verilmemelidir. Ayrıca şiirin yazıldığı aruz ölçüsünün
+
+   kalıpları metnin altına yazılmalıdır.
+
+• Metnin tamamının alınamayacağı durumlarda, alınmayan kısımların özeti verilmelidir. Metinden
+
+   cümle veya paragraf düzeyinde yapılan çıkarmalar yay ayraç içinde üç nokta işareti ile gösterilir.
+
+• Kitaba alınan metinlerin uzunluğu konusunda öğretim programındaki ders işleme süreci ve
+
+   ünitelerde planlanan ders saati dikkate alınmalıdır.
+
+• Metinler seçilirken veya oluşturulurken öğrencilere aktarılması hedeflenen değerlere göre metin
+
+   belirlenmesi beklenmemektedir. Programda belirtilen değerlerin tamamı için öğrencilerde
+
+   farkındalık oluşturmaya yönelik soru ve çalışmalara en az bir defa yer verilir.
+
+• Türk dünyası edebiyatlarından örnek metinlere yer verilmelidir.
+
+
+
+
+2.4. KAZANIM SAYISI VE SÜRE TABLOSU
+
+
+
+                                      Kazanım                                   Kazanım Sayısı
+         A) OKUMA (METNİ ANLAMA VE ÇÖZÜMLEME)
+         1.Şiir                                                                      13
+         2.Öyküleyici (Anlatmaya Bağlı) Edebî Metinler                               16
+         3.Tiyatro                                                                   14
+         4.Bilgilendirici (Öğretici) Metinler                                        15
+         B) YAZMA                                                                    12
+         C) SÖZLÜ İLETİŞİM
+         1.Konuşma                                                                   17
+         2.Dinleme                                                                    8
+
+
+  2.5. TÜRK DİLİ VE EDEBİYATI DERSİ KİTAP FORMA SAYILARI VE KİTAP EBADI
+            DERS KİTABI              Forma Sayıları *             Kitap Ebadı
+               9. Sınıf                     17                    19,5 x 27,5
+              10. Sınıf                     21                    19,5 x 27,5
+              11. Sınıf                     20                    19,5 x 27,5
+              12. Sınıf                     18                    19,5 x 27,5
+*Forma sayıları üst sınır olarak yazılmış olup daha az da olabilir.
+
+
+
+
+                                                                                                        17
+     3                                   ÖĞRETİM PROGRAMININ YAPISI
+
+
+            3.1. TÜRK DİLİ VE EDEBİYATI DERSİ ÖĞRETİM PROGRAMI’NIN YAPISI
+
+            Türk Dili ve Edebiyatı Dersi kazanımları “Okuma”, “Yazma” ve “Sözlü İletişim” olmak üzere üç
+
+     ana başlık altında toplanmıştır. Öğretim programı tür odaklı olduğu için “Okuma” bölümündeki
+
+     kazanımlar, “Şiir”, “Öyküleyici (Anlatmaya Bağlı) Edebî Metinler”, “Tiyatro” ve “Bilgilendirici (Öğretici)
+
+     Metinler” şeklinde sınıflandırılmıştır. Sözlü iletişim kazanımları ise “Konuşma” ve “Dinleme” şeklinde
+
+     iki ana başlığa ayrılmıştır.
+
+     • Gerek görülen kazanımların hemen altında kazanımın çerçevesini ve içeriğini netleştirmeye
+
+         yönelik açıklamalar yer almaktadır.
+
+            Ünite, süre ve içerikler tablosu “Okuma”, “Yazma” ve “Sözlü İletişim” olmak üzere üç sütun
+
+     hâlinde düzenlenmiştir.
+
+            “Okuma” sütununda işlenecek konu ve metinler verilmiş ve altlarında bunlarla ilgili kısa
+
+     açıklama ve yönergeler yer almıştır. Burada verilen konu ve metinler, ilgili “okuma kazanımları”
+
+     çerçevesinde işlenecektir. ‘Giriş’ üniteleri ise ünite tablosunda belirtilen kendi konuları/kazanımları
+
+     çerçevesinde ele alınacaktır.
+
+            “Yazma” ve “Sözlü İletişim” sütunlarında ise “Okuma” sütunundaki konu ve metinlerle
+
+     bağlantılı olarak yazma ve sözlü iletişim konu ve etkinlikleri verilmiş olup bunlar da yine ilgili “Yazma”
+
+     ve “Sözlü İletişim” kazanımları çerçevesinde işlenecektir. Bu konu ve etkinliklerin, ders işleniş süreci
+
+     açısından, her ders saatinde değil de ünite sonunda ele alınacağı hatırda tutulmalıdır.
+
+            Dil bilgisi konuları üç sütunluk tablonun altındaki yatay sütunda belirtilmiştir.
+
+
+
+
+18
+3.2. KONU, KAZANIM VE AÇIKLAMALARI
+
+A) OKUMA (METNİ ANLAMA VE ÇÖZÜMLEME)
+1. ŞİİR
+
+A.1. 1. Metinde geçen kelime ve kelime gruplarının anlamlarını tespit eder.
+
+Öğrencilerin bilmediği kelime ve kelime gruplarının anlamını metindeki bağlamından hareketle
+tahmin etmesi ve tahminini kaynaklardan yararlanarak kontrol etmesi sağlanır.
+
+A.1. 2. Şiirin temasını belirler.
+Tematik bütünlüğü olmayan şiirlerde (genellikle gazel, koşma vb.) birden çok temanın bir arada
+bulunabileceği göz önünde tutulmalıdır. Bu durum aynı zamanda türün/dönemin/anlayışın bir
+özelliğini gösterebilir.
+
+A.1. 3. Şiirde ahengi sağlayan özellikleri/unsurları belirler.
+a. Şiirde ahenk unsurları (ölçü, kafiye, redif, nakarat; ses, kelime ve kelime grubu tekrarı, ses akışı vb.)
+üzerinde durulur.
+b. Hece ölçüsünde hece sayısı eşitliğinin, aruz ölçüsünde hecelerin açık-kapalı (uzun-kısa) oluşunun
+esas alındığı üzerinde durulur. Ancak aruz kalıplarına ve şiirde aruz ölçüsünü buldurmaya yönelik
+çalışmalara yer verilmez.
+c. Şiirin ahenk ve şekil özelliklerinin -varsa- içerikle ilişkisi üzerinde durulur. Bazı şiirlerde ölçü ve kafiye
+seçimi, kelimelerin düzenlenişi, dizelerin uzunluğu-kısalığı vb. aracılığıyla içeriğin görsel olarak şiirin
+şekline yansıtıldığı ve/veya ahenk özelliklerinin içerikle bağlantılı olduğu belirtilir.
+A.1. 4. Şiirin nazım biçimini ve nazım türünü tespit eder.
+a. Şiirin nazım biçimi belirlenirken nazım birimi, kafiye düzeni, ölçü gibi şekil özelliklerinin; nazım türü
+belirlenirken içeriğin (konu, tema vb.) esas alındığı vurgulanır.
+b. Divan, halk ve dünya şiirinden gelen biçim ve türler ile şaire özgü yenilikler, buluşlar ve - varsa-
+bunların geleneksel biçim ve türlerle ilişkisi ele alınır.
+c. Metne/döneme göre konu bakımından lirik, epik, pastoral, satirik, didaktik şiir türlerine değinilir.
+
+A.1. 5. Şiirdeki mazmun, imge ve edebî sanatları belirleyerek bunların anlama katkısını
+değerlendirir.
+a. 9. sınıfta şiirde öne çıkan, dikkat çeken ve/veya yaygın olarak bilinen edebî sanatlar (teşbih, istiare,
+mecazımürsel, teşhis ve intak, tenasüp, tezat, telmih, hüsnütalil, tecahüliarif, kinaye, tevriye, tariz,
+irsalimesel, mübalağa) ele alınır.
+b. Şiirdeki bütün edebî sanatların tespiti yoluna gidilmez.
+c. 10, 11 ve 12. sınıflarda şiirde öne çıkan edebî sanatları buldurmaya yönelik çalışma yapılması
+sağlanır.
+
+
+
+
+                                                                                                                    19
+     A.1. 6. Şiirde söyleyici ile hitap edilen kişi/varlık arasındaki ilişkiyi belirler.
+     a. Şiirde konuşanın şair değil şiirde konuşan kurgusal kişilik/varlık olduğu, söyleyicinin şiirin içeriğine
+     ve aksettirdiği ruh durumuna göre karakter ve "ses" kazandığı, bu durumun şiiri okuma
+     tonuna/tarzına, şiirin anlamına etkide bulunduğu ve okuma faaliyetinde okuyucunun bu söyleyiciyle
+     özdeşleştiği vurgulanır.
+     b. Söyleyicinin genel okuyucuya, bir kişi, grup veya varlığa seslenme durumuna göre muhatabı
+     belirlenir.
+
+     A.1. 7. Şiirde millî, manevi ve evrensel değerler ile sosyal, siyasi, tarihî ve mitolojik ögeleri belirler.
+     a. Şiirde şiirin yazıldığı dönemin gerçekliğini yansıtan unsurlara ve/veya şiirin dönemin gerçekliğiyle
+     ilişkisine değinilir.
+     b. Bazı metinlerde ise içeriğin/göstergelerin genel anlamda doğal, toplumsal veya bireysel gerçeklikle
+     ilişkisi üzerinde durulur.
+     c. Bu hususlar değerler eğitimi çerçevesinde ele alınır.
+
+     A.1. 8. Şiirde edebiyat, sanat ve fikir akımlarının/anlayışlarının yansımalarını değerlendirir.
+     a. Bu kazanım 10, 11 ve 12. sınıf düzeylerinde ele alınacaktır.
+     b. Şiirin, bağlı olduğu edebî dönem, akım, gelenek, topluluk vb. açısından değerlendirilmesi ve/veya
+     şiirde görülen edebî, felsefi, estetik anlayışı; diğer metinler veya yazarlarla
+     bağlantılarının/etkileşimlerinin belirlenmesi sağlanır.
+     c. Şiirin aynı, benzer veya farklı anlayıştaki şiirlerle karşılaştırılması sağlanır.
+
+     A.1. 9. Şiiri yorumlar.
+     a. Şiirdeki açık ve örtük iletileri; şiirle ilgili tespitlerini, eleştirilerini, güncellemelerini ve
+     beğenisini metne dayanarak/gerekçelendirerek kazanımlar çerçevesinde ifade etmesi
+     sağlanır.
+
+     A.1. 10. Şair ile şiir arasındaki ilişkiyi değerlendirir.
+     a. Bu kazanım ele alınırken şiirin, şairin hayatı ve görüşleriyle ilişkisi üzerinde durulur.
+     b. Şiirin şairin ünlü eserlerinden biri olması, şairin tanınmasına katkısı, şiirin edebiyat ve/veya toplum
+     hayatındaki akisleri vb. hususlar üzerinde durulur (Örnekler: Necip Fazıl'ın "Kaldırımlar Şairi", "İstiklâl
+     Marşı"nın millî marş, Mehmet Âkif'in ise bu vesileyle "millî şair" olarak anılması; Vesilet'ün Necat'ın
+     mevlit türünün sembol eseri olup halk arasında bir geleneğe vesile olması). Bu hususların metne ve
+     şaire göre farklılık göstereceği belirtilir.
+
+     A.1. 11. Türün/biçimin ve dönemin/akımın diğer önemli yazarlarını ve eserlerini sıralar.
+     Türün/biçimin ve dönemin/akımın diğer önemli yazar ve eserleri 10, 11 ve 12. sınıf düzeylerinde ele
+     alınacaktır.
+
+     A.1.12. Metinden hareketle dil bilgisi çalışmaları yapar.
+
+     A.1. 13. Metinler arası karşılaştırmalar yapar.
+
+
+
+
+20
+2. ÖYKÜLEYİCİ (ANLATMAYA BAĞLI) EDEBÎ METİNLER (Masal/Fabl, Destan, Mesnevi, Hikâye,
+Roman vb.)
+
+A.2. 1. Metinde geçen kelime ve kelime gruplarının anlamlarını tespit eder.
+
+Öğrencilerin bilmediği kelime ve kelime gruplarının anlamını metindeki bağlamından hareketle
+tahmin etmesi ve tahminini kaynaklardan yararlanarak kontrol etmesi sağlanır.
+
+A.2. 2. Metnin türünün ortaya çıkışı ve tarihsel dönem ile ilişkisini belirler.
+Metin türlerinin ortaya çıkmasında sözlü ve yazılı kültürün, toplumsal değişimlerin ve etkileşimlerin,
+basın yayın organlarının etkisi üzerinde durulur.
+
+A.2. 3. Metnin tema ve konusunu belirler.
+
+A.2. 4. Metindeki çatışmaları belirler.
+Metindeki temel çatışmayı/karşılaşmayı ve bu çatışma etrafında metinde yer alan veya metnin ima
+ettiği diğer çatışmaları/karşılaşmaları/karşıtlıkları belirlenmesi sağlanır.
+
+A.2. 5. Metnin olay örgüsünü belirler.
+Öyküleyici metinlerde olayların birbirleriyle ilişkisi ve sıralanışı (kurgulanması) üzerinde durulur.
+
+A.2. 6. Metindeki şahıs kadrosunun özelliklerini belirler.
+Öyküleyici metinlerde şahısların rol dağılımları, olay akışını etkileyen fiziksel, psikolojik ve ahlaki
+özellikleri, toplumsal statüleri, -varsa- tarihsel/gerçek kişilikleri veya bu kişiliklerle ilişkileri; tip veya
+karakter özelliği gösterip göstermedikleri vb. belirlenir.
+
+A.2. 7. Metindeki zaman ve mekânın özelliklerini belirler.
+a. Öyküleyici metinlerde kahramanların ruh hâli ile zaman ve mekân arasındaki ilişki, olayların
+gelişiminde zaman ve mekânın işlevi vb. belirlenir.
+b. Metnin kurgu zamanı ile -varsa- içeriğin bir tarihsel zamanla/dönemle ilişkisine değinilir. Örneğin
+romancı veya hikâyecinin olayları hangi zaman dilimleri içinde kurguladığı (günün bir saati, aylar,
+yıllar, geri dönüş ve ileri gidişler vb.) kurgu zamanını, olayların/konunun Sultan II. Abdülhamit
+döneminde geçmesi ise tarihsel zaman/dönem ilişkisini ortaya koyar.
+
+
+A.2. 8. Metinde anlatıcı ve bakış açısının işlevini belirler.
+a. Öyküleyici metinlerde anlatıcının özellikleri ile hâkim, kahraman ve gözlemci bakış açılarından
+hangisinin kullanıldığı belirlenir.
+b. Seçilen bakış açısının anlatımı nasıl etkilediğine dikkat çekilir. Anlatıcının yönlendirme yapıp
+yapmadığı, olayları yorumlayıp yorumlamadığı, yazarın düşünce veya kişiliğiyle örtüşen bir yansıtıcı
+olup olmadığı, taraflı davranıp davranmadığı gibi hususlar değerlendirilir.
+c. Bir metinde birden fazla anlatıcı ve bakış açısı bulunabileceği, anlatıcının değişmesine göre bakış
+açısının da değişebileceği vurgulanır.
+
+
+
+
+                                                                                                                  21
+     A.2. 9. Metindeki anlatım biçimleri ve tekniklerinin işlevlerini belirler.
+     Öyküleyici metinlerde yararlanılan anlatım biçimleri (öyküleme, betimleme vb.) tespit edilir. Anlatım
+     teknikleri ise (gösterme, tahkiye etme, özetleme, geriye dönüş, diyalog, iç konuşma, iç çözümleme,
+     bilinç akışı, pastiş, parodi, ironi vb.) 9. sınıfta verilir. Anlatım tekniklerinin tespiti ilgili metinler
+     üzerinde yapılır.
+
+     A.2. 10. Metnin üslup özelliklerini belirler.
+     Metinde yazara özgü dil ve anlatım özellikleri belirlenir (Cümle yapıları, deyimler, kelime
+     kadrosu, anlatım teknikleri, söz sanatları, akıcılık, nesnellik, öznellik, duygusallık, coşkunluk gibi
+     hususlar dikkate alınır.).
+
+     A.2. 11. Metinde millî, manevi ve evrensel değerler ile sosyal, siyasi, tarihî ve mitolojik ögeleri
+     belirler.
+     a. Metinde, metnin yazıldığı dönemin gerçekliğini yansıtan unsurlara ve/veya metnin dönemin
+     gerçekliğiyle ilişkisine değinilir.
+     b. Bazı metinlerde ise içeriğin/göstergelerin genel anlamda doğal, toplumsal veya bireysel gerçeklikle
+     ilişkisi incelenir.
+     c. Bu hususlar değerler eğitimi çerçevesinde ele alınır.
+
+     A.2. 12. Metinde edebiyat, sanat ve fikir akımlarının/anlayışlarının yansımalarını değerlendirir.
+     a. Bu kazanım 10, 11 ve 12. sınıf düzeylerinde ele alınacaktır.
+     b. Metnin; bağlı olduğu edebî dönem, akım, gelenek, topluluk açısından değerlendirilmesi ve/veya
+     metinde görülen edebî, felsefi, estetik anlayışın; diğer metinler veya yazarlarla
+     bağlantılarının/etkileşimlerinin belirlenmesi sağlanır.
+     c. Metnin aynı, benzer, farklı veya karşıt anlayıştaki metinlerle karşılaştırılması sağlanır.
+
+     A.2. 13. Metni yorumlar.
+     Metindeki açık ve örtük iletileri; metinle ilgili tespitlerini, eleştirilerini, güncellemelerini ve
+     beğenisini metne dayanarak/gerekçelendirerek ilgili kazanımlar çerçevesinde ifade etmesi
+     sağlanır.
+
+     A.2. 14. Yazar ile metin arasındaki ilişkiyi değerlendirir.
+     a. Metnin yazarın ünlü eserlerinden biri olması, yazarın tanınmasına katkısı, metnin edebiyat ve/veya
+     toplum hayatındaki akisleri vb. hususlar üzerinde durulur. Bu hususların metne ve yazara göre farklılık
+     göstereceği vurgulanır.
+     b. Yazarın diğer önemli eserlerinden bahsedilir. Metnin ve/veya yazarın aynı türdeki diğer metinlerinin
+     -varsa- sinema ve tiyatroya yapılan uyarlamalarından ve bunun yankılarından/etkilerinden
+     bahsedilebilir.
+
+     A.2. 15. Türün ve dönemin/akımın diğer önemli yazarlarını ve eserlerini sıralar.
+     Masal/fabl hariç türün ve dönemin/akımın diğer önemli yazar ve eserleri 10,11 ve 12. sınıf
+     düzeylerinde ele alınacaktır.
+
+     A.2. 16. Metinlerden hareketle dil bilgisi çalışmaları yapar.
+
+
+
+
+22
+3. TİYATRO
+
+A.3. 1. Metinde geçen kelime ve kelime gruplarının anlamlarını tespit eder.
+
+Öğrencilerin bilmediği kelime ve kelime gruplarının anlamını metindeki bağlamından hareketle
+tahmin etmesi ve tahminini kaynaklardan yararlanarak kontrol etmesi sağlanır.
+
+A.3. 2. Metnin türünün ortaya çıkışı ve tarihsel dönemle ilişkisini belirler.
+a. Metin türlerinin ortaya çıkmasında sözlü ve yazılı kültürün, toplumsal değişimlerin ve etkileşimlerin,
+teknolojinin etkisi üzerinde durulur.
+b. Geleneksel tiyatro (Karagöz, orta oyunu, meddah, köy seyirlik oyunları) ve tiyatro türleri (trajedi,
+komedi, dram) ile senaryodan bahsedilir.
+
+A.3. 3. Metnin tema ve konusunu belirler.
+
+A.3. 4. Metindeki çatışmaları belirler.
+Metindeki temel çatışmayı/karşılaşmayı ve bu çatışma etrafında metinde yer alan veya metnin ima
+ettiği diğer çatışmaları/karşılaşmaları/karşıtlıkları belirler.
+
+A.3. 5. Metindeki olay örgüsünü belirler.
+a. Tiyatroda olay örgüsünün perde, sahne vb. bölümlemeler etrafında düzenlendiği ifade edilir (Bazı
+metinlerde bu bölümlemelere karşılık gelen meclis, fasıl gibi terimler bulunur.).
+b. Geleneksel tiyatronun yapı özellikleri de bu çerçevede belirlenir.
+
+A.3. 6. Metindeki şahıs kadrosunun özelliklerini belirler.
+Oyuncuların/icracıların metni kendi tarzlarına ve kabiliyetlerine göre canlandırdıkları/yorumladıkları
+hatırlatılır.
+
+A.3. 7. Metindeki zaman ve mekânın özelliklerini belirler.
+a. Mekân özellikleriyle bağlantılı olarak dekor/sahne düzenlemesi teriminden bahsedilir. Mekân ve
+dekorun geleneksel tiyatroda standart bir özellik göstermesine karşılık modern tiyatroda aynı eserin
+farklı temsillerinde, metinle ilişkili veya metinden bağımsız olarak farklı mekân ve dekor uygulamaları
+olabileceği belirtilir.
+b. Modern tiyatroda efekt, ışık vb. uygulamalardan bahsedilir. Bu uygulamaların metin çerçevesinde
+yazar, yönetmen, yapımcı, oyuncu, tasarımcı ve teknik ekip iş birliğiyle gerçekleştirildiği /yorumlandığı
+ifade edilir.
+
+A.3. 8. Metnin dil, üslup ve anlatım/sunum özelliklerini belirler.
+Geleneksel tiyatronun dil, üslup ve anlatım/sunum özellikleri (seslenmeler, tekerlemeler, deyimler,
+gazeller, beyitler, şarkı-türkü-müzikler, yanlış anlamalar, taklitler, ağız özellikleri vb.) belirlendikten
+sonra bunların metnin türü ve içeriğiyle ilişkisi ele alınır. Modern tiyatroda ise yazara özgü üslup
+özellikleri ele alınacaktır.
+
+
+
+
+                                                                                                              23
+     A.3. 9. Metinde millî, manevi ve evrensel değerler ile sosyal, siyasi, tarihî ve mitolojik ögeleri
+     belirler.
+     a. Metinde, metnin yazıldığı dönemin gerçekliğini yansıtan unsurlara ve/veya metnin dönemin
+     gerçekliğiyle ilişkisine değinilir.
+     b. Bazı metinlerde içeriğin/göstergelerin genel anlamda doğal, toplumsal veya bireysel gerçeklikle
+     ilişkisi incelenir.
+     c. Bu hususlar değerler eğitimi çerçevesinde ele alınır.
+
+     A.3. 10. Metinde edebiyat, sanat ve fikir akımlarının/anlayışlarının yansımalarını değerlendirir.
+     a. Bu kazanım 10,11 ve 12. sınıf düzeylerinde ele alınacaktır.
+     b. Metnin; bağlı olduğu edebî dönem, akım, gelenek, topluluk vb. açısından değerlendirilmesi ve/veya
+     metinde görülen edebî, felsefi, estetik anlayışın; diğer metinler veya yazarlarla
+     bağlantılarının/etkileşimlerinin belirlenmesi sağlanır.
+     c. Metnin aynı, benzer veya farklı anlayıştaki metinlerle karşılaştırılması sağlanır.
+     ç. Modern tiyatro metinlerinde -varsa- geleneksel tiyatro unsurları/etkileri tespit edilir.
+
+     A.3. 11. Metni yorumlar.
+     a. Metindeki açık ve örtük iletileri; metinle ilgili tespitlerini, eleştirilerini, güncellemelerini ve
+     beğenisini metne dayanarak/gerekçelendirerek ilgili kazanımlar çerçevesinde ifade etmesi sağlanır.
+     b. Türk sineması ve tiyatrosunda geleneksel tiyatro unsurları ve/veya tipleriyle benzerlik gösteren
+     hususlara örnekler verilebilir.
+
+     A.3. 12. Yazar ve metin arasındaki ilişkiyi değerlendirir.
+     a. Metnin yazarın ünlü eserlerinden biri olması, yazarın tanınmasına katkısı, metnin edebiyat ve/veya
+     toplum hayatındaki akisleri vb. hususlar ele alınır.
+     b.Yazarın diğer önemli eserlerinden bahsedilir.
+
+
+     A.3. 13. Türün ve dönemin/akımın diğer önemli yazarlarını ve eserlerini sıralar.
+     a. Önde gelen, temsil edici diğer yazar ve eserlerden bahsedilir.
+     b. Geleneksel tiyatroda ise kalıplaşmış ünlü oyunlara (Örnek: Kanlı Nigâr) ve ünlü meddah, kavuklu,
+     pişekâr ve Karagözcülere (Kel Hasan, Abdürrezzak, İsmail Dümbüllü vs.) değinilir.
+     c. Türün ve dönemin/akımın diğer önemli yazar ve eserleri 10,11 ve 12. sınıf düzeylerinde ele
+     alınacaktır.
+
+     A.3. 14. Metinlerden hareketle dil bilgisi çalışmaları yapar.
+
+
+     4. BİLGİLENDİRİCİ (ÖĞRETİCİ) METİNLER
+
+     A.4. 1. Metinde geçen kelime ve kelime gruplarının anlamlarını tespit eder.
+
+     Öğrencilerin bilmediği kelime ve kelime gruplarının anlamını metindeki bağlamından hareketle
+     tahmin etmesi ve tahminini kaynaklardan yararlanarak kontrol etmesi sağlanır.
+
+
+
+
+24
+A.4. 2. Metnin türünün ortaya çıkışı ve tarihsel dönemle ilişkisini belirler.
+Metin türlerinin ortaya çıkmasında sözlü ve yazılı kültürün, toplumsal değişimlerin ve etkileşimlerin,
+yayın organlarının ve teknolojinin etkisi üzerinde durulur.
+
+A.4. 3. Metin ile metnin konusu, amacı ve hedef kitlesi arasında ilişki kurar.
+
+A.4. 4. Metnin ana düşüncesi ve yardımcı düşüncelerini belirler.
+
+A.4. 5. Metindeki anlatım biçimlerini, düşünceyi geliştirme yollarını ve bunların işlevlerini belirler.
+
+A.4. 6. Metnin görsel unsurlarla ilişkisini belirler.
+Bazı metin türlerinde resim, karikatür, fotoğraf, çizim, grafik, tablo, diyagram, istatistiksel veri gibi
+unsurların metin türüyle ilişkisi ve metne katkısı üzerinde durulur.
+
+A.4. 7. Metnin üslup özelliklerini belirler.
+Metinde yazara/metne özgü dil ve anlatım özellikleri belirlenir (Cümle yapıları, deyimler, kelime
+kadrosu, söz sanatları, akıcılık, nesnellik, öznellik, duygusallık, coşkunluk gibi hususlar dikkate alınır.).
+
+A.4. 8. Metinde millî, manevi ve evrensel değerler ile sosyal, siyasi, tarihî ve mitolojik ögeleri
+belirler.
+a. Metinde, metnin yazıldığı dönemin gerçekliğini yansıtan unsurlara ve/veya metnin dönemin
+gerçekliğiyle ilişkisine değinilir.
+b. Bazı metinlerde içeriğin/göstergelerin genel anlamda doğal, toplumsal veya bireysel gerçeklikle
+ilişkisi incelenir.
+c. Bu hususlar değerler eğitimi çerçevesinde ele alınır.
+
+A.4. 9. Metinde ortaya konulan bilgi ve yorumları ayırt eder.
+Ortaya konulan bilgi, tespit ve yorumlar/görüşler; gerekçe, kanıt, tutarlılık, geçerlilik, doğruluk
+açısından değerlendirilir.
+
+A.4. 10. Metinde yazarın bakış açısını belirler.
+a. Bilgilendirici/öğretici metinlerde yazar ile anlatıcının aynı şey olduğu yani edebî (sanatsal/kurgusal)
+metinlerden farklı olarak gerçek bir kişi olduğu belirtilir.
+b. Yazarın konuya ve okuyucuya yönelik yaklaşımı/tavrı belirlenir. Yazarın konuyu hangi açıdan ele
+aldığı yanında, yönlendirme yapıp yapmadığı, taraf olup olmadığı, öznel veya nesnel davranıp
+davranmadığı gibi hususların bakış açısına etkide bulunduğu hatırlatılır.
+
+A.4. 11. Metinde fikrî, felsefi veya siyasi akım, gelenek veya anlayışların yansımalarını
+değerlendirir.
+a. Metinde görülen veya metnin ortaya koyduğu fikrî, felsefi, siyasi veya estetik anlayışın; diğer
+metinler veya yazarlarla bağlantılarının/etkileşimlerinin belirlenmesi sağlanır.
+b. Metni aynı, benzer veya farklı anlayıştaki metinlerle karşılaştırır.
+
+
+
+
+                                                                                                                25
+     A.4. 12. Metni yorumlar.
+     Metindeki açık ve örtük iletileri; metinle ilgili tespitlerini, eleştirilerini, güncellemelerini ve beğenisini
+     metne dayanarak/gerekçelendirerek ilgili kazanımlar çerçevesinde ifade etmesi sağlanır.
+
+     A.4. 13. Yazar ve metin arasındaki ilişkiyi değerlendirir.
+     a. Yazarın diğer önemli eserlerinden bahsedilir.
+     b. E-posta, haber, blog gibi metinler için bu kazanıma ilişkin bir çalışma yapılması zorunlu değildir.
+
+     A.4. 14. Türün ve dönemin/akımın diğer önemli yazarlarını ve eserlerini sıralar.
+     Önde gelen, temsil eden diğer yerli ve yabancı yazar ve eserlerden bahsedilir.
+
+     A.4. 15. Metinlerden hareketle dil bilgisi çalışmaları yapar.
+
+     B) YAZMA
+
+     B.1. Farklı türlerde metinler yazar.
+     a. “Ünite, Süre ve İçerikleri “tablosunda belirtilen türlerde yazma çalışmaları yaptırılır.
+     b. İşlenen metinden hareketle farklı türlerde yazma çalışmalarına da yer verilir.
+     B.2. Yazacağı metnin türüne göre konu, tema, ana düşünce, amaç ve hedef kitleyi belirler.
+     B.3. Yazma konusuyla ilgili hazırlık yapar.
+     a. Konuyla ilgili okuma ve araştırma yaptırılır.
+     b. Yazısında kullanacağı bilgi, gözlem, düşünce, duygu, izlenim ve deneyimleriyle ilgili notlar
+     çıkarması ve görsel, işitsel dokümanlar bulması veya hazırlaması sağlanır.
+     c. Araştırma, kaynaklara ulaşma, Genel Ağ'ı doğru ve etkin kullanma, not alma ve özetleme teknikleri
+     üzerinde durulur.
+     ç. Kaynak kullanma ve alıntı yapmanın hukuki ve etik boyutları belirtilir.
+     d. Konuyu sınırlamanın önemine değinilir.
+
+     B.4. Yazacağı metni planlar.
+
+     B.5. Metin türüne özgü yapı özelliklerine uygun yazar.
+     a. Metnin türüne göre birimlere, paragraflara, bölümlemelere, giriş-gelişme-sonuç/serim- düğüm-
+     çözüm aşamalarına ve olay örgüsüne dikkat çekilir.
+     b. Başlığı belirlemesi ve gerekirse alt başlık/bölüm başlığı ve epigraf kullanması sağlanır.
+     c. Araştırmaya ve ispatlamaya dayalı metinlerde kaynak ve dipnot gösterme şekline karar vermesi
+     sağlanır.
+
+     B.6. Metin türüne özgü dil ve anlatım özelliklerine uygun yazar.
+     a. Türle ilgili okuma kazanımlarında ifade edilen anlatım teknikleri, anlatım biçimleri/türleri
+     ve düşünceyi geliştirme yollarından uygun olanlarını kullanması sağlanır.
+     b. Şiirde ahenk unsurlarını, imge ve söz sanatlarını kullanması sağlanır.
+     c. Metnin türüne göre terim, kavram, deyim, atasözü, ağız özellikleri kullanır.
+
+
+
+
+26
+B.7. İyi bir anlatımda bulunması gereken özelliklere dikkat ederek yazar.
+İyi bir anlatımın açıklık, akıcılık, duruluk ve yalınlık gibi özellikler taşıması gerektiği hatırlatılır.
+
+B.8. Farklı cümle yapılarını ve türlerini kullanır.
+Bir yazıda basit, birleşik, sıralı, bağlı, eksiltili, devrik, kurallı cümle; isim cümlesi ve fiil cümlesi
+şeklinde farklı cümle yapıları/türlerinin kullanılmasının metne katkısı vurgulanır.
+
+B.9. Görsel ve işitsel unsurları doğru ve etkili kullanır.
+Metnin türüne göre resim, fotoğraf, grafik, çizim, veri tabloları, ses ve görüntü kayıtları vb. unsurları,
+metni tamamlayıcı ve/veya destekleyici unsurlar olarak kullanır.
+
+B.10. Yazdığı metni gözden geçirir.
+a. Dil bilgisi, yazım ve noktalama bakımından gözden geçirmesi sağlanır.
+b. Açıklık, duruluk, akıcılık, yalınlık ve kelime tercihleri bakımından gözden geçirmesi sağlanır.
+c. Birimler, paragraflar, bölümler, olay örgüsü/kurgu ve başlık gibi yapı ve şekil unsurları arasındaki
+anlam bağlantıları, tutarlılık, denge ve akış bakımından gözden geçirmesi sağlanır.
+ç. Metnin içeriğini ve üslubunu/anlatımını tür özellikleri bakımından gözden geçirmesi sağlanır.
+d. Yazısının okunaklılığını ve sayfa düzenini gözden geçirmesi sağlanır.
+
+B.11. Ürettiği ve paylaştığı metinlerin sorumluluğunu üstlenir.
+Üretilen ve paylaşılan metinlerin hukuki, ahlaki ve mesleki sorumluluğunun bilincinde hareket edilmesi
+gerektiği vurgulanır.
+
+B.12. Yazdığı metni başkalarıyla paylaşır.
+a. Yüksek sesle okuma, panoda sergileme; elektronik ortamlarda, kitap, dergi ve gazetelerde
+yayımlama, yarışmalara katılma gibi yollarla yazılan metinlerin paylaşılması sağlanır.
+b. Eleştirilere açık olma, gerekirse metin çerçevesinde eleştirilerin cevaplanması sağlanır.
+
+
+
+C) SÖZLÜ İLETİŞİM
+1. KONUŞMA
+C.1. 1. İletişim sürecini oluşturan ögeleri ve iletişimde dilin önemini belirler.
+a. Bu kazanım sadece 9.sınıfta işlenecektir.
+b. İletişimin tanımı ve ögeleri (gönderici, alıcı, ileti, kanal, geri bildirim, kod, bağlam) örneklerle
+açıklanır.
+C.1. 2. Konuşmanın konusunu, amacını, hedef kitlesini ve türünü belirler.
+
+
+
+
+                                                                                                             27
+     C.1. 3. Konuyla ilgili gözlem, inceleme veya araştırma yapar.
+
+     C.1. 4. Konuşma metnini planlar.
+
+     C.1. 5. Konuşma planına uygun olarak konuşma kartları hazırlar.
+
+     C.1. 6. Konuşmasında yararlanacağı görsel ve işitsel araçları hazırlar.
+
+     C.1. 7. Konuşmasına uygun sunu hazırlar.
+
+     Yazılı, görsel ve işitsel unsurların, sunuda doğru ve işlevsel olarak kullanımının önemi ve nasıl
+     gerçekleştirileceği açıklanır.
+
+     C.1. 8. Konuşma provası yapar.
+
+     Konuşma öncesinde konuşma yapılacak yerin, kullanılacak araçların, konuşma içeriği ve
+     süresinin kontrol edilmesinin önemi vurgulanır.
+
+     C.1. 9. Boğumlama, vurgulama, tonlama ve duraklamaya dikkat ederek konuşur.
+
+     a. Konuşmacının sesleri ve heceleri birbirine karıştırmadan, yutmadan, tam ve doğru çıkarması,
+     kelime ve cümle vurgusuna dikkat etmesi; ses tonunu amacına, ortama, içeriğe ve hedef kitleye
+     uygun olarak ayarlaması gerektiği vurgulanır.
+     b. Konuşurken nefes almak için sözün anlamına uygun duraklamalar yapılmasının önemi
+     belirtilir.
+
+     C.1. 10. Konuşurken gereksiz ses ve kelimeler kullanmaktan kaçınır.
+
+     Konuşma sırasında "hım, eee, ııı" gibi sesleri veya "işte, hani, yani, şey, mesela, atıyorum" vb.
+     kelimeleri gereksiz yere ve dinleyiciyi rahatsız edecek düzeyde kullanmaktan kaçınılması gerektiği
+     vurgulanır.
+
+     C.1. 11. Konuşmasında beden dilini doğru ve etkili biçimde kullanır.
+
+     Konuşmacının içeriğe ve hitap ettiği kitleye uygun jest ve mimikler kullanmasının, dinleyici ile göz
+     teması kurmasının, heyecanını kontrol etmesinin, dış görünümünü ve kıyafetini konuşma yapacağı
+     ortama göre ayarlamasının önemi vurgulanır.
+
+     C.1. 12. Konuşmasına etkili bir başlangıç yapar.
+
+     Konuşmaya etkili bir başlangıç yapmak için içeriğe uygun soru sorma, şiir okuma; bir fıkra, hikâye, anı
+     anlatma gibi tekniklere başvurulabileceği vurgulanır.
+
+     C.1. 13. Konuşmasının içeriğini zenginleştirir.
+
+     Bir konuşmanın deyim, atasözü, vecize, terim, alıntı, kısa hikâye, anı, şiir, fıkra, söz sanatları,
+     istatistiklerden yararlanma vb. unsurlarla zenginleştirilebileceği vurgulanır.
+
+
+
+28
+C.1. 14. Konuşmasında önemli noktaları vurgulayan ve konuşmayı takip etmeyi kolaylaştıran
+ifadeler kullanır.
+
+Konuşmacının önemli noktaları vurgulamak ve dinleyicilerin ilgisini canlı tutmak için çeşitli geçiş
+ifadelerini (bundan dolayı, özellikle, kısacası vb.) kullanabileceğine dikkat çekilir.
+
+C.1. 15. Konuşmasını etkili bir biçimde sonlandırır.
+
+Konuşmanın genel iletisinin, konuşmanın sonunda da vurgulanmasının önemi açıklanır.
+
+C.1. 16. Konuşmasında süreyi verimli kullanır.
+
+C.1. 17. Konuşmasında teknolojik araçları etkili biçimde kullanır.
+
+
+
+2. DİNLEME
+
+C.2. 1. Amacına uygun dinleme tekniklerini kullanır.
+
+Not alarak dinleme, empati kurarak dinleme, seçici dinleme, eleştirel dinleme vb. tekniklerin
+kullanılabileceği vurgulanır.
+
+C.2. 2. Dinlediği konuşmanın konu ve ana düşüncesini tespit eder.
+
+C.2. 3. Dinlediği konuşmada konu akışını takip eder.
+
+Dinlediği konuşmadaki temel kavramların ve ayrıntıların belirlenmesi sağlanır.
+
+C.2. 4. Dinlediği konuşmadaki açık ve örtük iletileri belirler.
+
+C.2. 5. Dinlediklerini özetler.
+
+C.2. 6. Dinlediklerini ön bilgileriyle karşılaştırır.
+
+C.2. 7. Dinlediği konuşmanın tutarlılığını sorgular.
+
+Konuşma; konu akışındaki uyum, olaylar, bilgiler ve düşünceler arasındaki tutarlılık açısından
+değerlendirilir.
+
+C.2. 8. Dinlediği konuşmada öne sürülen düşüncelerin dayanaklarının geçerliliğini sorgular.
+
+
+
+
+                                                                                                      29
+     3.3. ÜNİTE, SÜRE VE İÇERİK TABLOLARI
+
+     9.SINIF
+     1. ÜNİTE: GİRİŞ                                                                                I. DÖNEM
+
+     SÜRE: 2 HAFTA
+                           OKUMA                                   YAZMA                    SÖZLÜ İLETİŞİM
+     Aşağıdaki konulara uygun metinler seçilir:           “Niçin yazıyoruz?”,          İletişim ve ögeleri
+     1. Edebiyat nedir?                                  “Nasıl yazmalıyız?”           açıklanır, bunların
+      Edebiyat kelimesinin kökeni, terim anlamı         soruları çerçevesinde         işlevleri üzerinde
+     ve farklı sanatçıların edebiyat tanımları           öğrencilerin serbest          durulur.
+     üzerinde durulur.                                   metinler yazmaları
+     2. Edebiyatın bilimle ve güzel sanatlarla           sağlanır. Farklı yazarların
+     ilişkisi                                            yazma gerekçeleri ve
+      Edebiyat, bilim ve güzel sanatlar arasındaki      biçimleri üzerinde
+     etkileşim üzerinde durulur, bunların                durularak öğrencilerin
+     birbirlerine kaynaklık ettikleri örneklerle         yazmanın doğası üzerinde
+     açıklanır.                                          düşünmeleri sağlanır.
+     3. Metinlerin sınıflandırılması
+      Edebî ve öğretici metinlerin özellikleri
+     üzerinde durulur, sınıflandırmadaki ölçütler
+     açıklanır. Metin türlerinin adları verilir ancak
+     bunlarla ilgili ayrıntıya girilmez.
+      Bu ünitedeki metinler, kitap yazarları
+     tarafından da oluşturulabilir.
+
+       Dil Bilgisi Konuları:
+       Standart dil, ağız, şive, lehçe ile argo, jargon kavramları üzerinde durulur.
+
+
+
+
+30
+   2. ÜNİTE: HİKÂYE
+
+Ünite Süresi: 5 Hafta
+                    OKUMA                                YAZMA                      SÖZLÜ İLETİŞİM
+1. Cumhuriyet Dönemi’nden bir olay              Özelliklerine uygun            Sunu hazırlamanın
+hikâyesi örneği                                hikâye yazma                    temel ilkeleri açıklanır.
+2. Cumhuriyet Dönemi’nden bir durum            çalışmaları yapmaları            Öğrencilerin, Türk
+hikâyesi örneği                                sağlanır.                       edebiyatındaki durum ve
+ Hikâyenin tanımı ve unsurları (kişiler,       Hikâye yazma                  olay hikâyeciliği ile ilgili
+olay örgüsü, mekân, zaman, çatışma,            çalışmalarının dışında          bir sunum yapmaları
+karşılaşma, konu, tema, anlatıcı ve bakış      incelenen metinlerden           sağlanır.
+açısı) hakkında incelenen metinlerle ilişki    edinilen düşünce ve
+kurularak bilgi verilir.                       izlenimleri konu alan farklı
+ Olay hikâyesi (Maupassant tarzı) ve          türlerde de yazma
+durum hikâyesinin (Çehov tarzı) farkları       çalışmaları yaptırılabilir.
+incelenen metinlerden hareketle gösterilir.
+ Öğrencilerin incelenen metinleri
+Maupassant ve Çehov tarzlarından seçilmiş
+birer hikâye ile karşılaştırmaları sağlanır.
+Dil Bilgisi Konuları:
+         Metindeki isimleri bulur ve bunların metindeki işlevlerini belirler.
+         Metinler üzerinden imla ve noktalama çalışmaları yapılır.
+
+
+
+
+                                                                                                              31
+         3. ÜNİTE: ŞİİR
+
+     Ünite Süresi: 5 HAFTA
+                          OKUMA                                    YAZMA                  SÖZLÜ İLETİŞİM
+     1. Cumhuriyet Dönemi’nden hece ölçüsüyle          • Bir şiire benzeterek         Öğrencilerin
+     yazılan iki şiir örneği                           dize, beyit, dörtlük, bent     ezberledikleri şiirlerden
+     2. Cumhuriyet Dönemi’nden aruz ölçüsüyle          yazma veya şiiri devam         oluşan bir dinleti
+     yazılan bir şiir örneği                           ettirme gibi çalışmalar        hazırlamaları sağlanır.
+     3. Cumhuriyet Dönemi’nden serbest tarzda          yaptırılır.                    Dinleti hazırlama
+     yazılmış iki şiir örneği                                                         sürecinde öğrencilerin
+      Nazım birimi, nazım biçimi, nazım türü,                                        EBA’daki içerikten
+     söyleyici, durak, ölçü, kafiye, redif, nakarat,                                  yararlanmaları sağlanır.
+     mahlas, tapşırma kavramları kısaca açıklanır.
+      Manzume ve şiir ayrımı, örnek metinlerden
+     hareketle açıklanır.
+      Kazanım çerçevesinde söz sanatları kısaca
+     açıklanır.
+      Şiir türünün dünya edebiyatından bir
+     örneğine yer verilir ve bu örneğin incelenen
+     metinlerle karşılaştırılması sağlanır.
+
+      Dil Bilgisi Konuları:
+            Metindeki sıfatları bulur ve bunların metindeki işlevlerini belirler.
+            Metinler üzerinden imla ve noktalama çalışmaları yapılır.
+
+
+
+
+32
+4. ÜNİTE: MASAL/FABL
+
+Ünite Süresi: 5 HAFTA
+                    OKUMA                              YAZMA                      SÖZLÜ İLETİŞİM
+• Türk halk edebiyatından bir masal          Masal/fabl yazma              • Dinleme türleri ve etkili
+örneği                                      çalışması yaptırılır.           dinlemenin ilkeleri
+• Doğu edebiyatından bir masal örneği        Seçilen mesnevinin            açıklanır.
+• Divan edebiyatından fabl özelliği         günümüz Türkçesiyle             • Öğrencilerin yazdıkları
+gösteren bir mesnevi örneği                 yeniden yazılmasına yönelik     metinleri sınıfta sunmaları
+• Batı edebiyatından bir fabl örneği        çalışmalar da yaptırılabilir.   sağlanır.
+ Masal ve fabl türünün genel özellikleri    Masal/fabl yazma              • Öğrencilerin çizgi film
+açıklanır.                                  çalışmalarının dışında          hâline getirilmiş bir fablı
+ “Mantıku’t-Tayr”, “Martı”, “Hayvan        incelenen metinlerden           izlemeleri sağlanır.
+Çiftliği” ve “Küçük Prens” gibi eserlerin   edinilen düşünce ve
+fabl türü ile ilişkisi üzerinde durulur.    izlenimleri konu alan farklı
+                                            türlerde de yazma
+                                            çalışmaları yaptırılabilir.
+ Dil Bilgisi Konuları:
+       Metindeki edat, bağlaç ve ünlemleri bulur ve bunların metindeki işlevlerini belirler.
+       Metinler üzerinden imla ve noktalama çalışmaları yapılır.
+
+
+
+
+                                                                                                          33
+     5. ÜNİTE: ROMAN                                                                         II. DÖNEM
+
+     Ünite Süresi: 5 HAFTA
+                         OKUMA                                  YAZMA                    SÖZLÜ İLETİŞİM
+     1. Cumhuriyet Dönemi Türk edebiyatından          Öğrencilerden bir              Hazırlıklı
+     iki roman örneği                                 romanın bir kesitini bakış     konuşmanın aşamaları
+      Roman ve roman türleri hakkında genel          açısı ve anlatıcıyı            kısaca açıklanır.
+     bilgi verilir.                                   değiştirerek yazması
+      Romanın hikâyeden ayrılan yönleri              istenir. Bakış açısı veya
+     üzerinde durulur.                                anlatıcı değişikliğinin
+      Dünya edebiyatından bir roman örneğine         romanın içeriğine ve
+     yer verilir ve bu örneğin incelenen metinlerle   anlatıma etkisinin
+     karşılaştırılması sağlanır.                      değerlendirilmesi sağlanır.
+       Dil Bilgisi Konuları:
+              Metindeki zamirleri bulur ve bunların metindeki işlevlerini belirler.
+              Metinler üzerinden imla ve noktalama çalışmaları yapılır.
+
+
+
+
+34
+6. ÜNİTE: TİYATRO
+
+Ünite Süresi: 5 HAFTA
+                 OKUMA                             YAZMA                          SÖZLÜ İLETİŞİM
+1. Cumhuriyet Dönemi’nden üç tiyatro  Öğrenciler gruplara ayrılır          Öğrencilerin yazdıkları
+(trajedi, komedi, dram) örneği          ve her grubun 3-5 dakikada         oyunları sınıfın imkânları
+• Tiyatro ve tiyatro türleri hakkında   oynanabilecek kısa bir oyun        dâhilinde sergilemeleri ve
+genel bilgi verilir. Temel tiyatro      yazması sağlanır.                  değerlendirmeleri sağlanır.
+terimleri (suflör, replik, tirat, jest,
+mimik, aksesuar, makyaj vb.) açıklanır.
+• Dünya edebiyatından bir tiyatro
+örneğine yer verilir ve bu örneğin
+incelenen metinlerle karşılaştırılması
+sağlanır.
+  Dil Bilgisi Konuları:
+        Metindeki zarfları bulur ve bunların metindeki işlevlerini belirler.
+        Metinler üzerinden imla ve noktalama çalışmaları yapılır.
+
+
+
+
+                                                                                                         35
+     7. ÜNİTE: BİYOGRAFİ/OTOBİYOGRAFİ
+
+     Ünite Süresi: 3 HAFTA
+                        OKUMA                                  YAZMA                    SÖZLÜ İLETİŞİM
+     1. Cumhuriyet Dönemi’nden bir biyografi          Edindikleri bilgilerden  Öğrencilerden sınıf
+     örneği                                         hareketle öz geçmiş/CV,        ortamında kendilerini ve
+     2. Cumhuriyet Dönemi’nden bir                  portre yazmaları sağlanır      yakından tanıdıkları birini
+     otobiyografi örneği                            (İsteyen öğrencilerin çizgi tanıtmaları istenir. İki
+     3. Divan edebiyatından bir tezkire             portre yapabilecekleri         anlatım arasındaki farkı
+      Otobiyografi konusu işlenirken               belirtilir).                   değerlendirmeleri
+     monografi, öz geçmiş/CV, hâl tercümesi ve                                     sağlanır.
+     portreden kısaca bahsedilir.
+      Hikâye ve romanda biyografi ve
+     otobiyografiden yararlanıldığı üzerinde
+     durulur.
+       Dil Bilgisi Konuları:
+             Metindeki fiilleri bulur ve bunların metindeki işlevlerini belirler.
+             Metinler üzerinden imla ve noktalama çalışmaları yapılır.
+
+
+
+
+36
+      8.ÜNİTE: MEKTUP/E -POSTA
+
+Ünite Süresi: 3 HAFTA
+                   OKUMA                                YAZMA                       SÖZLÜ İLETİŞİM
+1. Cumhuriyet Dönemi’nden bir özel, bir        • Öğrencilerin mektup           Açık oturumun genel
+edebî mektup; iki e-posta örneği              yazma aşamalarına uygun özellikleri hakkında bilgi
+2. Divan edebiyatından bir mektup örneği      olarak mektup / e-posta         verilir.
+3. Tanzimat Dönemi'nden bir mektup            yazma çalışması yapmaları  Öğrencilerin bir açık
+örneği                                        sağlanır. Ayrıca                oturumu izlemeleri ve
+ Mektup türünün özellikleri açıklanır.       öğrencilere mektup yazma değerlendirmeleri
+Hikâye, roman ve şiir gibi türlerde           geleneği üzerine düşünce sağlanır.
+mektubun bir anlatım biçimi / tekniği         ve izlenimlerini anlatan bir
+olarak da kullanıldığı örneklendirilir.       yazı yazdırılır.
+ Mektup türünün dünya edebiyatından bir • Dilekçe ve tutanak
+örneğine yer verilir ve bunu inceledikleri    yazmanın kuralları
+metinlerle karşılaştırmaları sağlanır.        açıklanır, öğrencilerin,
+ e-posta yazarken kişisel bilgilerin         örneklerden hareketle bir
+güvenlik altına alınması gerektiği            dilekçe ve tutanak
+vurgulanır.                                   yazmaları sağlanır.
+ Özel mektup ile edebî mektup arasındaki
+benzerlik ve farklılıklar incelenen metinler
+üzerinden gösterilir.
+  Dil Bilgisi Konuları:
+        Metindeki fiilleri bulur ve bunların metindeki işlevlerini belirler.
+        Metinler üzerinden imla ve noktalama çalışmaları yapılır.
+
+
+
+
+                                                                                                      37
+     9. ÜNİTE: GÜNLÜK/BLOG
+
+     Ünite Süresi: 2 HAFTA
+                        OKUMA                               YAZMA                      SÖZLÜ İLETİŞİM
+     1. Cumhuriyet Dönemi’nden iki günlük          •Günlük yazmada               Öğrencilerin farklı
+     örneği                                        gözlem ve kişisel             günlüklerden/bloglardan
+     2. İki blog örneği                            izlenimlerin önemi            seçtiği metinlerden bir sunu
+      Günlük ve blog hakkında bilgi verilir.      vurgulanarak                  hazırlamaları sağlanır.
+      Günlük şeklinde düzenlenen roman ve         öğrencilerden günlük
+     hikâyelere örnekler verilir.                  yazması istenir.
+                                                    • Öğrencilerin bir blog
+                                                   oluşturmaları ve başta
+                                                   günlükleri olmak üzere
+                                                   diğer yazılı veya görsel
+                                                   üretimlerini bu blogda
+                                                   paylaşmaları sağlanır.
+
+       Dil Bilgisi Konuları:
+             Metindeki fiilleri bulur ve bunların metindeki işlevlerini belirler.
+             Metinler üzerinden imla ve noktalama çalışmaları yapılır.
+
+
+
+
+38
+10. SINIF
+1. ÜNİTE: GİRİŞ                                                                            I. DÖNEM
+Ünite Süresi: 3 HAFTA
+                    OKUMA                             YAZMA                     SÖZLÜ İLETİŞİM
+1. Edebiyatın tarih ve din ile ilişkisi    “Yazının gelişimi”, “Türk      Hat sanatı, yazı tipleri/
+ Tarihî gerçekliğin edebî metinlerde     yazı sanatı” ve “Alfabeler”     karakterleri, kâğıt, kitap,
+yeniden yorumlandığı, tarihin             gibi konularda bir yazma        kütüphane gibi konular
+edebiyattan yararlanabileceği üzerinde    çalışması yapmaları sağlanır.   üzerinde hazırlıklı bir
+durulur. Dinî hayatın edebî dönemleri                                     konuşma yapmaları;
+belirleyen etkenlerden biri olduğundan                                    konuşmalarını görsel
+bahsedilir. Edebiyatın dinî hayata, dinî                                  unsurlarla desteklemeleri
+hayatın da edebiyata ve dile etkide                                       sağlanır.
+bulunduğuna dikkat çekilir.
+2. Türk edebiyatının tarihî dönemleri
+ Türk edebiyatının ana dönemleri
+(İslamiyet’in kabulünden önceki dönem,
+İslami Dönem, Batı etkisinde gelişen
+dönem) üzerinde durulur. Bu
+dönemlere ilişkin bilgilendirme örnek
+metinler üzerinden yapılır.
+3. Türkçenin tarihî gelişimi
+ Sözlü edebiyat dönemi ile ilgili kısaca
+bilgi verilir. Yazılı edebiyat dönemi
+hakkındaki açıklamalar Türklerin
+kullandığı alfabeler (Kök Türk, Uygur,
+Arap, Kiril, Latin alfabesi) çerçevesinde
+yapılır.
+  Dil Bilgisi Konuları:
+       Metinler üzerinden imla ve noktalama çalışmaları yapılır.
+
+
+
+
+                                                                                                        39
+     2. ÜNİTE: HİKÂYE
+
+     Ünite Süresi: 6 HAFTA
+                         OKUMA                                   YAZMA                     SÖZLÜ İLETİŞİM
+     1. Dede Korkut hikâyelerinden bir örnek           • Öğrencilere inceledikleri   • Öğrencilerin hikâyeden
+     2. İki halk hikâyesi örneği                       metinlerden hareketle bir     uyarlanmış bir filmi
+     3. Bir mesnevi örneği                             hikâye yazdırılır. Hikâye     izlemeleri ve filme konu
+     4. Tanzimat Dönemi'nden bir hikâye örneği         yazma çalışmalarının          olan hikâyeyi okumaları
+     5. Milli Edebiyat Dönemi'nden bir hikâye          dışında incelenen             sağlanır. Daha sonra film
+     örneği                                            metinlerden edinilen          ile hikâye arasındaki farkı
+      Hikâye türünün dünya edebiyatından bir          düşünce ve izlenimleri        değerlendirmeleri istenir
+     örneğine yer verilir ve bu hikâyenin              konu alan farklı türlerde     (Ömer Seyfettin’in
+     incelenen metinlerle karşılaştırılması            de yazma çalışmaları          “Pembe İncili Kaftan”,
+     sağlanır.                                         yaptırılabilir.               Mustafa Kutlu’nun “Uzun
+      Halk hikâyeleri, destan tipi ve aşk temalı      • Öğrencilerin yazdığı        Hikâye” adlı eserleri gibi).
+     olmak üzere iki farklı tarzdan seçilir. Hz. Ali   metinler çeşitli araç ve
+     Cenknameleri’ne yer verilir.                      yöntemlerle (sınıf panosu,
+      Mesnevi örnekleri Yusuf u Züleyha ve            okul panosu, dergi,
+     Ashab-ı Kehf gibi eserlerden seçilir.             gazete, sosyal medya vb.)
+                                                       sergilenir.
+      Dilbilgisi Konuları:
+            Metindeki fiilimsileri bulur ve bunların metindeki işlevlerini belirler.
+            Metinler üzerinden imla ve noktalama çalışmaları yapılır.
+
+
+
+
+40
+3. ÜNİTE: ŞİİR
+
+Ünite Süresi: 6 HAFTA
+                   OKUMA                                    YAZMA                       SÖZLÜ İLETİŞİM
+1. İslamiyet'in kabulünden önceki Türk         • Öğrencilerin okuma                • Öğrencilerin bir
+şiirinden bir koşuk, bir sagu örneği           bölümünde edinilen                 grubundan, aile
+2. Geçiş dönemi (11-12. yüzyıl) Türk           bilgilerden yararlanarak           büyüklerinden veya
+edebiyatından kısa metin örnekleri             mâni ve koşma yazmaları            başka kişilerden "mâni"
+3. Halk edebiyatından bir ilahi ve bir nefes   sağlanır.                          derlemeleri ve bunları
+örneği                                         • Öğrencilerin yazdığı             konularına göre tasnif
+4. Halk edebiyatından üç mâni (düz, kesik ve   şiirler sınıfta değerlendirilir,   ederek sınıfta okumaları
+yedekli mâni) ve bir türkü örneği              çeşitli araç ve yöntemlerle        istenir.
+5. Halk şiirinden bir koşma örneği             (sınıf panosu, okul panosu,         • Öğrencilerin bir
+6. Divan şiirinden iki gazel örneği            dergi, gazete, sosyal medya        grubundan halk şiiri
+7. Divan şiirinden bir kaside örneği           vb.) sergilenir.                   nazım biçimlerinden
+8. Divan şiirinden bir şarkı örneği                                               (koşma, semai, varsağı,
+ Halk edebiyatından ilahi örneği Yunus                                           destan, türkü, mâni,
+Emre'nin şiirlerinden seçilir.                                                    ilahi, nefes vb.) oluşan
+                                                                                  bir şiir dinletisi
+                                                                                  hazırlamaları ve
+                                                                                  sunmaları istenir.
+                                                                                   • Öğrencilerin bir
+                                                                                  grubundan divan şiiri
+                                                                                  nazım biçimlerinden
+                                                                                  (gazel, kaside, şarkı,
+                                                                                  rubai, terkibibent vb.)
+                                                                                  oluşan bir şiir dinletisi
+                                                                                  hazırlamaları ve
+                                                                                  sunmaları istenir.
+                                                                                   • Öğrencilerin yapılan
+                                                                                  sunumlardan sonra
+                                                                                  dinledikleri şiirlerin
+                                                                                  ahenk unsurları, ses
+                                                                                  akışları ve hissettirdikleri
+                                                                                  ile ilgili çıkarımlarda
+                                                                                  bulunmaları sağlanır.
+  Dil Bilgisi Konuları:
+        Metindeki isim tamlamalarını bulur ve bunların metindeki işlevlerini belirler.
+        Metinler üzerinden imla ve noktalama çalışmaları yapılır.
+
+
+
+
+                                                                                                                 41
+     4. ÜNİTE: DESTAN/EFSANE
+
+     Ünite Süresi: 5 HAFTA
+                        OKUMA                                   YAZMA                     SÖZLÜ İLETİŞİM
+     1. Dünya edebiyatının ilk destanlarından bir   • Öğrencilerden yakın            • Öğrencilerin derleyip
+     örnek                                          çevrelerindeki varlıklar,        yazdıkları efsaneleri
+     2. Türk halk edebiyatından bir efsane örneği   mekânlar, tarihî olaylar,        sınıfta sunmaları
+     3. İslamiyet'in kabulünden önceki Türk         tabiat olayları ve inanışlarla   sağlanır.
+     edebiyatından bir destan örneği                ilgili efsaneleri sözlü kültür
+     4. İslamiyet'in kabulünden sonraki             kaynaklarından derlemeleri
+     dönemden bir destan örneği                     ve bunları yazıya geçirerek
+     5. 1923-1980 dönemi Türk edebiyatından         sergilemeleri (sınıf panosu,
+     bir yapma destan örneği                        okul panosu, dergi, gazete,
+      Efsane ve destanların, ait oldukları         sosyal medya vb.) istenir.
+     toplumun millî kimliğiyle olan bağı; tarihî,    “Bozkurtların Ölümü”,
+     kültürel ve toplumsal açıdan önemi             “Gün Olur Asra Bedel” gibi
+     üzerinde durulur. Türk destanları işlenirken   eserlerin destan türünden
+     millî ve manevi değerler üzerinde durulur.     etkilenilerek yazıldığı
+                                                    bilgisinden hareketle “15
+                                                    Temmuz Demokrasi Zaferi
+                                                    ve Şehitleri” konusunda,
+                                                    öğrencilerin tercih ettiği
+                                                    türde bir yazı yazdırılır.
+
+      Dil Bilgisi Konuları:
+            Metindeki sıfat tamlamalarını bulur ve bunların metindeki işlevlerini belirler.
+            Metinler üzerinden imla ve noktalama çalışmaları yapılır.
+
+
+
+
+42
+5. ÜNİTE: ROMAN
+
+II.DÖNEM
+
+Ünite Süresi: 6HAFTA
+                 OKUMA                                 YAZMA                       SÖZLÜ İLETİŞİM
+1. Dünya edebiyatından bir roman         • Öğrencilerden, okudukları bir      • Öğrencilerin Türk ve
+örneği                                   romanın sonucunu değiştirerek        dünya edebiyatından
+2. Tanzimat Dönemi Türk edebiyatından yazmaları, romandaki olay               sinemaya uyarlanmış
+bir roman örneği                         örgüsünü hikâye formunda             bir romanın filmini
+3. Servetifünun Dönemi'nden bir roman yazmaları veya romanın bir              izlemeleri ve
+örneği                                   kesitini diyalog hâlinde             yorumlamaları sağlanır.
+4. Millî Edebiyat Dönemi'nden bir        yazmaları istenir.
+roman örneği
+•Dünya edebiyatından alınan metin,
+roman türünün 19. yüzyıldaki klasik
+örneklerinden seçilir.
+  Dil Bilgisi Konuları:
+        Metindeki cümle çeşitlerini bulur ve bunların metindeki işlevlerini belirler.
+        Metinler üzerinden imlâ ve noktalama çalışmaları yapılır.
+
+
+
+
+                                                                                                        43
+     6. ÜNİTE: TİYATRO
+
+     Ünite Süresi: 4 HAFTA
+                        OKUMA                                  YAZMA                     SÖZLÜ İLETİŞİM
+     1. Geleneksel Türk tiyatrosundan iki metin     • Öğrencilerin inceledikleri    • Meddah hakkında
+     örneği (Karagöz, orta oyunu)                   metinlerden hareketle           bilgi verilir. Öğrencilerin
+     2. Modern Türk tiyatrosundan bir metin         geleneksel tiyatronun           izledikleri birer meddah
+     örneği                                         eğlence kültürümüzdeki          ve stand-up
+      Tiyatro türünün dünya edebiyatından bir      yeri, Osmanlı toplumunun        gösterisinden hareketle
+     örneğine yer verilir ve bu örneğin incelenen   bir arada yaşama kültürü,       kısa bir meddah oyunu
+     metinlerle karşılaştırılması sağlanır.         isimlerle karakter              sunmaları sağlanır.
+                                                    arasındaki ilişki, yanlış       Genel Ağ’dan Karagöz
+                                                    anlamalar ve şive taklitleri,   oyunu videoları izlenir.
+                                                    gibi konular üzerinde yazı
+                                                    yazmaları sağlanır.
+      Dil Bilgisi Konuları:
+            Metindeki cümle çeşitlerini bulur ve bunların metindeki işlevlerini belirler.
+            Metinler üzerinden imla ve noktalama çalışmaları yapılır.
+
+
+
+
+44
+7. ÜNİTE: ANI (HATIRA)
+
+Ünite Süresi: 2 HAFTA
+                  OKUMA                                 YAZMA                      SÖZLÜ İLETİŞİM
+1. Servetifünun Dönemi Türk                • Öğrencilerden türün               Öğrencilerden bir
+edebiyatından bir anı örneği               özelliklerine uygun birer anı       hatıralarını anlatmaları
+2. Cumhuriyet Dönemi Türk                  yazmaları istenir.                  istenir.
+edebiyatından bir anı örneği
+ Anıların hikâye ve roman türüne
+kaynaklık edebileceği belirtilir. Ömer
+Seyfettin’in “Kaşağı”, “İlk Namaz”; Orhan
+Kemal’in “Sağ İç” gibi hikâyeleri ve
+Peyami Safa’nın “Dokuzuncu Hariciye
+Koğuşu” romanının anı türünden
+yararlanılarak yazıldığı üzerinde durulur.
+  Dil Bilgisi Konuları:
+        Metindeki cümle çeşitlerini bulur ve bunların metindeki işlevlerini belirler.
+        Metinler üzerinden imla ve noktalama çalışmaları yapılır.
+
+
+
+
+                                                                                                          45
+     8. ÜNİTE: HABER METNİ
+
+     Ünite Süresi: 2 HAFTA
+                         OKUMA                                  YAZMA                     SÖZLÜ İLETİŞİM
+     1. Güncel gazete ve dergilerden iki haber         Öğrencilerden yaşadıkları      Haber spikerliğinden
+     metni                                            veya kurguladıkları bir olayı   bahsedilir.
+     2. Genel Ağ haberlerinden bir metin              haber metni hâline               Öğrencilerden
+      5N 1K kuralından ve temel habercilik           getirmeleri istenir.            yazdıkları veya
+     terimlerinden (sütun, spot, manşet, tekzip,                                      seçtikleri haber
+     sürmanşet, asparagas, muhabir vb.)                                               metinlerini haberin
+     bahsedilir.                                                                      içeriğini yansıtacak
+      Gazete, dergi, Genel Ağ, radyo ve                                              şekilde sunmaları
+     televizyon haberciliğinin farkları vurgulanır.                                   istenir.
+      Şiddet içerikli haberlerin, reyting aracı
+     olarak kullanılmaması gerektiği üzerinde
+     durulur.
+      Haber metinlerinin sanat metinlerine
+     kaynaklık edebileceği belirtilir.
+     Dostoyevski’nin “Suç ve Ceza”, Orhan
+     Kemal’in “Vukuat Var” adlı eserlerinin bir
+     haberden yola çıkılarak yazıldığı üzerinde
+     durulur.
+
+      Dil Bilgisi Konuları:
+            Metindeki cümle çeşitlerini bulur ve bunların metindeki işlevlerini belirler.
+            Metinler üzerinden imla ve noktalama çalışmaları yapılır.
+
+
+
+
+46
+9. ÜNİTE: GEZİ YAZISI
+
+Ünite Süresi: 2 HAFTA
+                 OKUMA                             YAZMA                       SÖZLÜ İLETİŞİM
+1. Divan edebiyatından bir gezi yazısı  Öğrencilerden gezdikleri        Öğrencilerden yazdıkları
+örneği                                 bir yer hakkında bir gezi yazısı gezi yazılarını sınıfta
+2. Cumhuriyet Dönemi’nden iki gezi     yazmaları istenir. Yazıyı görsel sunmaları istenir.
+yazısı örneği                          unsurlarla desteklemeleri
+ Divan edebiyatından seçilen gezi     önerilir.
+yazısı Evliya Çelebi’nin
+Seyahatnâme’sinden alınır.
+  Dil Bilgisi Konuları:
+        Metindeki cümle çeşitlerini bulur ve bunların metindeki işlevlerini belirler.
+        Metinler üzerinden imla ve noktalama çalışmaları yapılır.
+
+
+
+
+                                                                                                     47
+     11. SINIF
+     1. ÜNİTE: GİRİŞ                                                                           I. DÖNEM
+
+     Ünite Süresi: 2 HAFTA
+                        OKUMA                                YAZMA                     SÖZLÜ İLETİŞİM
+     1. Edebiyat ve toplum ilişkisi                • Öğrencilerin, okuduğu       • Öğrencilerden sanat
+     • Edebiyatın toplum sorunlarını dile          metinlerden hareketle         akımlarının edebiyat
+     getirdiği, bunu yaparken toplumsal değişime   edebiyat ve toplum ilişkisi   resim, müzik ve mimari
+     etkide bulunduğu üzerinde durulur.            üzerine kısa bir yazı         gibi farklı sanat dallarına
+     2. Edebiyatın sanat akımları ile ilişkisi     yazması sağlanır.             nasıl yansıdığı üzerinde
+     • Edebî eserlerin belli bir sanat anlayışı                                  bir sunum yapmaları ve
+     doğrultusunda yazıldığı, eserler toplamının                                 sunumlarını görsel,
+     da edebiyat ve sanat akımlarını oluşturduğu                                 işitsel ögelerle
+     üzerinde durulur. Batı’da ve Türk                                           desteklemeleri istenir.
+     edebiyatında oluşan sanat akımlarına
+     metinler bağlamında kısaca değinilir.
+
+      Dil Bilgisi Konuları:
+            Metinler üzerinden imla ve noktalama çalışmaları yapılır.
+
+
+
+
+48
+2. ÜNİTE: HİKÂYE
+
+Ünite Süresi: 5 HAFTA
+                     OKUMA                                YAZMA                      SÖZLÜ İLETİŞİM
+1. Cumhuriyet Dönemi’nde (1923-1940)           • Öğrencilerden                  • Öğretmen tarafından
+yazılmış iki hikâye örneği                     inceledikleri hikâyelerden       sınıfa getirilen
+2. Cumhuriyet Dönemi’nde (1940-1960)           birinin özelliklerine (bireyin   seslendirilmiş bir hikâye
+yazılmış üç hikâye örneği                      iç dünyasını esas alan,          dinletilir ve
+ 1923-1940 döneminden seçilecek               toplumcu gerçekçi, millî-        öğrencilerden
+metinlerin biri olay hikâyesi, bir diğeri de   dinî duyarlılıkları yansıtan,    dinledikleri hikâyeyi
+durum hikâyesi olmalıdır.                      modernist) uygun olarak          yorumlamaları istenir.
+ 1940-1960 döneminden alınan metinler         bir hikâye yazmaları istenir.
+farklı eğilimleri temsil eden (bireyin iç
+dünyasını esas alan, toplumcu gerçekçi,
+millî-dinî duyarlılıkları yansıtan, modernist)
+hikâyelerden seçilir.
+  Dil Bilgisi Konuları:
+         Metindeki cümlelerin ögeleri bulunur.
+         Metinler üzerinden imla ve noktalama çalışmaları yapılır.
+
+
+
+
+                                                                                                            49
+     3. ÜNİTE: ŞİİR
+
+     Ünite Süresi: 6 HAFTA
+                           OKUMA                                 YAZMA                 SÖZLÜ İLETİŞİM
+     1. Tanzimat Dönemi'nden iki şiir örneği           • Öğrencilerin             • Öğrencilerin
+     2. Servetifünun Dönemi'nden iki şiir örneği       inceledikleri şiirlerden   kendilerine yakın
+     3. Saf Şiir anlayışından iki şiir örneği          birinin özelliklerine      buldukları şiir anlayışı
+     4. Millî Edebiyat Dönemi'nden iki şiir örneği     uygun şiir yazmaları       ile ilgili kısa bir
+     5. Cumhuriyet'in ilk döneminden hece ölçüsüyle sağlanır.                     konuşma yapmaları
+     yazılmış bir şiir örneği                                                     sağlanır.
+     6. Türk dünyası edebiyatından iki şiir örneği
+        Servetifünun Dönemi şiirleri incelenirken
+         Fecriati’den tema ve dil kullanımı
+         bağlamında kısaca bahsedilir.
+        Millî Edebiyat Dönemi’nin bağımsız
+         isimlerinden Mehmet Âkif Ersoy'un bir şiiri
+         değerlendirilir, “manzum hikâye” kavramı
+         açıklanır.
+        Türk dünyasından alınacak şiirler Bahtiyar
+         Vahapzade ve Şehriyar gibi şairlerden seçilir
+       Dil Bilgisi Konuları:
+              Metindeki cümlelerin ögeleri bulunur.
+              Metinler üzerinden imla ve noktalama çalışmaları yapılır.
+
+
+
+
+50
+4. ÜNİTE: MAKALE
+
+Ünite Süresi: 2 HAFTA
+                   OKUMA                                  YAZMA                   SÖZLÜ İLETİŞİM
+1. Fen bilimleri ve sosyal bilimler          • Öğrencilere makale türü       •Öğrencilerin
+alanlarında yazılmış birer bilimsel makale   ile ilgili öğrendiklerinden     münazaranın özelliklerine
+örneği                                       hareketle araştırmaya           uygun bir münazara
+2. Edebî bir makale örneği                   dayalı bir metin yazma          örneği sunmaları sağlanır.
+                                             çalışması yaptırılır.           •Yapılan münazaranın
+                                             •Araştırmaya dayalı             değerlendirilmesi sağlanır.
+                                             metinlerin yazımında
+                                             kütüphanede ve Genel
+                                             Ağ'da kaynak taramasının
+                                             nasıl yapıldığı ve
+                                             sınırlandırıldığı örneklerle
+                                             gösterilir. Öğrencilerden
+                                             Genel Ağ'da yaptıkları
+                                             araştırmaları bilişim
+                                             teknolojilerini kullanarak iş
+                                             birlikli bir rapor hâline
+                                             getirmeleri istenir.
+                                             •Farklı kaynaklardaki
+                                             bilgilerin bir metinde nasıl
+                                             terkip edileceği örneklerle
+                                             açıklanır.
+                                             •Metin içinde ve sonunda
+                                             bilimsel kaynak
+                                             göstermeye ilişkin temel
+                                             ilkeler örneklerle açıklanır.
+ Dil Bilgisi Konuları:
+       Metnin seçilmiş bölümündeki cümlelerin ögeleri bulunur.
+       Metinler üzerinden imla ve noktalama çalışmaları yapılır.
+
+
+
+
+                                                                                                           51
+     5. ÜNİTE: SOHBET VE FIKRA
+
+     Ünite Süresi: 2 HAFTA
+                        OKUMA                              YAZMA                  SÖZLÜ İLETİŞİM
+     1. Cumhuriyet öncesi dönemde yazılmış bir •Öğrencilerin türün           •Türk toplumundaki
+     sohbet örneği                              özelliklerine uygun güncel   sohbet kültürüne değinilir.
+     2. Cumhuriyet Dönemi’nden bir sohbet       bir konuda sohbet veya       • Öğrencilerin “Dostluk”
+     örneği                                     fıkra yazmaları sağlanır.    konusunda bir sohbet
+     3. Cumhuriyet öncesi dönemden bir fıkra                                 gerçekleştirmeleri
+     örneği                                                                  sağlanır.
+     4. Cumhuriyet Dönemi’nden bir fıkra
+     örneği
+       Dil Bilgisi Konuları:
+             Metindeki cümlelerin ögeleri bulunur.
+             Metinler üzerinden imla ve noktalama çalışmaları yapılır.
+
+
+
+
+52
+6. ÜNİTE: ROMAN                                                                           II. DÖNEM
+
+Ünite Süresi: 6 HAFTA
+                  OKUMA                                   YAZMA                  SÖZLÜ İLETİŞİM
+1. Cumhuriyet Dönemi’nden 1923-1950  Öğrencilerden ders                     ÖğrencilereTürk veya
+arası iki roman örneği                        kapsamında okudukları roman   dünya edebiyatından
+2. 1950-1980 arası dönemden iki roman üzerine bir inceleme ve               sinemaya uyarlanan bir
+örneği                                        değerlendirme yazısı          romanın filmi
+3. Dünya edebiyatından bir roman              oluşturmaları istenir.        seyrettirilip söz konusu
+örneği                                                                      roman okutturulur.
+ Dünya edebiyatı roman örneği 20.                                          Roman ile filmin
+yüzyıldan seçilmelidir.                                                     karşılaştırılması sağlanır.
+  Dil Bilgisi Konuları:
+         Anlatım bozukluklarıyla ilgili çalışmalar yapılır.
+         Metinler üzerinden imla ve noktalama çalışmaları yapılır.
+
+
+
+
+                                                                                                          53
+     7. ÜNİTE: TİYATRO
+
+     Ünite Süresi: 5 HAFTA
+                       OKUMA                            YAZMA                     SÖZLÜ İLETİŞİM
+     1. Cumhuriyet Dönemi’nden (1923-          Öğrencilerden tiyatro        Öğrencilerden kendi
+     1950 arası) iki tiyatro örneği           salonunda veya medya          hazırladıkları tek kişilik veya
+     2. Cumhuriyet Dönemi’nden (1950-         ortamında seyrettikleri bir   birkaç kişilik bir oyunu
+     1980 arası) bir tiyatro örneği           tiyatro üzerine inceleme /    canlandırmaları istenir.
+     3. Dünya edebiyatından bir tiyatro       değerlendirme yazısı
+     örneği                                   yazmaları istenir.
+
+
+
+
+      Dil Bilgisi Konuları:
+            Anlatım bozukluklarıyla ilgili çalışmalar yapılır.
+            Metinler üzerinden imla ve noktalama çalışmaları yapılır.
+
+
+
+
+54
+8. ÜNİTE: ELEŞTİRİ
+
+Ünite Süresi: 2 HAFTA
+                 OKUMA                                 YAZMA                  SÖZLÜ İLETİŞİM
+1. Cumhuriyet Dönemi’nden iki eleştiri      Öğrencilerden                Öğrencilerden
+örneği                                     okudukları bir roman,         okudukları bir kitabı
+2. Cumhuriyet öncesi dönemden bir          hikâye veya şiirle ilgili     tanıtmaları ve kitaba dair
+eleştiri örneği                            eleştiri yazmaları istenir.   eleştirilerini sözlü olarak
+                                            Öğrencilerin yazdığı        sunmaları istenir.
+                                           eleştiriler sınıfta
+                                           değerlendirilir.
+ Dil Bilgisi Konuları:
+       Anlatım bozukluklarıyla ilgili çalışmalar yapılır.
+       Metinler üzerinden imla ve noktalama çalışmaları yapılır.
+
+
+
+
+                                                                                                       55
+     9. ÜNİTE: MÜLAKAT/RÖPORTAJ
+
+     Ünite Süresi: 2 HAFTA
+                        OKUMA                                  YAZMA                  SÖZLÜ İLETİŞİM
+     1. Cumhuriyet öncesi dönemden bir              Öğrencilerden bir            Öğrenciler, önceden
+     mülakat örneği                                mülakat hazırlamaları         hazırlık yaparak sınıf
+     2. Cumhuriyet Dönemi’nden bir mülakat         istenir.                      ortamında kendi
+     örneği                                         Öğrencilerden, yaptıkları   aralarında bir mülakat
+     3. Cumhuriyet Dönemi’nden bir röportaj        mülakatı gerekli              gerçekleştirirler.
+     örneği                                        düzenlemeleri yaparak
+          Mülakat metinleri edebiyat ve           yazıya aktarmaları istenir.
+              sanat alanıyla ilgili olmalıdır.
+          Örnek metinlerden hareketle
+     mülakat ve röportajın farklarına değinilir.
+       Dil Bilgisi Konuları:
+             Anlatım bozukluklarıyla ilgili çalışmalar yapılır.
+             Metinler üzerinden imla ve noktalama çalışmaları yapılır.
+
+
+
+
+56
+12. SINIF
+1. ÜNİTE: GİRİŞ                                                                                  I. DÖNEM
+
+Ünite Süresi: 2 HAFTA
+                     OKUMA                                   YAZMA                      SÖZLÜ İLETİŞİM
+1. Edebiyat ile düşünce akımları / felsefe        • Öğrencilerden toplumsal      • Öğrencilerden
+arasındaki ilişki                                 değişim, teknoloji ve          hayatımıza yeni girmiş
+2. Edebiyat ile psikoloji ve psikiyatri           sosyal medyanın dili nasıl     teknolojik terimler
+arasındaki ilişki                                 etkilediği hakkında bir yazı   üzerine bir sunum
+3. Dilin tarihî süreç içerisindeki değişimini     yazmaları istenir.             yapmaları istenir. Bu
+etkileyen sebepler                                                               sunumda terimlerin
+4. İlk örneklerden günümüze Türkçenin                                            yazılış ve telaffuzları ile
+önemli sözlükleri                                                                ilgili hususlara da
+ Edebî eserlerin bir düşünce akımını / felsefi                                  değinilir.
+anlayışı yansıtabileceği, aynı şekilde
+felsefenin de edebiyattan yararlanabileceği
+üzerinde durulur.
+ Siyasi ve toplumsal değişim, teknoloji,
+çeviri, yazarların dil tercihleri gibi hususların
+yazı ve konuşma dilini etkilediği belirtilir.
+  Dil Bilgisi Konuları:
+         Metinler üzerinden imla ve noktalama çalışmaları yapılır.
+         Kelimede anlam ile ilgili çalışmalar yapılır.
+
+
+
+
+                                                                                                               57
+     2. ÜNİTE: HİKÂYE
+
+     Ünite Süresi: 6 HAFTA
+                    OKUMA                              YAZMA                          SÖZLÜ İLETİŞİM
+     1. 1960 sonrası dönemden dört           Öğrencilerden inceledikleri       Öğrencilerden inceledikleri
+     hikâye örneği                          hikâyelerde bulunan                ya da kendi seçtikleri bir
+     2. Küçürek (minimal) hikâye            tekniklerden en az ikisini         hikâyeyi dramatize etmeleri
+     örnekleri                              kullanarak bir hikâye              istenir.
+                                            yazmaları istenir.                  Öğrencilerden bir
+                                             Öğrencilerden küçürek            hikâyecinin hayatını ve
+                                            hikâye yazmaları istenir.          eserlerini tanıtan bir sunum
+                                             Öğrencilerin yazdığı             hazırlamaları istenir.
+                                            metinler çeşitli araç ve
+                                            yöntemlerle (sınıf panosu,
+                                            okul panosu, dergi, gazete,
+                                            sosyal medya vb.) sergilenir.
+      Dil Bilgisi Konuları:
+            Metinler üzerinden imla ve noktalama çalışmaları yapılır.
+            Metinler üzerinde kelimede anlam ile ilgili çalışmalar yapılır.
+
+
+
+
+58
+3. ÜNİTE: ŞİİR
+
+Ünite Süresi: 8 HAFTA
+                  OKUMA                                         YAZMA                       SÖZLÜ İLETİŞİM
+1. Cumhuriyet Dönemi saf şiir anlayışından üç         Öğrencilerden inceledikleri       Öğrencilerden
+şiir örneği                                          şiirlerden birinin tarzını örnek    Cumhuriyet Dönemi Türk
+2. Cumhuriyet Dönemi’nden (1923-1960)                alarak şiir yazmaları istenir.      şiirinden ve Türk
+toplumcu eğilimleri yansıtan iki şiir örneği          Öğrencilerin yazdığı şiirler      dünyasına ait şiirlerden
+3. Millî Edebiyat anlayışını yansıtan iki şiir       sınıfta değerlendirilir.            oluşan bir şiir dinletisi
+örneği                                                Öğrencilerin yazdığı şiirler      hazırlamaları ve sunmaları
+4. Garip akımından iki şiir örneği                   çeşitli araç ve yöntemlerle         istenir.
+5. İkinci Yeni’den iki şiir örneği                   (sınıf panosu, okul panosu,
+6. Dinî değerleri, geleneğe duyarlığı ve             dergi, gazete, sosyal medya…)
+metafizik anlayışı öne çıkaran modern şairlerden     sergilenir.
+iki şiir örneği
+7. 1960 sonrası toplumcu eğilimleri yansıtan bir
+şiir örneği
+8. 1980 sonrası Türk şiirinden iki örnek
+9. Cumhuriyet sonrası halk şiirinden iki şiir
+örneği
+ Saf şiir örnekleri Necip Fazıl Kısakürek, Ziya
+Osman Saba, Ahmet Hamdi Tanpınar, Ahmet
+Muhip Dıranas, Cahit Sıtkı Tarancı, Asaf Halet
+Çelebi, Behçet Necatigil, Fazıl Hüsnü Dağlarca,
+Sedat Umran gibi şairlerden seçilir.
+ Cumhuriyet sonrası (1923-1960) toplumcu şiir
+örneği Nazım Hikmet, Attilâ İlhan gibi şairlerden
+seçilir.
+ Millî Edebiyat anlayışını yansıtan şiirler Arif
+Nihat Asya, Orhan Şaik Gökyay, Niyazi Yıldırım
+Gençosmanoğlu, Bekir Sıtkı Erdoğan gibi
+şairlerden seçilir.
+ Dinî değerleri, geleneğe duyarlığı ve metafizik
+anlayışı öne çıkaran şiirler Sezai Karakoç, Cahit
+Zarifoğlu, Erdem Bayazıt gibi şairlerden seçilir.
+ 1960 sonrası toplumcu eğilimleri yansıtan
+şiirler İsmet Özel, Süreyya Berfe gibi şairlerden
+seçilir.
+ Halk şiiri örnekleri (Âşık Veysel, Ali İzzet
+Özkan, Davut Sulari, Abdurrahim Karakoç, Âşık
+Daimi, Sefil Selimi, Şeref Taşlıova, Murat
+Çobanoğlu, Feymani gibi) 20. yüzyılın önde
+gelen halk şairlerinden seçilir.
+ Şiirler incelenirken gerekirse dünya
+edebiyatından ilgili şiir örneklerine yer verilir.
+  Dil Bilgisi Konuları:
+          Metinler üzerinden imla ve noktalama çalışmaları yapılır.
+          Metinler üzerinde kelimede anlam ile ilgili çalışmalar yapılır.
+
+
+
+
+                                                                                                                      59
+     4. ÜNİTE: ROMAN
+
+     Ünite Süresi: 8 HAFTA
+                         OKUMA                                  YAZMA                  SÖZLÜ İLETİŞİM
+     1. Cumhuriyet Dönemi Türk edebiyatından  Öğrencilerden                        Öğrencilerin okuyup
+     (1923-1950 arası) bir roman örneği              inceledikleri romanlardan     beğendikleri bir roman
+     2. Cumhuriyet Dönemi Türk edebiyatından         biri üzerine tanıtma-         hakkındaki
+     (1950-1980 arası) iki roman örneği              değerlendirme yazısı          düşüncelerini sınıf
+     3. 1980 sonrası Türk edebiyatından bir          yazmaları istenir.            ortamında hazırlıksız
+     roman örneği                                     Öğrencilerin yazdığı        konuşma şeklinde
+     4. Türk dünyası edebiyatından bir roman         yazılar çeşitli araç ve       sunmaları sağlanır.
+     örneği                                          yöntemlerle (sınıf panosu,
+     5. Dünya edebiyatından bir roman örneği         okul panosu, dergi, gazete,
+      Romanlar farklı anlayış ve akımlardan         sosyal medya…) sergilenir.
+     seçilmelidir.
+      Dünya edebiyatına ait roman örneği 20.
+     yüzyıldan seçilmelidir.
+       Dil Bilgisi Konuları:
+             Metinler üzerinden imla ve noktalama çalışmaları yapılır.
+             Paragrafta anlam ile ilgili çalışmalar yapılır.
+
+
+
+
+60
+5. ÜNİTE: TİYATRO
+
+Ünite Süresi: 4 HAFTA
+                  OKUMA                               YAZMA                    SÖZLÜ İLETİŞİM
+1. 1950 sonrası Türk tiyatrosundan üç        Öğrencilerden bir tiyatro    Öğrencilere bir radyo
+metin                                       metninin bir bölümünü         tiyatrosu dinletilir.
+ Seçilen metinler farklı anlayış ve        veya tamamını özelliklerine    Öğrencilerden
+akımlardan olmalıdır.                       dikkat ederek radyo           yazdıkları radyo
+                                            tiyatrosuna dönüştürmeleri    tiyatrosunu bilişim
+                                            istenir.                      teknolojilerini kullanarak
+                                                                          seslendirmeleri ve bu
+                                                                          seslendirmeyi sınıfta
+                                                                          sunmaları istenir.
+ Dil Bilgisi Konuları:
+       Metinler üzerinden imla ve noktalama çalışmaları yapılır.
+       Paragrafta anlam ile ilgili çalışmalar yapılır.
+
+
+
+
+                                                                                                       61
+     6. ÜNİTE: DENEME
+
+     Ünite Süresi: 2 HAFTA
+                      OKUMA                                YAZMA                   SÖZLÜ İLETİŞİM
+     1. Dünya edebiyatından bir deneme           Öğrencilerden istedikleri    Öğrencilerden,
+     örneği                                     bir konuda deneme             yazdıkları denemeleri sınıf
+     2. Cumhuriyet Dönemi’nden (1923-1960       yazmaları istenir.            ortamında sunmaları
+     arası) bir deneme örneği                    Öğrencilerin yazdığı        istenir.
+     3. Cumhuriyet Dönemi’nden (1960            yazılar çeşitli araç ve
+     sonrası) iki deneme örneği                 yöntemlerle (sınıf panosu,
+      Dünya edebiyatından alınan               okul panosu, dergi, gazete,
+     denemenin, türün ilk örneklerinden         sosyal medya…) sergilenir.
+     olmasına özen gösterilir.
+
+      Dil Bilgisi Konuları:
+            Metinler üzerinden imla ve noktalama çalışmaları yapılır.
+            Paragrafta anlam ile ilgili çalışmalar yapılır.
+
+
+
+
+62
+7. ÜNİTE: SÖYLEV (NUTUK)
+
+Ünite Süresi: 2 HAFTA
+                   OKUMA                                  YAZMA                    SÖZLÜ İLETİŞİM
+1. Cumhuriyet Dönemi’nden iki söylev             Öğrencilerden güncel bir    Öğrencilerden yazma
+örneği                                          konudan yola çıkarak bir     çalışmalarında
+2. İslamiyet’in kabulünden önceki Türk          söylev metni yazmaları       hazırladıkları söylevi
+edebiyatından bir söylev örneği                 istenir.                     sınıfta sunmaları istenir.
+3. İslamiyet etkisinde gelişen Türk
+edebiyatından bir söylev örneği
+ İslamiyet’in kabulünden önceki söylev
+örneği Kök Türk Kitabeleri’nden seçilir.
+ Söylev türünün dünya edebiyatındaki ilk
+ve önemli örneklerine değinilir.
+  Dil Bilgisi Konuları:
+        Paragrafta anlam ile ilgili çalışmalar yapılır.
+        Metinler üzerinden imla ve noktalama çalışmaları yapılır.
+
+
+
+
+                                                                                                          63
+64
+

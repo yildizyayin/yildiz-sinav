@@ -1,0 +1,1633 @@
+2
+İÇİNDEKİLER
+
+1. MİLLÎ EĞİTİM BAKANLIĞI ÖĞRETİM PROGRAMLARI                                        4
+  1.1. ÖĞRETİM PROGRAMLARININ AMAÇLARI                                               4
+  1.2. ÖĞRETİM PROGRAMLARININ PERSPEKTİFİ                                            5
+       1.2.1. Değerlerimiz                                                           5
+       1.2.2. Yetkinlikler                                                           6
+  1.3. ÖĞRETİM PROGRAMLARINDA ÖLÇME VE DEĞERLENDİRME YAKLAŞIMI                       8
+  1.4. BİREYSEL GELİŞİM VE ÖĞRETİM PROGRAMLARI                                       9
+  1.5. SONUÇ                                                                         10
+2. FİZİK DERSİ ÖĞRETİM PROGRAMI’NIN UYGULANMASI                                      11
+  2.1. ÖĞRETİM PROGRAMININ TEMEL FELSEFESİ VE GENEL AMAÇLARI                         11
+  2.2. ÖĞRETİM PROGRAMININ UGULANMASINDA DİKKAT EDİLECEK HUSUSLAR                    12
+  2.3. FİZİK DERSİ 9, 10, 11 VE 12.SINIFLAR DERS KİTABI FORMA SAYILARI VE EBATLARI   13
+  2.4. KAZANIM SAYISI VE SÜRE TABLOSU                                                13
+3. FİZİK DERSİ ÖĞRETİM PROGRAMI’NIN YAPISI                                           14
+  3.1. KAZANIMLARIN YAPISI                                                           14
+  3.2. SINIF DÜZEYLERİNE GÖRE ÜNİTE, KONU, KAZANIM VE AÇIKLAMALARI                   15
+      9. SINIF ÜNİTE, KONU, KAZANIM VE AÇIKLAMALARI                                  15
+      10. SINIF ÜNİTE, KONU, KAZANIM VE AÇIKLAMALARI                                 22
+      11. SINIF ÜNİTE, KONU, KAZANIM VE AÇIKLAMALARI                                 29
+      12. SINIF ÜNİTE, KONU, KAZANIM VE AÇIKLAMALARI                                 36
+
+
+
+
+                                                                                          3
+    1                      MİLLÎ EĞİTİM BAKANLIĞI ÖĞRETİM PROGRAMLARI
+
+
+          Bilim ve teknolojide yaşanan hızlı değişim, bireyin ve toplumun değişen ihtiyaçları, öğrenme
+öğretme teori ve yaklaşımlarındaki yenilik ve gelişmeler bireylerden beklenen rolleri de doğrudan
+etkilemiştir. Bu değişim bilgiyi üreten, hayatta işlevsel olarak kullanabilen, problem çözebilen, eleştirel
+düşünen, girişimci, kararlı, iletişim becerilerine sahip, empati yapabilen, topluma ve kültüre katkı
+sağlayan vb. niteliklerdeki bir bireyi tanımlamaktadır. Bu nitelik dokusuna sahip bireylerin yetişmesine
+hizmet edecek öğretim programları salt bilgi aktaran bir yapıdan ziyade bireysel farklılıkları dikkate alan,
+değer ve beceri kazandırma hedefli, sade ve anlaşılır bir yapıda hazırlanmıştır. Bu amaç doğrultusunda
+bir taraftan farklı konu ve sınıf düzeylerinde sarmal bir yaklaşımla tekrar eden kazanımlara ve
+açıklamalara, diğer taraftan bütünsel ve bir kerede kazandırılması hedeflenen öğrenme çıktılarına yer
+verilmiştir. Her iki gruptaki kazanım ve açıklamalar da ilgili disiplinin yetkin, güncel, geçerli ve eğitim
+öğretim sürecinde hayatla ilişkileri kurulabilecek niteliktedir. Bu kazanımlar ve sınırlarını belirleyen
+açıklamaları, sınıflar ve eğitim kademeleri düzeyinde değerler, beceriler ve yetkinlikler perspektifinde
+bütünlük sağlayan bir bakış açısıyla yalın bir içeriğe işaret etmektedir. Böylelikle üst bilişsel becerilerin
+kullanımına yönlendiren, anlamlı ve kalıcı öğrenmeyi sağlayan, sağlam ve önceki öğrenmelerle
+ilişkilendirilmiş, diğer disiplinlerle ve günlük hayatla değerler, beceriler ve yetkinlikler çevresinde
+bütünleşmiş bir öğretim programları toplamı oluşturulmuştur.
+
+                                                        .
+1.1. ÖĞRETİM PROGRAMLARININ AMAÇLARI
+
+
+          Öğretim programları, 1739 sayılı Milli Eğitim Temel Kanununun 2. maddesinde ifade edilen
+“Türk Milli Eğitiminin Genel Amaçları” ile “Türk Milli Eğitiminin Temel İlkeleri” esas alınarak
+hazırlanmıştır.
+          Eğitim ve öğretim programlarıyla sürdürülen tüm çalışmalar; okulöncesi, ilköğretim ve
+ortaöğretim seviyelerinde birbirini tamamlayıcı bir şekilde aşağıdaki amaçlara ulaşmaya yöneliktir:
+1. Okulöncesi eğitimi tamamlayan öğrencilerin bireysel gelişim süreçleri göz önünde bulundurularak
+    bedensel, zihinsel ve duygusal alanlarda sağlıklı şekilde gelişimlerini desteklemek
+2. İlkokulu tamamlayan öğrencilerin gelişim düzeyine ve kendi bireyselliğine uygun olarak ahlaki
+    bütünlük ve öz farkındalık çerçevesinde, öz güven ve öz disipline sahip, gündelik hayatta ihtiyaç
+    duyacağı temel düzeyde sözel, sayısal ve bilimsel akıl yürütme ile sosyal becerileri ve estetik
+    duyarlılığı kazanmış, bunları etkin bir şekilde kullanarak sağlıklı hayat yönelimli bireyler olmalarını
+    sağlamak
+
+
+
+4
+3. Ortaokulu tamamlayan öğrencilerin, ilkokulda kazandıkları yetkinlikleri geliştirmek suretiyle millî ve
+   manevi değerleri benimsemiş, haklarını kullanan ve sorumluluklarını yerine getiren, “Türkiye
+   Yeterlilikler Çerçevesi”nde ve ayrıca disiplinlere özgü alanlarda ifadesini bulan temel düzey beceri ve
+   yetkinlikleri kazanmış bireyler olmalarını sağlamak
+4. Liseyi tamamlayan öğrencilerin, ilkokulda ve ortaokulda kazandıkları yetkinlikleri geliştirmek suretiyle,
+   millî ve manevi değerleri benimseyip hayat tarzına dönüştürmüş, üretken ve aktif vatandaşlar olarak
+   yurdumuzun iktisadi, sosyal ve kültürel kalkınmasına katkıda bulunan, “Türkiye Yeterlilikler
+   Çerçevesi”nde ve ayrıca disiplinlere özgü alanlarda ifadesini bulan temel düzey beceri ve yetkinlikleri
+   kazanmış, ilgi ve yetenekleri doğrultusunda bir mesleğe, yükseköğretime ve hayata hazır bireyler
+   olmalarını sağlamak.
+
+
+1.2. ÖĞRETİM PROGRAMLARININ PERSPEKTİFİ
+
+
+         Eğitim sistemimizin temel amacı değerlerimiz ve yetkinliklerle bütünleşmiş bilgi, beceri ve
+davranışlara sahip bireyler yetiştirmektir. Bilgi, beceri ve davranışlar öğretim programlarıyla
+kazandırılmaya çalışılırken değerlerimiz ve yetkinlikler bu bilgi, beceri ve davranışların arasındaki
+bütünlüğü kuran bağlantı ve ufuk işlevi görmektedir. Değerlerimiz toplumumuzun millî ve manevi
+kaynaklarından damıtılarak dünden bugüne ulaşmış ve yarınlarımıza aktaracağımız öz mirasımızdır.
+Yetkinlikler ise bu mirasın hayata ve insanlık ailesine katılmasını ve katkı vermesini sağlayan eylemsel
+bütünlüklerimizdir. Bu yönüyle değerlerimiz ve yetkinlikler birbirinden ayrılmaz bir şekilde teori-pratik
+bütünlüğündeki asli parçamızı oluşturur. Güncellik içinde öğrenme öğretme süreçleriyle kazandırmaya
+çalıştığımız bilgi, beceri ve davranışlar ise bizi biz yapan değerlerimizin ve yetkinliklerin günün şartları
+içinde görünürlük kazanma araç ve platformlarıdır; günün şartları içinde değişiklik gösterebilir yapısıyla
+arızîdir ve bu sebeple de sürekli gözden geçirmelerle güncellenir, yenilenir.
+
+
+1.2.1. DEĞERLERİMİZ
+
+
+         Değerlerimiz öğretim programlarının perspektifini oluşturan ilkeler toplamıdır. Kökleri
+geleneklerimiz ve dünümüz içinde, gövdesi ve dalları bu köklerden beslenerek bugünümüze ve
+yarınlarımıza uzanmaktadır. Temel insani özelliklerimizi oluşturan değerlerimiz, hayatımızın rutin
+akışında ve karşılaştığımız sorunlarla başa çıkmada eyleme geçmemizi sağlayan kudretin ve gücün
+kaynağıdır.
+         Bir toplumun geleceğinin, değerlerini benimsemiş ve bu değerleri sahip olduğu yetkinliklerle
+ete kemiğe büründüren insanlarına bağlı olduğu tartışma götürmez bir gerçektir. Bundan dolayı eğitim
+sistemimiz her bir üyesine uygun ahlaki kararlar alma ve bunları davranışlarında sergileme yeterliliğini
+                                                                                                           5
+kazandırma amacıyla hareket eder. Eğitim sistemi sadece akademik açıdan başarılı, belirlenmiş bazı bilgi,
+beceri ve davranışları kazandıran bir yapı değildir. Temel değerleri benimsemiş bireyler yetiştirmek asli
+görevidir; yeni neslin değerlerini, alışkanlıklarını ve davranışlarını etkileyebilmelidir. Eğitim sistemi
+değerleri kazandırma amacı çerçevesindeki işlevini, öğretim programlarını da kapsayan eğitim
+programıyla yerine getirir. “Eğitim programı”; öğretim programları, öğrenme öğretme ortamları, eğitim
+araç gereçleri, ders dışı etkinlikler, mevzuat gibi eğitim sisteminin tüm unsurları göz önünde
+bulundurularak oluşturulur. Öğretim programlarında bu anlayışla değerlerimiz, ayrı bir program veya
+öğrenme alanı, ünite, konu vb. olarak görülmemiştir. Tam aksine bütün eğitim sürecinin nihai gayesi ve
+ruhu olan değerlerimiz, öğretim programlarının her birinde ve her bir biriminde yer almıştır.
+          Öğretim programlarında yer alan “kök değerler” şunlardır: adalet, dostluk, dürüstlük, öz
+denetim, sabır, saygı, sevgi, sorumluluk, vatanseverlik, yardımseverlik. Bu değerler, öğrenme öğretme
+sürecinde hem kendi başlarına, hem ilişkili olduğu alt değerlerle ve hem de öteki kök değerlerle birlikte
+ele alınarak hayat bulacaktır.
+
+
+1.2.2. YETKİNLİKLER
+
+
+          Eğitim sistemimiz yetkinliklerde bütünleşmiş bilgi, beceri ve davranışlara sahip karakterde
+bireyler yetiştirmeyi amaçlar. Öğrencilerin hem ulusal hem de uluslararası düzeyde; kişisel, sosyal,
+akademik ve iş hayatlarında ihtiyaç duyacakları beceri yelpazeleri olan yetkinlikler Türkiye Yeterlilikler
+          Çerçevesinde (TYÇ) belirlenmiştir. TYÇ sekiz anahtar yetkinlik belirlemekte ve aşağıdaki gibi
+tanımlamaktadır:
+1) Anadilde iletişim: Kavram, düşünce, görüş, duygu ve olguları hem sözlü hem de yazılı olarak ifade
+    etme ve yorumlama (dinleme, konuşma, okuma ve yazma); eğitim ve öğretim, iş yeri, ev ve eğlence
+    gibi her türlü sosyal ve kültürel bağlamda uygun ve yaratıcı bir şekilde dilsel etkileşimde bulunmaktır.
+2) Yabancı dillerde iletişim: Çoğunlukla ana dilde iletişimin temel beceri boyutlarını paylaşmakta olup
+    duygu, düşünce, kavram, olgu ve görüşleri hem sözlü hem de yazılı olarak kişinin istek ve ihtiyaçlarına
+    göre eğitim, öğretim, iş yeri, ev ve eğlence gibi uygun bir dizi sosyal ve kültürel bağlamda anlama,
+    ifade etme ve yorumlama becerisine dayalıdır. Yabancı dillerde iletişim, aracılık etme ve
+    kültürlerarası anlayış becerilerini de gerektirmektedir. Bireyin yeterlilik seviyesi, bireyin sosyal ve
+    kültürel geçmişi, çevresi, ihtiyaçları ve ilgilerine bağlı olarak dinleme, konuşma, okuma ve yazma
+    boyutları ile farklı diller arasında değişkenlik gösterecektir.
+3) Matematiksel yetkinlik ve bilim/teknolojide temel yetkinlikler: Matematiksel yetkinlik, günlük hayatta
+    karşılaşılan bir dizi problemi çözmek için matematiksel düşünme tarzını geliştirme ve uygulamadır.
+    Sağlam bir aritmetik becerisi üzerine inşa edilen süreç, faaliyet ve bilgiye vurgu yapılmaktadır.
+    Matematiksel yetkinlik, düşünme (mantıksal ve uzamsal düşünme) ve sunmanın (formüller,
+
+6
+   modeller, kurgular, grafikler ve tablolar) matematiksel modlarını farklı derecelerde kullanma beceri
+   ve isteğini içermektedir.
+   Bilimde yetkinlik, soruları tanımlamak ve kanıta dayalı sonuçlar üretmek amacıyla doğal dünyanın
+   açıklanmasına yönelik bilgi varlığına ve metodolojiden yararlanma beceri ve arzusuna atıfta
+   bulunmaktadır. Teknolojide yetkinlik, algılanan insan istek ve ihtiyaçlarını karşılama bağlamında bilgi
+   ve metodolojinin uygulanması olarak görülmektedir. Bilim ve teknolojide yetkinlik, insan
+   etkinliklerinden kaynaklanan değişimleri ve her bireyin vatandaş olarak sorumluluklarını kavrama
+   gücünü kapsamaktadır.
+4) Dijital yetkinlik: İş, günlük hayat ve iletişim için bilgi iletişim teknolojilerinin güvenli ve eleştirel şekilde
+   kullanılmasını kapsar. Söz konusu yetkinlik, bilgiye erişim ve bilginin değerlendirilmesi, saklanması,
+   üretimi, sunulması ve alışverişi için bilgisayarların kullanılması ayrıca internet aracılığıyla ortak ağlara
+   katılım sağlanması ve iletişim kurulması gibi temel beceriler yoluyla desteklenmektedir.
+5) Öğrenmeyi öğrenme: Bireyin kendi öğrenme eylemini etkili zaman ve bilgi yönetimini de kapsayacak
+   şekilde bireysel olarak veya grup hâlinde düzenleyebilmesi için öğrenmenin peşine düşme ve bu
+   konuda ısrarcı olma yetkinliğidir. Bu yetkinlik, bireyin var olan imkânları tanıyarak öğrenme ihtiyaç ve
+   süreçlerinin farkında olmasını ve başarılı bir öğrenme eylemi için zorluklarla başa çıkma yeteneğini
+   kapsamaktadır. Yeni bilgi ve beceriler kazanmak, işlemek ve kendine uyarlamak kadar rehberlik
+   desteği aramak ve bundan yararlanmak anlamına da gelir. Öğrenmeyi öğrenme, bilgi ve becerilerin
+   ev, iş yeri, eğitim ve öğretim ortamı gibi çeşitli bağlamlarda kullanılması ve uygulanması için önceki
+   öğrenme ve hayat tecrübelerine dayanılması yönünde öğrenenleri harekete geçirir.
+6) Sosyal ve vatandaşlıkla ilgili yetkinlikler: Bu yetkinlikler kişisel, kişilerarası ve kültürlerarası
+   yetkinlikleri içermekte; bireylerin farklılaşan toplum ve çalışma hayatına etkili ve yapıcı biçimde
+   katılmalarına imkân tanıyacak; gerektiğinde çatışmaları çözecek özelliklerle donatılmasını sağlayan
+   tüm davranış biçimlerini kapsar. Vatandaşlıkla ilgili yetkinlik ise bireyleri, toplumsal ve siyasal kavram
+   ve yapılara ilişkin bilgiye, demokratik ve aktif katılım kararlılığına dayalı olarak medeni hayata tam
+   olarak katılmaları için donatmaktadır.
+7) İnisiyatif alma ve girişimcilik: Bireyin düşüncelerini eyleme dönüştürme becerisini ifade eder.
+   Yaratıcılık, yenilik ve risk almanın yanında hedeflere ulaşmak için planlama yapma ve proje yönetme
+   yeteneğini de içerir. Bu yetkinlik, herkesi sadece evde ve toplumda değil işlerine ait bağlam ve
+   şartların farkında olabilmeleri ve iş fırsatlarını yakalayabilmeleri için aynı zamanda iş hayatında
+   desteklemekte; toplumsal ve ticari etkinliklere girişen veya katkıda bulunan kişilerin ihtiyaç
+   duydukları daha özgün bilgi ve beceriler için de bir temel teşkil etmektedir. Etik değerlerin farkında
+   olma ve iyi yönetişimi desteklemeyi de kapsar.
+8) Kültürel farkındalık ve ifade: Müzik, sahne sanatları, edebiyat ve görsel sanatlar dâhil olmak üzere
+   çeşitli kitle iletişim araçları kullanılarak görüş, deneyim ve duyguların yaratıcı bir şekilde ifade
+   edilmesinin öneminin takdiridir.
+                                                                                                                  7
+1.3. ÖĞRETİM PROGRAMLARINDA ÖLÇME VE DEĞERLENDİRME YAKLAŞIMI
+
+
+          Hiçbir insan bir başkasının birebir aynısı değildir. Bu sebeple öğretim programlarının ve buna
+bağlı olarak ölçme ve değerlendirme sürecinin “herkese uygun”, “herkes için geçerli ve standart olması”
+insanın doğasına terstir. Bu sebeple ölçme ve değerlendirme sürecinde azami çeşitlilik ve esneklik
+anlayışıyla hareket edilmesi şarttır. Öğretim programları bu açıdan bir yol göstericidir. Öğretim
+programlarından ölçme değerlendirmeye ait bütün unsurları içermesini beklemek gerçekçi bir beklenti
+olarak değerlendirilemez. Eğitimde çeşitlilik; birey, eğitim düzeyi, ders içeriği, sosyal ortam, okul
+imkânları vb. iç ve dış dinamiklerden ciddi şekilde etkilendiği için, ölçme ve değerlendirme
+uygulamalarının etkililiğini sağlamada öncelik öğretim programlarından değil öğretmen ve eğitim
+uygulayıcılarından beklenir. Bu noktada özgünlük ve yaratıcılık öğretmenlerden temel beklentidir.
+
+          Bu bakış açısından hareketle öğretim programlarında ölçme ve değerlendirme uygulamalarına
+yön veren ilkeleri aşağıdaki gibi özetlemek mümkündür:
+
+1.   Ölçme ve değerlendirme çalışmaları öğretim programının tüm bileşenleri ile azami uyum sağlamalı,
+     kazanım ve açıklamaların sınırları esas alınmalıdır.
+2.   Öğretim programı, ölçme sürecinde kullanılabilecek ölçme araç ve yöntemleri açısından
+     uygulayıcılara kesin sınırlar çizmez, sadece yol gösterir. Ancak tercih edilen ölçme ve değerlendirme
+     araç ve yönteminde, gereken teknik ve akademik standartlara uyulmalıdır.
+3.   Eğitimde ölçme ve değerlendirme uygulamaları eğitimin ayrılmaz bir parçasıdır ve eğitim süreci
+     boyunca yapılır. Ölçme sonuçları tek başına değil izlenen süreçlerle birlikte bütünlük içinde ele
+     alınır.
+4.   Bireysel farklılıklar gerçeğinden dolayı bütün öğrencileri kapsayan, bütün öğrenciler için genel
+     geçer, tek tip bir ölçme ve değerlendirme yönteminden söz etmek uygun değildir. Öğrencinin
+     akademik gelişimi tek bir yöntemle veya teknikle ölçülüp değerlendirilmez.
+5.   Eğitim sadece “bilme (düşünce)” için değil, “hissetme (duygu)” ve “yapma (eylem)” için de verilir;
+     dolayısıyla sadece bilişsel ölçümler yeterli kabul edilemez.
+6.   Çok odaklı ölçme değerlendirme esastır. Ölçme ve değerlendirme uygulamaları öğretmen ve
+     öğrencilerin aktif katılımıyla gerçekleştirilir.
+          Bireylerin ölçme ve değerlendirmeye konu olan ilgi, tutum, değer ve başarı gibi özellikleri
+zamanla değişebilir. Bu sebeple söz konusu özellikleri tek bir zamanda ölçmek yerine süreç içindeki
+değişimleri dikkate alan ölçümler kullanmak esastır.
+
+
+
+
+8
+1.4. BİREYSEL GELİŞİM VE ÖĞRETİM PROGRAMLARI
+
+
+           Öğretim programlarının geliştirilmesi sürecinde insanın çok yönlü gelişimsel özelliklerine dair
+mevcut bilimsel bilgi ve birikim dikkate alınarak bütün bileşenler arasında ahengi dikkate alan harmonik
+bir yaklaşım benimsenmiştir. Bu bağlamda bazı temel gelişim ilkelerine değinmek yerinde olacaktır.
+
+           Öğretim programları, insan gelişiminin belirli bir dönemde sonlanmadığı ve gelişimin hayat
+boyu sürdüğü ilkesi ile hazırlanmıştır. Bu sebeple öğretim programlarında, her yaş döneminde bireylerin
+gelişim özelliklerini dikkate alarak destekleyici önlemler alınması önerilmektedir.
+
+           Gelişim, hayat boyu sürse de tek ve bir örnek yapıda değildir. Evreler hâlinde ilerler ve her
+evrede bireylerin gelişim özellikleri farklıdır. Evreler de başlangıç ve bitişleri açısından homojen değildir.
+Bu sebeple programlar olabildiğince bunu göz önünde bulunduran bir hassasiyetle yapılandırılmıştır.
+Programların amaçlarını ve kazanımlarını gerçekleştirme sürecinde gerekli uyarlamaların öğretmen
+tarafından yapılması beklenir.
+
+           Gelişim dönemleri ardışık ve değişmeyen bir sıra izler. Her evrede olup bitenler takip eden
+evreleri etkiler. Öte yandan bu ardışıklık belirli yönelimlerle karakterize edilir: basitten karmaşığa,
+genelden özele ve somuttan soyuta doğru gelişim gibi. Program geliştirme sürecinde söz konusu
+yönelimler hem bir alandaki yeterliliği oluşturan kazanım ve becerilerin ön şart ve ardıllığı noktasında
+dikkate alınmış hem de sınıflar düzeyinde derslerin dağılımlarında ve birbirleriyle ilişkilerinde göz
+önünde bulundurulmuştur.
+
+           Öğretim programlarında insan gelişiminin bir bütün olduğu ilkesi ile hareket edilmiştir. İnsanın
+farklı gelişim alanlarındaki özellikleri birbirleri ile etkileşim hâlindedir. Söz gelimi dil gelişimi düşünce
+gelişimini etkiler ve düşünce gelişiminden etkilenir. Bu sebeple öğretmenlerden, öğrencinin edindiği bir
+kazanımın, gelişimde başka bir alanı da etkileyeceğini dikkate alması beklenir.
+
+           Öğretim programları bireysel farklılıklara ilişkin hassasiyetler göz önünde bulundurularak
+yapılandırılmıştır. Kalıtımsal, çevresel ve kültürel faktörlerden kaynaklanan bireysel farklılıklar ilgi,
+ihtiyaç ve yönlenme açısından da kendini belli eder. Öte yandan bu durum bireylerarası ve bireyin kendi
+içindeki farklılıkları da kapsar. Bireyler hem başkalarından farklılık gösterir hem de kendi içindeki
+özellikleri ile farklıdır. Örneğin bir bireyin soyut düşünme yeteneği güçlü iken aynı bireyin resim yeteneği
+zayıf olabilir.
+
+           Gelişim hayat boyu sürmekle birlikte bu gelişimin hızı evrelere göre değişkendir. Hızın yüksek
+olduğu zamanlar gelişim açısından riskli ve kritik zamanlardır. Bu sebeple öğretmenlerin gelişim hızının
+yüksek olduğu zamanlarda öğrencinin durumuna daha duyarlı davranması beklenir. Söz gelimi ergenlik
+
+                                                                                                            9
+dönemi kimlik edinimi için kritik dönemdir ve eğitim bu dönemde kimlik edinimini destekleyici sosyal
+etkileşimleri artırır ve yönetir.
+
+1.5. SONUÇ
+
+
+          Elimizdeki programları güncelleme sürecinde hangi işlemlerden ve aşamalardan geçtiğimiz
+üzerine bilgi vermek de yerinde olacaktır. Bu bağlamda:
+
+    Farklı ülkelerin son yıllarda benzer gerekçelerle yenilenip güncellenen öğretim programları
+     incelenmiş,
+    Yurt içinde ve yurt dışında eğitim öğretim ve programlar üzerine yapılan akademik çalışmalar
+     taranmış,
+    Başta Anayasamız olmak üzere ilgili mevzuat, kalkınma planları, hükûmet programları, şûra
+     kararları, siyasi partilerin programları, sivil toplum kuruluşları ve sivil araştırma kurumları
+     tarafından hazırlanan raporlar vb. dokümanlar analiz edilmiş,
+    Millî Eğitim Bakanlığı programlar ve öğretim materyalleri daire başkanlıkları tarafından geliştirilen
+     anketler aracılığıyla öğretmen ve yöneticilerin programlar ve haftalık ders çizelgelerine yönelik
+     görüşleri toplanmış,
+    İllerden gelen her bir branşla ilgili zümre raporları incelenmiş,
+    Branşlara yönelik açık uçlu sorulardan oluşan ve elektronik ortamda erişime açılan anket verileri
+     derlenmiş,
+    Eğitim fakültelerimizin branşlar ölçeğinde hazırladıkları raporlar incelenmiş,
+     Bütün görüş, öneri, eleştiri ve beklentiler, Bakanlığımızın ilgili birimlerinden uzman personel,
+öğretmen ve akademisyenlerden oluşan çalışma gruplarınca değerlendirilmiştir.
+
+     Yapılan tespitler doğrultusunda öğretim programlarımız gözden geçirilip güncellenmiş ve
+yenilenmiştir. Programların uygulanmasına 2018-2019 eğitim öğretim yılı itibarıyla topyekûn geçilecek
+ve sonrasında yapılacak izleme değerlendirme sonuçlarına göre yine gerekli güncellemeler yapılacaktır.
+Böylelikle programlarımızın gelişmelerle ve bilimsel, sosyal, teknolojik vb. ihtiyaçlarla koşutluğunun
+sürekliliği sağlanmış olacaktır.
+
+
+
+
+10
+ 2.     FİZİK DERSİ ÖĞRETİM PROGRAMI’NIN UYGULANMASI
+
+2.1. ÖĞRETİM PROGRAMININ TEMEL FELSEFESİ VE GENEL AMAÇLARI
+
+
+        Fizik bilimi evrendeki düzen, olaylar ve doğanın işleyişinin anlaşılmasına yardımcı olmaktadır.
+Fizikteki gelişmelerle birlikte gelişen teknoloji de insanlığın gelişimi ve evrenin anlaşılmasına katkı
+sağlayacaktır. Fizik Dersi Öğretim Programı hazırlanırken 9 ve 10. sınıflarda matematiksel işlem
+yoğunluğu asgari düzeyde tutularak günlük hayatla ilişkilendirilmesi sağlanmıştır. Öğrencilerin 9 ve
+10. sınıflarda matematiksel işlemlerden çok çevresinde gördüğü olayları fizik kurallarına göre
+yorumlayarak fiziğin hayatımızdaki yerini fark etmeleri, 11 ve 12. sınıflarda ise konular daha geniş
+kapsamlı ve ileri düzeyde ele alınarak akademik alt yapının hazırlanması amaçlanmıştır.
+
+        1739 sayılı Millî Eğitim Temel Kanunu’nun 2. maddesinde ifade edilen Türk Millî Eğitiminin
+Genel Amaçları ile Türk Millî Eğitiminin Temel İlkeleri esas alınarak hazırlanan Fizik Dersi Öğretim
+Programıyla öğrencilerin;
+
+1. Fizik biliminin evrendeki olayların anlaşılmasındaki önemini kavramaları,
+2. Bilimsel sorgulamanın doğasını anlamaları,
+3. Bilimin doğası üzerine farkındalık kazanmaları,
+4. Bilimsel süreç becerilerini kullanarak bilimsel bilgi üretmeleri, problem çözmeleri ve bilimsel
+   bilgiyi paylaşmaları,
+5. Deney yaparak veri elde etmeleri, bu verileri kullanarak çıkarım yapmaları, yorumlamaları ve
+   genellemelere ulaşmaları,
+6. Fizik biliminin ilke, prensip ve yöntemlerini günlük hayattaki olay ve/veya durumlarla
+   ilişkilendirmeleri,
+7. Fizik biliminin, toplumsal hayata, ekonomiye ve teknolojiye etkisini fark etmeleri,
+8. Etik ve sosyal etkilerini düşünerek fiziğin uygulamaları ile ilgili bilimsel dayanakları olan kararlar
+   vermeleri,
+9. Bilgi çağının bir gereği olan araştırma, sorgulama, inceleme, eleştirel düşünme becerilerini,
+   hayatın her alanında kullanabilmeleri,
+10. Farklı enerji kaynaklarının kullanımına yönelik sosyobilimsel olaylarla ilgili çıkarımda bulunmaları,
+11. İşlevsel projeler, kapsamlı ve özgün tasarımlar, buluşlar üretebilmeleri,
+12. Fiziğin gelişimine katkıda bulunan bilim insanları hakkında bilgi sahibi olmaları,
+13. Medeniyet tarihimizde öne çıkan düşünür ve bilim insanlarının bilime yön veren fikir ve
+   çalışmalarını yorumlamaları amaçlanmaktadır.
+
+
+                                                                                                            11
+2.2. ÖĞRETİM PROGRAMININ UYGULANMASINDA DİKKAT EDİLECEK HUSUSLAR
+         1. Konuların günlük hayatla ilişkilendirilmesi ve problemlerin öğrencilerin günlük hayatta
+karşılaşabilecekleri olaylar üzerinden seçilmesi kalıcı öğrenmeyi sağlayacaktır.
+         2. Programda yer alan kazanımlar esas olmakla birlikte kazanım açıklamalarında yer alan
+yöntem ve teknikler, öneriler ve sınırlandırmalar dikkate alınmalıdır.
+         3. Öğretim materyali hazırlama ve derse hazırlıklı gelmenin öğretmenin asli görevleri arasında
+olduğu unutulmamalıdır. Öğretmenler, fizik dersi ile ilgili bilgi, beceri, değer ve tutumları öğrencilerine
+kazandırırken sadece ders kitaplarına bağlı kalmamalıdırlar. Sınıf düzeyi, öğrencilerin ilgi, hazır
+bulunuşluk düzeyleri, öğrenme stilleri gibi unsurları göz önünde bulundurarak kazanımlarla tutarlı
+olacak şekilde öğretim materyalleri (bilgi notu, sunum, etkinlik, çalışma kâğıtları, proje, okuma
+parçaları vb.) yapılandırmalı ve kullanmalıdırlar. Öğretim materyalleri hazırlanırken zümre öğretmenleri
+ve diğer disiplinlerin öğretmenleriyle iş birliği yapılmalıdır.
+         4. Derse ilişkin ön hazırlık gerektiren etkinliklerin hazırlığı okul dışında yapılabilir.
+         5. Kazanımlarda geçen deney ve simülasyonlar öğrencilerin akademik yeterliliklerine uygun
+seçilmelidir. Bu nedenle öğretmen ders öncesinde ilgili deney ve simülasyonlara yönelik literatür
+taraması yapmalıdır.
+         6. Deney ve simülasyon içeren kazanımlarda fiziksel ortamın yetersizliği durumunda öğretmen
+gösteri deneyi yapmalı; konu anlatımında görsel ögelere yer vermelidir.
+         7. Fizik konularının sanatsal faaliyetlerle kavratılmalıdır. Öğrencilerin konuları resim, karikatür,
+fıkra, hikâye ve şiirlere dönüştürmesi öğrenmenin kalıcı olmasını sağlayacaktır.
+         8. Öğretmen güncel bilimi takip etmeli, alan ile ilgili yeni gelişmeleri öğrencilerle paylaşmaya
+özen göstermelidir. Güncel bilimin takip edilmesine yönelik öğrencilere süreli yayınlar hakkında bilgi
+verilebilir.
+         9. İlgili kazanımlarda Matematik, Kimya, Biyoloji, Müzik, Resim gibi branş öğretmenleri ile iş
+birliği yapılmalıdır.
+         10. Öğretmen, bilim, toplum, teknoloji, çevre ve ekonomiye katkı sağlayacak projeler üretme
+konusunda öğrencileri cesaretlendirmelidir. İlgili kazanımlarda TÜBİTAK, T.C. Bilim, Sanayi ve Teknoloji
+Bakanlığı, Kalkınma Ajansı, KOSGEB projelerinin tanıtımına yönelik sunu hazırlamaları için öğrencileri
+yönlendirmelidir.
+         11. Öğretmen, Gazi Mustafa Kemal Atatürk’ün “Hayatta en hakiki mürşit ilimdir.” sözüne vurgu
+yaparak geçmişten bugüne Fizik biliminin gelişimine katkı sağlamış Türk-İslam bilim insanlarının
+çalışmalarının tanıtılmasını sağlamalıdır.
+         12. Öğretmenler, öğrencilerin sınıf ve laboratuvar ortamında yapılan bilimsel etkinliklerde
+ihtiyaç duyulan bilgi ve becerilere sahip olduklarından emin olmalıdır. Çalışmalar öncesinde, güvenlik
+kuralları hatırlatılmalı ve öğrenciler kendi ve başkalarının güvenliğinin sorumluluğunu almaları için
+teşvik edilmeli ve uyarılmalıdırlar.
+
+
+12
+2.3. FİZİK DERSİ 9, 10, 11 VE 12. SINIFLAR DERS KİTABI FORMA SAYILARI VE EBATLARI
+
+                     Sınıf                        Forma Sayısı                       Ebadı
+                      9                                20                     19,5 cm x 27,5 cm
+                      10                               18                     19,5 cm x 27,5 cm
+                      11                               29                     19,5 cm x 27,5 cm
+                      12                               18                     19,5 cm x 27,5 cm
+Not:Forma sayıları üst sınır olarak verilmiş olup daha az da olabilir.
+
+2.4. KAZANIM SAYISI VE SÜRE TABLOSU
+        Dersin planlanması, işlenişi ve kitap yazım sürecinde ünitelerde yer alan kazanım sayısı ve
+bunlara ayrılacak süreye ilişkin tablolar, göz önünde bulundurulmalıdır.
+
+                                               9. SINIF
+                 Ünite Adı                       Kazanım Sayısı       Süre / Ders Saati       Oran (%)
+ Fizik Bilimine Giriş                                   4                     6                  8,3
+ Madde ve Özellikleri                                   4                     8                 11,1
+ Hareket ve Kuvvet                                     11                    20                 27,8
+ Enerji                                                 8                    16                 22,3
+ Isı ve Sıcaklık                                       13                    14                 19,4
+ Elektrostatik                                          4                    8                  11,1
+  Toplam                                               44                    72                 100
+                                               10. SINIF
+                 Ünite Adı                       Kazanım Sayısı       Süre / Ders Saati       Oran (%)
+ Elektrik ve Manyetizma                                9                     18                  25
+ Basınç ve Kaldırma Kuvveti                            4                     16                 22,2
+ Dalgalar                                             12                     18                  25
+ Optik                                                14                     20                 27,8
+ Toplam                                               39                     72                 100
+                                               11. SINIF
+                 Ünite Adı                      Kazanım Sayısı       Süre / Ders Saati       Oran (%)
+ Kuvvet ve Hareket                                    33                    76                 52,8
+ Elektrik ve Manyetizma                               29                    68                 47,2
+ Toplam                                               62                    144                 100
+
+                                               12. SINIF
+                 Ünite Adı                       Kazanım Sayısı       Süre / Ders Saati       Oran (%)
+ Çembersel Hareket                                    15                     34                 23,6
+ Basit Harmonik Hareket                               5                      20                 13,8
+ Dalga Mekaniği                                       8                      26                  18
+ Atom Fiziğine Giriş ve Radyoaktivite                 11                     26                  18
+ Modern Fizik                                         15                     22                 15,4
+ Modern Fiziğin Teknolojideki                         14                     16                 11,2
+ Uygulamaları
+ Toplam                                               68                    144                   100
+
+
+                                                                                                        13
+     3                    FİZİK DERSİ ÖĞRETİM PROGRAMI’NIN YAPISI
+
+ 3.1. KAZANIMLARIN YAPISI
+
+
+          Fizik Dersi Öğretim Programı’nda ünite temelli yaklaşım esas alınmıştır. Programda 9. sınıf
+ düzeyinde altı, 10. sınıf düzeyinde dört, 11. sınıf düzeyinde iki, 12. sınıf düzeyinde altı ünite
+ bulunmaktadır. Ünitelerin yapısı şematik olarak sunulmuştur.
+
+
+  Ünite adı
+                    9.2. MADDE VE ÖZELLİKLERİ                                                                            Anahtar kavramlar
+                     Anahtar kavramlar: kütle, hacim, özkütle, dayanıklılık, yapışma (adezyon), birbirini
+                     tutma (kohezyon), yüzey gerilimi, kılcallık.
+  Konu adı
+                   9.2.1. MADDE VE ÖZKÜTLE                                                                                         Kazanım
+                                                                                                                              Öğrencilerin
+                   9.2.1.1. Özkütleyi, kütle ve hacimle ilişkilendirerek açıklar.
+                                                                                                                              ünitenin işlenişi
+ Sınıf düzeyi                                                                                                                 sonrasında
+                     a) Kütle ve hacim kavramlarına değinilir. Kütle (mg, g, kg ve ton) ve hacim (mL, L,
+                         3    3   3
+                     cm , dm , m ) için anlamlı birim dönüşümleri yapılır. Dönüşümler yapılırken bilişim
+                                                                                                                              ulaşmaları
+                     teknolojilerinden faydalanılabileceği belirtilir.                                                        hedeflenen bilgi ve
+  Ünite No           b) Düzgün geometrik şekilli cisimlerden küp, dikdörtgenler prizması, silindir, küre                      beceri düzeyini ifade
+                     ve şekli düzgün olmayan cisimler için hacim hesaplamaları yapılır. Kum-su                                eden öğrenme
+                     problemlerinegirilmez.
+                     c) Sabit sıcaklık ve basınçta ölçüm yapılarak kütle-hacim grafiğinin çizilmesi; kütle,                   çıktısıdır
+  Konu No            hacim ve özkütle kavramları arasındaki matematiksel modelin çıkarılması sağlanır.
+                     Matematiksel hesaplamalar yapılır.
+                     ç) Kütle-özkütle, hacim-özkütle grafiklerinin çizilmesi ve yorumlanması sağlanır.
+
+                     d) Eşit kollu terazi ile ilgili matematiksel hesaplamalara girilmez.
+Kazanım No
+                     e) Karışımların özkütlelerine değinilir. Matematiksel hesaplamalara girilmez.
+
+                     f) Archimedes ve el-Hazini’nin özkütle ile ilgili yaptığı çalışmalar hakkında kısaca bilgi
+                        verilir.
+
+
+
+
+                                                                                                                     Kazanım açıklaması
+                                                                                                            Kazanımın içerik boyutuna ilişkin konu
+                                                                                                            sınırlılıklarına, kazanımların işlenişi
+                                                                                                            sırasında dikkat edilmesi gereken
+                                                                                                            hususlara, etkinlik ve işleniş sırasında
+                                                                                                            kullanılabilecek yöntem ve uygulamalara
+                                                                                                            ilişkin açıklamalardır.
+
+
+
+
+                                                     Şekil 2. Kazanımların Yapısı
+
+
+
+
+14
+3.2. SINIF DÜZEYLERİNE GÖRE ÜNİTE, KONU, KAZANIM VE AÇIKLAMALARI
+
+9. SINIF ÜNİTE, KONU, KAZANIM VE AÇIKLAMALARI
+
+
+9.1. FİZİK BİLİMİNE GİRİŞ
+Anahtar kavramlar: fizik bilimi, temel-türetilmiş büyüklükler, vektörel-skaler büyüklükler, bilim
+araştırma merkezi.
+
+9.1.1. FİZİK BİLİMİNİN ÖNEMİ
+9.1.1.1. Evrendeki olayların anlaşılmasında fizik biliminin önemini açıklar.
+Fiziğin evren ve evrendeki olayların anlaşılması ve açıklanmasındaki rolü üzerinde durulur.
+
+9.1.2. FİZİĞİN UYGULAMA ALANLARI
+9.1.2.1. Fiziğin uygulama alanlarını, alt dalları ve diğer disiplinlerle ilişkilendirir.
+a) Fiziğin mekanik, termodinamik, elektromanyetizma, optik, katıhal fiziği, atom fiziği, nükleer fizik,
+yüksek enerji ve plazma fiziği alt dalları, uygulama alanlarından örneklerle açıklanır. Alt dallar ile ilgili
+mesleklere örnekler verilir.
+b) Fiziğin felsefe, biyoloji, kimya, teknoloji, mühendislik, sanat, spor ve matematik alanları ile olan
+ilişkisine günlük hayattan örnekler verilir.
+
+9.1.3. FİZİKSEL NİCELİKLERİN SINIFLANDIRILMASI
+9.1.3.1. Fiziksel nicelikleri sınıflandırır.
+a) Niceliklerin temel ve türetilmiş olarak tanımlanması ve sınıflandırılması sağlanır.
+b) Temel büyüklüklerin birimleri SI birim sisteminde tanıtılır. Türetilmiş büyüklükler için fen bilimleri
+dersinde geçmiş konulardan örnekler verilir.
+c) Niceliklerin skaler ve vektörel olarak tanımlanması ve sınıflandırılması sağlanır.
+ç) Vektörlerde toplama işlemlerinin tek boyutta yapılması sağlanır. Skaler ve vektörel niceliklerde
+toplama işlemlerine (tek boyutta) günlük hayattan örnekler verilerek, karşılaştırma yapılması sağlanır.
+
+9.1.4. BİLİM ARAŞTIRMA MERKEZLERİ
+9.1.4.1. Bilim araştırma merkezlerinin fizik bilimi için önemini açıklar.
+a) Bilim araştırma merkezleri TÜBİTAK, TAEK, ASELSAN, CERN, NASA ve ESA ile sınırlandırılır.
+b) Bilimsel araştırmalarda etik ilkelere uymanın önemi vurgulanır.
+
+
+
+
+                                                                                                            15
+9.2. MADDE VE ÖZELLİKLERİ
+Anahtar kavramlar: kütle, hacim, özkütle, dayanıklılık, yapışma (adezyon), birbirini tutma (kohezyon),
+yüzey gerilimi, kılcallık.
+
+9.2.1. MADDE VE ÖZKÜTLE
+9.2.1.1. Özkütleyi, kütle ve hacimle ilişkilendirerek açıklar.
+ a) Kütle ve hacim kavramlarına değinilir. Kütle (mg, g, kg ve ton) ve hacim (mL, L, cm3, dm3, m3) için
+anlamlı birim dönüşümleri yapılır. Dönüşümler yapılırken bilişim teknolojilerinden faydalanılabileceği
+belirtilir.
+b) Düzgün geometrik şekilli cisimlerden küp, dikdörtgenler prizması, silindir, küre ve şekli düzgün olmayan
+cisimler için hacim hesaplamaları yapılır. Kum-su problemlerine girilmez.
+c) Sabit sıcaklık ve basınçta ölçüm yapılarak kütle-hacim grafiğinin çizilmesi; kütle, hacim ve özkütle
+kavramları arasındaki matematiksel modelin çıkarılması sağlanır. Matematiksel hesaplamalar yapılır.
+ç) Kütle-özkütle, hacim-özkütle grafiklerinin çizilmesi ve yorumlanması sağlanır.
+d) Eşit kollu terazi ile ilgili matematiksel hesaplamalara girilmez.
+e) Karışımların özkütlelerine değinilir. Matematiksel hesaplamalara girilmez.
+f) Archimedes ve el-Hazini’nin özkütle ile ilgili yaptığı çalışmalar hakkında kısaca bilgi verilir.
+9.2.1.2. Günlük hayatta saf maddelerin ve karışımların özkütlelerinden faydalanılan durumlara
+örnekler verir.
+Kuyumculuk, porselen yapımı, ebru yapımı gibi özkütleden faydalanılan çalışma alanlarına değinilir.
+
+
+9.2.2. DAYANIKLILIK
+9.2.2.1. Dayanıklılık kavramını açıklar.
+Düzgün geometrik şekilli cisimlerden küp, dikdörtgenler prizması, silindir ve kürenin kesit alanının hacme
+oranı dışında dayanıklılık kavramı ile ilgili matematiksel hesaplamalara girilmez.
+
+
+9.2.3. YAPIŞMA VE BİRBİRİNİ TUTMA
+9.2.3.1. Yapışma (adezyon) ve birbirini tutma (kohezyon) olaylarını örneklerle açıklar.
+a) Yüzey gerilimi ve kılcallık olayının yapışma ve birbirini tutma olayları ile açıklanması ve günlük
+hayattan örnekler verilmesi sağlanır.
+b) Yüzey gerilimini etkileyen faktörlerin, günlük hayattaki örnekler ile açıklanması sağlanır.
+c) Adezyon, kohezyon, yüzey gerilimi ve kılcallık ile ilgili matematiksel hesaplamalara girilmez.
+
+
+ 9.3. HAREKET VE KUVVET
+Anahtar kavramlar: öteleme hareketi, dönme hareketi, titreşim hareketi, referans noktası, konum, alınan
+yol, yer değiştirme, sürat, hız, anlık hız, ortalama hız, ivme, kuvvet, kütle çekim kuvveti, dengelenmiş
+kuvvet, dengelenmemiş kuvvet, net kuvvet, yer çekimi ivmesi, ağırlık, sürtünme kuvveti, eylemsizlik, etki-
+tepki kuvvetleri.
+
+
+
+16
+9.3.1. HAREKET
+
+9.3.1.1. Cisimlerin hareketlerini sınıflandırır.
+Deney veya simülasyonlardan yararlanarak öteleme, dönme ve titreşim hareketlerine örnekler verilmesi
+sağlanır.
+9.3.1.2. Konum, alınan yol, yer değiştirme, sürat ve hız kavramlarını birbirleri ile ilişkilendirir.
+
+9.3.1.3. Düzgün doğrusal hareket için konum, hız ve zaman kavramlarını ilişkilendirir.
+
+a) Öğrencilerin deney yaparak veya simülasyonlarla veriler toplamaları, konum-zaman ve hız-zaman
+grafiklerini çizmeleri, bunları yorumlamaları ve çizilen grafikler arasında dönüşümler yapmaları
+sağlanır.
+b) Öğrencilerin grafiklerden yararlanarak hareket ile ilgili matematiksel modelleri çıkarmaları ve
+yorumlamaları sağlanır.
+9.3.1.4. Ortalama hız kavramını açıklar.
+Trafikte yeşil dalga sisteminin çalışma ilkesi üzerinde durulur.
+9.3.1.5. İvme kavramını hızlanma ve yavaşlama olayları ile ilişkilendirir.
+a) Sabit ivmeli hareket ile sınırlı kalınır.
+b) İvmenin matematiksel modelinin çıkarılması sağlanır. Matematiksel hesaplamalara girilmez.
+c) Sabit ivmeli hareket için hız-zaman ve ivme- zaman grafiklerini çizmeleri, yorumlamaları sağlanır.
+Grafikler arasında dönüşümlere girilmez. Konum-zaman grafiği çizdirilmez.
+ç) Anlık hız kavramına değinilir.
+9.3.1.6. Bir cismin hareketini farklı referans noktalarına göre açıklar.
+Gözlemlerle hareketin göreceli olduğu çıkarımının yapılması sağlanır.
+
+9.3.2. KUVVET
+9.3.2.1. Kuvvet kavramını örneklerle açıklar.
+a) Temas gerektiren ve gerektirmeyen kuvvetlere örnek verilmesi sağlanır.
+b) Dört temel kuvvetin hangi kuvvetler olduğu belirtilir.
+c) Kütle çekim kuvvetinin bağlı olduğu değişkenler verilir. Matematiksel hesaplamalara girilmez.
+ç) Dengelenmiş ve dengelenmemiş kuvvetler vurgulanır.
+
+
+9.3.3. NEWTON’IN HAREKET YASALARI
+9.3.3.1. Dengelenmiş kuvvetlerin etkisindeki cisimlerin hareket durumlarını örneklerle açıklar.
+İbn-i Sina’nın hareket konusunda yaptığı çalışmalar hakkında kısaca bilgi verilir.
+9.3.3.2. Kuvvet, ivme ve kütle kavramları arasındaki ilişkiyi açıklar.
+a) Net kuvvet, ivme ve kütle arasındaki matematiksel model verilir.
+b) Serbest cisim diyagramı üzerinde cisme etki eden kuvvetler gösterilir. Net kuvvetin büyüklüğü
+hesaplanarak yönü gösterilir.
+
+                                                                                                       17
+c) Hesaplamalarda yatay düzlemde tek kütle ile sınırlı kalınır. Bileşenlere ayırma hesaplamalarına girilmez.
+ç) Yer çekimi ivmesi açıklanarak ağırlık hesaplamaları yapılır.
+
+9.3.3.3. Etki-tepki kuvvetlerini örneklerle açıklar.
+a) Yatay ve düşey düzlemlerde etki-tepki kuvvetlerinin gösterilmesi sağlanır.
+b) Matematiksel hesaplamalara girilmez.
+
+
+9.3.4. SÜRTÜNME KUVVETİ
+9.3.4.1. Sürtünme kuvvetinin bağlı olduğu değişkenleri analiz eder.
+a) Öğrencilerin deney yaparak veya simülasyonlardan elde ettiği verilerden çıkarım yapmaları ve
+değişkenler arasındaki ilişkiyi belirlemeleri sağlanır. Yatay düzlemle sınırlı kalınır.
+b) Statik ve kinetik sürtünme kuvvetlerinin karşılaştırılması sağlanır.
+c) Serbest cisim diyagramları üzerinde sürtünme kuvvetinin gösterilmesi sağlanır.
+ç) Sürtünme kuvvetinin matematiksel modeli verilir. Matematiksel hesaplamalara girilmez.
+
+d) Sürtünme kuvvetinin günlük hayattaki avantaj ve dezavantajlarına örnekler verilmesi sağlanır.
+e) Kayarak ve dönerek ilerleyen cisimlerde sürtünme kuvvetinin yönü, örnekler üzerinden açıklanır.
+
+9.4. ENERJİ
+Anahtar kavramlar: iş, enerji, güç, öteleme kinetik enerjisi, yer çekimi potansiyel enerjisi, esneklik
+potansiyel enerjisi, mekanik enerji, enerji korunumu, enerji dönüşümü, verim, yenilenebilir enerji,
+yenilenemez enerji.
+
+9.4.1. İŞ, ENERJİ VE GÜÇ
+9.4.1.1. İş, enerji ve güç kavramlarını birbirleriyle ilişkilendirir.
+a) İş ile enerji arasındaki ilişki kavramsal olarak verilir.
+b) Öğrencilerin iş ve güç kavramlarının matematiksel modellerini incelemeleri sağlanır.
+c) Fiziksel anlamda iş ve güç ile günlük hayatta kullanılan iş ve güç kavramlarının farklı olduğu
+vurgulanır.
+
+9.4.1.2. Mekanik iş ve mekanik güç ile ilgili hesaplamalar yapar.
+Hareket ile aynı doğrultudaki kuvvetlerle sınırlı kalınır.
+
+9.4.2. MEKANİK ENERJİ
+9.4.2.1. Öteleme kinetik enerjisi, yer çekimi potansiyel enerjisi ve esneklik potansiyel enerjisinin
+bağlı olduğu değişkenleri analiz eder.
+a) Öteleme kinetik enerjisi, yer çekimi potansiyel enerjisi ve esneklik potansiyel enerjisinin
+matematiksel modelleri verilir. Deney veya simülasyonlar yardımıyla değişkenlerin analiz edilmesi
+sağlanır. Matematiksel hesaplamalara girilmez.
+b) Esneklik potansiyel enerjisinde tek yaylı sistemler dikkate alınmalıdır.
+c) Mekanik enerjinin kinetik enerji ve potansiyel enerjinin toplamına eşit olduğu vurgulanır.
+
+
+18
+9.4.3. ENERJİNİN KORUNUMU VE ENERJİ DÖNÜŞÜMLERİ
+9.4.3.1. Enerjinin bir biçimden diğer bir biçime (mekanik, ısı, ışık, ses gibi) dönüşümünde toplam
+enerjinin korunduğu çıkarımını yapar.
+a) Sürtünmeden dolayı enerjinin tamamının hedeflenen enerji biçimine dönüştürülemeyeceği
+vurgulanır.
+b) Enerji dönüşüm hesaplamalarına girilmez.
+9.4.3.2. Canlıların besinlerden kazandıkları enerji ile günlük aktiviteler için harcadıkları enerjiyi
+karşılaştırır.
+Canlıların fiziksel anlamda iş yapmadan da enerji harcayabildikleri vurgulanır.
+
+
+9.4.4. VERİM
+9.4.4.1. Verim kavramını açıklar.
+Enerji tasarrufu ve enerji verimliliği arasındaki ilişki enerji kimlik belgeleri üzerinden açıklanır.
+9.4.4.2. Örnek bir sistem veya tasarımın verimini artıracak öneriler geliştirir.
+Tarihsel süreçte tasarlanmış olan çeşitli verim artırıcı sistemlerin çalışma prensibine değinilir.
+
+
+9.4.5. ENERJİ KAYNAKLARI
+9.4.5.1. Yenilenebilir ve yenilenemez enerji kaynaklarını avantaj ve dezavantajları açısından
+değerlendirir.
+a) Enerji kaynaklarının maliyeti, erişilebilirliği, üretim kolaylığı, toplum, teknoloji ve çevresel etkileri
+göz önünde bulundurulur.
+b) Enerji kaynaklarını tasarruflu kullanmanın gerekliliği vurgulanır.
+
+
+9.5. ISI VE SICAKLIK
+Anahtar kavramlar: ısı, sıcaklık, iç enerji, öz ısı, ısı sığası, hâl değişimi, ısıl denge, enerji iletim hızı,
+genleşme, büzülme, ısı yalıtımı, hissedilen sıcaklık, küresel ısınma.
+
+9.5.1. ISI VE SICAKLIK
+9.5.1.1. Isı, sıcaklık ve iç enerji kavramlarını açıklar.
+a) Entalpi ve entropi kavramlarına girilmez.
+b) Isı ve sıcaklık kavramlarının birimleri ve ölçüm aletlerinin adları verilir.
+9.5.1.2. Termometre çeşitlerini kullanım amaçları açısından karşılaştırır.
+9.5.1.3. Sıcaklık birimleri ile ilgili hesaplamalar yapar.
+o
+    C, oF, K için birim dönüşümleri yapılması sağlanır.
+9.5.1.4. Öz ısı ve ısı sığası kavramlarını birbiriyle ilişkilendirir.
+Günlük hayattan örnekler (denizlerin karalardan geç ısınıp geç soğuması gibi) verilir.
+
+
+
+
+                                                                                                                 19
+ 9.5.1.5. Isı alan veya ısı veren saf maddelerin sıcaklığında meydana gelen değişimin bağlı
+ olduğu değişkenleri analiz eder.
+ Deney veya simülasyonlardan yararlanılarak değişkenler arasındaki ilişkiyi belirlemeleri sağlanır.
+ Matematiksel model verilir. Matematiksel hesaplamalara girilmez.
+
+
+ 9.5.2. HÂL DEĞİŞİMİ
+ 9.5.2.1. Saf maddelerde hâl değişimi için gerekli olan ısı miktarının bağlı olduğu değişkenleri analiz eder.
+ Deney veya simülasyonlardan yararlanarak değişkenler arasındaki ilişkiyi belirlemeleri sağlanır.
+ Matematiksel model verilir. Matematiksel hesaplamalara girilmez.
+
+
+ 9.5.3. ISIL DENGE
+ 9.5.3.1. Isıl denge kavramının sıcaklık farkı ve ısı kavramı ile olan ilişkisini analiz eder.
+ a) Deney veya simülasyonlardan yararlanılarak ısıl dengenin sıcaklık değişimi ve ısı ile ilişkisinin
+ belirlenmesi sağlanır.
+ b) Isıl denge ile ilgili matematiksel hesaplamalara girilmez.
+
+
+ 9.5.4. ENERJİ İLETİM YOLLARI VE ENERJİ İLETİM HIZI
+ 9.5.4.1. Enerji iletim yollarını örneklerle açıklar.
+ 9.5.4.2. Katı maddedeki enerji iletim hızını etkileyen değişkenleri analiz eder.
+ a) Deney veya simülasyonlardan yararlanılarak değişkenler arasındaki ilişkiyi belirlemeleri sağlanır.
+ b) Günlük hayattan örnekler (ısı yalıtımında izolasyon malzemelerinin kullanılması, soğuk
+ bölgelerde pencerelerin küçük, duvarların daha kalın olması gibi) verilir.
+ c) Enerji iletim hızı ile ilgili matematiksel hesaplamalara girilmez.
+ 9.5.4.3. Enerji tasarrufu için yaşam alanlarının yalıtımına yönelik tasarım yapar.
+ a) Enerji tasarrufu için ısı yalıtım sisteminin aile bütçesine ve ülke ekonomisine olan katkısının
+ önemi vurgulanır.
+ b) Öğrencilerin ısı yalıtımı ile ilgili günlük hayattan bir problem belirlemeleri ve bu problem için
+ çözümler üretmeleri sağlanır.
+ c) Yapılacak tasarımlarda finans bilincinin geliştirilmesi için bütçe hesaplaması yapılmasının
+ gerekliliği vurgulanmalıdır.
+ 9.5.4.4. Hissedilen ve gerçek sıcaklık arasındaki farkın sebeplerini yorumlar.
+ 9.5.4.5. Küresel ısınmaya karşı alınacak tedbirlere yönelik proje geliştirir.
+ a) Öğrencilerin projelerini poster, broşür veya elektronik sunu ile tanıtmaları sağlanır.
+ b) Küresel ısınmanın sebeplerine dikkat çekilir.
+ c) Çevreye karşı duyarlı olmanın gerekliliği ve bireysel olarak yapılabilecek katkılar hakkında
+ tartışılması sağlanır.
+
+
+
+
+20
+9.5.5. GENLEŞME
+9.5.5.1. Katı ve sıvılarda genleşme ve büzülme olaylarının günlük hayattaki etkilerini yorumlar.
+a) Katı ve sıvıların genleşmesi ve büzülmesinin günlük hayatta oluşturduğu avantaj ve dezavantajların
+tartışılması sağlanır.
+b) Su ve buzun özkütle, öz ısıları karşılaştırılarak günlük hayata etkileri üzerinde durulur.
+c) Genleşme ile ilgili matematiksel hesaplamalara girilmez.
+
+
+9.6. ELEKTROSTATİK
+Anahtar kavramlar: elektrik yükü, birim yük, elektrikle yüklenme, yük korunumu, elektroskop,
+iletken madde, yalıtkan madde, yük dağılımı, Faraday kafesi, topraklama, elektriksel kuvvet,
+Coulomb Yasası, elektrik alan.
+
+9.6.1. ELEKTRİK YÜKLERİ
+9.6.1.1. Elektrikle yüklenme çeşitlerini örneklerle açıklar.
+a) Yük, birim yük ve elektrikle yüklenme kavramları verilir.
+b) Elektrikle yüklenmede yüklerin korunumlu olduğu vurgulanmalıdır.
+c) Elektroskopun yük cinsinin tayininde kullanılmasına örnekler verilir.
+9.6.1.2. Elektriklenen iletken ve yalıtkan maddelerde yük dağılımlarını karşılaştırır.
+a) Öğrencilerin karşılaştırmayı deneyler yaparak veya simülasyonlar kullanarak yapmaları sağlanır.
+b) Faraday kafesi, kullanım alanları ve önemi açıklanır.
+c) Topraklama olayı açıklanarak günlük hayattaki önemi vurgulanır.
+9.6.1.3. Elektrik yüklü cisimler arasındaki etkileşimi açıklar.
+a) Deney veya simülasyonlardan yararlanılarak elektrik yüklü cisimler arasındaki etkileşimin (Coulomb
+Kuvveti) bağlı olduğu değişkenler arasındaki ilişkiyi belirlemeleri sağlanır. Matematiksel model verilir.
+b) Yüklerin etkileşimi ile ilgili noktasal yüklerle ve tek boyutta matematiksel hesaplamalar yapılması
+sağlanır.
+
+9.6.1.4. Elektrik alan kavramını açıklar.
+Deney veya simülasyonlardan yararlanılarak elektrik alan kavramı ile elektriksel kuvvet arasındaki ilişki
+açıklanır. Matematiksel model verilir. Matematiksel hesaplamalara girilmez.
+
+
+
+
+                                                                                                            21
+     10. SINIF ÜNİTE, KONU, KAZANIM VE AÇIKLAMALARI
+
+     10.1. ELEKTRİK VE MANYETİZMA
+     Anahtar kavramlar: elektrik akımı, potansiyel farkı, direnç, Ohm Yasası, eşdeğer direnç, iç direnç,
+     elektromotor kuvveti, elektrik enerjisi, elektriksel güç, manyetik alan.
+
+     10.1.1. ELEKTRİK AKIMI, POTANSİYEL FARKI VE DİRENÇ
+     10.1.1.1. Elektrik akımı, direnç ve potansiyel farkı kavramlarını açıklar.
+     a) Elektrik yükünün hareketi üzerinden elektrik akımı kavramının açıklanması sağlanır.
+     b) Katı, sıvı, gaz ve plazmalarda elektrik iletimine değinilir.
+     10.1.1.2. Katı bir iletkenin direncinin bağlı olduğu değişkenleri analiz eder.
+     a) Deney veya simülasyonlardan yararlanarak değişkenler arasındaki ilişkiyi belirlemeleri ve
+     matematiksel modeli çıkarmaları sağlanır. Matematiksel hesaplamalara girilmez.
+     b) İletken direncinin sıcaklığa bağlı değişimine ve renk kodlarıyla direnç okuma işlemlerine girilmez.
+
+     10.1.2. ELEKTRİK DEVRELERİ
+     10.1.2.1. Elektrik Akımı, direnç ve potansiyel farkı arasındaki ilişkiyi analiz eder.
+     a) Voltmetre ve ampermetrenin direnç özellikleri ile devredeki görevleri açıklanır.
+     b) Öğrencilerin basit devreler üzerinden deney yaparak elektrik akımı, direnç ve potansiyel farkı
+     arasındaki ilişkinin (Ohm Yasası) matematiksel modelini çıkarmaları sağlanır.
+     c) Elektrik devrelerinde eşdeğer direnç, direnç, potansiyel farkı ve elektrik akımı ile ilgili
+     matematiksel hesaplamalar yapılması sağlanır.
+     10.1.2.2. Üreteçlerin seri ve paralel bağlanma gerekçelerini açıklar.
+     a) Öğrencilerin deney veya simülasyonlarla üreteçlerin bağlanma şekillerini incelemeleri ve
+     tükenme sürelerini karşılaştırmaları sağlanır. Üreteçlerin ters bağlanması da dikkate alınır.
+     b) Elektromotor kuvvetleri farklı üreteçlerin paralele bağlanmasına girilmez.
+     c) Üreteçlerin iç dirençleri örneklerle açıklanır, iç dirençler ile ilgili matematiksel hesaplamalara girilmez.
+     ç) Öğrencilerin üretecin keşfi üzerine deneyler yapan bilim insanları Galvani ve Volta’nın bakış
+     açıları arasındaki farkı tartışmaları sağlanır.
+     d) Kirchhoff Kanunlarına girilmez.
+     10.1.2.3. Elektrik enerjisi ve elektriksel güç kavramlarını ilişkilendirir.
+     a) Elektrik enerjisi ve elektriksel güç ilişkisi ile mekanik enerji ve mekanik güç ilişkisi arasındaki
+     benzerliğe değinilir.
+     b) Bir direncin birim zamanda harcadığı elektrik enerjisi ile ilgili hesaplamalar dışında matematiksel
+     hesaplamalara girilmez.
+     c) Öğrencilerin ısı, iş, mekanik enerji ve elektrik enerjisinin birbirine dönüşümünü açıklamaları sağlanır.
+     ç) Lamba parlaklıklarının karşılaştırılması sağlanır.
+
+22
+10.1.2.4.    Elektrik akımının oluşturabileceği tehlikelere karşı alınması gereken sağlık ve güvenlik
+önlemlerini açıklar.
+
+
+10.1.3. MIKNATIS VE MANYETİK ALAN
+10.1.3.1. Mıknatısların oluşturduğu manyetik alanı ve özelliklerini açıklar.
+a) Öğrencilerin deneyler yaparak veya simülasyonlar kullanarak manyetik alanı incelemeleri
+sağlanır.
+b) Mıknatısların manyetik alanının manyetik alan çizgileri ile temsil edildiği vurgulanır.
+c) Mıknatısların itme-çekme kuvvetleri ile ilgili matematiksel hesaplamalara girilmez.
+
+
+10.1.4. AKIM VE MANYETİK ALAN
+10.1.4.1. Üzerinden akım geçen düz bir iletken telin oluşturduğu manyetik alanı etkileyen
+değişkenleri analiz eder.
+a) Öğrencilerin deneyler yaparak veya simülasyonlar kullanarak manyetik alanı etkileyen
+değişkenleri belirlemeleri sağlanır.
+b) Sağ el kuralı verilir. Manyetik alanın yönü ve şiddeti ile ilgili matematiksel hesaplamalara girilmez.
+c) Yüksek gerilim hatlarının geçtiği alanlarda oluşan manyetik alanın canlılar üzerindeki etkilerine
+değinilir.
+ç) Elektromıknatıs tanıtılarak kullanım alanlarına örnekler verilir.
+
+
+10.1.4.2. Dünya’nın manyetik alanının sonuçlarını açıklar.
+a) Öğrencilerin pusula ile yön bulmaları sağlanır.
+b) Arılar, göçmen kuşlar, bazı büyükbaş hayvanlar gibi canlıların yerin manyetik alanından
+yararlanarak yön buldukları belirtilir.
+
+
+10.2. BASINÇ VE KALDIRMA KUVVETİ
+Anahtar kavramlar: katı basıncı, akışkan basıncı, basınç kuvveti, Pascal Prensibi, Bernoulli İlkesi,
+Archimedes İlkesi, kaldırma kuvveti.
+
+
+10.2.1. BASINÇ
+10.2.1.1. Basınç ve basınç kuvveti kavramlarının katı, durgun sıvı ve gazlarda bağlı olduğu değişkenleri
+açıklar.
+a) Öğrencilerin, günlük hayattan basıncın hayatımıza etkilerine örnekler vermeleri sağlanır. Basıncın hâl
+değişimine etkileri vurgulanır.
+b) Katı ve durgun sıvı basıncı ve basınç kuvveti ile ilgili matematiksel modeller verilir. Bileşenlerine ayırma
+ve matematiksel hesaplamalara girilmez.
+c) Torricelli deneyi açıklanır ve kılcallık ile farkı belirtilir.
+
+                                                                                                            23
+ç) Basınç etkisiyle çalışan ölçüm aletlerinden barometre, altimetre, manometre ve batimetre hakkında
+bilgi verilir.
+d) Pascal Prensibi’ne değinilir. Gaz basıncı ve Pascal Prensibi ile ilgili matematiksel modeller verilmez.
+10.2.1.2. Akışkanlarda akış sürati ile akışkan basıncı arasında ilişki kurar.
+a) Deney veya simülasyonlardan yararlanılarak kesit alanı, basınç ve akışkan sürati arasında bağlantı
+kurulması sağlanır.
+b) Bernoulli İlkesi’nin günlük hayattaki örnekler (çatıların uçması, şemsiyenin ters çevrilmesi, rüzgârlı
+havalarda kapıların sert kapanması gibi) üzerinden açıklanması sağlanır.
+c) Bernoulli İlkesi’yle ilgili matematiksel hesaplamalara girilmez.
+ç) Günlük hayatta akışkan basıncının sağlayabileceği kolaylıklar (uçakların uçması gibi) ve olumsuz
+etkilerine karşı alınması gereken sağlık ve güvenlik tedbirleri (yüksek süratle hareket eden araçlara
+yaklaşılmaması gibi) vurgulanır.
+d) Tansiyonun damarlardaki kan basıncı olduğu vurgulanarak öğrencilerin tansiyon aletinin çalışma
+prensibini araştırmaları sağlanır.
+
+
+10.2.2. KALDIRMA KUVVETİ
+10.2.2.1. Durgun akışkanlarda cisimlere etki eden kaldırma kuvvetinin basınç kuvveti farkından
+kaynaklandığını açıklar.
+a) Archimedes İlkesi açıklanır. Yüzme, askıda kalma ve batma durumlarında kaldırma kuvveti ile cismin
+ağırlığının büyüklükleri karşılaştırılır.
+b) Kaldırma kuvveti ile ilgili matematiksel model verilir. Matematiksel hesaplamalara girilmez.
+10.2.2.2. Kaldırma kuvvetiyle ilgili belirlediği günlük hayattaki problemlere kaldırma kuvveti
+ve/veya Bernoulli İlkesi’ni kullanarak çözüm önerisi üretir.
+
+10.3. DALGALAR
+Anahtar kavramlar: dalga, titreşim, dalga hareketi, dalga boyu, periyot, frekans, hız, genlik, atma,
+dalga tepesi, dalga çukuru, odak noktası, merkez, stroboskop, rezonans, ses yüksekliği, ses şiddeti, tını,
+yankı, uğultu, gürültü, ses kirliliği, deprem dalgası.
+
+
+10.3.1. DALGALAR
+10.3.1.1. Titreşim, dalga hareketi, dalga boyu, periyot, frekans, hız ve genlik kavramlarını açıklar.
+a) Deney, gözlem veya simülasyonlarla kavramların açıklanması sağlanır.
+b) Periyot ve frekans kavramlarının birbiriyle ilişkilendirilmesi ve matematiksel model oluşturulması
+sağlanır. Matematiksel hesaplamalara girilmez.
+c) Dalganın ilerleme hızı, dalga boyu ve frekans kavramları arasındaki matematiksel model verilir.
+Matematiksel hesaplamalara girilmez.
+ç) Dalganın ilerleme hızının ortama, frekansın kaynağa bağlı olduğu vurgulanır.
+24
+10.3.1.2. Dalgaları taşıdığı enerjiye ve titreşim doğrultusuna göre sınıflandırır.
+Öğrencilerin dalga çeşitlerine örnekler vermeleri sağlanır.
+10.3.2. YAY DALGASI
+10.3.2.1. Atma ve periyodik dalga oluşturarak aralarındaki farkı açıklar.
+
+a) Atmanın dalgaların özelliklerini incelemek için oluşturulduğu vurgulanır.
+
+b) Öğrencilerin deney yaparak veya simülasyonlar kullanarak atma ve periyodik dalgayı incelemeleri sağlanır.
+10.3.2.2. Yaylarda atmanın yansımasını ve iletilmesini analiz eder.
+a) Öğrencilerin gergin bir yayda oluşturulan atmanın ilerleme hızının bağlı olduğu değişkenleri
+açıklaması sağlanır. Atmanın ilerleme hızı ile ilgili matematiksel hesaplamalara girilmez.
+b) Öğrencilerin deney yaparak veya simülasyonlar kullanarak atmaların sabit ve serbest uçtan yansıma
+durumlarını incelemeleri sağlanır.
+c) Bir ortamdan başka bir ortama geçerken yansıyan ve iletilen atmaların özellikleri üzerinde durulur.
+ç) Öğrencilerin deney ya da simülasyonlarla iki atmanın karşılaşması durumunda meydana gelebilecek
+olayları gözlemlemesi sağlanır.
+
+10.3.3. SU DALGASI
+10.3.3.1. Dalgaların ilerleme yönü, dalga tepesi ve dalga çukuru kavramlarını açıklar.
+Kavramlar doğrusal ve dairesel su dalgaları bağlamında ele alınır.
+10.3.3.2. Doğrusal ve dairesel su dalgalarının yansıma hareketlerini analiz eder.
+a) Öğrencilerin deney yaparak veya simülasyonlar kullanarak su dalgalarının yansıma hareketlerini
+çizmeleri sağlanır.
+b) Doğrusal su dalgalarının doğrusal ve parabolik engellerden yansıması dikkate alınır.
+c) Dairesel su dalgalarının doğrusal engelden yansıması dikkate alınır, parabolik engelden yansımasında
+ise sadece odak noktası ve merkezden gönderilen dalgalar dikkate alınır.
+ç) Matematiksel hesaplamalara girilmez.
+10.3.3.3. Ortam derinliği ile su dalgalarının yayılma hızını ilişkilendirir.
+a) Öğrencilerin deney yaparak veya simülasyonlarla ortam derinliğinin dalganın hızına etkisini
+incelemeleri ve dalga boyundaki değişimi gözlemlemeleri sağlanır.
+b) Ortam değiştiren su dalgalarının dalga boyu ve hız değişimi ile ilgili matematiksel hesaplamalara girilmez.
+c) Stroboskopun dalga boyu ölçümünde kullanıldığından bahsedilir, matematiksel hesaplamalara girilmez.
+10.3.3.4. Doğrusal su dalgalarının kırılma hareketini analiz eder.
+a) Öğrencilerin deney yaparak veya simülasyonlar kullanarak su dalgalarının kırılma hareketlerini
+çizmeleri sağlanır. Su dalgalarının mercek şeklindeki su ortamından geçişi ile ilgili kırılma hareketlerine
+girilmez.
+
+
+
+
+                                                                                                              25
+b) Dairesel su dalgalarının kırılması konusuna girilmez.
+c) Su dalgalarının kırılma hareketi ile ilgili matematiksel hesaplamalara girilmez.
+
+10.3.4. SES DALGASI
+10.3.4.1. Ses dalgaları ile ilgili temel kavramları örneklerle açıklar.
+a) Yükseklik, şiddet, tını, rezonans ve yankı kavramları ile sınırlı kalınır.
+b) Uğultu, gürültü ve ses kirliliği kavramlarına değinilir.
+c) Farabi'nin ses dalgaları ile ilgili yaptığı çalışmalar hakkında kısaca bilgi verilir.
+10.3.4.2. Ses dalgalarının tıp, denizcilik, sanat ve coğrafya alanlarında kullanımına örnekler verir.
+
+10.3.5. DEPREM DALGASI
+10.3.5.1. Deprem dalgasını tanımlar.
+a) Depremin büyüklüğü ve şiddeti ile ilgili bilgi verilir.
+b) Depremlerde dalga çeşitlerine girilmez.
+10.3.5.2. Deprem kaynaklı can ve mal kayıplarını önlemeye yönelik çözüm önerileri geliştirir.
+
+
+10.4. OPTİK
+Anahtar kavramlar: aydınlanma şiddeti, ışık şiddeti, ışık akısı, gölge, yarı gölge, yansıma, odak noktası,
+merkez, tepe noktası, asal eksen, kırılma, kırıcılık indisi, Snell Yasası, tam yansıma, sınır açısı, görünür
+uzaklık.
+
+10.4.1. AYDINLANMA
+10.4.1.1. Işığın davranış modellerini açıklar.
+Modeller açıklanırken ayrıntılara girilmez.
+10.4.1.2. Işık şiddeti, ışık akısı ve aydınlanma şiddeti kavramları arasında ilişki kurar.
+a) Deney yaparak veya simülasyonlarla aydınlanma şiddeti, ışık şiddeti, ışık akısı kavramları arasında
+ilişki kurulur.
+
+b) Işık şiddeti, ışık akısı ve aydınlanma şiddeti kavramları ile ilgili matematiksel modeller verilir.
+Matematiksel hesaplamalara girilmez.
+
+
+
+10.4.2. GÖLGE
+10.4.2.1. Saydam, yarı saydam ve saydam olmayan maddelerin ışık geçirme özelliklerini açıklar.
+a) Öğrencilerin gölge ve yarı gölge alanlarını çizmeleri ve açıklamaları sağlanır.
+b) Gölge ve yarı gölge ile ilgili matematiksel hesaplamalara girilmez.
+
+
+10.4.3. YANSIMA
+10.4.3.1. Işığın yansımasını, su dalgalarında yansıma olayıyla ilişkilendirir.
+a) Yansıma Kanunları üzerinde durulur.
+b) Işığın düzgün ve dağınık yansımasının çizilerek gösterilmesi sağlanır.
+c) Görme olayında yansımanın rolü vurgulanır.
+
+26
+10.4.4. DÜZLEM AYNA
+10.4.4.1. Düzlem aynada görüntü oluşumunu açıklar.
+a) Düzlem aynada görüntü özellikleri yapılan çizimler üzerinden açıklanır.
+
+b) Kesişen ayna, aynanın döndürülmesi, hareketli ayna ve hareketli cisim konularına girilmez.
+
+c) Deney veya simülasyonlarla görüş alanına etki eden değişkenler ile ilgili çıkarım yapılması sağlanır.
+Çıkarım yapılırken saydam ve saydam olmayan engeller de dikkate alınır. Matematiksel hesaplamalara
+girilmez.
+
+
+10.4.5. KÜRESEL AYNALAR
+10.4.5.1. Küresel aynalarda odak noktası, merkez, tepe noktası ve asal eksen kavramlarını açıklar.
+Küresel aynalarda özel ışınların yansımasının çizilmesi sağlanır.
+10.4.5.2. Küresel aynalarda görüntü oluşumunu ve özelliklerini açıklar.
+a) Deney veya simülasyonlarla görüntü oluşumunun ve oluşan görüntü özelliklerinin yorumlanması
+sağlanır.
+b) Öğrencilerin günlük hayatta karşılaştıkları küresel ayna gibi davranan cisimlere örnekler vermeleri
+sağlanır.
+c) Küresel aynalarla ilgili matematiksel hesaplamalara girilmez.
+
+10.4.6. KIRILMA
+10.4.6.1. Işığın kırılmasını, su dalgalarında kırılma olayı ile ilişkilendirir.
+a) Deney veya simülasyonlar kullanılarak ortam değiştiren ışığın ilerleme doğrultusundan sapma
+miktarının bağlı olduğu değişkenleri belirlemeleri sağlanır. Snell Yasası’nın matematiksel modeli verilir.
+b) Kırılma indisinin, ışığın ortamdaki ortalama hızı ve boşluktaki hızı ile ilişkili bir bağıl değişken olduğu
+vurgulanır.
+c) Snell Yasası ile ilgili matematiksel hesaplamalara girilmez.
+10.4.6.2. Işığın tam yansıma olayını ve sınır açısını analiz eder.
+a) Öğrencilerin deney veya simülasyonlarla oluşturulan tam yansıma olayını ve sınır açısını
+yorumlamaları sağlanır.
+b) Tam yansımanın gerçekleştiği fiber optik teknolojisi, serap olayı, havuz ışıklandırması örneklerine yer
+verilir.
+c) Tam yansıma ve sınır açısı ile ilgili matematiksel hesaplamalara girilmez.
+10.4.6.3. Farklı ortamda bulunan bir cismin görünür uzaklığını etkileyen sebepleri açıklar.
+a) Öğrencilerin deney yaparak ışığın izlediği yolu çizmeleri ve günlük hayatta gözlemlenen olaylarla ilişki
+kurmaları sağlanır.
+b) Görünür uzaklıkla ilgili matematiksel model verilmez. Matematiksel hesaplamalara girilmez.
+
+
+                                                                                                                 27
+10.4.7. MERCEKLER
+10.4.7.1. Merceklerin özelliklerini ve mercek çeşitlerini açıklar.
+a) Merceklerin odak uzaklığının bağlı olduğu faktörlere değinilir. Matematiksel model verilmez.
+b) Cam şişelerin ve cam kırıklarının mercek gibi davranarak orman yangınlarına sebep olduğu
+açıklanır. Çevre temizliği ve doğal hayatı korumanın önemi vurgulanır.
+
+10.4.7.2. Merceklerin oluşturduğu görüntünün özelliklerini açıklar.
+a) Merceklerdeki özel ışınlar verilir. Görüntü oluşumlarına dair çizimler yaptırılmaz.
+b) Deney veya simülasyonlar yardımıyla merceklerin oluşturduğu görüntü özelliklerinin incelenmesi
+sağlanır.
+c) Öğrencilerin merceklerin nerelerde ve ne tür amaçlar için kullanıldığına örnekler vermeleri sağlanır.
+ç) Mercekler ile ilgili matematiksel hesaplamalara girilmez.
+
+
+10.4.8. PRİZMALAR
+10.4.8.1. Işık prizmalarının özelliklerini açıklar.
+a) Öğrencilerin deney veya simülasyonlar yardımıyla prizmalarda tek renkli ışığın izlediği yolu çizmeleri
+sağlanır.
+b) Öğrencilerin deney veya simülasyonlarla beyaz ışığın prizmada renklerine ayrılması olayını
+gözlemlemeleri sağlanır.
+c) Işık prizmalarının kullanım alanlarına örnekler verilir.
+ç) Prizmalar ile ilgili matematiksel modeller verilmez.
+
+
+
+10.4.9. RENK
+10.4.9.1. Cisimlerin renkli görülmesinin sebeplerini açıklar.
+a) Öğrencilerin ışık ve boya renkleri arasındaki farkları karşılaştırmaları sağlanır.
+b) Işık ve boya renklerini ana, ara ve tamamlayıcı olarak sınıflandırmaları sağlanır. Işıkta ana renklerin
+boyada ara renk, ışıkta ara renklerin boyada ana renk olduğu vurgulanır.
+c) Işık renklerinden saf sarı ile karışım sarı arasındaki fark vurgulanır.
+ç) Öğrencilerin beyaz ışığın ve farklı renklerdeki ışığın filtreden geçişine ve soğurulmasına ilişkin örnekler
+vermeleri sağlanır.
+
+
+
+
+28
+11. SINIF ÜNİTE, KONU, KAZANIM VE AÇIKLAMALARI
+
+
+11.1. KUVVET VE HAREKET
+Anahtar kavramlar: vektör, bağıl hareket, ivmeli hareket, serbest düşme, düşey atış, yatay atış, eğik atış,
+limit hız, enerji ,Hooke Yasası, itme, çizgisel momentum, çizgisel momentumun korunumu, tork, denge,
+kütle merkezi, ağırlık merkezi.
+
+
+11.1.1. VEKTÖRLER
+11.1.1.1. Vektörlerin özelliklerini açıklar.
+11.1.1.2. İki ve üç boyutlu kartezyen koordinat sisteminde vektörleri çizer.
+Birim vektör sistemi (i, j, k) işlemlerine girilmez.
+11.1.1.3. Vektörlerin bileşkelerini farklı yöntemleri kullanarak hesaplar.
+a) Uç uca ekleme ve paralel kenar yöntemleri kullanılmalıdır.
+b) Kosinüs teoremi verilerek bileşke vektörün büyüklüğünün bulunması sağlanır.
+c) Eşit büyüklükteki vektörlerin bileşkesi hesaplanırken açılara göre özel durumlar verilir.
+11.1.1.4. Bir vektörün iki boyutlu kartezyen koordinat sisteminde bileşenlerini çizerek büyüklüklerini
+hesaplar.
+
+11.1.2. BAĞIL HAREKET
+11.1.2.1. Sabit hızlı iki cismin hareketini birbirine göre yorumlar.
+11.1.2.2. Hareketli bir ortamdaki sabit hızlı cisimlerin hareketini farklı gözlem çerçevelerine göre
+yorumlar.
+11.1.2.3. Bağıl hareket ile ilgili hesaplamalar yapar.
+Hesaplamalarla ilgili problemlerin günlük hayattan seçilmesine özen gösterilir.
+
+11.1.3. NEWTON’IN HAREKET YASALARI
+11.1.3.1. Net kuvvetin yönünü belirleyerek büyüklüğünü hesaplar.
+a) Yatay, düşey ve eğik düzlemde sürtünme kuvvetinin yönü belirlenerek büyüklüğünün hesaplanması
+sağlanır.
+b) Sürtünmeli ve sürtünmesiz yüzeylerde serbest cisim diyagramları üzerinde cisme etki eden kuvvetlerin
+gösterilmesi sağlanır.
+
+11.1.3.2. Net kuvvet etkisindeki cismin hareketi ile ilgili hesaplamalar yapar.
+a) Hesaplamaların günlük hayat örnekleri üzerinden yapılmasına özen gösterilir.
+b) Sürtünmeli ve sürtünmesiz yüzeyler dikkate alınmalıdır.
+
+11.1.4. BİR BOYUTTA SABİT İVMELİ HAREKET
+11.1.4.1. Bir boyutta sabit ivmeli hareketi analiz eder.
+a) Hareket denklemleri verilir.
+
+                                                                                                          29
+b) Öğrencilerin sabit ivmeli hareket ile ilgili konum-zaman, hız-zaman ve ivme-zaman grafiklerini
+çizmeleri, yorumlamaları ve grafikler arasında dönüşüm yapmaları sağlanır.
+
+11.1.4.2. Bir boyutta sabit ivmeli hareket ile ilgili hesaplamalar yapar.
+11.1.4.3. Hava direncinin ihmal edildiği ortamda düşen cisimlerin hareketlerini analiz eder.
+
+İlk hızsız bırakılan cisimler için hareket denklemleri, konum-zaman, hız-zaman ve ivme-zaman grafikleri
+verilerek matematiksel hesaplamalar yapılması sağlanır.
+11.1.4.4. Düşen cisimlere etki eden hava direnç kuvvetinin bağlı olduğu değişkenleri analiz eder.
+Öğrencilerin değişkenleri deney yaparak veya simülasyonlar kullanarak belirlemeleri sağlanır.
+11.1.4.5. Limit hız kavramını açıklar.
+a) Limit hız kavramı günlük hayattan örneklerle (yağmur damlalarının canımızı acıtmaması vb.) açıklanır.
+b) Limit hızın matematiksel modeli verilir. Matematiksel hesaplamalara girilmez.
+11.1.4.6. Düşey doğrultuda ilk hızı olan ve sabit ivmeli hareket yapan cisimlerin hareketlerini analiz eder.
+Düşey doğrultuda (yukarıdan aşağıya ve aşağıdan yukarıya) atış hareket denklemleri, konum-zaman, hız-
+zaman ve ivme-zaman grafikleri verilerek matematiksel hesaplamalar yapılması sağlanır.
+
+11.1.5. İKİ BOYUTTA HAREKET
+11.1.5.1. Atış hareketlerini yatay ve düşey boyutta analiz eder.
+Öğrencilerin deney yaparak veya simülasyonlarla atış hareketlerini incelemeleri ve yorumlamaları sağlanır.
+11.1.5.2. İki boyutta sabit ivmeli hareket ile ilgili hesaplamalar yapar.
+
+
+11.1.6. ENERJİ VE HAREKET
+11.1.6.1. Yapılan iş ile enerji arasındaki ilişkiyi analiz eder.
+a) Kuvvet-yol grafiğinden faydalanılarak iş hesaplamaları yapılır.
+b) Hooke Yasası verilir.
+c) Grafiklerden faydalanılarak kinetik, yer çekimi potansiyel ve esneklik potansiyel enerji türlerinin
+matematiksel modellerine ulaşılması sağlanır.
+ç) Matematiksel hesaplamalar yapılması sağlanır.
+11.1.6.2. Cisimlerin hareketini mekanik enerjinin korunumunu kullanarak analiz eder.
+a) Öğrencilerin serbest düşme, atış hareketleri ve esnek yay içeren olayları incelemeleri ve mekanik
+enerjinin korunumunu kullanarak matematiksel hesaplamalar yapmaları sağlanır.
+b) Canan Dağdeviren’in yaptığı çalışmalar hakkında bilgi verilir.
+11.1.6.3. Sürtünmeli yüzeylerde enerji korunumunu ve dönüşümlerini analiz eder.
+Sürtünmeli yüzeylerde hareket eden cisimlerle ilgili enerji korunumu ve dönüşümü ile ilgili
+matematiksel hesaplamalar yapılması sağlanır.
+
+
+
+
+30
+11.1.7. İTME VE ÇİZGİSEL MOMENTUM
+11.1.7.1. İtme ve çizgisel momentum kavramlarını açıklar.
+a) Çizgisel momentumla ilgili günlük hayattan örnekler verilir.
+b) İtme ve çizgisel momentum kavramlarının matematiksel modeli verilir.
+11.1.7.2. İtme ile çizgisel momentum değişimi arasında ilişki kurar.
+a) Öğrencilerin Newton’ın ikinci hareket yasasından faydalanarak itme ve momentum arasındaki
+matematiksel modeli elde etmeleri sağlanır.
+b) Öğrencilerin kuvvet-zaman grafiğinden alan hesaplamaları yapmaları ve cismin momentum değişikliği
+ile ilişkilendirmeleri sağlanır.
+c) İtme ve çizgisel momentum değişimi ile ilgili matematiksel hesaplamalar yapılması sağlanır.
+11.1.7.3. Çizgisel momentumun korunumunu analiz eder.
+a) Öğrencilerin deney yaparak veya simülasyonlar kullanarak çizgisel momentum korunumu ile ilgili
+çıkarımda bulunmaları sağlanır.
+b) Çizgisel momentumun korunumu bir ve iki boyutlu hareketle sınırlandırılır.
+11.1.7.4. Çizgisel momentumun korunumu ile ilgili hesaplamalar yapar.
+Enerjinin korunduğu ve korunmadığı durumlar göz önüne alınarak bir ve iki boyutta çizgisel
+momentumun korunumu, çarpışmalar ve patlamalarla ilgili matematiksel hesaplamalar yapılması
+sağlanır.
+
+
+11.1.8. TORK
+11.1.8.1. Tork kavramını açıklar.
+Torkun yönünü belirlemek için sağ el kuralı verilir.
+11.1.8.2. Torkun bağlı olduğu değişkenleri analiz eder.
+a) Öğrencilerin deney yaparak veya simülasyonlar kullanarak torkun bağlı olduğu değişkenler ile ilgili
+sonuçlar çıkarmaları sağlanır.
+b) Öğrencilerin tork ile ilgili günlük hayattan problem durumları bulmaları ve bunlar için çözüm yolları
+üretmeleri sağlanır.
+11.1.8.3. Tork ile ilgili hesaplamalar yapar.
+
+
+11.1.9. DENGE VE DENGE ŞARTLARI
+11.1.9.1. Cisimlerin denge şartlarını açıklar.
+11.1.9.2. Kütle merkezi ve ağırlık merkezi kavramlarını açıklar.
+Kütle ve ağırlık merkezi kavramlarının farklı olduğu durumlara değinilir.
+11.1.9.3. Kütle merkezi ve ağırlık merkezi ile ilgili hesaplamalar yapar.
+
+11.1.10. BASİT MAKİNELER
+11.1.10.1. Günlük hayatta kullanılan basit makinelerin işlevlerini açıklar.
+Kaldıraç, sabit ve hareketli makara, palanga, eğik düzlem, vida, çıkrık, çark ve kasnak ile sınırlı kalınır.
+                                                                                                               31
+     11.1.10.2. Basit makineler ile ilgili hesaplamalar yapar.
+     a) İkiden fazla basit makinenin bir arada olduğu sistemlerle ilgili matematiksel hesaplamalara girilmez.
+     b) Hesaplamaların günlük hayatta kullanılan basit makine örnekleri (anahtar gibi) üzerinden yapılması
+     sağlanır.
+     c) Basit makinelerde verim ile ilgili matematiksel hesaplamalar yapılması sağlanır.
+     11.1.10.3. Hayatı kolaylaştırmak amacıyla basit makinelerden oluşan güvenli bir sistem tasarlar.
+     a) Atık malzeme ve bilişim teknolojilerinden yararlanmaları için teşvik edilmelidir.
+     b) Basit makine sistemlerinin kullanıldığı alanlarda iş sağlığı ve güvenliğini arttırıcı tedbirlere yönelik
+     araştırma yapılması sağlanır.
+     c) Yapılan özgün tasarımlara patent alınabileceği vurgulanarak öğrenciler, proje yarışmalarına
+     katılmaları konusunda teşvik edilmelidir.
+
+     11.2. ELEKTRİK VE MANYETİZMA
+     Anahtar kavramlar: elektriksel kuvvet, elektrik alan, elektriksel potansiyel enerji, elektriksel
+     potansiyel, elektriksel potansiyel farkı, sığa (kapasite), sığaç (kondansatör), manyetik alan, manyetik
+     kuvvet, manyetik akı, elektromotor kuvveti, alternatif akım, indüktans, kapasitans, empedans,
+     rezonans, indüksiyon akımı, öz-indüksiyon akımı, transformatör.
+
+     11.2.1. ELEKTRİKSEL KUVVET VE ELEKTRİK ALAN
+     11.2.1.1. Yüklü cisimler arasındaki elektriksel kuvveti etkileyen değişkenleri belirler.
+     a) Öğrencilerin deney veya simülasyonlardan yararlanmaları sağlanır.
+     b) Coulomb sabitinin (k), ortamın elektriksel geçirgenliği ile ilişkisi vurgulanır.
+     11.2.1.2. Noktasal yük için elektrik alanı açıklar.
+     11.2.1.3. Noktasal yüklerde elektriksel kuvvet ve elektrik alanı ile ilgili hesaplamalar yapar.
+
+     11.2.2. ELEKTRİKSEL POTANSİYEL
+     11.2.2.1. Noktasal yükler için elektriksel potansiyel enerji, elektriksel potansiyel, elektriksel
+     potansiyel farkı ve elektriksel iş kavramlarını açıklar.
+     a) Kavramların günlük hayat örnekleri ile açıklanması sağlanır.
+     b) Öğrencilerin, noktasal yüklerin bir noktada oluşturduğu elektrik potansiyeli ve eş potansiyel
+     yüzeylerini tanımlamaları sağlanır.
+     11.2.2.2. Düzgün bir elektrik alan içinde iki nokta arasındaki potansiyel farkını hesaplar.
+     11.2.2.3. Noktasal yükler için elektriksel potansiyel enerji, elektriksel potansiyel, elektriksel
+     potansiyel farkı ve elektriksel iş ile ilgili hesaplamalar yapar.
+
+
+
+
+32
+11.2.3. DÜZGÜN ELEKTRİK ALAN VE SIĞA
+11.2.3.1. Yüklü, iletken ve paralel levhalar arasında oluşan elektrik alanı, alan çizgilerini çizerek
+açıklar.
+11.2.3.2. Yüklü, iletken ve paralel levhalar arasında oluşan elektrik alanının bağlı olduğu değişkenleri
+analiz eder.
+Değişkenlerin deney veya simülasyonlarla belirlenmesi sağlanır.
+11.2.3.3. Yüklü parçacıkların düzgün elektrik alanıdaki davranışını açıklar.
+a) Alana dik giren parçacıkların sapma yönleri üzerinde durulur. Matematiksel hesaplamalara girilmez.
+b) Öğrencilerin yüklü parçacıkların elektrik alandaki davranışının teknolojideki kullanım yerlerini
+araştırmaları ve sunum yapmaları sağlanır.
+11.2.3.4. Sığa (kapasite) kavramını açıklar.
+Matematiksel hesaplamalara girilmez.
+11.2.3.5. Sığanın bağlı olduğu değişkenleri analiz eder.
+a) Değişkenlerin deney veya simülasyonlarla belirlenmesi sağlanır.
+b) Öğrencilerin matematiksel modeli elde etmeleri sağlanır. Matematiksel hesaplamalara girilmez.
+11.2.3.6. Yüklü levhaların özelliklerinden faydalanarak sığacın (kondansatör) işlevini açıklar.
+a) Sığaçların kullanım alanlarına yönelik araştırma yapılması sağlanır.
+b) Öğrencilerin elektrik yüklerinin nasıl depolanıp kullanılabileceğini tartışmaları ve elektrik enerjisi ile
+ilişkilendirmeleri sağlanır.
+
+11.2.4. MANYETİZMA VE ELEKTROMANYETİK İNDÜKLENME
+11.2.4.1. Üzerinden akım geçen iletken düz bir telin çevresinde, halkanın merkezinde ve akım
+makarasının (bobin) merkez ekseninde oluşan manyetik alanın şiddetini etkileyen değişkenleri analiz
+eder.
+Manyetik alan yönünün sağ el kuralıyla gösterilmesi sağlanır.
+11.2.4.2. Üzerinden akım geçen iletken düz bir telin çevresinde, halkanın merkezinde ve akım
+makarasının merkez ekseninde oluşan manyetik alan ile ilgili hesaplamalar yapar.
+11.2.4.3. Üzerinden akım geçen iletken düz bir tele manyetik alanda etki eden kuvvetin yönünün ve
+şiddetinin bağlı olduğu değişkenleri analiz eder.
+Manyetik kuvvetin büyüklüğünün matematiksel modeli verilir, sağ el kuralının uygulanması sağlanır.
+Matematiksel hesaplamalara girilmez.
+
+
+
+
+                                                                                                                33
+ 11.2.4.4. Manyetik alan içerisinde akım taşıyan dikdörtgen tel çerçeveye etki eden kuvvetlerin
+ döndürme etkisini açıklar.
+ Dönen çerçeveye etki eden manyetik kuvvetlerin yönünün gösterilmesi sağlanır.
+ 11.2.4.5. Yüklü parçacıkların manyetik alan içindeki hareketini analiz eder.
+ a) Öğrencilerin, sağ el kuralını kullanarak yüklü parçacıklara etki eden manyetik kuvvetin yönünü
+ bulmaları ve bu kuvvetin etkisiyle yükün manyetik alandaki yörüngesini çizmeleri sağlanır.
+
+ b) Yüklü parçacıkların manyetik alan içindeki hareketi ile ilgili matematiksel modeller verilmez.
+ Matematiksel hesaplamalara girilmez.
+ c) Öğrencilerin, manyetik kuvvetin teknolojide kullanım alanlarıyla ilgili araştırma yapmaları ve
+ paylaşması sağlanır.
+ 11.2.4.6. Manyetik akı kavramını açıklar.
+ Manyetik akının matematiksel modeli verilir.
+ 11.2.4.7. İndüksiyon akımını oluşturan sebeplere ilişkin çıkarım yapar.
+ Çıkarımların deney veya simülasyonlardan yararlanılarak yapılması ve indüksiyon akımının
+ matematiksel modelinin çıkarılması sağlanır.
+ 11.2.4.8. Manyetik akı ve indüksiyon akımı ile ilgili hesaplamalar yapar.
+ 11.2.4.9. Öz-indüksiyon akımının oluşum sebebini açıklar.
+ Öz-indüksiyon akımı ile ilgili matematiksel hesaplamalara girilmez.
+ 11.2.4.10. Yüklü parçacıkların manyetik alan ve elektrik alandaki davranışını açıklar.
+ a) Lorentz kuvvetinin matematiksel modeli verilir. Matematiksel hesaplamalara girilmez.
+ b) Lorentz kuvvetinin günlük hayattaki uygulamalarına örnekler verilir.
+ 11.2.4.11. Elektromotor kuvveti oluşturan sebeplere ilişkin çıkarım yapar.
+ a) Deney veya simülasyonlar yardımıyla çıkarımın yapılması sağlanır.
+ b) Öğrencilerin elektrik motoru ve dinamonun çalışma ilkelerini karşılaştırmaları sağlanır.
+
+ 11.2.5. ALTERNATİF AKIM
+ 11.2.5.1. Alternatif akımı açıklar.
+ Öğrencilerin farklı ülkelerin elektrik şebekelerinde kullanılan gerilim değerleri ile ilgili         araştırma
+ yapmaları ve araştırma bulgularına dayanarak bu değerlerin kullanılmasının sebeplerini tartışmaları
+ sağlanır.
+ 11.2.5.2. Alternatif ve doğru akımı karşılaştırır.
+ a) Alternatif ve doğru akımın kullanıldığı yerler açıklanarak bu akımların karşılaştırılması sağlanır.
+ b) Edison ve Tesla’nın alternatif akım ve doğru akım ile ilgili görüşlerinin karşılaştırılması sağlanır.
+ c) Alternatif akımın etkin ve maksimum değerleri vurgulanır.
+
+
+
+
+34
+11.2.5.3. Alternatif ve doğru akım devrelerinde direncin, bobinin ve sığacın davranışını açıklar.
+Öğrencilerin simülasyonlar yardımıyla alternatif ve doğru akım devrelerinde direnç, bobin ve
+kondansatör davranışlarını ayrı ayrı incelemeleri, değerleri kontrol ederek gerçekleşen değişiklikleri
+gözlemlemeleri ve yorumlamaları sağlanır.
+11.2.5.4. İndüktans, kapasitans, rezonans ve empedans kavramlarını açıklar.
+a) Vektörel gösterim yapılmaz. Akım ve gerilimin zamana bağlı değişim grafiklerine girilmez.
+b) Her devre elemanının kendine has bir ohmik direnci olduğu vurgulanır.
+c) Alternatif akım devreleri ile ilgili matematiksel hesaplamalara girilmez.
+
+11.2.6. TRANSFORMATÖRLER
+11.2.6.1. Transformatörlerin çalışma prensibini açıklar.
+a) Primer ve sekonder gerilimi, primer ve sekonder akım şiddeti, primer ve sekonder güç kavramları
+açıklanır. Matematiksel hesaplamalara girilmez.
+b) İdeal ve ideal olmayan transformatörlerin çalışma ilkesi üzerinde durulur.
+11.2.6.2. Transformatörlerin kullanım amaçlarını açıklar.
+a) Öğrencilerin transformatörlerin kullanıldığı yerleri araştırmaları sağlanır.
+b) Elektrik enerjisinin taşınma sürecinde transformatörlerin rolü vurgulanır.
+
+
+
+
+                                                                                                         35
+     12. SINIF ÜNİTE, KONU, KAZANIM VE AÇIKLAMALARI
+
+     12.1. ÇEMBERSEL HAREKET
+     Anahtar kavramlar: çizgisel hız, açısal hız, merkezcil kuvvet, merkezcil ivme, eylemsizlik momenti,
+     açısal momentum, kütle çekim kuvveti.
+
+     12.1.1. DÜZGÜN ÇEMBERSEL HAREKET
+     12.1.1.1. Düzgün çembersel hareketi açıklar.
+     a) Periyot, frekans, çizgisel hız ve açısal hız, merkezcil ivme kavramları verilir.
+     b) Öğrencilerin düzgün çembersel harekette çizgisel hız vektörünü çember üzerinde iki farklı noktada
+     çizerek merkezcil ivmenin şiddetini bulmaları ve yönünü göstermeleri sağlanır. Çizgisel ivme kavramına
+     girilmez.
+     12.1.1.2. Düzgün çembersel harekette merkezcil kuvvetin bağlı olduğu değişkenleri analiz eder.
+     Deney yaparak veya simülasyonlarla merkezcil kuvvetin bağlı olduğu değişkenler arasındaki ilişkinin
+     belirlenmesi sağlanır. Matematiksel model verilir. Matematiksel hesaplamalar yapılır.
+     12.1.1.3. Düzgün çembersel hareket yapan cisimlerin hareketini analiz eder.
+     a) Yatay ve düşey düzlemde düzgün çembersel hareket yapan cisimlere ait serbest cisim diyagramlarının
+     çizilmesi sağlanır.
+     b) Düzgün çembersel harekette konum, hız ve ivme hesaplamaları yapılır. Hesaplamalarda
+     trigonometrik fonksiyonlara girilmez.
+     12.1.1.4. Yatay, düşey, eğimli zeminlerde araçların emniyetli dönüş şartları ile ilgili hesaplamalar
+     yapar.
+     Virajlarda emniyetli dönüş için hız sınırına uymanın önemi vurgulanır.
+
+     12.1.2. DÖNEREK ÖTELEME HAREKETİ
+     12.1.2.1. Öteleme ve dönme hareketini karşılaştırır.
+     12.1.2.2. Eylemsizlik momenti kavramını açıklar.
+     Eylemsizlik momenti ile ilgili matematiksel hesaplamalara girilmez.
+     12.1.2.3. Dönme ve dönerek öteleme hareketi yapan cismin kinetik enerjisinin bağlı olduğu
+     değişkenleri açıklar.
+     Matematiksel hesaplamalara girilmez.
+
+     12.1.3. AÇISAL MOMENTUM
+     12.1.3.1. Açısal momentumun fiziksel bir nicelik olduğunu açıklar.
+     Açısal momentumun atomik boyutta da fiziksel bir nicelik olduğu belirtilir.
+     12.1.3.2. Açısal momentumu çizgisel momentum ile ilişkilendirerek açıklar.
+
+
+
+
+36
+12.1.3.3. Açısal momentumu torkla ilişkilendirir.
+a) Öğrencilerin, açısal momentumu, eylemsizlik momenti ve açısal hız kavramlarını kullanarak elde
+etmeleri sağlanır.
+b) Öğrencilerin torku, eylemsizlik momenti ve açısal ivme kavramlarını kullanarak elde etmeleri sağlanır.
+12.1.3.4. Açısal momentumun korunumunu günlük hayattan örneklerle açıklar.
+Açısal momentumun korunumu ile ilgili matematiksel hesaplamalara girilmez.
+
+
+12.1.4. KÜTLE ÇEKİM KUVVETİ
+12.1.4.1. Kütle çekim kuvvetini açıklar.
+a) Kütle çekim kuvvetine değinilir. Matematiksel model verilir. Matematiksel hesaplamalara girilmez.
+b) Yapay uydular, ay ve gezegenlerin hareketleri açıklanır. Matematiksel hesaplamalara girilmez.
+
+12.1.4.2. Newton’ın Hareket Kanunları’nı kullanarak kütle çekim ivmesinin bağlı olduğu değişkenleri
+belirler.
+a) Öğrencilerin yerçekimi ivmesini; dünyanın yarıçapı ve kütlesi cinsinden ifade etmeleri sağlanır.
+b) Öğrencilerin homojen bir kürenin içinde, yüzeyinde ve dışındaki çekim alanını gösteren kuvvet
+çizgilerini çizmeleri sağlanır.
+c) Her kütlenin bir kütle çekim alanı oluşturduğu vurgulanır.
+12.1.4.3. Kütle çekim potansiyel enerjisini açıklar.
+Bağlanma ve kurtulma enerjisi kavramları üzerinde durulur.
+12.1.5. KEPLER KANUNLARI
+12.1.5.1. Kepler Kanunları’nı açıklar.
+a) Matematiksel hesaplamalara girilmez.
+b) Galileo Galilei, Ali Kuşçu ve Uluğ Bey’in gök cisimleri ve gök cisimlerinin hareketleri ile ilgili
+çalışmalarına yer verilir.
+
+12.2. BASİT HARMONİK HAREKET
+Anahtar kavramlar: uzanım, genlik, geri çağırıcı kuvvet, denge noktası, yay sarkacı, basit sarkaç.
+
+12.2.1. BASİT HARMONİK HAREKET
+12.2.1.1. Basit harmonik hareketi düzgün çembersel hareketi kullanarak açıklar.
+a) Basit harmonik harekete günlük hayattan örnekler verilir.
+b) Yay sarkacı ve basit sarkaç için uzanım, genlik, periyot, frekans, geri çağırıcı kuvvet ve denge
+noktası kavramları harmonik hareket örnekleri ile açıklanır.
+c) Uzanım, genlik, periyot, frekans ilişkisi ile ilgili matematiksel hesaplamalar yapılır.
+ç) Basit harmonik hareket ile ilgili fonksiyonların türevlerine ve işlemlerine girilmez.
+
+
+
+
+                                                                                                        37
+12.2.1.2. Basit harmonik harekette konumun zamana göre değişimini analiz eder.
+Öğrencilerin deney yaparak veya simülasyonlar kullanarak konum-zaman grafiğini çizmeleri ve
+yorumlamaları sağlanır.
+12.2.1.3. Basit harmonik harekette kuvvet, hız ve ivmenin konuma göre değişimi ile ilgili
+hesaplamalar yapar.
+12.2.1.4. Yay sarkacı ve basit sarkaçta periyodun bağlı olduğu değişkenleri belirler.
+Öğrencilerin deney yaparak veya simülasyonlarla periyoda etki eden değişkenleri belirlemeleri
+sağlanır. Periyodun matematiksel modeli verilir.
+12.2.1.5. Yay sarkacı ve basit sarkacın periyodu ile ilgili hesaplamalar yapar.
+a) Paralel ve seri bağlı yaylarda eş değer yay sabiti hesaplamalarının yapılması sağlanır.
+b) Esnek yayların hareketi tek boyut ile sınırlandırılır.
+
+12.3. DALGA MEKANİĞİ
+Anahtar kavramlar: girişim, kırınım, Doppler olayı, elektromanyetik dalga, elektromanyetik spektrum.
+
+12.3.1. DALGALARDA KIRINIM, GİRİŞİM VE DOPPLER OLAYI
+12.3.1.1. Su dalgalarında kırınım olayının dalga boyu ve yarık genişliği ile ilişkisini belirler.
+Öğrencilerin deney yaparak veya simülasyonlar kullanarak elde ettikleri verilerden yararlanarak yorum
+yapmaları sağlanır.
+12.3.1.2. Su dalgalarında girişim olayını açıklar.
+a) Öğrencilerin girişim desenini deney yaparak veya simülasyonlar kullanarak çizmeleri sağlanır.
+b) Girişimle ilgili matematiksel hesaplamalara girilmez.
+c) Faz farkı kavramına girilmez.
+12.3.1.3. Işığın çift yarıkta girişimine etki eden değişkenleri açıklar.
+a) Öğrencilerin girişim desenini deney yaparak veya simülasyonlar kullanarak çizmeleri sağlanır.
+b) Çift yarıkta girişimle ilgili matematiksel hesaplamalara girilmez.
+12.3.1.4. Işığın tek yarıkta kırınımına etki eden değişkenleri açıklar.
+a) Öğrencilerin kırınım desenini deney yaparak veya simülasyonlar kullanarak çizmeleri sağlanır.
+b) Tek yarıkta kırınımla ilgili matematiksel hesaplamalara girilmez.
+c) İnce zarlarda girişim, hava kaması ve çözme gücü konularına girilmez.
+12.3.1.5. Kırınım ve girişim olaylarını inceleyerek ışığın dalga doğası hakkında çıkarım yapar.
+12.3.1.6. Doppler olayının etkilerini ışık ve ses dalgalarından örneklerle açıklar.
+Örneklerin günlük hayattan seçilmesine özen gösterilir. Matematiksel hesaplamalara girilmez.
+
+12.3.2. ELEKTROMANYETİK DALGALAR
+12.3.2.1. Elektromanyetik dalgaların ortak özelliklerini açıklar.
+Maxwell’in elektromanyetik teorinin kurucusu olduğu vurgulanır.
+12.3.2.2. Elektromanyetik spektrumu günlük hayattan örneklerle ilişkilendirerek açıklar.
+38
+12.4. ATOM FİZİĞİNE GİRİŞ VE RADYOAKTİVİTE
+Anahtar kavramlar: atom, Bohr atom teorisi, enerji seviyesi, uyarılma, iyonlaşma, ışıma, büyük
+patlama, alt parçacık, antimadde, radyoaktivite, fisyon, füzyon.
+
+12.4.1. ATOM KAVRAMININ TARİHSEL GELİŞİMİ
+12.4.1.1. Atom kavramını açıklar.
+a) Bohr atom teorisi haricindeki diğer teoriler, ayrıntılara girilmeden tarihsel gelişim süreci içinde verilir.
+b) Atom teorilerinin birbirleriyle ilişkili olarak geliştirildiği vurgulanmalıdır.
+c) Bohr atom teorisinde; atom yarıçapı, enerji seviyeleri, uyarılma, iyonlaşma ve ışıma kavramları
+vurgulanır. Matematiksel hesaplamalara girilmez.
+ç) Milikan yağ damlası, Thomson’ın e/m tayini, Rutherford saçılması deneyleri ile sınırlı kalınır. Bu
+deneylerle ilgili matematiksel hesaplamalara girilmez.
+12.4.1.2. Atomun uyarılma yollarını açıklar.
+Atomların birbirleriyle, elektronla, fotonla ve ısıyla uyarılma şartlarının tartışılması sağlanır.
+12.4.1.3. Modern atom teorisinin önemini açıklar.
+a) Heisenberg Belirsizlik İlkesi, kuantum sayıları, olasılık dalgası ve Schrödinger dalga denklemine
+değinilir.
+b) Matematiksel hesaplamalara girilmez.
+c) Feza Gürsey, Asım Orhan Barut ve Behram N. Kurşunoğlu'nun atom fiziği konusunda çalışmalar
+yaptığı vurgulanır.
+
+12.4.2. BÜYÜK PATLAMA VE EVRENİN OLUŞUMU
+12.4.2.1. Büyük patlama teorisini açıklar.
+a) Evrenin oluşumu ve geleceğiyle ilgili farklı teorilerin de olduğu vurgulanır.
+b) Öğrencilerin büyük patlama teorisini destekleyen bilimsel çalışmaları araştırmaları ve araştırma
+sonuçlarını rapor olarak sunmaları sağlanır.
+c) Hubble Yasası’na değinilir. Matematiksel modeli verilmez.
+12.4.2.2. Atom altı parçacıkların özelliklerini temel düzeyde açıklar.
+a) Öğrencilerin atom altı parçacıkları standart model çerçevesinde tanımlamaları sağlanır.
+b) Korunum yasaları ile ilgili matematiksel hesaplamalara girilmez.
+c) Dört temel kuvvetin açıklanması sağlanır.
+ç) Abdus Salam, Sheldon Lee Glashow ve Steven Weinberg’in Nobel ödülünü elektromanyetik ve zayıf
+kuvvetin birleşik bir kuvvet görünümünde olduğunu keşfetmeleri üzerine aldıkları vurgulanır.
+12.4.2.3. Madde oluşum sürecini açıklar.
+a) Atom altı parçacıklardan başlayarak madde oluşumunun modelle açıklanması sağlanır.
+b) Higgs bozonuna kısaca değinilir.
+
+12.4.2.4. Madde ve antimadde kavramlarını açıklar.
+
+                                                                                                              39
+12.4.3. RADYOAKTİVİTE
+12.4.3.1. Kararlı ve kararsız durumdaki atomların özelliklerini karşılaştırır.
+a) Radyoaktif madde, radyoaktivite, radyoaktif ışıma kavramları üzerinde durulur.
+b) Bazı atom çekirdeklerinin çeşitli yollarla ışıma yapabileceği vurgulanır.
+c) Marie Curie ve Wilhelm Conrad Röntgen’in radyoaktivite konusunda yaptığı çalışmalara yer verilir.
+12.4.3.2. Radyoaktif bozunma sonucu atomun kütle numarası, atom numarası ve enerjisindeki
+değişimi açıklar.
+a) Alfa, beta, gama ışınımları dışındaki bozunma türlerine girilmez.
+b) Enerjideki değişim açıklanırken matematiksel hesaplamalara girilmez.
+12.4.3.3. Nükleer fisyon ve füzyon olaylarını açıklar.
+a) Nükleer enerji ile çalışan sistemler hakkında araştırma yapılması sağlanır.
+b) Nükleer reaktörlerin bilime, teknolojiye, ülke ekonomisine ve çevreye etkileri üzerinde durulur.
+c) Atom bombasının yıkıcı etkileri tarihî gerçekler üzerinden açıklanarak nükleer silahsızlanmanın dünya
+barışı açısından önemi üzerinde durulur.
+12.4.3.4. Radyasyonun canlılar üzerindeki etkilerini açıklar.
+a) Yaşam alanlarında var olan radyasyon kaynakları, radyasyondan korunma yolları ve radyasyon
+güvenliğinin araştırılması ve bilgilerin paylaşılması sağlanır.
+b) İyonlaştırıcı radyasyona değinilerek kullanıldığı alanlardan ve biyolojik etkilerinden bahsedilir.
+
+12.5. MODERN FİZİK
+Anahtar kavramlar: özel görelilik, siyah cisim ışıması, fotoelektrik olayı, Compton olayı, de Broglie
+dalga boyu.
+
+12.5.1. ÖZEL GÖRELİLİK
+12.5.1.1. Michelson–Morley deneyinin amacını ve sonuçlarını açıklar.
+a) Deneyin yapılış aşamaları üzerinde durulur.
+b) Deneyin farklı bilim insanları tarafından farklı koşullarda çok kez tekrarlanmış olmasının nedeni
+üzerinde durulur. Bilimsel çalışmalarda sabırlı ve kararlı olmanın önemi vurgulanır.
+c) Matematiksel hesaplamalara girilmez.
+12.5.1.2. Einstein’ın özel görelilik teorisinin temel postülalarını ifade eder.
+12.5.1.3. Göreli zaman ve göreli uzunluk kavramlarını açıklar.
+Özel görelilikte matematiksel hesaplamalara girilmez.
+12.5.1.4. Kütle-enerji eşdeğerliğini açıklar.
+Matematiksel hesaplamalara girilmez.
+
+
+
+
+40
+12.5.2. KUANTUM FİZİĞİNE GİRİŞ
+12.5.2.1. Siyah cisim ışımasını açıklar.
+a) Planck hipotezi açıklanır.
+b) Dalga boyu-ışıma şiddeti grafiğinden hareketle klasik yaklaşımla modern yaklaşımın çelişkisi ve bu
+çelişkinin kuantum fiziğinin doğuşuna etkisi vurgulanır.
+c) Siyah cisim ışıması ile ilgili matematiksel hesaplamalara girilmez.
+
+
+12.5.3. FOTOELEKTRİK OLAYI
+12.5.3.1. Foton kavramını açıklar.
+12.5.3.2. Fotoelektrik olayını açıklar.
+a) Hertz’in çalışmaları üzerinde durulur.
+b) Einstein’ın fotoelektrik denklemi üzerinde durulur.
+c) Öğrencilerin simülasyonlar yardımıyla fotoelektrik olaya etki eden değişkenleri gözlemlemeleri ve
+yorumlamaları sağlanır.
+12.5.3.3. Farklı metaller için maksimum kinetik enerji-frekans grafiğini çizer.
+12.5.3.4. Fotoelektronların sahip olduğu maksimum kinetik enerji, durdurma gerilimi ve metalin eşik
+enerjisi arasındaki matematiksel ilişkiyi açıklar.
+12.5.3.5. Fotoelektrik olayın günlük hayattaki uygulamalarına örnekler verir.
+Fotoelektrik olayın günlük hayattaki olumlu (musluklarda hijyenin sağlanması gibi) ve olumsuz (sahte
+güneş gözlüklerinin kullanımı gibi) etkileri üzerinde durulur.
+12.5.3.6. Fotoelektrik olayla ilgili hesaplamalar yapar.
+
+
+12.5.4. COMPTON SAÇILMASI VE DE BROGLİE DALGA BOYU
+12.5.4.1. Compton olayında foton ve elektron etkileşimini açıklar.
+Öğrencilerin model veya simülasyonlar kullanarak Compton saçılmasını açıklamaları sağlanır.
+Matematiksel hesaplamalara girilmez.
+12.5.4.2. Compton ve fotoelektrik olaylarının benzer yönlerini belirterek ışığın tanecik doğası
+hakkında çıkarım yapar.
+12.5.4.3. Işığın ikili doğasını açıklar.
+Işığın tanecik, dalga, hem tanecik hem de dalga doğası ile açıklanan olaylar vurgulanır.
+12.5.4.4. Madde ve dalga arasındaki ilişkiyi açıklar.
+a) De Broglie bağıntısı verilir.
+b) Matematiksel hesaplamalara girilmez.
+
+
+
+
+                                                                                                        41
+12.6. MODERN FİZİĞİN TEKNOLOJİDEKİ UYGULAMALARI
+Anahtar kavramlar: görüntüleme teknolojisi, yarı iletken, diyot, transistör, LED, güneş pili, süper
+iletken, nanoteknoloji, nanobilim, LASER.
+
+12.6.1. GÖRÜNTÜLEME TEKNOLOJİLERİ
+12.6.1.1. Görüntüleme cihazlarının çalışma prensiplerini açıklar.
+a) Öğrencilerin röntgen, MR, PET, tomografi, ultrason, radarlar, sonar, termal kameralar ile ilgili
+araştırmalar yaparak bu teknolojilerin oluşturulmasında fiziğin rolünü sorgulamaları sağlanır.
+b) Görüntüleme cihazlarının (röntgen, MR, PET, tomografi, ultrason, radarlar, sonar, termal kameralar)
+çalışma ilkelerine kısaca değinilir.
+12.6.1.2. LCD ve plazma teknolojilerinde fizik biliminin yerini açıklar.
+
+12.6.2. YARI İLETKEN TEKNOLOJİSİ
+12.6.2.1. Yarı iletken maddelerin genel özelliklerini açıklar.
+12.6.2.2. Yarı iletken malzemelerin teknolojideki önemini açıklar.
+a) Diyot ve transistörlerin işlevi verilir, çeşitlerine girilmez.
+b) Öğrencilerin kumun bir elektronik devre elemanı hâline gelme sürecini araştırmaları ve paylaşmaları
+sağlanır.
+12.6.2.3. LED teknolojisinin kullanıldığı yerlere örnekler verir.
+12.6.2.4. Güneş pillerinin çalışma şeklini açıklar.
+a) Yapı elemanlarının özelliklerinin detaylarına girilmez.
+b) Güneş pillerinin günümüzdeki ve gelecekteki yerinin tartışılması sağlanır.
+12.6.2.5. Günlük hayatı kolaylaştıran, güneş pillerinin kullanıldığı sistem tasarlar.
+Öğrencilerin yapmış oldukları tasarımın ülke ekonomisine ve çevreye sağlayacağı katkıları açıklamaları
+sağlanır.
+
+12.6.3. SÜPER İLETKENLER
+12.6.3.1. Süper iletken maddenin temel özelliklerini açıklar.
+12.6.3.2. Süper iletkenlerin teknolojideki kullanım alanlarına örnekler verir.
+Hızlı trenlerin ve parçacık hızlandırıcılarının çalışma ilkeleri üzerinde durulur.
+
+12.6.4. NANOTEKNOLOJİ
+12.6.4.1. Nanobilimin temellerini açıklar.
+a) Fizik bilimi ile nanobilim ve nanoteknolojinin ilişkisi üzerinde durulur.
+b) Fonksiyonel ve doğal nanoyapılara sahip sistemlere örnekler verilir.
+12.6.4.2. Nanomalzemelerin temel özelliklerini açıklar.
+Malzemelerin nano boyutlara indirilmesi durumunda yeni özellikler kazandıkları vurgulanır.
+
+
+
+
+42
+12.6.4.3. Nanomalzemelerin teknolojideki kullanım alanlarına örnekler verir.
+Nanomalzemelerin bilim ve teknolojinin gelişimine etkisi vurgulanır.
+
+12.6.5. LASER IŞINLARI
+12.6.5.1. LASER ışınlarının elde edilişini açıklar.
+a) Simülasyonlar ve videolar yardımıyla LASER ışınının oluşumunun incelenmesi sağlanır.
+b) Matematiksel hesaplamalara girilmez.
+12.6.5.2. LASER ışınlarının teknolojideki kullanım alanlarına örnekler verir.
+
+
+
+
+                                                                                          43
+44
+

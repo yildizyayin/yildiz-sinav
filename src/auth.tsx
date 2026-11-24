@@ -15,7 +15,7 @@ export interface CurrentUser {
 
 interface AuthState {
   user: CurrentUser | null;
-  institution: { status: string; name: string } | null;
+  institution: { status: string; name: string; academic_year?: string | null } | null;
   loading: boolean;
   refresh: () => Promise<void>;
   logout: () => Promise<void>;

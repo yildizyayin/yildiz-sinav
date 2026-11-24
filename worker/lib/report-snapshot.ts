@@ -7,12 +7,12 @@ import type { Env } from '../types';
 // freeze failed with a bare server error.
 export const REPORT_SNAPSHOT_SQL = `UPDATE exam_result_snapshots AS snap SET payload_json=json_object(
   'schemaVersion',1,
-  'exam',(SELECT json_object('exam_id',e.id,'title',e.title,'exam_date',e.exam_date,'exam_type',e.exam_type,'academic_year',e.academic_year,
+  'exam',json((SELECT json_object('exam_id',e.id,'title',e.title,'exam_date',e.exam_date,'exam_type',e.exam_type,'academic_year',e.academic_year,
     'correct_count',er.correct_count,'wrong_count',er.wrong_count,'blank_count',er.blank_count,
     'net',snap.net,'score',snap.score,'success_percent',er.success_percent,
     'institution_rank',snap.institution_rank,'booklet_code',ep.booklet_code)
-    FROM exam_participants ep JOIN exams e ON e.id=ep.exam_id JOIN exam_results er ON er.participant_id=ep.id WHERE ep.id=snap.participant_id),
-  'participant',(SELECT json_object('name_snapshot',ep.name_snapshot,'student_number_snapshot',ep.student_number_snapshot,'class_snapshot',ep.class_snapshot) FROM exam_participants ep WHERE ep.id=snap.participant_id),
+    FROM exam_participants ep JOIN exams e ON e.id=ep.exam_id JOIN exam_results er ON er.participant_id=ep.id WHERE ep.id=snap.participant_id)),
+  'participant',json((SELECT json_object('name_snapshot',ep.name_snapshot,'student_number_snapshot',ep.student_number_snapshot,'class_snapshot',ep.class_snapshot) FROM exam_participants ep WHERE ep.id=snap.participant_id)),
   'wrongQuestionIds',json((SELECT json_group_array(sa.exam_question_id) FROM student_answers sa WHERE sa.participant_id=snap.participant_id AND sa.status='WRONG')),
   'questionEvidencePolicy','NATIVE_STATUS_AND_CURRICULUM_AT_FREEZE_V1',
   'questionEvidence',json((SELECT json_group_array(json_object(
@@ -90,6 +90,19 @@ export function examBranchesInstalled(env: Env): Promise<boolean> {
   return p;
 }
 /** The snapshot payload statement plus, when ranges can exist, the sub-subject statement, for one batch. */
+/**
+ * Next free snapshot version of an exam. Owner (5 Nov, MEBİ): an upload deleted and evaluated again removes the result
+ * rows but keeps the publication stats of their versions, so the stats count too — otherwise the new version is one
+ * already in exam_publication_stats, its insert fails and the whole publication is rolled back on every try.
+ */
+export async function nextSnapshotVersion(env: Env, examId: string, floor = 0): Promise<number> {
+  const row = await env.DB.prepare(`SELECT MAX(version) version FROM (
+    SELECT snapshot_version version FROM exam_result_snapshots WHERE exam_id=?
+    UNION ALL SELECT retired_through_version FROM result_artifact_retirements WHERE exam_id=?
+    UNION ALL SELECT snapshot_version FROM exam_publication_stats WHERE exam_id=?)`).bind(examId, examId, examId).first<any>();
+  return Math.max(Number(floor || 0), Number(row?.version || 0)) + 1;
+}
+
 export async function reportSnapshotStatements(env: Env, examId: string, version: number): Promise<D1PreparedStatement[]> {
   const out = [env.DB.prepare(REPORT_SNAPSHOT_SQL).bind(examId, version)];
   if (await examBranchesInstalled(env)) out.push(env.DB.prepare(REPORT_BRANCHES_SQL).bind(examId, version));

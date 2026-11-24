@@ -14,7 +14,7 @@ export function base64url(bytes: Uint8Array) { return btoa(String.fromCharCode(.
 export function decodeBase64url(value: string) { return Uint8Array.from(atob(value.replace(/-/g,'+').replace(/_/g,'/')),x=>x.charCodeAt(0)); }
 export function passkeyOrigin(request: Request, env: Env) {
  const url=new URL(request.url);
- const allowed=url.protocol==='https:' && (['app.anunex.com','demo.anunex.com'].includes(url.hostname) || (env.ENVIRONMENT!=='production' && /^yildiz-sinav-v1\.[a-z0-9-]+\.workers\.dev$/.test(url.hostname)));
+ const allowed=url.protocol==='https:' && (['app.anunex.com','demo.anunex.com','tanitim.anunex.com'].includes(url.hostname) || (env.ENVIRONMENT!=='production' && /^yildiz-sinav-v1\.[a-z0-9-]+\.workers\.dev$/.test(url.hostname)));
  const local=env.ENVIRONMENT!=='production' && ['localhost','127.0.0.1'].includes(url.hostname);
  if(!allowed&&!local) return null;
  if(request.headers.get('Origin')!==url.origin) return null;

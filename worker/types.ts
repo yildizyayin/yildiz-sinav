@@ -75,6 +75,8 @@ export interface Env {
   // Nibiru Voice — keep credentials in Cloudflare Secrets, not vars.
   // Explicit opt-in: paid TTS is disabled by default, including Unified Billing.
   NIBIRU_PAID_VOICE_ENABLED?: 'ON' | 'OFF';
+  NIBIRU_GOOGLE_FREE_VOICE?: 'ON' | 'OFF';
+  NIBIRU_GOOGLE_FREE_MONTHLY_CHARS?: string;
   NIBIRU_STT_MODEL?: string;
   NIBIRU_GOOGLE_TTS_VOICE?: string;
   NIBIRU_OPENAI_TTS_MODEL?: string;
@@ -84,6 +86,11 @@ export interface Env {
   GOOGLE_TTS_SERVICE_ACCOUNT_JSON?: string;
   OPENAI_TTS_API_KEY?: string;
   YOUTUBE_API_KEY?: string;
+  OUTCOME_VIDEO_SKIP_GRADES?: string;
+  GEMINI_API_KEY?: string;
+  GEMINI_MODEL?: string;
+  NIBIRU_GEMINI_MODEL?: string;
+  NIBIRU_GEMINI?: string;
   WHATSAPP_VERIFY_TOKEN?: string;
   WHATSAPP_APP_SECRET?: string;
   WHATSAPP_ACCESS_TOKEN?: string;

@@ -1,10 +1,16 @@
+import { questionTopicVideos } from './lib/question-topic-videos';
 import { publishedForLearnersSql } from './lib/exam-schedule';
 import { SERVABLE_VIDEO_SQL } from './lib/video-links';
 import app from './platform-entry';
 import {fetchYoutubeMetadata,youtubeCandidateAvailable} from './lib/youtube-candidate-policy';
+import {outcomeClip} from './lib/outcome-videos';
 import type { AuthUser, Env } from './types';
 import { getAuthUser } from './lib/auth';
 import { all, json, one, uuid } from './lib/db';
+import { gradeProfile, nibiruStudentPrompts } from '../src/lib/gradeProfile';
+import { startUniverseSession, submitUniverseSession, universeSessionView } from './lib/learning-universe/sessions';
+import { listNibiruExams, nibiruExamView, startNibiruExam, submitNibiruExam } from './lib/learning-universe/nibiru-exam';
+import { universeMap } from './lib/learning-universe/map';
 
 function fail(status:number,code:string,message:string){return json({ok:false,error:{code,message}},status)}
 
@@ -117,16 +123,45 @@ function daysUntil(dateValue:string|null|undefined){
   const now=new Date();const today=new Date(now.getFullYear(),now.getMonth(),now.getDate());return Math.max(0,Math.ceil((target.getTime()-today.getTime())/86400000));
 }
 
+/** The student's grade profile from their own enrollment (never from the request). */
+function profileOf(enrollment:any){return gradeProfile(enrollment?.grade_level,enrollment?.status==='GRADUATED')}
+
+/** Official LGS/YKS date for the student's school year; nothing for grades without a countdown. */
+async function officialCountdown(env:Env,enrollment:any){
+  const profile=profileOf(enrollment);if(!profile.countdown||!profile.officialExam)return null;
+  const season=enrollment?.season_id?await one<any>(env.DB.prepare('SELECT academic_year FROM institution_seasons WHERE id=?').bind(enrollment.season_id)):null;
+  return one<any>(env.DB.prepare(`SELECT exam_date,label FROM official_exam_dates WHERE exam_code=? AND (academic_year=? OR ? IS NULL) AND exam_date>=date('now','+3 hours') ORDER BY exam_date LIMIT 1`).bind(profile.officialExam,season?.academic_year??null,season?.academic_year??null));
+}
+
+/**
+ * The student's grade profile and Nibiru's quick questions, led by their own weakest outcome in published results
+ * (at least two answers, lowest share right).
+ */
+async function studentProfile(env:Env,user:AuthUser){
+  const enrollment=await latestEnrollment(env,user.student_id!);const profile=profileOf(enrollment);
+  const weak=await one<any>(env.DB.prepare(`SELECT o.title,sum(r.correct_count) c,sum(r.evidence_count) n FROM outcome_results r JOIN outcomes o ON o.id=r.outcome_id
+    WHERE r.student_id=? AND ${publishedForLearnersSql('r.exam_id')} GROUP BY o.id,o.title HAVING sum(r.evidence_count)>=2 AND 1.0*sum(r.correct_count)/sum(r.evidence_count)<0.7
+    ORDER BY 1.0*sum(r.correct_count)/sum(r.evidence_count),sum(r.evidence_count) DESC LIMIT 1`).bind(user.student_id));
+  return json({ok:true,gradeLevel:profile.grade,enrollmentStatus:enrollment?.status??null,profile,nibiruPrompts:nibiruStudentPrompts(profile,weak?.title),weakOutcome:weak?{title:weak.title,correct:Number(weak.c),answered:Number(weak.n)}:null});
+}
+
 async function homeContext(env:Env,user:AuthUser){
   const {enrollment,preferences}=await getPreferences(env,user);
-  let targetDate=preferences.countdown_target_date as string|null;
-  let label=preferences.countdown_label as string|null;
-  if(!targetDate&&enrollment){
-    const next=await one<any>(env.DB.prepare(`SELECT title,exam_date FROM exams WHERE exam_date>date('now') AND (grade_level=? OR grade_level IS NULL) AND status IN ('DRAFT','ACTIVE') ORDER BY exam_date LIMIT 1`).bind(enrollment.grade_level));
-    targetDate=next?.exam_date||null;label=label||next?.title||null;
+  const profile=profileOf(enrollment);
+  // owner (10 Nov 2026): a countdown only for 8 (LGS) and 12 (YKS), against the official date or the student's own
+  // date; never another institution's exam (the earlier fallback read every institution's exams)
+  let targetDate:string|null=null,label:string|null=null;
+  if(profile.countdown){
+    const official=await officialCountdown(env,enrollment);
+    targetDate=(preferences.countdown_target_date as string|null)||official?.exam_date||null;
+    label=(preferences.countdown_label as string|null)||official?.label||null;
   }
   const targets=await all<any>(env.DB.prepare(`SELECT priority,target_type,motivation_label,motivation_enabled,up.university_name,up.program_name,ss.name school_name FROM student_academic_targets sat LEFT JOIN university_program_targets up ON up.id=sat.university_program_target_id LEFT JOIN secondary_school_targets ss ON ss.id=sat.secondary_school_target_id WHERE sat.student_id=? AND sat.status='ACTIVE' ORDER BY priority`).bind(user.student_id));
-  return json({ok:true,student:{id:user.student_id,gradeLevel:enrollment?.grade_level??null,className:enrollment?.class_name??null,enrollmentStatus:enrollment?.status??null},countdown:{enabled:Boolean(preferences.countdown_enabled),label,targetDate,days:daysUntil(targetDate),flipClock:Boolean(preferences.countdown_flip_clock)},preferences,targets});
+  // grades without an academic target show the student's chosen interests (meslekler) on the home card instead
+  const professions=profile.academicTarget?[]:await all<any>(env.DB.prepare(`SELECT spt.priority,pc.title,pc.motivation_title FROM student_profession_targets spt JOIN profession_catalog pc ON pc.code=spt.profession_code WHERE spt.student_id=? AND spt.status='ACTIVE' ORDER BY spt.priority LIMIT 3`).bind(user.student_id));
+  // Days (Istanbul time) on which the student solved practice questions during the last 14 days: feeds the weekly streak.
+  const practiceDays=(await all<any>(env.DB.prepare(`SELECT DISTINCT date(created_at,'+3 hours') d FROM question_practice_attempts WHERE student_id=? AND created_at>=datetime('now','-14 days') ORDER BY d`).bind(user.student_id))).map((r:any)=>r.d);
+  return json({ok:true,student:{id:user.student_id,gradeLevel:enrollment?.grade_level??null,className:enrollment?.class_name??null,enrollmentStatus:enrollment?.status??null},profile,countdown:{enabled:profile.countdown&&Boolean(preferences.countdown_enabled),label,targetDate,days:daysUntil(targetDate),flipClock:Boolean(preferences.countdown_flip_clock)},preferences,targets,professions,practiceDays});
 }
 
 async function games(env:Env,user:AuthUser){
@@ -177,18 +212,53 @@ async function youtubeMicroVideo(env:Env,question:any){
 
 async function questionSupport(env:Env,user:AuthUser,url:URL){
   const questionId=url.searchParams.get('examQuestionId');if(!questionId)return fail(400,'QUESTION_REQUIRED','Soru seçilmelidir.');
+  const outcomeId=url.searchParams.get('outcomeId');
   const row=await one<any>(env.DB.prepare(`SELECT q.id question_id,q.question_no,q.global_no,sa.status answer_status,s.id subject_id,s.name subject_name,o.id outcome_id,o.title outcome_title,o.topic,o.subtopic,
+    EXISTS(SELECT 1 FROM curriculum_versions cv WHERE cv.id=o.curriculum_version_id AND cv.verified=1 AND cv.authority='MEB' AND o.active=1 AND o.subject_id=q.subject_id) verified_outcome,
     (SELECT e2.grade_level FROM student_enrollments e2 WHERE e2.student_id=ep.student_id ORDER BY CASE e2.status WHEN 'ACTIVE' THEN 0 WHEN 'GRADUATED' THEN 1 ELSE 2 END,e2.created_at DESC LIMIT 1) grade_level,
     (SELECT vl.url FROM video_links vl WHERE vl.exam_question_id=q.id AND vl.link_type='SOLUTION' AND ${SERVABLE_VIDEO_SQL} LIMIT 1) solution_url,
     (SELECT vl.title FROM video_links vl WHERE vl.exam_question_id=q.id AND vl.link_type='SOLUTION' AND ${SERVABLE_VIDEO_SQL} LIMIT 1) solution_title,
     (SELECT vl.url FROM video_links vl WHERE (vl.exam_question_id=q.id OR vl.outcome_id=o.id) AND vl.link_type='TOPIC' AND ${SERVABLE_VIDEO_SQL} LIMIT 1) topic_url,
     (SELECT vl.title FROM video_links vl WHERE (vl.exam_question_id=q.id OR vl.outcome_id=o.id) AND vl.link_type='TOPIC' AND ${SERVABLE_VIDEO_SQL} LIMIT 1) topic_title
-    FROM student_answers sa JOIN exam_participants ep ON ep.id=sa.participant_id JOIN exam_questions q ON q.id=sa.exam_question_id JOIN subjects s ON s.id=q.subject_id LEFT JOIN question_outcomes qo ON qo.exam_question_id=q.id LEFT JOIN outcomes o ON o.id=qo.outcome_id WHERE ep.student_id=? AND q.id=? AND ${publishedForLearnersSql('ep.exam_id')} LIMIT 1`).bind(user.student_id,questionId));
+    FROM student_answers sa JOIN exam_participants ep ON ep.id=sa.participant_id JOIN exam_questions q ON q.id=sa.exam_question_id JOIN subjects s ON s.id=q.subject_id LEFT JOIN question_outcomes qo ON qo.exam_question_id=q.id LEFT JOIN outcomes o ON o.id=qo.outcome_id WHERE ep.student_id=? AND q.id=? AND (? IS NULL OR qo.outcome_id=?) AND ${publishedForLearnersSql('ep.exam_id')} ORDER BY verified_outcome DESC,o.id LIMIT 1`).bind(user.student_id,questionId,outcomeId,outcomeId));
   if(!row)return fail(404,'QUESTION_NOT_FOUND','Bu soru öğrenci sonuçlarında bulunamadı.');
+  const topicVideos = row.verified_outcome ? await questionTopicVideos(env,row.outcome_id,user.institution_id || null).catch(()=>[]) : [];
   let topicVideo=row.topic_url?{url:row.topic_url,title:row.topic_title||'Konu Anlatımı',source:'REGISTERED'}:null;let selection:any=null;
   // A067: an automatically found video is only a candidate for a person to review; it is not shown to the student
-  if(!topicVideo)selection=await youtubeMicroVideo(env,row);
-  return json({ok:true,question:{id:row.question_id,questionNo:row.question_no,globalNo:row.global_no,status:row.answer_status,subject:row.subject_name,outcome:row.outcome_title,topic:row.topic,subtopic:row.subtopic},options:{solutionVideo:row.solution_url?{url:row.solution_url,title:row.solution_title||'Video Çözümü',source:'PUBLISHER'}:null,topicVideo},microLearning:selection?{reason:selection.reason,candidateCount:selection.candidateCount,awaitingReview:!!selection.video}:null});
+  // owner 12 Nov 2026: no system video → the school's own link, then an automatically found YouTube segment of the outcome
+  if(!topicVideo&&row.outcome_id){const clip=await outcomeClip(env,row.outcome_id,user.institution_id||null);if(clip)topicVideo={url:clip.url,title:clip.title,source:clip.source==='TEACHER'?'TEACHER':'AUTO_SEGMENT',start:clip.start,end:clip.end,autoId:clip.source==='AUTO'?clip.id:null} as any;}
+  if(!topicVideos.length&&!topicVideo)selection=await youtubeMicroVideo(env,row);
+  return json({ok:true,question:{id:row.question_id,questionNo:row.question_no,globalNo:row.global_no,status:row.answer_status,subject:row.subject_name,outcome:row.outcome_title,topic:row.topic,subtopic:row.subtopic},options:{solutionVideo:row.solution_url?{url:row.solution_url,title:row.solution_title||'Video Çözümü',source:'PUBLISHER'}:null,topicVideo,topicVideos},microLearning:selection?{reason:selection.reason,candidateCount:selection.candidateCount,awaitingReview:!!selection.video}:null});
+}
+
+const UNIVERSE_MESSAGES:Record<string,[number,string]>={
+ STUDENT_ONLY:[403,'Öğrenme Evreni öğrenci hesabına açıktır.'],
+ TEMPLATE_NOT_FOUND:[404,'Bu etkinlik türü bulunamadı ya da kapalı.'],
+ TEMPLATE_NOT_FOR_GRADE:[409,'Bu etkinlik türü senin sınıf düzeyin için açık değil.'],
+ OUTCOME_NOT_VERIFIED:[409,'Bu kazanım senin sınıf düzeyinin bu yılki doğrulanmış MEB programında yok.'],
+ CONTENT_GAP:[409,'Bu kazanım için bu etkinliğe uygun yeterli onaylı içerik henüz yok.'],
+ SESSION_NOT_FOUND:[404,'Etkinlik bulunamadı.'],
+ SESSION_EXPIRED:[409,'Bu etkinliğin süresi doldu; yeniden başlatabilirsin.'],
+ INVALID_SIZE:[400,'Deneme 10 ya da 20 soruluk olabilir.'],
+ NOT_ENOUGH_QUESTIONS:[409,'Bu deneme için daha önce görmediğin yeterli onaylı soru henüz yok.'],
+ EXAM_NOT_FOUND:[404,'Deneme bulunamadı.'],
+ ALL_QUESTIONS_REQUIRED:[400,'Bütün sorular gönderilmeli; boş bıraktıkların boş sayılır.'],
+};
+/** Nibiru Öğrenme Evreni: start a play, read it, submit it (graded on the server, once). */
+async function universeApi(request:Request,env:Env,user:AuthUser,path:string){
+ const out=(r:any,status=200)=>{if(r.ok)return json(r,status);const[code,message]=UNIVERSE_MESSAGES[r.reason]||[400,'Etkinlik güncellenemedi.'];return json({...r,error:{code:r.reason,message,details:{available:r.available??null,needed:r.needed??null,repeatAvailable:r.repeatAvailable??null}}},code)};
+ if(path==='/api/student-standard/universe/map'&&request.method==='GET'){const m=await universeMap(env,user);return m?json(m):out({ok:false,reason:'STUDENT_ONLY'});}
+ if(path==='/api/student-standard/universe/sessions'&&request.method==='POST'){const body=await request.json().catch(()=>({}));const r=await startUniverseSession(env,user,body);if(!r.ok)return out(r);return json(await universeSessionView(env,user,r.sessionId),r.reused?200:201);}
+ const m=path.match(/^\/api\/student-standard\/universe\/sessions\/([^/]+)(\/submit)?$/);
+ if(m&&!m[2]&&request.method==='GET'){const v=await universeSessionView(env,user,m[1]);return v?json(v):out({ok:false,reason:'SESSION_NOT_FOUND'});}
+ if(m&&m[2]&&request.method==='POST'){const body=await request.json().catch(()=>({}));const r=await submitUniverseSession(env,user,m[1],body);if(!r.ok)return out(r);return json(await universeSessionView(env,user,m[1]));}
+ // Nibiru denemesi: 10 or 20 new questions of the student's own grade, weaker outcomes first
+ if(path==='/api/student-standard/universe/exams'&&request.method==='GET')return json({ok:true,exams:await listNibiruExams(env,user)});
+ if(path==='/api/student-standard/universe/exams'&&request.method==='POST'){const body=await request.json().catch(()=>({}));const r=await startNibiruExam(env,user,body);if(!r.ok)return out(r);return json(await nibiruExamView(env,user,r.examId),r.reused?200:201);}
+ const x=path.match(/^\/api\/student-standard\/universe\/exams\/([^/]+)(\/submit)?$/);
+ if(x&&!x[2]&&request.method==='GET'){const v=await nibiruExamView(env,user,x[1]);return v?json(v):out({ok:false,reason:'EXAM_NOT_FOUND'});}
+ if(x&&x[2]&&request.method==='POST'){const body=await request.json().catch(()=>({}));const r=await submitNibiruExam(env,user,x[1],body);if(!r.ok)return out(r);return json(await nibiruExamView(env,user,x[1]));}
+ return fail(404,'NOT_FOUND','Öğrenme Evreni yolu bulunamadı.');
 }
 
 export default {
@@ -205,7 +275,9 @@ export default {
     if(path==='/api/student-standard/preferences'&&request.method==='GET')return json({ok:true,...await getPreferences(env,auth)});
     if(path==='/api/student-standard/preferences'&&request.method==='PATCH')return updatePreferences(request,env,auth);
     if(path==='/api/student-standard/home-context'&&request.method==='GET')return homeContext(env,auth);
+    if(path==='/api/student-standard/profile'&&request.method==='GET')return studentProfile(env,auth);
     if(path==='/api/student-standard/games'&&request.method==='GET')return games(env,auth);
+    if(path.startsWith('/api/student-standard/universe/'))return universeApi(request,env,auth,path);
     if(path==='/api/student-standard/question-support'&&request.method==='GET')return questionSupport(env,auth,url);
     return fail(404,'NOT_FOUND','Standard öğrenci API yolu bulunamadı.');
   },

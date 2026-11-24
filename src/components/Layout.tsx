@@ -1,15 +1,25 @@
+import { installGlassSounds } from '../lib/glassSounds';
+
+/** The institution's active season; without one, the school year of today's date (a year starts in September). */
+export function schoolYearLabel(year?: string | null, now = new Date()) {
+  const y = year && /^\d{4}-\d{4}$/.test(year) ? year : (() => { const start = now.getMonth() >= 8 ? now.getFullYear() : now.getFullYear() - 1; return `${start}-${start + 1}`; })();
+  return y.replace('-', '–');
+}
 import { ApprovedAdminNavigation } from './ApprovedAdminNavigation';
 import { PageLoader } from './PageLoader';
 import { useEffect,useMemo,useState } from 'react';
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { PrivacyNoticeGate } from './PrivacyNoticeGate';
-import { Video, Scissors, Activity, BarChart3, Bell, BookMarked, BookOpenCheck, Building2, CalendarDays, CalendarRange, Camera, ChevronRight, ClipboardCheck, Database, FileText, FileUp, FlaskConical, Globe2, GraduationCap, Home, KeyRound, Layers3, Network, ListChecks, LogOut, Megaphone, Menu, MessageCircle, Palette, Printer, ScanLine, ShieldCheck, Sparkles, Target, UserCheck, UserCog, UserRound, Users, UserRoundCheck, X } from 'lucide-react';
+import { Orbit, BookCopy, LifeBuoy, Video, Scissors, Activity, BarChart3, Bell, BookMarked, BookOpenCheck, Building2, CalendarDays, CalendarRange, Camera, ChevronRight, ClipboardCheck, Database, FileText, FileUp, FlaskConical, Globe2, GraduationCap, Home, KeyRound, Layers3, Network, ListChecks, LogOut, Megaphone, Menu, MessageCircle, Palette, Printer, ScanLine, ShieldCheck, Sparkles, Target, UserCheck, UserCog, UserRound, Users, UserRoundCheck, X } from 'lucide-react';
 import { useAuth, type Role } from '../auth';
 import { api } from '../api';
 import { activePanelTheme, readPanelTheme } from '../lib/panelTheme';
 import { LicenseBoundary } from './LicenseBoundary';
 import { NibiruMark,NibiruNavIcon } from './NibiruMark';
 import { AnunexBrand } from './AnunexBrand';
+import { ParentDock, StudentDock } from './StudentDock';
+import { NibiruFloat } from './NibiruFloat';
+import '../student-panel-design.css';
 
 type NavItem={to:string;label:string;icon:any;feature?:string;children?:NavItem[]};
 type NavGroup={label:string;items:NavItem[]};
@@ -42,7 +52,7 @@ const groupedNav: Record<GroupedRole, NavGroup[]> = {
       {to:'/question-team',label:'Soru Havuzu Ekibi',icon:Activity,feature:'QUESTION_BANK'},
       {to:'/worksheet-admin',label:'Föy Merkezi',icon:BookOpenCheck},
       {to:'/worksheet-calendar',label:'Föy Takvimi',icon:CalendarDays},
-      {to:'/outcomes',label:'Kazanım Haritası',icon:Target},
+      {to:'/outcomes',label:'Kazanım Haritası',icon:Target},{to:'/kazanim-videolari',label:'Kazanım Videoları',icon:Video},
       {to:'/written-scenarios',label:'Ortak Yazılı Senaryoları',icon:FileText},
       {to:'/written-rubrics',label:'Yazılı Rubrikleri',icon:ListChecks},
       {to:'/written-papers',label:'Yazılı Kâğıtları',icon:FileText},
@@ -68,8 +78,10 @@ const groupedNav: Record<GroupedRole, NavGroup[]> = {
       {to:'/privacy-notices',label:'KVKK Metinleri',icon:ShieldCheck},
       {to:'/privacy-processors',label:'KVKK Veri İşleyenler',icon:ShieldCheck},
       {to:'/nibiru',label:'Nibiru',icon:NibiruNavIcon},
-      {to:'/nibiru-admin',label:'Nibiru Yönetimi',icon:MessageCircle},
+      {to:'/nibiru-admin',label:'Nibiru Yönetimi',icon:MessageCircle}, { to: '/evren-merkezi', label: 'Evren Merkezi', icon: Orbit, feature:'LEARNING_UNIVERSE' },
       {to:'/guidance-admin',label:'RBA & Rehberlik Testleri',icon:ClipboardCheck},
+      {to:'/rehberlik-onaylari',label:'Rehberlik Onayları',icon:ShieldCheck},
+      {to:'/pilot-basvurulari',label:'Pilot Başvuruları',icon:Building2},
       {to:'/agent-center',label:'AI Ajan Merkezi',icon:Activity},
       {to:'/licenses',label:'Lisanslar',icon:KeyRound},
       {to:'/theme-management',label:'Tema & Özel Günler',icon:Palette},
@@ -94,7 +106,7 @@ const groupedNav: Record<GroupedRole, NavGroup[]> = {
         {to:'/camera-test',label:'Optik Test Merkezi',icon:Camera},
       ]},
       {to:'/exams',label:'Sınavlar',icon:ClipboardCheck},
-      {to:'/reports',label:'Raporlar',icon:BarChart3},
+      {to:'/reports',label:'Raporlar',icon:BarChart3},{to:'/kazanim-destek',label:'Kazanım Desteği',icon:LifeBuoy},{to:'/kazanim-videolari',label:'Kazanım Videoları',icon:Video},{to:'/dejavu',label:'Dejavu Kitapları',icon:BookCopy},{to:'/evren-gorevleri',label:'Evren Görevleri',icon:Orbit,feature:'LEARNING_UNIVERSE'},
     ]},
     { label:'OPTİK BASMA', items:[
       {to:'/optical-prepare',label:'Optik Basma',icon:Printer},
@@ -116,11 +128,10 @@ const groupedNav: Record<GroupedRole, NavGroup[]> = {
       {to:'/access-accounts',label:'Öğrenci / Veli Erişimi',icon:KeyRound},
       {to:'/teacher-assignments',label:'Öğretmen Yetkileri',icon:ShieldCheck},
       {to:'/attendance',label:'Yoklama',icon:UserCheck},
-      {to:'/live-lessons',label:'Canlı Ders',icon:Video,feature:'LIVE'},
     ]},
     { label:'PLATFORM', items:[
       {to:'/nibiru',label:'Nibiru',icon:NibiruNavIcon},
-      {to:'/nibiru-admin',label:'Nibiru Yönetimi',icon:MessageCircle},
+      {to:'/nibiru-admin',label:'Nibiru Yönetimi',icon:MessageCircle}, { to: '/evren-merkezi', label: 'Evren Merkezi', icon: Orbit, feature:'LEARNING_UNIVERSE' },
       {to:'/enterprise',label:'Enterprise / Campus',icon:Building2,feature:'ENTERPRISE'},
       {to:'/announcements',label:'Duyuru Merkezi',icon:Megaphone},
       {to:'/assignments',label:'Ödev Merkezi',icon:BookOpenCheck,feature:'ASSIGNMENTS'},
@@ -133,12 +144,12 @@ const groupedNav: Record<GroupedRole, NavGroup[]> = {
 
 const nav: Record<Role, NavItem[]> = {
   SUPER_ADMIN: [
-    { to: '/', label: 'Ana Sayfa', icon: Home }, { to: '/calendar', label: 'Takvimim', icon: CalendarDays }, { to: '/standard-readiness', label: 'Standard Hazırlık', icon: ShieldCheck },
+    { to: '/', label: 'Ana Sayfa', icon: Home }, { to: '/rehberlik-ozeti', label: 'Rehberlik Özeti', icon: LifeBuoy }, { to: '/calendar', label: 'Takvimim', icon: CalendarDays }, { to: '/standard-readiness', label: 'Standard Hazırlık', icon: ShieldCheck },
     { to: '/exam-center', label: 'Sınav Merkezi', icon: ClipboardCheck },
     { to: '/exam-channels', label: 'Sonuç Yayınları', icon: Globe2 },
     { to: '/result-network', label: 'Sonuç Ağı', icon: Globe2 },
     { to: '/attendance', label: 'Yoklama Gözetimi', icon: UserCheck }, { to: '/live-lessons', label: 'Canlı Ders', icon: Video, feature:'LIVE' },
-    { to: '/nibiru', label: 'Nibiru', icon: NibiruNavIcon }, { to: '/nibiru-admin', label: 'Nibiru Yönetimi', icon: MessageCircle }, { to: '/guidance-admin', label: 'RBA & Rehberlik Testleri', icon: ClipboardCheck }, { to: '/agent-center', label: 'AI Ajan Merkezi', icon: Activity }, { to: '/licenses', label: 'Lisanslar', icon: KeyRound },
+    { to: '/nibiru', label: 'Nibiru', icon: NibiruNavIcon }, { to: '/nibiru-admin', label: 'Nibiru Yönetimi', icon: MessageCircle }, { to: '/evren-merkezi', label: 'Evren Merkezi', icon: Orbit, feature:'LEARNING_UNIVERSE' }, { to: '/guidance-admin', label: 'RBA & Rehberlik Testleri', icon: ClipboardCheck }, { to: '/agent-center', label: 'AI Ajan Merkezi', icon: Activity }, { to: '/licenses', label: 'Lisanslar', icon: KeyRound },
     { to: '/theme-management', label: 'Tema & Özel Günler', icon: Palette },
     { to: '/question-team', label: 'Soru Havuzu Ekibi', icon: Activity,feature:'QUESTION_BANK' }, { to: '/feature-lab', label: 'Feature Lab', icon: FlaskConical }, { to: '/content-center', label: 'Soru Havuzu & Studio', icon: Layers3, feature:'QUESTION_BANK' }, { to: '/enterprise', label: 'Enterprise', icon: Building2, feature:'ENTERPRISE' },
     { to: '/academic-target-admin', label: 'Resmî Hedef Verileri', icon: Target }, { to: '/official-question-intelligence', label: 'Çıkmış Soru & Kazanım', icon: BarChart3 }, { to: '/institutions', label: 'Kurumlar', icon: Building2 }, { to: '/curriculum', label: 'Müfredat & Kazanımlar', icon: BookMarked }, { to: '/written-scenarios', label: 'Ortak Yazılı Senaryoları', icon: FileText }, { to: '/written-rubrics', label: 'Yazılı Rubrikleri', icon: ListChecks }, { to: '/written-papers', label: 'Yazılı Kâğıtları', icon: FileText },
@@ -149,29 +160,29 @@ const nav: Record<Role, NavItem[]> = {
     { to: '/transfers', label: 'Veri Transferi', icon: FileUp }, { to: '/reports', label: 'Raporlar', icon: BarChart3 }, { to: '/notifications', label: 'Bildirimler', icon: Bell }, { to: '/privacy-notices', label: 'KVKK Metinleri', icon: ShieldCheck }, { to: '/profile', label: 'Profil', icon: UserRound },
   ],
   INSTITUTION_MANAGER: [
-    { to: '/', label: 'Kurum Paneli V2', icon: Home }, { to: '/exam-center', label: 'Sınav Merkezi', icon: ClipboardCheck }, { to: '/nibiru', label: 'Nibiru', icon: NibiruNavIcon }, { to: '/nibiru-admin', label: 'Nibiru Yönetimi', icon: MessageCircle },
+    { to: '/', label: 'Kurum Paneli V2', icon: Home }, { to: '/exam-center', label: 'Sınav Merkezi', icon: ClipboardCheck }, { to: '/nibiru', label: 'Nibiru', icon: NibiruNavIcon }, { to: '/nibiru-admin', label: 'Nibiru Yönetimi', icon: MessageCircle }, { to: '/evren-merkezi', label: 'Evren Merkezi', icon: Orbit, feature:'LEARNING_UNIVERSE' },
     { to: '/content-center', label: 'Soru Havuzu & Studio', icon: Layers3,feature:'QUESTION_BANK' }, { to: '/quick-tests', label: 'Hızlı Test', icon: Scissors, feature:'STUDIO' }, { to: '/enterprise', label: 'Enterprise / Campus', icon: Building2,feature:'ENTERPRISE' },
     { to: '/announcements', label: 'Duyuru Merkezi', icon: Megaphone }, { to: '/worksheet-calendar', label: 'Föy Takvimi', icon: CalendarDays }, { to: '/exam-definitions', label: 'Sınav Ekle', icon: ClipboardCheck }, { to: '/students', label: 'Öğrenciler', icon: Users },
-    { to: '/attendance', label: 'Yoklama', icon: UserCheck }, { to: '/live-lessons', label: 'Canlı Ders', icon: Video, feature:'LIVE' }, { to: '/assignments', label: 'Ödev Merkezi', icon: BookOpenCheck, feature:'ASSIGNMENTS' },
+    { to: '/attendance', label: 'Yoklama', icon: UserCheck }, { to: '/assignments', label: 'Ödev Merkezi', icon: BookOpenCheck, feature:'ASSIGNMENTS' },
     { to: '/activation-requests', label: 'Aktivasyon Talepleri', icon: UserCheck }, { to: '/users', label: 'Kullanıcılar', icon: UserCog }, { to: '/access-accounts', label: 'Öğrenci/Veli Erişimi', icon: KeyRound }, { to: '/teacher-assignments', label: 'Öğretmen Yetkileri', icon: ShieldCheck }, { to: '/seasons', label: 'Sezonlar', icon: CalendarRange }, { to: '/opticals', label: 'Optik Form Ağacı', icon: ScanLine }, { to: '/optical-design', label: 'Baskı Şablonu Tasarla', icon: Printer }, { to: '/optical-prepare', label: 'Optik Basma', icon: Printer },
     { to: '/camera-test', label: 'Optik Test Merkezi', icon: Camera }, { to: '/calibration', label: 'Yazıcı Kalibrasyonu', icon: ScanLine }, { to: '/bulk-operations', label: 'Toplu İşlemler', icon: Layers3 }, { to: '/reports', label: 'Raporlar', icon: BarChart3 },
     { to: '/worksheets', label: 'Föy Merkezi', icon: BookOpenCheck }, { to: '/written-scenarios', label: 'Ortak Yazılı Senaryoları', icon: FileText }, { to: '/written-papers', label: 'Yazılı Kâğıtları', icon: FileText }, { to: '/transfers', label: 'Veri Transferi', icon: FileUp }, { to: '/notifications', label: 'Bildirimler', icon: Bell }, { to: '/profile', label: 'Profil', icon: UserRound },
   ],
   TEACHER: [
-    { to: '/', label: 'Ana Sayfa', icon: Home }, { to: '/calendar', label: 'Takvimim', icon: CalendarDays }, { to: '/nibiru', label: 'Nibiru', icon: NibiruNavIcon }, { to: '/content-center', label: 'Soru Havuzu & Studio', icon: Layers3,feature:'QUESTION_BANK' }, { to: '/quick-tests', label: 'Hızlı Test', icon: Scissors, feature:'STUDIO' }, { to: '/announcements', label: 'Duyurular', icon: Megaphone }, { to: '/worksheet-calendar', label: 'Föy Takvimi', icon: CalendarDays }, { to: '/classes', label: 'Sınıflarım', icon: GraduationCap }, { to: '/exams', label: 'Sınavlar', icon: ClipboardCheck },
-    { to: '/outcomes', label: 'Kazanımlar', icon: Target }, { to: '/written-scenarios', label: 'Ortak Yazılı', icon: FileText }, { to: '/written-rubrics', label: 'Yazılı Rubrikleri', icon: ListChecks }, { to: '/written-papers', label: 'Yazılı Kâğıtları', icon: FileText }, { to: '/worksheets', label: 'Föyler', icon: BookOpenCheck }, { to: '/reports', label: 'Branş Gelişimi', icon: BarChart3 }, { to: '/notifications', label: 'Bildirimler', icon: Bell }, { to: '/profile', label: 'Profil', icon: UserRound },
-    { to: '/attendance', label: 'Yoklama', icon: UserCheck }, { to: '/live-lessons', label: 'Canlı Ders', icon: Video, feature:'LIVE' }, { to: '/assignments', label: 'Ödev Merkezi', icon: BookOpenCheck, feature:'ASSIGNMENTS' },
+    { to: '/', label: 'Ana Sayfa', icon: Home }, { to: '/rehberime-yaz', label: 'Rehbere Bildir', icon: MessageCircle }, { to: '/ders-hedefleri', label: 'Haftalık Ders Hedefi', icon: CalendarRange }, { to: '/rehberlik-etkinliklerim', label: 'Rehberlik Etkinlikleri', icon: Users }, { to: '/calendar', label: 'Takvimim', icon: CalendarDays }, { to: '/nibiru', label: 'Nibiru', icon: NibiruNavIcon }, { to: '/content-center', label: 'Soru Havuzu & Studio', icon: Layers3,feature:'QUESTION_BANK' }, { to: '/quick-tests', label: 'Hızlı Test', icon: Scissors, feature:'STUDIO' }, { to: '/announcements', label: 'Duyurular', icon: Megaphone }, { to: '/worksheet-calendar', label: 'Föy Takvimi', icon: CalendarDays }, { to: '/classes', label: 'Sınıflarım', icon: GraduationCap }, { to: '/exams', label: 'Sınavlar', icon: ClipboardCheck },
+    { to: '/outcomes', label: 'Kazanımlar', icon: Target }, { to: '/kazanim-videolari', label: 'Kazanım Videoları', icon: Video }, { to: '/kazanim-destek', label: 'Kazanım Desteği', icon: LifeBuoy }, { to: '/dejavu', label: 'Dejavu Kitapları', icon: BookCopy }, { to: '/evren-gorevleri', label: 'Evren Görevleri', icon: Orbit, feature:'LEARNING_UNIVERSE' }, { to: '/written-scenarios', label: 'Ortak Yazılı', icon: FileText }, { to: '/written-rubrics', label: 'Yazılı Rubrikleri', icon: ListChecks }, { to: '/written-papers', label: 'Yazılı Kâğıtları', icon: FileText }, { to: '/worksheets', label: 'Föyler', icon: BookOpenCheck }, { to: '/reports', label: 'Branş Gelişimi', icon: BarChart3 }, { to: '/notifications', label: 'Bildirimler', icon: Bell }, { to: '/profile', label: 'Profil', icon: UserRound },
+    { to: '/attendance', label: 'Yoklama', icon: UserCheck }, { to: '/assignments', label: 'Ödev Merkezi', icon: BookOpenCheck, feature:'ASSIGNMENTS' },
   ],
-  GUIDANCE_TEACHER: [
-    { to: '/', label: 'Ana Sayfa', icon: Home }, { to: '/calendar', label: 'Takvimim', icon: CalendarDays }, { to: '/nibiru', label: 'Nibiru', icon: NibiruNavIcon }, { to: '/guidance-tests', label: 'RBA & Rehberlik Onayları', icon: ListChecks,feature:'GUIDANCE_TESTS' }, { to: '/content-center', label: 'Soru Havuzu & Studio', icon: Layers3,feature:'QUESTION_BANK' }, { to: '/quick-tests', label: 'Hızlı Test', icon: Scissors, feature:'STUDIO' }, { to: '/announcements', label: 'Duyurular', icon: Megaphone }, { to: '/worksheet-calendar', label: 'Föy Takvimi', icon: CalendarDays }, { to: '/classes', label: 'Sınıflarım', icon: GraduationCap }, { to: '/exams', label: 'Sınavlar', icon: ClipboardCheck },
-    { to: '/outcomes', label: 'Kazanımlar', icon: Target }, { to: '/written-scenarios', label: 'Ortak Yazılı', icon: FileText }, { to: '/worksheets', label: 'Föyler', icon: BookOpenCheck }, { to: '/reports', label: 'Öğrenci Gelişimi', icon: BarChart3 }, { to: '/notifications', label: 'Bildirimler', icon: Bell }, { to: '/profile', label: 'Profil', icon: UserRound },
-    { to: '/attendance', label: 'Yoklama', icon: UserCheck }, { to: '/live-lessons', label: 'Canlı Ders', icon: Video, feature:'LIVE' }, { to: '/assignments', label: 'Ödev Merkezi', icon: BookOpenCheck, feature:'ASSIGNMENTS' },
+  GUIDANCE_TEACHER: [ // owner (12 Nov 2026): the guidance work first — Bugün, öğrenciler, görüşmeler, erken uyarı, ölçme araçları
+    { to: '/', label: 'Bugün', icon: Home }, { to: '/rehberlik/ogrenciler', label: 'Öğrenciler', icon: Users }, { to: '/rehberlik/gorusmeler', label: 'Görüşmeler', icon: MessageCircle }, { to: '/rehberlik/erken-uyari', label: 'Erken Uyarı', icon: Activity }, { to: '/rehberlik/haftalik-program', label: 'Haftalık Program', icon: CalendarRange }, { to: '/rehberlik/yillik-plan', label: 'Yıllık Plan', icon: CalendarDays }, { to: '/rehberlik/etkinlikler', label: 'Sınıf Etkinlikleri', icon: Users }, { to: '/rehberlik/kutuphane', label: 'Kaynak Kütüphanesi', icon: BookMarked }, { to: '/rehberlik/dijital-saglik', label: 'Dijital Sağlık', icon: Activity }, { to: '/rehberlik/raporlar', label: 'Raporlar', icon: BarChart3 }, { to: '/guidance-tests', label: 'Ölçme Araçları', icon: ListChecks,feature:'GUIDANCE_TESTS' }, { to: '/calendar', label: 'Takvimim', icon: CalendarDays }, { to: '/nibiru', label: 'Nibiru', icon: NibiruNavIcon }, { to: '/content-center', label: 'Soru Havuzu & Studio', icon: Layers3,feature:'QUESTION_BANK' }, { to: '/quick-tests', label: 'Hızlı Test', icon: Scissors, feature:'STUDIO' }, { to: '/announcements', label: 'Duyurular', icon: Megaphone }, { to: '/worksheet-calendar', label: 'Föy Takvimi', icon: CalendarDays }, { to: '/classes', label: 'Sınıflarım', icon: GraduationCap }, { to: '/exams', label: 'Sınavlar', icon: ClipboardCheck },
+    { to: '/outcomes', label: 'Kazanımlar', icon: Target }, { to: '/kazanim-videolari', label: 'Kazanım Videoları', icon: Video }, { to: '/kazanim-destek', label: 'Kazanım Desteği', icon: LifeBuoy }, { to: '/dejavu', label: 'Dejavu Kitapları', icon: BookCopy }, { to: '/evren-gorevleri', label: 'Evren Görevleri', icon: Orbit, feature:'LEARNING_UNIVERSE' }, { to: '/written-scenarios', label: 'Ortak Yazılı', icon: FileText }, { to: '/worksheets', label: 'Föyler', icon: BookOpenCheck }, { to: '/reports', label: 'Öğrenci Gelişimi', icon: BarChart3 }, { to: '/notifications', label: 'Bildirimler', icon: Bell }, { to: '/profile', label: 'Profil', icon: UserRound },
+    { to: '/attendance', label: 'Yoklama', icon: UserCheck }, { to: '/assignments', label: 'Ödev Merkezi', icon: BookOpenCheck, feature:'ASSIGNMENTS' },
   ],
   STUDENT: [
-    { to: '/', label: 'Ana Sayfa', icon: Home }, { to: '/attendance', label: 'Yoklama', icon: UserCheck }, { to: '/live-lessons', label: 'Canlı Ders', icon: Video, feature:'LIVE' }, { to: '/calendar', label: 'Takvimim', icon: CalendarDays }, { to: '/nibiru', label: 'Nibiru', icon: NibiruNavIcon }, { to: '/question-practice', label: 'Soru Çöz', icon: ListChecks,feature:'QUESTION_BANK' }, { to: '/academic-target', label: 'Hedeflerim', icon: Target }, { to: '/assignments', label: 'Ödevlerim', icon: BookOpenCheck, feature:'ASSIGNMENTS' }, { to: '/my-books', label: 'Benim Kitaplarım', icon: BookOpenCheck }, { to: '/student-growth', label: 'Gelişim & Recovery', icon: Target,feature:'LEARNING_GRAPH' }, { to: '/guidance-tests', label: 'Rehberlik Testleri', icon: ListChecks,feature:'GUIDANCE_TESTS' }, { to: '/premium', label: 'Gold / Premium / Live', icon: KeyRound,feature:'MEMBERSHIP' }, { to: '/my-results', label: 'Sonuçlarım', icon: ClipboardCheck }, { to: '/wrong-answers', label: 'Yanlış / Boş Sorularım', icon: ListChecks }, { to: '/worksheets', label: 'Föylerim', icon: BookOpenCheck }, { to: '/notifications', label: 'Bildirimler', icon: Bell }, { to: '/profile', label: 'Profil', icon: UserRound },
+    { to: '/', label: 'Ana Sayfa', icon: Home }, { to: '/attendance', label: 'Yoklama', icon: UserCheck }, { to: '/calendar', label: 'Takvimim', icon: CalendarDays }, { to: '/nibiru', label: 'Nibiru', icon: NibiruNavIcon }, { to: '/evren', label: 'Öğrenme Evreni', icon: Orbit, feature:'LEARNING_UNIVERSE' }, { to: '/question-practice', label: 'Soru Çöz', icon: ListChecks,feature:'QUESTION_BANK' }, { to: '/academic-target', label: 'Hedeflerim', icon: Target }, { to: '/assignments', label: 'Ödevlerim', icon: BookOpenCheck, feature:'ASSIGNMENTS' }, { to: '/my-books', label: 'Benim Kitaplarım', icon: BookOpenCheck }, { to: '/student-growth', label: 'Gelişim & Recovery', icon: Target,feature:'LEARNING_GRAPH' }, { to: '/rehberligim', label: 'Rehberliğim', icon: CalendarRange }, { to: '/rehberime-yaz', label: 'Rehberime Yaz', icon: MessageCircle }, { to: '/my-results', label: 'Sonuçlarım', icon: ClipboardCheck }, { to: '/wrong-answers', label: 'Yanlış / Boş Sorularım', icon: ListChecks }, { to: '/worksheets', label: 'Föylerim', icon: BookOpenCheck }, { to: '/notifications', label: 'Bildirimler', icon: Bell }, { to: '/profile', label: 'Profil', icon: UserRound },
   ],
   PARENT: [
-    { to: '/', label: 'Ana Sayfa', icon: Home }, { to: '/attendance', label: 'Yoklama', icon: UserCheck }, { to: '/live-lessons', label: 'Canlı Ders', icon: Video, feature:'LIVE' }, { to: '/calendar', label: 'Takvimim', icon: CalendarDays }, { to: '/nibiru', label: 'Nibiru', icon: NibiruNavIcon }, { to: '/children', label: 'Çocuklarım', icon: UserRoundCheck }, { to: '/weekly-summary', label: 'Haftalık Özet', icon: CalendarDays }, { to: '/reports', label: 'Gelişim', icon: BarChart3 }, { to: '/notifications', label: 'Bildirimler', icon: Bell }, { to: '/profile', label: 'Profil', icon: UserRound },
+    { to: '/', label: 'Ana Sayfa', icon: Home }, { to: '/attendance', label: 'Yoklama', icon: UserCheck }, { to: '/calendar', label: 'Takvimim', icon: CalendarDays }, { to: '/nibiru', label: 'Nibiru', icon: NibiruNavIcon }, { to: '/children', label: 'Çocuklarım', icon: UserRoundCheck }, { to: '/haftalik-program', label: 'Haftalık Program', icon: CalendarRange }, { to: '/ekran-gunlugum', label: 'Ekran Günlüğü', icon: Activity }, { to: '/rehberime-yaz', label: 'Rehber Öğretmeni', icon: MessageCircle }, { to: '/weekly-summary', label: 'Haftalık Özet', icon: CalendarDays }, { to: '/reports', label: 'Gelişim', icon: BarChart3 }, { to: '/notifications', label: 'Bildirimler', icon: Bell }, { to: '/profile', label: 'Profil', icon: UserRound },
   ],
 };
 
@@ -184,6 +195,8 @@ export function Layout() {
   const [themeRevision,setThemeRevision]=useState(0);
   const [logoutError,setLogoutError]=useState('');
   useEffect(()=>{if(!user||user.role==='SUPER_ADMIN')return;void api<any>('/api/platform/features').then(r=>setEnabledFeatures(new Set((r.features||[]).filter((f:any)=>Number(f.effective_enabled||0)===1).map((f:any)=>String(f.feature_key))))).catch(()=>setEnabledFeatures(new Set()));},[user?.id,user?.role]);
+  // owner (10 Nov 2026): glass-touch sounds on the student panel (synthesised, switchable in Görünüm ayarları)
+  useEffect(()=>{if(user?.role!=='STUDENT'&&user?.role!=='PARENT')return;return installGlassSounds()},[user?.role]); // owner (11 Nov 2026): parents too
   useEffect(()=>{if(!user)return;void api<any>('/api/panel-experience').then(setPanelExperience).catch(()=>setPanelExperience(null))},[user?.id,user?.role,user?.institution_id]);
   useEffect(()=>{const refresh=()=>setThemeRevision(value=>value+1);window.addEventListener('anunex-theme-change',refresh);return()=>window.removeEventListener('anunex-theme-change',refresh)},[]);
   const visibleNav=useMemo(()=>user?nav[user.role].filter(item=>!item.feature||user.role==='SUPER_ADMIN'||enabledFeatures.has(item.feature)):[],[user,enabledFeatures]);
@@ -215,6 +228,7 @@ export function Layout() {
   const activeTheme=activePanelTheme(readPanelTheme(user.id),allowedThemeKeys,panelExperience?.specialDay?.theme_key,panelExperience?.defaultTheme||'ANUNEX_STANDARD');
   return <div className={`app-shell role-${user.role.toLowerCase()} ${mobileNavOpen?'nav-open':''}`} data-panel-theme={activeTheme} data-panel-module={moduleView}>
     <button className="nav-scrim" aria-label="Menüyü kapat" onClick={()=>setMobileNavOpen(false)}/>
+    {typeof window!=='undefined'&&window.location.hostname==='tanitim.anunex.com'&&<div className="tanitim-ribbon" role="note">TANITIM ORTAMI · örnek veriler</div>}
     <aside className="sidebar" aria-label="Ana menü">
       <div className="brand"><AnunexBrand compact inverse tagline/><button className="mobile-nav-close" aria-label="Menüyü kapat" onClick={()=>setMobileNavOpen(false)}><X size={20}/></button></div>
       {user.role==='SUPER_ADMIN' && activeTheme==='ANUNEX_STANDARD' ? <ApprovedAdminNavigation items={[...visibleNav,...(groupedItems?.flatMap(group=>group.items)||[])]} displayName={user.display_name} onNavigate={()=>setMobileNavOpen(false)} onLogout={async()=>{try{await logout();navigate('/login')}catch(e:any){setLogoutError(e.message)}}}/> : <>
@@ -230,17 +244,20 @@ export function Layout() {
         }) : visibleNav.map((item) => { const Icon=item.icon; return <NavLink key={item.to} style={navTone(item.to)} to={item.to} end={item.to==='/' } onClick={()=>setMobileNavOpen(false)} className={({isActive})=>isActive?'nav-item active':'nav-item'}><Icon size={19}/><span>{item.label}</span></NavLink>; })}
       </nav>
       <div className="sidebar-footer">
-        <div className="nibiru-sidebar-card"><NibiruMark size={36} state="active"/><div><strong>Nibiru AI</strong><span>Canlı akademik zekâ</span></div><ChevronRight size={16}/></div>
+        <div className="nibiru-sidebar-card"><NibiruMark size={36} state="active"/><div><strong>Nibiru AI</strong><span>Akademik asistan</span></div><ChevronRight size={16}/></div>
         <button className="ghost sidebar-logout" onClick={async()=>{try{await logout();navigate('/login')}catch(e:any){setLogoutError(e.message)}}}><LogOut size={18}/>Çıkış</button>
       </div>
       </>}
 
     </aside>
     <main className="main-area">
-      <header className="topbar"><button className="mobile-menu-button" aria-label="Menüyü aç" aria-expanded={mobileNavOpen} onClick={()=>setMobileNavOpen(true)}><Menu size={22}/></button><div className="topbar-context"><span className="eyebrow">2026–2027 Eğitim Dönemi</span><strong>{institution?.name || (user.role==='SUPER_ADMIN'?'Anunex Platform Yönetimi':'')}</strong></div><div className="topbar-actions"><div className="status neutral"><Sparkles size={15}/> Çalışma alanı</div><NavLink to="/notifications" className="topbar-icon" aria-label="Bildirimler"><Bell size={19}/><i/></NavLink><NavLink to="/nibiru" className="nibiru-topbar"><NibiruMark size={23} state="active" title="Nibiru AI Akademik Zekâ"/><span>Nibiru AI</span></NavLink></div></header>
+      <header className="topbar"><button className="mobile-menu-button" aria-label="Menüyü aç" aria-expanded={mobileNavOpen} onClick={()=>setMobileNavOpen(true)}><Menu size={22}/></button><div className="topbar-context"><span className="eyebrow">{schoolYearLabel(institution?.academic_year)} Eğitim Dönemi</span><strong>{institution?.name || (user.role==='SUPER_ADMIN'?'Anunex Platform Yönetimi':'')}</strong></div><div className="topbar-actions"><div className="status neutral"><Sparkles size={15}/> Çalışma alanı</div><NavLink to="/notifications" className="topbar-icon" aria-label="Bildirimler"><Bell size={19}/><i/></NavLink><NavLink to="/nibiru" className="nibiru-topbar"><NibiruMark size={23} state="active" title="Nibiru AI Akademik Zekâ"/><span>Nibiru AI</span></NavLink></div></header>
       {panelExperience?.specialDay&&<div className="special-day-banner" style={{background:`linear-gradient(90deg,${panelExperience.specialDay.accent_color},${panelExperience.specialDay.accent_color}dd)`}}><Sparkles size={20}/><div><strong>{panelExperience.specialDay.title}</strong><span>{panelExperience.specialDay.short_message}</span></div></div>}
       <div className="page-wrap"><PrivacyNoticeGate/>{logoutError&&<div className="alert error" role="alert">{logoutError}</div>}<LicenseBoundary><PageLoader routeKey={location.pathname+location.search}><Outlet/></PageLoader></LicenseBoundary></div>
     </main>
+    {user.role==='STUDENT'&&<StudentDock items={visibleNav} onMenu={()=>setMobileNavOpen(true)}/>}
+    {(user.role==='STUDENT'||user.role==='PARENT')&&<NibiruFloat/>}
+    {user.role==='PARENT'&&<ParentDock onMenu={()=>setMobileNavOpen(true)}/>}
   </div>;
 }
 

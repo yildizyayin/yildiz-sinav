@@ -1,0 +1,3332 @@
+                      T.C.
+            MİLLÎ EĞİTİM BAKANLIĞI
+
+
+
+
+          FEN BİLİMLERİ DERSİ
+          ÖĞRETİM PROGRAMI
+(İlkokul ve Ortaokul 3, 4, 5, 6, 7 ve 8. Sınıflar)
+
+
+
+
+                                                            1
+                                                 Ankara - 2018
+                    T.C.
+          MİLLÎ EĞİTİM BAKANLIĞI
+
+
+
+
+          FEN BİLİMLERİ DERSİ
+          ÖĞRETİM PROGRAMI
+(İlkokul ve Ortaokul 3, 4, 5, 6, 7 ve 8. Sınıflar)
+
+
+
+
+                   ANKARA - 2018
+İÇİNDEKİLER
+
+MİLLÎ EĞİTİM BAKANLIĞI ÖĞRETİM PROGRAMLARI.................................................................................... 4
+
+ÖĞRETİM PROGRAMLARININ AMAÇLARI.....................................................................................................4
+
+ÖĞRETİM PROGRAMLARININ PERSPEKTİFİ...................................................................................................5
+
+               DEĞERLERİMİZ...............................................................................................................................5
+
+               YETKİNLİKLER................................................................................................................................5
+
+ÖĞRETİM PROGRAMLARINDA ÖLÇME VE DEĞERLENDİRME YAKLAŞIMI............................................ 7
+
+BİREYSEL GELİŞİM VE ÖĞRETİM PROGRAMLARI …................................................................................... 7
+
+SONUÇ .......................................................................................................................................................…8
+
+
+ÖĞRETİM PROGRAMI’NIN ÖZEL AMAÇLARI ............................................................................................ 9
+
+
+ÖĞRETİM PROGRAMI’NDA ALANA ÖZGÜ BECERİLER ............................................................................9
+
+
+ÖĞRETİM PROGRAMI’NDA FEN, MÜHENDİSLİK VE GİRİŞİMCİLİK UYGULAMALARI...................................10
+
+
+ÖĞRETİM PROGRAMI’NIN UYGULANMASINDA DİKKAT EDİLECEK HUSUSLAR ....................................10
+
+
+ÖĞRETİM PROGRAMI’NIN YAPISI ...............................................................................................................12
+
+FEN BİLİMLERİ DERSİ 3, 4, 5, 6, 7 VE 8. SINIFLAR DERS KİTABI FORMA SAYILARI VE EBATLARI...........14
+
+3. SINIF FEN BİLİMLERİ DERSİ ÖĞRETİM PROGRAMI ...............................................................................15
+
+4. SINIF FEN BİLİMLERİ DERSİ ÖĞRETİM PROGRAMI .................................................................................20
+
+5. SINIF FEN BİLİMLERİ DERSİ ÖĞRETİM PROGRAMI ..................................................................................25
+
+6. SINIF FEN BİLİMLERİ DERSİ ÖĞRETİM PROGRAMI .................................................................................31
+
+7. SINIF FEN BİLİMLERİ DERSİ ÖĞRETİM PROGRAMI ..................................................................................39
+
+8. SINIF FEN BİLİMLERİ DERSİ ÖĞRETİM PROGRAMI .................................................................................47
+        Fen Bilimleri Dersi Öğretim Programı
+
+
+
+
+    MİLLÎ EĞİTİM BAKANLIĞI ÖĞRETİM PROGRAMLARI
+
+    Bilim ve teknolojide yaşanan hızlı değişim, bireyin ve toplumun değişen ihtiyaçları, öğrenme öğretme teori
+ve yaklaşımlarındaki yenilik ve gelişmeler bireylerden beklenen rolleri de doğrudan etkilemiştir. Bu değişim bil-
+giyi üreten, hayatta işlevsel olarak kullanabilen, problem çözebilen, eleştirel düşünen, girişimci, kararlı, iletişim
+becerilerine sahip, empati yapabilen, topluma ve kültüre katkı sağlayan vb. niteliklerdeki bir bireyi tanımlamak-
+tadır. Bu nitelik dokusuna sahip bireylerin yetişmesine hizmet edecek öğretim programları salt bilgi aktaran
+bir yapıdan ziyade bireysel farklılıkları dikkate alan, değer ve beceri kazandırma hedefli, sade ve anlaşılır bir
+yapıda hazırlanmıştır. Bu amaç doğrultusunda bir taraftan farklı konu ve sınıf düzeylerinde sarmal bir yaklaşımla
+tekrar eden kazanımlara ve açıklamalara, diğer taraftan bütünsel ve bir kerede kazandırılması hedeflenen öğ-
+renme çıktılarına yer verilmiştir. Her iki gruptaki kazanım ve açıklamalar da ilgili disiplinin yetkin, güncel, geçerli
+ve eğitim öğretim sürecinde hayatla ilişkileri kurulabilecek niteliktedir. Bu kazanımlar ve sınırlarını belirleyen
+açıklamaları, sınıflar ve eğitim kademeleri düzeyinde değerler, beceriler ve yetkinlikler perspektifinde bütünlük
+sağlayan bir bakış açısıyla yalın bir içeriğe işaret etmektedir. Böylelikle üst bilişsel becerilerin kullanımına yön-
+lendiren, anlamlı ve kalıcı öğrenmeyi sağlayan, sağlam ve önceki öğrenmelerle ilişkilendirilmiş, diğer disiplinler-
+le ve günlük hayatla değerler, beceriler ve yetkinlikler çevresinde bütünleşmiş bir öğretim programları toplamı
+oluşturulmuştur.
+
+
+    ÖĞRETİM PROGRAMLARININ AMAÇLARI
+
+   Öğretim programları, 1739 sayılı Millî Eğitim Temel Kanununun 2. maddesinde ifade edilen “Türk Millî Eğiti-
+minin Genel Amaçları” ile “Türk Millî Eğitiminin Temel İlkeleri” esas alınarak hazırlanmıştır.
+
+    Eğitim ve öğretim programlarıyla sürdürülen tüm çalışmalar; okulöncesi, ilköğretim ve ortaöğretim seviyele-
+rinde birbirini tamamlayıcı bir şekilde aşağıdaki amaçlara ulaşmaya yöneliktir:
+
+   1. Okul öncesi eğitimi tamamlayan öğrencilerin bireysel gelişim süreçleri göz önünde bulundurularak be-
+densel, zihinsel ve duygusal alanlarda sağlıklı şekilde gelişimlerini desteklemek
+
+    2. İlkokulu tamamlayan öğrencilerin gelişim düzeyine ve kendi bireyselliğine uygun olarak ahlaki bütünlük ve
+öz farkındalık çerçevesinde, öz güven ve öz disipline sahip, gündelik hayatta ihtiyaç duyacağı temel düzeyde
+sözel, sayısal ve bilimsel akıl yürütme ile sosyal becerileri ve estetik duyarlılığı kazanmış, bunları etkin bir şekilde
+kullanarak sağlıklı hayat yönelimli bireyler olmalarını sağlamak
+
+     3. Ortaokulu tamamlayan öğrencilerin, ilkokulda kazandıkları yetkinlikleri geliştirmek suretiyle millî ve manevi
+değerleri benimsemiş, haklarını kullanan ve sorumluluklarını yerine getiren, “Türkiye Yeterlilikler Çerçevesi”nde
+ve ayrıca disiplinlere özgü alanlarda ifadesini bulan temel düzey beceri ve yetkinlikleri kazanmış bireyler olma-
+larını sağlamak
+
+    4. Liseyi tamamlayan öğrencilerin, ilkokulda ve ortaokulda kazandıkları yetkinlikleri geliştirmek suretiyle, millî
+ve manevi değerleri benimseyip hayat tarzına dönüştürmüş, üretken ve aktif vatandaşlar olarak yurdumuzun ik-
+tisadi, sosyal ve kültürel kalkınmasına katkıda bulunan, “Türkiye Yeterlilikler Çerçevesi”nde ve ayrıca disiplinlere
+özgü alanlarda ifadesini bulan temel düzey beceri ve yetkinlikleri kazanmış, ilgi ve yetenekleri doğrultusunda bir
+mesleğe, yükseköğretime ve hayata hazır bireyler olmalarını sağlamak.
+
+
+
+
+    4
+                                                                              Fen Bilimleri Dersi Öğretim Programı
+
+
+
+
+    ÖĞRETİM PROGRAMLARININ PERSPEKTİFİ
+
+    Eğitim sistemimizin temel amacı değerlerimiz ve yetkinliklerle bütünleşmiş bilgi, beceri ve davranışlara sahip
+bireyler yetiştirmektir. Bilgi, beceri ve davranışlar öğretim programlarıyla kazandırılmaya çalışılırken değerlerimiz
+ve yetkinlikler bu bilgi, beceri ve davranışların arasındaki bütünlüğü kuran bağlantı ve ufuk işlevi görmektedir.
+Değerlerimiz toplumumuzun millî ve manevi kaynaklarından damıtılarak dünden bugüne ulaşmış ve yarınları-
+mıza aktaracağımız öz mirasımızdır. Yetkinlikler ise bu mirasın hayata ve insanlık ailesine katılmasını ve katkı
+vermesini sağlayan eylemsel bütünlüklerimizdir. Bu yönüyle değerlerimiz ve yetkinlikler birbirinden ayrılmaz
+bir şekilde teori-pratik bütünlüğündeki asli parçamızı oluşturur. Güncellik içinde öğrenme öğretme süreçleriyle
+kazandırmaya çalıştığımız bilgi, beceri ve davranışlar ise bizi biz yapan değerlerimizin ve yetkinliklerin günün
+şartları içinde görünürlük kazanma araç ve platformlarıdır; günün şartları içinde değişiklik gösterebilir yapısıyla
+arızîdir ve bu sebeple de sürekli gözden geçirmelerle güncellenir, yenilenir.
+
+
+
+    DEĞERLERİMİZ
+
+    Değerlerimiz öğretim programlarının perspektifini oluşturan ilkeler toplamıdır. Kökleri geleneklerimiz ve dü-
+nümüz içinde, gövdesi ve dalları bu köklerden beslenerek bugünümüze ve yarınlarımıza uzanmaktadır. Temel
+insani özelliklerimizi oluşturan değerlerimiz, hayatımızın rutin akışında ve karşılaştığımız sorunlarla başa çıkma-
+da eyleme geçmemizi sağlayan kudretin ve gücün kaynağıdır.
+
+     Bir toplumun geleceğinin, değerlerini benimsemiş ve bu değerleri sahip olduğu yetkinliklerle ete kemiğe bü-
+ründüren insanlarına bağlı olduğu tartışma götürmez bir gerçektir. Bundan dolayı eğitim sistemimiz her bir üye-
+sine uygun ahlaki kararlar alma ve bunları davranışlarında sergileme yeterliliğini kazandırma amacıyla hareket
+eder. Eğitim sistemi sadece akademik açıdan başarılı, belirlenmiş bazı bilgi, beceri ve davranışları kazandıran
+bir yapı değildir. Temel değerleri benimsemiş bireyler yetiştirmek asli görevidir; yeni neslin değerlerini, alışkan-
+lıklarını ve davranışlarını etkileyebilmelidir. Eğitim sistemi değerleri kazandırma amacı çerçevesindeki işlevini,
+öğretim programlarını da kapsayan eğitim programıyla yerine getirir. “Eğitim programı”; öğretim programları,
+öğrenme öğretme ortamları, eğitim araç gereçleri, ders dışı etkinlikler, mevzuat gibi eğitim sisteminin tüm unsur-
+ları göz önünde bulundurularak oluşturulur. Öğretim programlarında bu anlayışla değerlerimiz, ayrı bir program
+veya öğrenme alanı, ünite, konu vb. olarak görülmemiştir. Tam aksine bütün eğitim sürecinin nihai gayesi ve
+ruhu olan değerlerimiz, öğretim programlarının her birinde ve her bir biriminde yer almıştır.
+
+   Öğretim programlarında yer alan “kök değerler” şunlardır: adalet, dostluk, dürüstlük, öz denetim, sabır,
+saygı, sevgi, sorumluluk, vatanseverlik, yardımseverlik. Bu değerler, öğrenme öğretme sürecinde hem kendi
+başlarına, hem ilişkili olduğu alt değerlerle ve hem de öteki kök değerlerle birlikte ele alınarak hayat bulacaktır.
+
+
+
+    YETKİNLİKLER
+
+     Eğitim sistemimiz yetkinliklerde bütünleşmiş bilgi, beceri ve davranışlara sahip karakterde bireyler yetiştir-
+meyi amaçlar. Öğrencilerin hem ulusal hem de uluslararası düzeyde; kişisel, sosyal, akademik ve iş hayatlarında
+ihtiyaç duyacakları beceri yelpazeleri olan yetkinlikler Türkiye Yeterlilikler Çerçevesinde (TYÇ) belirlenmiştir.
+TYÇ sekiz anahtar yetkinlik belirlemekte ve aşağıdaki gibi tanımlamaktadır:
+
+    1) Anadilde iletişim: Kavram, düşünce, görüş, duygu ve olguları hem sözlü hem de yazılı olarak ifade etme
+ve yorumlama (dinleme, konuşma, okuma ve yazma); eğitim ve öğretim, iş yeri, ev ve eğlence gibi her türlü
+sosyal ve kültürel bağlamda uygun ve yaratıcı bir şekilde dilsel etkileşimde bulunmaktır.
+
+   2) Yabancı dillerde iletişim: Çoğunlukla ana dilde iletişimin temel beceri boyutlarını paylaşmakta olup duygu,
+düşünce, kavram, olgu ve görüşleri hem sözlü hem de yazılı olarak kişinin istek ve ihtiyaçlarına göre eğitim,
+öğretim, iş yeri, ev ve eğlence gibi uygun bir dizi sosyal ve kültürel bağlamda anlama, ifade etme ve yorumlama
+becerisine dayalıdır. Yabancı dillerde iletişim, aracılık etme ve kültürlerarası anlayış becerilerini de gerektirmek-
+
+
+                                                                                                                     5
+        Fen Bilimleri Dersi Öğretim Programı
+
+
+
+tedir. Bireyin yeterlilik seviyesi, bireyin sosyal ve kültürel geçmişi, çevresi, ihtiyaçları ve ilgilerine bağlı olarak
+dinleme, konuşma, okuma ve yazma boyutları ile farklı diller arasında değişkenlik gösterecektir.
+
+    3) Matematiksel yetkinlik ve bilim/teknolojide temel yetkinlikler: Matematiksel yetkinlik, günlük hayatta karşıla-
+şılan bir dizi problemi çözmek için matematiksel düşünme tarzını geliştirme ve uygulamadır. Sağlam bir aritmetik
+becerisi üzerine inşa edilen süreç, faaliyet ve bilgiye vurgu yapılmaktadır. Matematiksel yetkinlik, düşünme
+(mantıksal ve uzamsal düşünme) ve sunmanın (formüller, modeller, kurgular, grafikler ve tablolar) matematiksel
+modlarını farklı derecelerde kullanma beceri ve isteğini içermektedir.
+
+    Bilimde yetkinlik, soruları tanımlamak ve kanıta dayalı sonuçlar üretmek amacıyla doğal dünyanın açıklan-
+masına yönelik bilgi varlığına ve metodolojiden yararlanma beceri ve arzusuna atıfta bulunmaktadır. Teknolojide
+yetkinlik, algılanan insan istek ve ihtiyaçlarını karşılama bağlamında bilgi ve metodolojinin uygulanması olarak
+görülmektedir. Bilim ve teknolojide yetkinlik, insan etkinliklerinden kaynaklanan değişimleri ve her bireyin vatan-
+daş olarak sorumluluklarını kavrama gücünü kapsamaktadır.
+
+     4) Dijital yetkinlik: İş, günlük hayat ve iletişim için bilgi iletişim teknolojilerinin güvenli ve eleştirel şekilde
+kullanılmasını kapsar. Söz konusu yetkinlik, bilgiye erişim ve bilginin değerlendirilmesi, saklanması, üretimi, su-
+nulması ve alışverişi için bilgisayarların kullanılması ayrıca internet aracılığıyla ortak ağlara katılım sağlanması ve
+iletişim kurulması gibi temel beceriler yoluyla desteklenmektedir.
+
+     5) Öğrenmeyi öğrenme: Bireyin kendi öğrenme eylemini etkili zaman ve bilgi yönetimini de kapsayacak şe-
+kilde bireysel olarak veya grup hâlinde düzenleyebilmesi için öğrenmenin peşine düşme ve bu konuda ısrarcı
+olma yetkinliğidir. Bu yetkinlik, bireyin var olan imkânları tanıyarak öğrenme ihtiyaç ve süreçlerinin farkında olma-
+sını ve başarılı bir öğrenme eylemi için zorluklarla başa çıkma yeteneğini kapsamaktadır. Yeni bilgi ve beceriler
+kazanmak, işlemek ve kendine uyarlamak kadar rehberlik desteği aramak ve bundan yararlanmak anlamına da
+gelir. Öğrenmeyi öğrenme, bilgi ve becerilerin ev, iş yeri, eğitim ve öğretim ortamı gibi çeşitli bağlamlarda kulla-
+nılması ve uygulanması için önceki öğrenme ve hayat tecrübelerine dayanılması yönünde öğrenenleri harekete
+geçirir.
+
+     6) Sosyal ve vatandaşlıkla ilgili yetkinlikler: Bu yetkinlikler kişisel, kişilerarası ve kültürlerarası yetkinlikleri içer-
+mekte; bireylerin farklılaşan toplum ve çalışma hayatına etkili ve yapıcı biçimde katılmalarına imkân tanıyacak;
+gerektiğinde çatışmaları çözecek özelliklerle donatılmasını sağlayan tüm davranış biçimlerini kapsar. Vatandaş-
+lıkla ilgili yetkinlik ise bireyleri, toplumsal ve siyasal kavram ve yapılara ilişkin bilgiye, demokratik ve aktif katılım
+kararlılığına dayalı olarak medeni hayata tam olarak katılmaları için donatmaktadır.
+
+    7) İnisiyatif alma ve girişimcilik: Bireyin düşüncelerini eyleme dönüştürme becerisini ifade eder. Yaratıcılık,
+yenilik ve risk almanın yanında hedeflere ulaşmak için planlama yapma ve proje yönetme yeteneğini de içerir.
+Bu yetkinlik, herkesi sadece evde ve toplumda değil işlerine ait bağlam ve şartların farkında olabilmeleri ve iş fır-
+satlarını yakalayabilmeleri için aynı zamanda iş hayatında desteklemekte; toplumsal ve ticari etkinliklere girişen
+veya katkıda bulunan kişilerin ihtiyaç duydukları daha özgün bilgi ve beceriler için de bir temel teşkil etmektedir.
+Etik değerlerin farkında olma ve iyi yönetişimi desteklemeyi de kapsar.
+
+     8) Kültürel farkındalık ve ifade: Müzik, sahne sanatları, edebiyat ve görsel sanatlar dâhil olmak üzere çeşitli
+kitle iletişim araçları kullanılarak görüş, deneyim ve duyguların yaratıcı bir şekilde ifade edilmesinin öneminin
+takdiridir.
+
+
+
+
+    6
+                                                                               Fen Bilimleri Dersi Öğretim Programı
+
+
+
+
+    ÖĞRETİM PROGRAMLARINDA ÖLÇME VE DEĞERLENDİRME YAKLAŞIMI
+
+    Hiçbir insan bir başkasının birebir aynısı değildir. Bu sebeple öğretim programlarının ve buna bağlı olarak
+ölçme ve değerlendirme sürecinin “herkese uygun”, “herkes için geçerli ve standart olması” insanın doğasına
+terstir. Bu sebeple ölçme ve değerlendirme sürecinde azami çeşitlilik ve esneklik anlayışıyla hareket edilmesi
+şarttır. Öğretim programları bu açıdan bir yol göstericidir. Öğretim programlarından ölçme değerlendirmeye ait
+bütün unsurları içermesini beklemek gerçekçi bir beklenti olarak değerlendirilemez. Eğitimde çeşitlilik; birey,
+eğitim düzeyi, ders içeriği, sosyal ortam, okul imkânları vb. iç ve dış dinamiklerden ciddi şekilde etkilendiği için,
+ölçme ve değerlendirme uygulamalarının etkililiğini sağlamada öncelik öğretim programlarından değil öğretmen
+ve eğitim uygulayıcılarından beklenir. Bu noktada özgünlük ve yaratıcılık öğretmenlerden temel beklentidir.
+
+     Bu bakış açısından hareketle öğretim programlarında ölçme ve değerlendirme uygulamalarına yön veren
+ilkeleri aşağıdaki gibi özetlemek mümkündür:
+
+   1. Ölçme ve değerlendirme çalışmaları öğretim programının tüm bileşenleri ile azami uyum sağlamalı, kaza-
+nım ve açıklamaların sınırları esas alınmalıdır.
+
+    2. Öğretim programı, ölçme sürecinde kullanılabilecek ölçme araç ve yöntemleri açısından uygulayıcılara
+kesin sınırlar çizmez, sadece yol gösterir. Ancak tercih edilen ölçme ve değerlendirme araç ve yönteminde,
+gereken teknik ve akademik standartlara uyulmalıdır.
+
+   3. Eğitimde ölçme ve değerlendirme uygulamaları eğitimin ayrılmaz bir parçasıdır ve eğitim süreci boyunca
+yapılır. Ölçme sonuçları tek başına değil izlenen süreçlerle birlikte bütünlük içinde ele alınır.
+
+    4. Bireysel farklılıklar gerçeğinden dolayı bütün öğrencileri kapsayan, bütün öğrenciler için genel geçer, tek
+tip bir ölçme ve değerlendirme yönteminden söz etmek uygun değildir. Öğrencinin akademik gelişimi tek bir
+yöntemle veya teknikle ölçülüp değerlendirilmez.
+
+    5. Eğitim sadece “bilme (düşünce)” için değil, “hissetme (duygu)” ve “yapma (eylem)” için de verilir; dolayı-
+sıyla sadece bilişsel ölçümler yeterli kabul edilemez.
+
+     6. Çok odaklı ölçme değerlendirme esastır. Ölçme ve değerlendirme uygulamaları öğretmen ve öğrencilerin
+aktif katılımıyla gerçekleştirilir.
+
+    7. Bireylerin ölçme ve değerlendirmeye konu olan ilgi, tutum, değer ve başarı gibi özellikleri zamanla deği-
+şebilir. Bu sebeple söz konusu özellikleri tek bir zamanda ölçmek yerine süreç içindeki değişimleri dikkate alan
+ölçümler kullanmak esastır.
+
+
+    BİREYSEL GELİŞİM VE ÖĞRETİM PROGRAMLARI
+
+    Öğretim programlarının geliştirilmesi sürecinde insanın çok yönlü gelişimsel özelliklerine dair mevcut bilim-
+sel bilgi ve birikim dikkate alınarak bütün bileşenler arasında ahengi dikkate alan harmonik bir yaklaşım benim-
+senmiştir. Bu bağlamda bazı temel gelişim ilkelerine değinmek yerinde olacaktır.
+
+    Öğretim programları, insan gelişiminin belirli bir dönemde sonlanmadığı ve gelişimin hayat boyu sürdüğü
+ilkesi ile hazırlanmıştır. Bu sebeple öğretim programlarında, her yaş döneminde bireylerin gelişim özelliklerini
+dikkate alarak destekleyici önlemler alınması önerilmektedir.
+
+    Gelişim, hayat boyu sürse de tek ve bir örnek yapıda değildir. Evreler hâlinde ilerler ve her evrede bireylerin
+gelişim özellikleri farklıdır. Evreler de başlangıç ve bitişleri açısından homojen değildir. Bu sebeple programlar
+olabildiğince bunu göz önünde bulunduran bir hassasiyetle yapılandırılmıştır. Programların amaçlarını ve kaza-
+nımlarını gerçekleştirme sürecinde gerekli uyarlamaların öğretmen tarafından yapılması beklenir.
+
+   Gelişim dönemleri ardışık ve değişmeyen bir sıra izler. Her evrede olup bitenler takip eden evreleri etkiler.
+Öte yandan bu ardışıklık belirli yönelimlerle karakterize edilir: basitten karmaşığa, genelden özele ve somuttan
+
+
+                                                                                                                      7
+        Fen Bilimleri Dersi Öğretim Programı
+
+
+
+soyuta doğru gelişim gibi. Program geliştirme sürecinde söz konusu yönelimler hem bir alandaki yeterliliği oluş-
+turan kazanım ve becerilerin ön şart ve ardıllığı noktasında dikkate alınmış hem de sınıflar düzeyinde derslerin
+dağılımlarında ve birbirleriyle ilişkilerinde göz önünde bulundurulmuştur.
+
+    Öğretim programlarında insan gelişiminin bir bütün olduğu ilkesi ile hareket edilmiştir. İnsanın farklı gelişim
+alanlarındaki özellikleri birbirleri ile etkileşim hâlindedir. Söz gelimi dil gelişimi düşünce gelişimini etkiler ve dü-
+şünce gelişiminden etkilenir. Bu sebeple öğretmenlerden, öğrencinin edindiği bir kazanımın, gelişimde başka
+bir alanı da etkileyeceğini dikkate alması beklenir.
+
+    Öğretim programları bireysel farklılıklara ilişkin hassasiyetler göz önünde bulundurularak yapılandırılmıştır.
+Kalıtımsal, çevresel ve kültürel faktörlerden kaynaklanan bireysel farklılıklar ilgi, ihtiyaç ve yönlenme açısından
+da kendini belli eder. Öte yandan bu durum bireylerarası ve bireyin kendi içindeki farklılıkları da kapsar. Bireyler
+hem başkalarından farklılık gösterir hem de kendi içindeki özellikleri ile farklıdır. Örneğin bir bireyin soyut düşün-
+me yeteneği güçlü iken aynı bireyin resim yeteneği zayıf olabilir.
+
+     Gelişim hayat boyu sürmekle birlikte bu gelişimin hızı evrelere göre değişkendir. Hızın yüksek olduğu za-
+manlar gelişim açısından riskli ve kritik zamanlardır. Bu sebeple öğretmenlerin gelişim hızının yüksek olduğu
+zamanlarda öğrencinin durumuna daha duyarlı davranması beklenir. Söz gelimi ergenlik dönemi kimlik edinimi
+için kritik dönemdir ve eğitim bu dönemde kimlik edinimini destekleyici sosyal etkileşimleri artırır ve yönetir.
+
+
+    SONUÇ
+
+   Elimizdeki programları güncelleme sürecinde hangi işlemlerden ve aşamalardan geçtiğimiz üzerine bilgi
+vermek de yerinde olacaktır. Bu bağlamda:
+
+    •   Farklı ülkelerin son yıllarda benzer gerekçelerle yenilenip güncellenen öğretim programları incelenmiş,
+
+    •   yurt içinde ve yurt dışında eğitim öğretim ve programlar üzerine yapılan akademik çalışmalar taranmış,
+
+    •   başta Anayasamız olmak üzere ilgili mevzuat, kalkınma planları, hükûmet programları, şûra kararları,
+        siyasi partilerin programları, sivil toplum kuruluşları ve sivil araştırma kurumları tarafından hazırlanan
+        raporlar vb. dokümanlar analiz edilmiş,
+
+    •   Millî Eğitim Bakanlığı programlar ve öğretim materyalleri daire başkanlıkları tarafından geliştirilen an-
+        ketler aracılığıyla öğretmen ve yöneticilerin programlar ve haftalık ders çizelgelerine yönelik görüşleri
+        toplanmış,
+
+    •   illerden gelen her bir branşla ilgili zümre raporları incelenmiş,
+
+    •   branşlara yönelik açık uçlu sorulardan oluşan ve elektronik ortamda erişime açılan anket verileri derlenmiş,
+
+    •   eğitim fakültelerimizin branşlar ölçeğinde hazırladıkları raporlar incelenmiş,
+
+    bütün görüş, öneri, eleştiri ve beklentiler, Bakanlığımızın ilgili birimlerinden uzman personel, öğretmen ve
+    akademisyenlerden oluşan çalışma gruplarınca değerlendirilmiştir. Yapılan tespitler doğrultusunda öğre-
+    tim programlarımız gözden geçirilip güncellenmiş ve yenilenmiştir. Programların uygulanmasına 2018-2019
+    eğitim öğretim yılı itibarıyla topyekûn geçilecek ve sonrasında yapılacak izleme değerlendirme sonuçlarına
+    göre yine gerekli güncellemeler yapılacaktır. Böylelikle programlarımızın gelişmelerle ve bilimsel, sosyal,
+    teknolojik vb. ihtiyaçlarla koşutluğunun sürekliliği sağlanmış olacaktır.
+
+
+
+
+   8
+                                                                                     Fen Bilimleri Dersi Öğretim Programı
+
+
+
+
+    ÖĞRETİM PROGRAMI’NIN ÖZEL AMAÇLARI
+
+    Fen Bilimleri Dersi Öğretim Programı 1739 sayılı Millî Eğitim Temel Kanunu’nun 2. maddesinde ifade edilen
+Türk Millî Eğitiminin Genel Amaçları ve Temel İlkeleri esas alınarak hazırlanmıştır.
+
+   Bütün bireylerin fen okuryazarı olarak yetişmesini amaçlayan Fen Bilimleri Dersi Öğretim Programı’nın temel
+amaçları şunlardır:
+
+    1. Astronomi, biyoloji, fizik, kimya, yer ve çevre bilimleri ile fen ve mühendislik uygulamaları hakkında temel
+bilgiler kazandırmak,
+
+    2. Doğanın keşfedilmesi ve insan-çevre arasındaki ilişkinin anlaşılması sürecinde, bilimsel süreç becerileri
+ve bilimsel araştırma yaklaşımını benimseyip bu alanlarda karşılaşılan sorunlara çözüm üretmek,
+
+     3. Birey, çevre ve toplum arasındaki karşılıklı etkileşimi fark ettirmek; toplum, ekonomi ve doğal kaynaklara
+ilişkin sürdürülebilir kalkınma bilincini geliştirmek,
+
+     4. Günlük yaşam sorunlarına ilişkin sorumluluk alınmasını ve bu sorunları çözmede fen bilimlerine ilişkin bilgi,
+bilimsel süreç becerileri ve diğer yaşam becerilerinin kullanılmasını sağlamak,
+
+    5. Fen bilimleri ile ilgili kariyer bilinci ve girişimcilik becerilerini geliştirmek,
+
+    6. Bilim insanlarınca bilimsel bilginin nasıl oluşturulduğunu, oluşturulan bu bilginin geçtiği süreçleri ve yeni
+araştırmalarda nasıl kullanıldığını anlamaya yardımcı olmak,
+
+    7. Doğada ve yakın çevresinde meydana gelen olaylara ilişkin ilgi ve merak uyandırmak, tutum geliştirmek,
+
+    8. Bilimsel çalışmalarda güvenliğin önemini fark ettirerek güvenli çalışma bilinci oluşturmak,
+
+   9. Sosyobilimsel konuları kullanarak muhakeme yeteneği, bilimsel düşünme alışkanlıkları ve karar verme
+becerileri geliştirmek,
+
+    10. Evrensel ahlak değerleri, millî ve kültürel değerler ile bilimsel etik ilkelerinin benimsenmesini sağlamak.
+
+
+    ÖĞRETİM PROGRAMI’NDA ALANA ÖZGÜ BECERİLER
+
+    a. Bilimsel Süreç Becerileri
+
+    b. Yaşam Becerileri
+
+       Analitik düşünme
+
+       Karar verme
+
+       Yaratıcı düşünme
+
+       Girişimcilik
+
+        İletişim
+
+       Takım çalışması
+
+    c. Mühendislik ve Tasarım Becerileri
+
+       Yenilikçi (inovatif) düşünme
+
+    a. Bilimsel Süreç Becerileri: Bu alan; gözlem yapma, ölçme, sınıflama, verileri kaydetme, hipotez kurma,
+verileri kullanma ve model oluşturma, değişkenleri değiştirme ve kontrol etme, deney yapma gibi bilim insanla-
+rının çalışmaları sırasında kullandıkları becerileri kapsamaktadır.
+
+    b. Yaşam Becerileri: Bu alan; bilimsel bilgiye ulaşılması ve bilimsel bilginin kullanılmasına ilişkin analitik dü-
+şünme, karar verme, yaratıcılık, girişimcilik, iletişim ve takım çalışması gibi temel yaşam becerilerini kapsamaktadır.
+
+                                                                                                                            9
+        Fen Bilimleri Dersi Öğretim Programı
+
+
+
+   c. Mühendislik ve Tasarım Becerileri: Bu alan, fen bilimlerini matematik, teknoloji ve mühendislikle bü-
+tünleştirmeyi sağlayarak, problemlere disiplinler arası bakış açısıyla, öğrencileri buluş ve inovasyon yapabilme
+seviyesine ulaştırarak, öğrencilerin edindikleri bilgi ve becerileri kullanarak ürün oluşturmalarını ve bu ürünlere
+nasıl katma değer kazandırılabilecekleri konusunda stratejileri geliştirmesini kapsamaktadır.
+
+
+   ÖĞRETİM PROGRAMI’NDA FEN, MÜHENDİSLİK VE GİRİŞİMCİLİK UYGULAMALARI
+
+    Bilimin amacı, doğal olgulara mantıksal ve sistematik açıklamalar geliştirerek teoriler oluşturmak; ilke ve
+kavramları keşfetmektir. Bilimsel süreçlerin öğrenme ortamlarına aktarılmasıyla öğrencilerin, dünyayı anlamak
+için araştırmalar yapması ve bilimsel sürece doğrudan katılarak bilimsel bilginin nasıl geliştiğini anlaması he-
+deflenmektedir. Mühendislik, insanın istek ve ihtiyaçlarını karşılamaya yönelik nesneleri, süreci ve sistemi tasar-
+lamak için sistematik ve gelişime açık uygulamaları içermektedir. Teknoloji ise insan ihtiyaç ve arzularını yerine
+getirmek için doğal dünyanın değiştirilmesidir. Bunlara yönelik uygulamalarda amaç, öğrencilerin mühendislik
+ve bilim arasındaki bağlantıyı kurmalarına, disiplinler arası etkileşimi anlamalarına ve öğrendiklerini yaşantısal
+hâle getirerek dünya görüşü geliştirmelerine yardımcı olmaktır. Ülkemizin bilimsel araştırma ve teknolojik geliş-
+me kapasitesini, sosyoekonomik kalkınmasını ve rekabet gücünü artırmak için öğrencilerin fen ve mühendislik
+uygulamalarını deneyimlemeleri önem arz etmektedir.
+
+    Programda Fen, Mühendislik ve Girişimcilik Uygulamaları kapsamında öncelikle öğrencilerden ünitelerde
+ele alınan konulara ilişkin günlük hayattan bir ihtiyaç veya problemi tanımlamaları beklenmektedir. Problemin
+günlük hayatta kullanılan veya karşılaşılan araç, nesne veya sistemleri geliştirmeye yönelik olması istenir. Ayrıca
+problemler malzeme, zaman ve maliyet kriterleri kapsamında ele alınmalıdır.
+
+    Problemin çözümünde, öğrenciler alternatif çözüm yollarını karşılaştırarak kriterler kapsamında uygun olanı
+seçerler. Seçilen çözüme yönelik planlama yaparak sonraki aşamada ürünü ortaya koymaları ve sunmaları bek-
+lenir. Ürünün tasarım ve üretim süreci okul ortamında gerçekleştirilir. Öğrencilerden, ürün geliştirme aşamasında
+deneme yapmaları, bu denemeler sonucunda elde ettikleri nitel ve nicel verileri, gözlemleri kaydetmeleri ve
+grafik okuma veya oluşturma becerileriyle değerlendirmeleri beklenmektedir.
+
+     Girişimcilik becerilerinin geliştirilmesi amacıyla ürünü pazarlamak için stratejiler oluşturmaları ve tanıtım
+araçlarını kullanmaları istenir. Örneğin öğrenciler tanıtım amacıyla gazete, internet, televizyon reklamı hazırlaya-
+bilir veya kısa film çekebilirler.
+
+
+   ÖĞRETİM PROGRAMI’NIN UYGULANMASINDA DİKKAT EDİLECEK HUSUSLAR
+
+   Fen Bilimleri Dersi Öğretim Programı'nda disiplinler arası bir bakış açısıyla araştırma-sorgulamaya dayalı
+öğrenme yaklaşımı temel alınmıştır.
+
+   Öğretmen-Öğrenci Rolü
+
+     Fen Bilimleri Dersi Öğretim Programı'nda öğrenme-öğretme kuram ve uygulamaları açısından bütüncül bir
+bakış açısı benimsenmiş; genel olarak öğrencinin kendi öğrenmesinden sorumlu olduğu, öğrenme sürecine
+aktif katılımının sağlandığı, araştırma-sorgulama ve bilginin transferine dayalı öğrenme stratejisi esas alınmıştır.
+Öğrenme-öğretme sürecinde öğretmen; teşvik edici, yönlendirici rollerini üstlenirken öğrenci; bilginin kaynağını
+araştıran, sorgulayan, açıklayan, tartışan ve ürüne dönüştüren birey rolünü üstlenir. Bu süreçte, fen bilimleri-
+nin matematik, teknoloji ve mühendislikle bütünleştirilmesi sağlanarak öğrencilerin problemlere disiplinler arası
+bakış açısıyla bakması hedeflenir. Bu bağlamda öğretmenlerin rolü öğrencilere fen, teknoloji, mühendislik ve
+matematiğin bütünleştirilmesi için rehberlik yaparak öğrencileri üst düzey düşünme, ürün geliştirme, buluş ve
+inovasyon yapabilme seviyesine ulaştırmaktır.
+
+   Öğrenme ortamlarında öğrencilerin kendi görüşlerini rahatça açıklayabilecekleri demokratik bir sınıf
+atmosferi oluşturulması, öğrencilerin kendi düşüncelerini ifade etmesine, muhakeme ve iletişim becerilerini
+
+
+   10
+                                                                               Fen Bilimleri Dersi Öğretim Programı
+
+
+
+geliştirmesine katkı sağlayacaktır. Öğretmen, fen bilimlerinin değerini, önemini ve bilimsel bilgiye ulaşmanın
+sorumluluk ve heyecanını öğrencileriyle paylaşan ve aynı zamanda sınıfındaki araştırma sürecini yönlendiren
+bir rehber rolündedir. Öğretmen, öğrencilerinde araştırma ruhu ve duygusunu ve bilimsel düşünce tarzını
+geliştirmek için onları cesaretlendirir ve uygulamalarda evrensel ahlak değerleri, millî ve kültürel değerler ve
+bilimsel etik ilkelerinin benimsenmesini sağlar. Öğrenciler, akranları ile birlikte bir bilgiyi araştırıp sorgularken
+etkili iletişim ve iş birliği gerçekleştirir. Bu iş birliğinin öğrenme ürünlerinin değerlendirilmesinde de sağlanması,
+Program’ın amaçlarının gerçekleştiririlmesine katkı sağlayacaktır.
+
+    Benimsenen Strateji ve Yöntemler
+
+    Fen Bilimleri Dersi Öğretim Programı'nda öğrenciyi temel alan öğrenme ortamlarında (problem, proje, ar-
+gümantasyon, iş birliğine dayalı öğrenme vb.) derslerin yürütülmesi öngörülmüştür. Öğrencilerin bilgiyi anlamlı
+ve kalıcı olarak öğrenebilmeleri için sınıf/okul içi ve okul dışı öğrenme ortamları, araştırma-sorgulamaya dayalı
+öğrenme stratejisine göre tasarlanır. Bu bağlamda informal öğrenme ortamlarından da (okul bahçesi, bilim
+merkezleri, müzeler, planetaryumlar, hayvanat bahçeleri, botanik bahçeleri, doğal ortamlar vb.) faydalanılır.
+Öğrencilerden beklenen proje tasarlama, model ve ürün oluşturma, ürünü tanıtma vb. performansların mümkün
+olduğu kadar sınıf içinde ve öğretmen rehberliğinde gerçekleştirilmesi önerilmektedir. Etkinliklerin okul atmosferi
+içerisinde akranları ile birlikte yapılması beklenmektedir.
+
+     Öğrenme süreci; keşfetme, sorgulama, argüman oluşturma ve ürün tasarlamayı kapsamaktadır. Ayrıca
+öğrencilerin kendilerini yazılı, sözlü ve görsel olarak ifade ederek iletişim ve yaratıcı düşünme becerilerinin
+geliştirilmesine imkân tanıyan fırsatların öğrencilere sunulması beklenmektedir. Öğrencilerin fikirlerini rahatça
+ifade edebilmeleri, düşüncelerini farklı gerekçelerle destekleyebilmeleri ve arkadaşlarının iddialarını çürütmek
+amacıyla karşıt argümanlar geliştirebilmeleri için bilimsel olgulara yönelik yarar-zarar ilişkisini tartışabilecekleri
+ortamlar sağlanmalıdır. Öğretmenler, öğrencilerinin geçerli verilere dayalı oluşturdukları iddiaları haklı gerekçe-
+lerle sundukları tartışmalarda yönlendirici ve rehber rolü üstlenir.
+
+     Fen Bilimleri dersi öğretim programında bilimin uygulama ve ekonomiye girdi üretme niteliği önemsenmiştir.
+Bu bağlamda her bir ünite, konu ve kazanım günlük hayat ihtiyaçlarını gidermeye yönelik teknolojiler üretil-
+mesini gözeten bir yaklaşımı benimsemiştir. ‘‘ F.7.3.3.3. Hava veya su direncinin etkisini azaltmaya yönelik bir
+araç tasarlar.’’ kazanımı gerçekleştirildiğinde sürtünme kuvvetinin günlük hayata etkileri öğrenci zihninde açıklık
+kazanacaktır. Bu berraklaşma farklı ortamlardaki sürtünmelerin araçlar üzerindeki etkisinin farkına varmasına,
+bu alanlarda öğrencinin girişimlerde bulunma ve geçim yolları oluşturma potansiyellerini harekete geçirmesine
+vesile olacaktır. Dolayısıyla fen bilimleri ve bilimsel bilgi edinme süreci uygulama ve teknolojik ürün üretmeyle
+bu ise girişimcilik yeterliliği ile hayata değer katma ve maddi kültürün gelişimine ve ekonomik yaşama hizmet
+edecektir. Bu yaklaşım çerçevesinde fen, mühendislik ve girişimcilik uygulamaları başlığı altında her bir üni-
+teye paralel şekilde ve her bir kazanıma içkin olarak bilim ve girişimcilik dersin gündemine bütünün ayrılmaz
+bir parçası hâlinde dâhil edilmiştir. Sonuç olarak öğrenme ve öğretme sürecinde öğretmenimizin rehberliğiyle
+öğrenciler, bilimsel bilgiyi mühendislik uygulamalarıyla bütünleştirerek ürüne dönüştüreceklerdir. Yıl sonunda da
+bilim şenliği ile okul paydaşlarının tamamına sunacaklardır. (bkz Fen, Mühendislik Ve Girişimcilik Uygulamaları)
+
+
+
+
+                                                                                                                      11
+                                     Fen Bilimleri Dersi Öğretim Programı
+
+
+
+                        ÖĞRETİM PROGRAMI’NIN YAPISI
+
+     Fen Bilimleri Dersi Öğretim Programı'nın Konu Alanları, Ünite Başlıkları, Kazanım Sayıları, Öngörü-
+ len Süre / Ders Saatleri ve Ders Saati Yüzdeleri
+
+                                                                                       3. SINIF
+                                                                                                                 Kazanım                     Süre
+          No                                              Ünite Adı                     Konu Alanı Adı
+                                                                                                                  Sayısı         Ders Saati     Yüzde %
+               1                     Gezegenimizi Tanıyalım                          Dünya ve Evren                  5               9              8,3
+               2                     Beş Duyumuz                                     Canlılar ve Yaşam               3               6              5,6
+               3                     Kuvveti Tanıyalım                               Fiziksel Olaylar                4              15              13,9
+               4                     Maddeyi Tanıyalım                               Madde ve Doğası                 4              17              15,7
+               5                     Çevremizdeki Işık ve Sesler                     Fiziksel Olaylar                8              21              19,4
+               6                     Canlılar Dünyasına Yolculuk                     Canlılar ve Yaşam               8              18              16,7
+               7                     Elektrikli Araçlar                              Fiziksel Olaylar                4              22              20,4
+                                                                                                     Toplam         36              108             100
+
+
+                                                                                       4. SINIF
+                                                                                                                   Kazanım         Süre
+                         No                                      Ünite Adı                  Konu Alanı Adı
+                                                                                                                    Sayısı Ders Saati Yüzde %
+                                           * Fen, Mühendislik ve Girişimcilik Uygulamaları bölümündeki yönergelere göre öğrencilerden yıl
+
+
+
+
+0 Fen, Mühendislik ve Girişimcilik
+                                           içerisinde uygulamalar yapması beklenir.
+                                      1    Yer Kabuğu ve Dünya’mızın Hareketleri          Dünya ve Evren                 5            15            13,9
+                                      2    Besinlerimiz                                   Canlılar ve Yaşam              6            18            16,7
+                                      3    Kuvvetin Etkileri                              Fiziksel Olaylar               5            12            11,1
+
+
+
+
+         Uygulamaları
+                                      4    Maddenin Özellikleri                           Madde ve Doğası                10           21            19,4
+                                      5    Aydınlatma ve Ses Teknolojileri                Fiziksel Olaylar               12           21            19,4
+                                      6    İnsan ve Çevre                                 Canlılar ve Yaşam              2               6          5,6
+                                      7    Basit Elektrik Devreleri                       Fiziksel Olaylar               3               6          5,6
+                                           Fen, Mühendislik ve Girişimcilik Uygulamaları: Yıl Sonu Bilim Şenliği (Öğrencilerin
+                                                                                                                                         9          8,3
+                                           yıl içerisinde ortaya çıkardıkları ürünü etkili bir şekilde sunmaları beklenir.)
+                                                                                                        Toplam        46             108            100
+
+                                                                                       5. SINIF
+                                                                                                                   Kazanım         Süre
+                         No                                      Ünite Adı                  Konu Alanı Adı
+                                                                                                                    Sayısı Ders Saati Yüzde %
+                                           * Fen, Mühendislik ve Girişimcilik Uygulamaları bölümündeki yönergelere göre öğrencilerden yıl
+                                           içerisinde uygulamalar yapması beklenir.
+
+
+
+
+0 Fen, Mühendislik ve Girişimcilik
+                                      1    Güneş, Dünya ve Ay                             Dünya ve Evren                 7           24             16,6
+                                      2    Canlılar Dünyası                               Canlılar ve Yaşam              1           12              8,3
+                                      3    Kuvvetin Ölçülmesi ve Sürtünme                 Fiziksel Olaylar               5           12              8,3
+
+
+
+
+         Uygulamaları
+                                      4    Madde ve Değişim                               Madde ve Doğası                6           26             18,1
+                                      5    Işığın Yayılması                               Fiziksel Olaylar               6           22             15,3
+                                      6    İnsan ve Çevre                                 Canlılar ve Yaşam              8           20             13,9
+                                      7    Elektrik Devre Elemanları                      Fiziksel Olaylar               3           16             11,1
+                                           Fen, Mühendislik ve Girişimcilik Uygulamaları: Yıl Sonu Bilim Şenliği (Öğrencilerin
+                                           yıl içerisinde ortaya çıkardıkları ürünü etkili bir şekilde sunmaları beklenir.)           12            8,3
+
+                                                                                                        Toplam        36             144            100
+
+
+                    12
+                                                                                                               Fen Bilimleri Dersi Öğretim Programı
+
+
+
+                                                                                     6. SINIF
+                                                                                                                 Kazanım         Süre
+                         No                               Ünite Adı                       Konu Alanı Adı
+                                                                                                                  Sayısı Ders Saati Yüzde %
+                                         * Fen, Mühendislik ve Girişimcilik Uygulamaları bölümündeki yönergelere göre öğrencilerden yıl
+
+
+
+
+0 Fen, Mühendislik ve Girişimcilik
+                                         içerisinde uygulamalar yapması beklenir.
+                                     1   Güneş Sistemi ve Tutulmalar                    Dünya ve Evren                5                14              9,7
+                                     2   Vücudumuzdaki Sistemler                        Canlılar ve Yaşam            11                24             16,7
+                                     3   Kuvvet ve Hareket                              Fiziksel Olaylar              5                14              9,7
+
+
+
+
+         Uygulamaları
+                                     4   Madde ve Isı                                   Madde ve Doğası              13                28             19,4
+                                     5   Ses ve Özellikleri                             Fiziksel Olaylar              9                22             15,3
+                                     6   Vücudumuzdaki Sistemler ve Sağlığı             Canlılar ve Yaşam            11                18             12,5
+                                     7   Elektriğin İletimi                             Fiziksel Olaylar              5                12              8,3
+                                         Fen, Mühendislik ve Girişimcilik Uygulamaları: Yıl Sonu Bilim Şenliği (Öğrencilerin
+                                                                                                                                       12              8,3
+                                         yıl içerisinde ortaya çıkardıkları ürünü etkili bir şekilde sunmaları beklenir.)
+                                                                                                     Toplam          59               144             100
+
+                                                                                     7. SINIF
+                                                                                                                 Kazanım         Süre
+                         No                               Ünite Adı                       Konu Alanı Adı
+                                                                                                                  Sayısı Ders Saati Yüzde %
+                                         * Fen, Mühendislik ve Girişimcilik Uygulamaları bölümündeki yönergelere göre öğrencilerden yıl
+
+
+
+
+0 Fen, Mühendislik ve Girişimcilik
+                                         içerisinde uygulamalar yapması beklenir.
+                                     1   Güneş Sistemi ve Ötesi                         Dünya ve Evren               10                16              11,1
+                                     2   Hücre ve Bölünmeler                            Canlılar ve Yaşam            8                 16             11,1
+                                     3   Kuvvet ve Enerji                               Fiziksel Olaylar             8                 20             13,9
+
+
+
+
+         Uygulamaları
+                                     4   Saf Madde ve Karışımlar                        Madde ve Doğası              16                28              19,4
+                                     5   Işığın Madde ile Etkileşimi                    Fiziksel Olaylar             12                26             18,05
+                                     6   Canlılarda Üreme, Büyüme ve Gelişme            Canlılar ve Yaşam            7                 18             12,5
+                                     7   Elektrik Devreleri                             Fiziksel Olaylar             6                  8              5,6
+                                         Fen, Mühendislik ve Girişimcilik Uygulamaları: Yıl Sonu Bilim Şenliği (Öğrencilerin
+                                                                                                                                       12              8,3
+                                         yıl içerisinde ortaya çıkardıkları ürünü etkili bir şekilde sunmaları beklenir.)
+                                                                                                     Toplam          67               144             100
+
+                                                                                     8. SINIF
+                                                                                                                 Kazanım         Süre
+                         No                               Ünite Adı                       Konu Alanı Adı
+                                                                                                                  Sayısı Ders Saati Yüzde %
+                                         * Fen, Mühendislik ve Girişimcilik Uygulamaları bölümündeki yönergelere göre öğrencilerden yıl
+
+
+
+
+0 Fen, Mühendislik ve Girişimcilik
+                                         içerisinde uygulamalar yapması beklenir.
+                                     1   Mevsimler ve İklim                             Dünya ve Evren                3                14              9,7
+                                     2   DNA ve Genetik Kod                             Canlılar ve Yaşam            13                22             15,3
+                                     3   Basınç                                         Fiziksel Olaylar              3                10              6,9
+
+
+
+
+         Uygulamaları
+                                     4   Madde ve Endüstri                              Madde ve Doğası              17                28             19,4
+                                     5   Basit Makineler                                Fiziksel Olaylar              2                10              6,9
+                                     6   Enerji Dönüşümleri ve Çevre Bilimi             Canlılar ve Yaşam            12                24             16,7
+                                     7   Elektrik Yükleri ve Elektrik Enerjisi          Fiziksel Olaylar             11                24             16,7
+                                         Fen, Mühendislik ve Girişimcilik Uygulamaları: Yıl Sonu Bilim Şenliği (Öğrencilerin
+                                         yıl içerisinde ortaya çıkardıkları ürünü etkili bir şekilde sunmaları beklenir.)
+                                                                                                                                       12              8,3
+
+                                                                                                     Toplam          61               144             100
+
+
+                                                                                                                                                        13
+        Fen Bilimleri Dersi Öğretim Programı
+
+
+
+    Fen Bilimleri Dersi Öğretim Programı'nda yer alan kazanımlar ünitelere göre numaralandırılmıştır. Numaralan-
+dırma sisteminde dersin kodu, sınıf düzeyi, ünite numarası, konu numarası, kazanım numarasına yer verilmiştir.
+
+
+
+                                               Dersin kodu
+                                                      Sınıf düzeyi   Konu numarası
+
+
+                                                  F. 3. 1. 1. 1.
+                                                             Ünite numarası
+                                                                           Kazanım numarası
+
+
+
+
+ FEN BİLİMLERİ DERSİ 3, 4, 5, 6, 7 VE 8. SINIFLAR DERS KİTABI FORMA SAYILARI VE EBATLARI
+
+
+           Dersin Adı                             En Fazla Forma Sayısı*                       Ebat
+   Fen Bilimleri Dersi 3.Sınıf                               16                          19,5 cm × 27,5 cm
+   Fen Bilimleri Dersi 4.Sınıf                               19                          19,5 cm × 27,5 cm
+   Fen Bilimleri Dersi 5.Sınıf                               18                          19,5 cm × 27,5 cm
+   Fen Bilimleri Dersi 6.Sınıf                               18                          19,5 cm × 27,5 cm
+   Fen Bilimleri Dersi 7.Sınıf                               16                          19,5 cm × 27,5 cm
+   Fen Bilimleri Dersi 8.Sınıf                               22                          19,5 cm × 27,5 cm
+
+*En fazla forma sayıları yazılmıştır. Hazırlanacak Ders Kitabı daha az forma sayılarında da olabilir.
+
+
+
+
+   14
+                                                                                 Fen Bilimleri Dersi Öğretim Programı
+
+
+
+
+      3. SINIF FEN BİLİMLERİ DERSİ ÖĞRETİM PROGRAMI
+
+
+                                                                             Kazanım                      Süre
+ No                    Ünite Adı                       Konu Alanı Adı
+                                                                              Sayısı         Ders Saati          Yüzde %
+  1     Gezegenimizi Tanıyalım                      Dünya ve Evren               5                  9                   8,3
+  2     Beş Duyumuz                                 Canlılar ve Yaşam            3                  6                   5,6
+  3     Kuvveti Tanıyalım                           Fiziksel Olaylar             4                 15                   13,9
+  4     Maddeyi Tanıyalım                           Madde ve Doğası              4                 17                   15,7
+  5     Çevremizdeki Işık ve Sesler                 Fiziksel Olaylar             8                 21                   19,4
+  6     Canlılar Dünyasına Yolculuk                 Canlılar ve Yaşam            8                 18                   16,7
+  7     Elektrikli Araçlar                          Fiziksel Olaylar             4                 22                   20,4
+                                                                    Toplam       36               108                   100
+
+
+      F.3.1. Gezegenimizi Tanıyalım / Dünya ve Evren
+
+   Bu ünitede öğrencilerin; üzerinde yaşadığı Dünya’nın şeklinin küreye benzediğinin farkına varmaları ve
+Dünya’nın şekli ile ilgili öne sürülen fikirler hakkında bilgi sahibi olmaları; Dünya’nın kara, hava ve su katmanlarından
+meydana geldiğini açıklamaları; bir model geliştirerek Dünya’nın şeklini ve katmanlarını zihinlerinde karşılaştırarak
+canlandırmaları amaçlanmaktadır.
+
+F.3.1.1. Dünya’nın Şekli
+
+Önerilen Süre: 3 ders saati
+
+Konu / Kavramlar: Küre
+
+F.3.1.1.1. Dünya’nın şeklinin küreye benzediğinin farkına varır.
+
+           Dünya’nın şekli ile ilgili geçmişteki görüşler belirtilir.
+
+F.3.1.1.2. Dünya’nın şekliyle ilgili model hazırlar.
+
+           Dünya’nın katmanlardan oluştuğuna değinilir.
+
+F.3.1.2. Dünya’nın Yapısı
+
+Önerilen Süre: 6 ders saati
+
+Konu / Kavramlar: Kara, Hava, Su Katmanları
+
+F.3.1.2.1. Dünya’nın yüzeyinde karaların ve suların yer aldığını kavrar.
+
+F.3.1.2.2. Dünya’da etrafımızı saran bir hava katmanının bulunduğunu açıklar.
+
+F.3.1.2.3. Dünya yüzeyindeki kara ve suların kapladığı alanları model üzerinde karşılaştırır.
+
+
+
+
+                                                                                                                               15
+        Fen Bilimleri Dersi Öğretim Programı
+
+
+
+
+    F.3.2. Beş Duyumuz / Canlılar ve Yaşam
+
+    Bu ünitede öğrencilerin; duyu organlarını tanımaları ve birbirleri ile olan temel ilişkileri kavramaları, duyu
+organlarının sağlığını korumak için yapılması gerekenlere yönelik bilgi ve beceriler kazanmaları amaçlanmaktadır.
+
+F.3.2.1. Duyu Organları ve Görevleri
+
+Önerilen Süre: 6 ders saati
+
+Konu / Kavramlar: Göz, kulak, dil, burun, deri
+
+F.3.2.1.1. Duyu organlarının önemini fark eder.
+
+           Duyu organlarının yapısal ayrıntısına girilmez.
+
+F.3.2.1.2. Duyu organlarının temel görevlerini açıklar.
+
+           Duyu organları arasındaki ilişki açıklanır.
+
+F.3.2.1.3. Duyu organlarının sağlığını korumak için yapılması gerekenleri açıklar.
+
+           Duyu organlarına ait hastalıklara girilmez.
+
+
+    F.3.3. Kuvveti Tanıyalım / Fiziksel Olaylar
+
+    Bu ünitede öğrencilerin; çevrelerindeki hareketli varlıkları gözlemleyerek bunların hareket özelliklerini hız-
+lanma, yavaşlama, dönme, sallanma ve yön değiştirme şeklinde tanımlamaları; itme ve çekmenin birer kuvvet
+olduğuna yönelik bilgi, beceri ve hareketli cisimleri durdurmaya çalışmanın tehlikeli olabileceği hakkında farkın-
+dalık kazanmaları amaçlanmaktadır.
+
+F.3.3.1. Varlıkların Hareket Özellikleri
+
+Önerilen Süre: 6 ders saati
+
+Konu / Kavramlar: Hızlanma, yavaşlama, dönme, sallanma ve yön değiştirme
+
+F.3.3.1.1. Hareket eden varlıkları gözlemler ve hareket özelliklerini ifade eder.
+
+           Varlıkların hareket özellikleri; hızlı, yavaş, dönen, sallanan ve yön değiştiren şeklinde nitelendirilir.
+
+F.3.3.2. Cisimleri Hareket Ettirme ve Durdurma
+
+Önerilen Süre: 9 ders saati
+
+Konu / Kavramlar: Kuvvet, itme kuvveti, çekme kuvveti, hareketli cisimlerin sebep olabileceği tehlikeli durumlar
+
+F.3.3.2.1. İtme ve çekmenin birer kuvvet olduğunu deneyerek keşfeder.
+
+F.3.3.2.2. İtme ve çekme kuvvetlerinin hareket eden ve duran cisimler üzerindeki etkilerini gözlemleyerek kuvveti tanımlar.
+
+F.3.3.2.3. Günlük yaşamda hareketli cisimlerin sebep olabileceği tehlikeleri tartışır.
+
+           Okul koridorunda koşan bir öğrencinin durmakta olan bir öğrenciye çarpması durumunda oluşabilecek
+           durumlar, sürücülerin aracın kontrolünü kaybetmesi sonucunda can ve mal kayıplarının oluşması, çığ,
+           sel vb. örnekler verilir.
+
+
+
+
+   16
+                                                                               Fen Bilimleri Dersi Öğretim Programı
+
+
+
+
+    F.3.4. Maddeyi Tanıyalım / Madde ve Doğası
+
+    Bu ünitede öğrencilerin; duyu organları yoluyla maddeleri, sertlik/yumuşaklık, esneklik, kırılganlık, renk,
+koku, tat ve pürüzlü/pürüzsüz olmalarına göre nitelendirmeleri; çeşitli maddelere dokunmanın, onları tatma ve
+koklamanın canlı vücuduna verebileceği zararları kavramaları ve maddeyi katı, sıvı ve gaz hâli olmak üzere üç
+grupta sınıflandırmaları amaçlanmaktadır.
+
+F.3.4.1. Maddeyi Niteleyen Özellikler
+
+Önerilen Süre: 11 ders saati
+
+Konu / Kavramlar: Sertlik/yumuşaklık, esneklik, kırılganlık, renk, koku, tat, pürüzlü ve pürüzsüz olma
+
+F.3.4.1.1. Beş duyu organını kullanarak maddeyi niteleyen temel özellikleri açıklar.
+          a. Maddeyi niteleyen; sertlik/yumuşaklık, esneklik, kırılganlık, renk, koku, tat ve pürüzlü/pürüzsüz olma
+          durumlarına değinilir.
+          b. Bir yüzeyin pürüzleştirilmesi veya pürüzsüzleştirilmesini keşfetmeleri sağlanır.
+          c. Ders ortamına beş duyu organına hitap edecek çeşitli örnekler getirilerek deneme yoluyla fark
+          etmeleri sağlanır.
+
+F.3.4.1.2. Bazı maddelere dokunma, bakma, onları tatma ve koklamanın canlı vücuduna zarar verebileceğini tartışır.
+
+          a. Alınabilecek güvenlik önlemleri öğrencilerle birlikte tespit edilir.
+
+          b. Gerekli güvenlik tedbirleri alınır.
+
+F.3.4.1.3. Bireysel olarak veya gruplar hâlinde çalışırken gerekli güvenlik tedbirlerini almada sorumluluk üstlenir.
+
+F.3.4.2. Maddenin Hâlleri
+
+Önerilen Süre: 6 ders saati
+
+Konu / Kavramlar: Katı, sıvı, gaz
+
+F.3.4.2.1. Çevresindeki maddeleri, hâllerine göre sınıflandırır.
+
+          Maddenin hâllerine günlük yaşamdan örnekler verilir fakat yapılarına (akışkanlık, tanecikler arası
+          uzaklık vb.) değinilmez.
+
+
+
+    F.3.5. Çevremizdeki Işık ve Sesler / Fiziksel Olaylar
+
+    Bu ünitede öğrencilerin; gözlemleri sonucunda ışığın görmedeki, sesin işitmedeki rolünü fark etmeleri, çev-
+relerinde doğal/yapay olmak üzere çeşitli ışık ve ses kaynakları olduğunu keşfetmeleri ve bunları sınıflandırma
+becerisi göstermeleri amaçlanmaktadır.
+
+F.3.5.1. Işığın Görmedeki Rolü
+
+Önerilen Süre: 3 ders saati
+
+Konu / Kavramlar: Işık ve görme
+
+F.3.5.1.1. Gözlemleri sonucunda görme olayının gerçekleşebilmesi için ışığın gerekli olduğu sonucunu çıkarır.
+
+
+
+
+                                                                                                                      17
+        Fen Bilimleri Dersi Öğretim Programı
+
+
+
+F.3.5.2. Işık Kaynakları
+
+Önerilen Süre: 6 ders saati
+
+Konu / Kavramlar: Doğal ışık kaynakları, yapay ışık kaynakları
+
+F.3.5.2.1. Çevresindeki ışık kaynaklarını doğal ve yapay ışık kaynakları şeklinde sınıflandırır.
+
+F.3.5.3. Çevremizdeki Sesler
+
+Önerilen Süre: 6 ders saati
+
+Konu / Kavramlar: Ses kaynağı, doğal sesler, yapay sesler
+
+F.3.5.3.1. Her sesin bir kaynağı olduğu ve sesin her yöne yayıldığı sonucunu çıkarır.
+
+F.3.5.3.2. İşitme duyusunu kullanarak ses kaynağının yaklaşıp uzaklaşması ve ses kaynağının yeri hakkında
+çıkarımlarda bulunur.
+
+F.3.5.3.3. Çevresindeki ses kaynaklarını doğal ve yapay ses kaynakları şeklinde sınıflandırır.
+
+F.3.5.4. Sesin İşitmedeki Rolü
+
+Önerilen Süre : 6 ders saati
+
+Konu / Kavramlar: Ses şiddeti ile işitme arasındaki ilişki, işitme kaybı
+
+F.3.5.4.1. Ses şiddetinin işitme için önemli olduğunu gözlemler ve her sesin insan kulağı tarafından işitilemeye-
+ceğini fark eder.
+
+           Ses şiddetinin, sesi duyabilmemizi sağlayan özellik olduğu vurgulanır.
+
+F.3.5.4.2. Ses şiddeti ile uzaklık arasındaki ilişkiyi açıklar.
+
+           Ses şiddeti ile uzaklık arasındaki matematiksel ilişki verilmez.
+
+F.3.5.4.3. Şiddetli seslerin işitme kaybına sebep olabileceğini ifade eder.
+
+
+
+    F.3.6. Canlılar Dünyasına Yolculuk / Canlılar ve Yaşam
+
+    Bu ünitede öğrencilerin canlı ve cansız varlıkları birbirinden ayırt etmeleri, yaşadıkları çevreyi tanımaları,
+temiz tutmaları, korumaları ve sevmeleri; doğal ve yapay çevreyi gözlemleyerek örneklerle açıklamaları, kaynak
+kullanımında tutumluluk, tasarruf bilinci kazanmaları ve bireysel sorumluluk almaları, ayrıca sağlıklı yaşam bilinci
+kazanmaları amaçlanmaktadır.
+
+F.3.6.1. Çevremizdeki Varlıkları Tanıyalım
+
+Önerilen Süre: 6 ders saati
+
+Konu / Kavramlar: Canlı ve cansız varlıklar, canlı (bitki ve hayvan), cansız (hava, su, toprak)
+
+F.3.6.1.1. Çevresindeki örnekleri kullanarak varlıkları canlı ve cansız olarak sınıflandırır.
+
+           a. Canlıların sistematik sınıflandırılmasına girilmez.
+
+           b. Canlı türlerinden sadece bitki ve hayvanlardan söz edilir.
+
+           c. Canlı ve cansız kavramlarında literatürdeki kavram yanılgılarına dikkat edilir.
+
+F.3.6.1.2. Bir bitkinin yaşam döngüsüne ait gözlem sonuçlarını sunar.
+           Bir bitkinin belirli bir süre boyunca gelişiminin izlenmesi ve gözlem sonuçlarının kaydedilmesi beklenir.
+
+   18
+                                                                                   Fen Bilimleri Dersi Öğretim Programı
+
+
+
+F.3.6.2. Ben ve Çevrem
+
+Önerilen Süre: 12 ders saati
+
+Konu / Kavramlar: Okul ve yaşadığı çevre, çevre temizliği, doğa, orman, park, bahçe, binalar, millî parklar,
+doğal anıtlar vb.
+
+F.3.6.2.1. Yaşadığı çevreyi tanır.
+
+F.3.6.2.2. Yaşadığı çevrenin temizliğinde aktif görev alır.
+
+F.3.6.2.3. Doğal ve yapay çevre arasındaki farkları açıklar.
+
+F.3.6.2.4. Yapay bir çevre tasarlar.
+
+F.3.6.2.5. Doğal çevrenin canlılar için öneminin farkına varır.
+
+           Millî parklar ve doğal anıtlara değinilir.
+
+F.3.6.2.6. Doğal çevreyi korumak için araştırma yaparak çözümler önerir.
+
+
+
+    F.3.7. Elektrikli Araçlar / Fiziksel Olaylar
+
+     Bu ünitede öğrencilerin; çevrelerindeki elektrikli araçları gözlemleyerek bu araçların kullanım amaçlarını
+ve kullandığı elektrik kaynaklarını ayırt etmeleri; araçları kullanırken nelere dikkat etmeleri gerektiğini bilmeleri;
+pilleri tanıyarak pillerin çeşitli cihazların çalıştırılmasında nasıl kullanıldığını keşfetmeleri ve pil atıklarının çevreye
+olan olumsuz etkilerini fark etmeleri amaçlanmaktadır.
+
+F.3.7.1. Elektrikli Araç-Gereçler
+
+Önerilen Süre: 6 ders saati
+
+Konu / Kavramlar: Isınma amaçlı araç-gereçler, aydınlatma amaçlı araç-gereçler, ev araç-gereçleri
+
+F.3.7.1.1. Elektrikli araç-gereçlere yakın çevresinden örnekler vererek elektriğin günlük yaşamdaki önemini açıklar.
+
+F.3.7.2. Elektrik Kaynakları
+
+Önerilen Süre: 8 ders saati
+
+Konu / Kavramlar: Şehir elektriği, akü, pil, batarya
+
+F.3.7.2.1. Elektrikli araç-gereçleri, kullandığı elektrik kaynaklarına göre sınıflandırır.
+
+           a. Elektrik kaynakları olarak şehir elektriği, akü, pil, batarya vb. üzerinde durulur.
+
+           b. Pillerde kutup kavramına girilmez.
+
+F.3.7.2.2. Pil atıklarının çevreye vereceği zararları ve bu konuda yapılması gerekenleri tartışır.
+
+           Pilin kimyasal yapısına ve sebep olacağı kimyasal kirliliğe değinilmez.
+
+F.3.7.3. Elektriğin Güvenli Kullanımı
+
+Önerilen Süre: 8 ders saati
+
+Konu / Kavramlar: Elektrik çarpması
+
+F.3.7.3.1. Elektriğin güvenli kullanılmasına özen gösterir.
+
+           Elektrikli araçların, açık kabloların, prizlere metal cisimler sokulmasının ve iletim hatlarının suyla temas
+           etmesinin sebep olabileceği elektrik çarpması, arıza, yangın vb. tehlikeler üzerinde durulur.
+
+
+
+                                                                                                                          19
+                                     Fen Bilimleri Dersi Öğretim Programı
+
+
+
+
+                     4. SINIF FEN BİLİMLERİ DERSİ ÖĞRETİM PROGRAMI
+
+                                                                                                                    Kazanım         Süre
+                         No                                       Ünite Adı                  Konu Alanı Adı
+                                                                                                                     Sayısı Ders Saati Yüzde %
+                                            * Fen, Mühendislik ve Girişimcilik Uygulamaları bölümündeki yönergelere göre öğrencilerden yıl
+
+
+
+
+0 Fen, Mühendislik ve Girişimcilik
+                                            içerisinde uygulamalar yapması beklenir.
+                                      1     Yer Kabuğu ve Dünya’mızın Hareketleri          Dünya ve Evren               5         15    13,9
+                                      2     Besinlerimiz                                   Canlılar ve Yaşam            6         18    16,7
+                                      3     Kuvvetin Etkileri                              Fiziksel Olaylar             5         12    11,1
+
+
+
+
+         Uygulamaları
+                                      4     Maddenin Özellikleri                           Madde ve Doğası             10         21    19,4
+                                      5     Aydınlatma ve Ses Teknolojileri                Fiziksel Olaylar            12         21    19,4
+                                      6     İnsan ve Çevre                                 Canlılar ve Yaşam            2          6     5,6
+                                      7     Basit Elektrik Devreleri                       Fiziksel Olaylar             3          6     5,6
+                                            Fen, Mühendislik ve Girişimcilik Uygulamaları: Yıl Sonu Bilim Şenliği (Öğrencilerin
+                                            yıl içerisinde ortaya çıkardıkları ürünü etkili bir şekilde sunmaları beklenir.)       9     8,3
+
+                                                                                                        Toplam         46         108   100
+
+
+                     F.4.1. Yer Kabuğu ve Dünya’mızın Hareketleri / Dünya ve Evren
+
+     Bu ünitede öğrencilerin; Dünya’nın yapısını oluşturan kayaçları tanımaları, fosillerin oluşumu hakkında fi-
+kir sahibi olmaları, Dünya’nın dönme ve dolanma hareketlerini kavramaları, Güneş ve Dünya arasında hareket
+ilişkisi kurabilmeleri ve bu hareketlerle ilişkilendirilen zaman dilimleri (gece-gündüz, gün-yıl) hakkında bilgi ve
+beceriler kazanmaları amaçlanmaktadır.
+
+F.4.1.1. Yer Kabuğunun Yapısı
+
+Önerilen Süre: 6 ders saati
+
+Konu / Kavramlar: Kayaç, fosil
+F.4.1.1.1. Yer kabuğunun kara tabakasının kayaçlardan oluştuğunu belirtir.
+                                          Kayaçların sınıflandırılmasına girilmez.
+F.4.1.1.2. Kayaçlarla madenleri ilişkilendirir ve kayaçların ham madde olarak önemini tartışır.
+                                          Türkiye’deki önemli kayaçlara ve madenlere değinilir; altın, bor, mermer, linyit, bakır, taşkömürü,
+                                          gümüş vb. örnekler verilir.
+F.4.1.1.3. Fosillerin oluşumunu açıklar.
+                                          Fosil çeşitlerine girilmez.
+F.4.1.2. Dünya’mızın Hareketleri
+Önerilen Süre: 9 ders saati
+Konu / Kavramlar: Dünya’nın dönme ve dolanma hareketlerinin sonuçları, gün-yıl, gece-gündüz
+F.4.1.2.1. Dünya’nın dönme ve dolanma hareketleri arasındaki farkı açıklar.
+                                          Dönme ve dolanma hareketine günlük yaşamdan örnek verilir.
+F.4.1.2.2. Dünya’nın hareketleri sonucu gerçekleşen olayları açıklar.
+                                          a. Dünya’nın dönme hareketine değinilir.
+                                          b. Dünya’nın dolanma hareketine değinilir.
+                                          c. Dünya’nın dönmesine bağlı olarak Güneş’in gün içerisindeki konumunun değişimine değinilir.
+                                          ç. Gece ve gündüzün oluşumuna değinilir.
+                                          d. Gün, yıl, zaman kavramları verilir.
+
+                20
+                                                                                  Fen Bilimleri Dersi Öğretim Programı
+
+
+
+
+    F.4.2. Besinlerimiz / Canlılar ve Yaşam
+
+   Bu ünitede öğrencilerde; besin çeşitleri, sağlıklı ve dengeli beslenme, sigara ve alkol kullanımının zararları,
+sağlıklı beslenmenin faydalarına yönelik bilinç oluşturulması amaçlanmaktadır.
+
+F.4.2.1. Besinler ve Özellikleri
+
+Önerilen Süre: 18 ders saati
+
+Konu / Kavramlar: Besin içerikleri, su, mineral, gıda saklama koşulları, dengeli beslenme, obezite, besin israfı,
+sigara ve alkol
+
+F.4.2.1.1. Canlı yaşamı ve besin içerikleri arasındaki ilişkiyi açıklar.
+
+           a. Protein, karbonhidrat, yağ, vitamin, su ve minerallerin ayrıntılı yapısına girilmeden yalnızca önemleri
+           vurgulanır.
+
+           b. Vitamin çeşitlerine girilmez.
+
+F.4.2.1.2. Su ve minerallerin bütün besinlerde bulunduğu çıkarımını yapar.
+
+F.4.2.1.3. Sağlıklı bir yaşam için besinlerin tazeliğinin ve doğallığının önemini, araştırma verilerine dayalı olarak
+tartışır.
+
+           Dondurulmuş besinler, paketlenmiş besinler, son kullanma tarihi gibi kavramlar üzerinde durulur. Ayrıca
+           besinlerin temizliği konusuna öğrencilerin dikkati çekilir.
+
+F.4.2.1.4. İnsan sağlığı ile dengeli beslenmeyi ilişkilendirir.
+
+           Obezitenin beslenme alışkanlığı ile ilişkisi vurgulanır. Besin israfının önlenmesine dikkat çekilir.
+
+F.4.2.1.5. Alkol ve sigara kullanımının insan sağlığına olan olumsuz etkilerinin farkına varır.
+
+F.4.2.1.6. Yakın çevresinde sigara kullanımını azaltmaya yönelik sorumluluk üstlenir.
+
+           Yakın çevresindeki kişilere sigaranın sağlığa zararlı olduğu konusunda uyarılarda bulunması beklenir.
+
+
+    F.4.3. Kuvvetin Etkileri / Fiziksel Olaylar
+
+    Bu ünitede öğrencilerin; kuvvetin cisimler üzerindeki etkilerini fark etmeleri, mıknatısların temel özelliklerini
+anlamaları ve kullanıldıkları yerleri keşfetmeleri amaçlanmaktadır.
+
+F.4.3.1. Kuvvetin Cisimler Üzerindeki Etkileri
+
+Önerilen Süre: 6 ders saati
+
+Konu / Kavramlar: Kuvvetin hızlandırıcı etkisi, kuvvetin yavaşlatıcı etkisi, kuvvetin yön değiştirici etkisi, kuvvetin
+şekil değiştirici etkisi.
+
+F.4.3.1.1. Kuvvetin, cisimlere hareket kazandırmasına ve cisimlerin şekillerini değiştirmesine yönelik deneyler yapar.
+
+F.4.3.2. Mıknatısların Uyguladığı Kuvvet
+
+Önerilen Süre: 6 ders saati
+
+Konu / Kavramlar: Mıknatıs, mıknatısın kutupları, mıknatısın kullanım alanları
+
+F.4.3.2.1. Mıknatısı tanır ve kutupları olduğunu keşfeder.
+
+F.4.3.2.2. Mıknatısın etki ettiği maddeleri deney yaparak keşfeder.
+
+           Mıknatısın uyguladığı kuvvetin, temas gerektiren kuvvetlerden farklı olarak temas gerektirmediği vurgulanır.
+
+F.4.3.2.3. Mıknatısların günlük yaşamdaki kullanım alanlarına örnekler verir.
+
+F.4.3.2.4. Mıknatısların yeni kullanım alanları konusunda fikirlerini açıklar.
+
+
+                                                                                                                         21
+        Fen Bilimleri Dersi Öğretim Programı
+
+
+
+
+    F.4.4. Maddenin Özellikleri / Madde ve Doğası
+
+    Bu ünitede öğrencilerin; duyu organları yoluyla maddeyi; suda yüzmesi ve batması, suyu emmesi, emme-
+mesi ve mıknatısla çekilmesi açısından nitelendirmeleri; madde kavramını kütle ve hacim kavramları kapsamında
+tanımlamaları amaçlanmaktadır. Maddenin katı, sıvı ve gaz hâllerini akışkanlık, hareketlilik ve bulundukları kabın
+şeklini alma durumları açısından karşılaştırmaları ve ayrıca ısı etkisiyle maddede meydana gelen hâl değişimle-
+rinden erime ve donma olaylarını açıklamaları, maddeyi saf ve karışım olarak temelde iki grupta sınıflandırmaları
+ve günlük yaşamda sıkça karşılaşılan çeşitli karışımları eleme, süzme ve mıknatısla çekme yoluyla ayırmaları
+amaçlanmaktadır.
+F.4.4.1. Maddeyi Niteleyen Özellikler
+Önerilen Süre: 3 ders saati
+Konu / Kavramlar: Suda yüzme ve batma, suyu emme ve emmeme ve mıknatısla çekilme
+F.4.4.1.1. Beş duyu organını kullanarak maddeyi niteleyen temel özellikleri açıklar.
+           Maddeyi niteleyen; suda yüzme ve batma, suyu emme ve emmeme ve mıknatısla çekilme gibi
+          özellikleri konusu işlenirken duyu organlarını kullanmaları sağlanır.
+F.4.4.2. Maddenin Ölçülebilir Özellikleri
+
+Önerilen Süre: 3 ders saati
+Konu / Kavramlar: Kütle, hacim
+F.4.4.2.1. Farklı maddelerin kütle ve hacimlerini ölçerek karşılaştırır.
+
+           Gazların kütle ve hacimlerine girilmez.
+F.4.4.2.2. Ölçülebilir özelliklerini kullanarak maddeyi tanımlar.
+
+          Kütlesi ve hacmi olan varlıkların madde olduğu belirtilir.
+F.4.4.3. Maddenin Hâlleri
+Önerilen Süre: 5 ders saati
+Konu / Kavramlar: Katı, sıvı, gaz
+F.4.4.3.1. Maddelerin hâllerine ait temel özellikleri karşılaştırır.
+           Tanecikli ve boşluklu yapıya girilmez.
+F.4.4.3.2. Aynı maddenin farklı hâllerine örnekler verir.
+F.4.4.4. Maddenin Isı Etkisiyle Değişimi
+Önerilen Süre: 4 ders saati
+Konu / Kavramlar: Isınma, soğuma, hâl değişimi, erime, donma, buharlaşma
+F.4.4.4.1. Maddelerin ısınıp soğumasına yönelik deneyler tasarlar.
+F.4.4.4.2. Maddelerin ısı etkisiyle hâl değiştirebileceğine yönelik deney tasarlar.
+           Hâl değişimlerinden sadece erime, donma ve buharlaşmaya değinilir.
+F.4.4.5. Saf Madde ve Karışım
+Önerilen Süre: 6 ders saati
+Konu / Kavramlar: Saf madde, karışım, eleme, süzme ve mıknatısla ayırma yöntemleri
+F.4.4.5.1. Günlük yaşamında sıklıkla kullandığı maddeleri saf madde ve karışım şeklinde sınıflandırarak araların-
+daki farkları açıklar.
+F.4.4.5.2. Günlük yaşamda karşılaştığı karışımların ayrılmasında kullanılabilecek yöntemlerden uygun olanı seçer.
+           Eleme, süzme ve mıknatısla ayırma yöntemleri üzerinde durulur.
+F.4.4.5.3. Karışımların ayrılmasını, ülke ekonomisine katkısı ve kaynakların etkili kullanımı bakımından tartışır.
+
+
+   22
+                                                                                    Fen Bilimleri Dersi Öğretim Programı
+
+
+
+
+    F.4.5. Aydınlatma ve Ses Teknolojileri / Fiziksel Olaylar
+
+    Bu ünitede öğrencilerin; ses ve aydınlatma ile ilgili çevre, toplum ve insanı etkileyen çeşitli teknolojilerin ge-
+lişmekte olduğunu, ışığın ve sesin uygun kullanılmadığında insan hayatını olumsuz yönde etkilediğini bilmeleri,
+bu duruma çözümler üretmeleri; ışığın uygun kullanıldığında aile bütçesine ve ülke ekonomisine katkı sağla-
+nabileceğini kavramaları; ayrıca gelecekteki aydınlatma sistemlerini tasarlamaları, böylece yaratıcı ve yenilikçi
+düşünme becerisi kazanmaları amaçlanmaktadır.
+F.4.5.1. Aydınlatma Teknolojileri
+Önerilen Süre: 5 ders saati
+Konu / Kavramlar: Geçmişten günümüze aydınlatma teknolojileri, aydınlatma araçlarının önemi
+F.4.5.1.1. Geçmişte ve günümüzde kullanılan aydınlatma araçlarını karşılaştırır.
+           a. Teknolojinin aydınlatma araçlarının gelişimine olan katkısı vurgulanır, kronolojik sıralama ve ayrıntı verilmez.
+           b. Aydınlatma araçlarının yaşamımızdaki önemi vurgulanır.
+F.4.5.1.2. Gelecekte kullanılabilecek aydınlatma araçlarına yönelik tasarım yapar.
+
+           Tasarımını çizim yaparak ifade etmesi istenir, üç boyutlu tasarıma girilmez.
+
+F.4.5.2. Uygun Aydınlatma
+Önerilen Süre: 3 ders saati
+Konu / Kavramlar: Uygun aydınlatma ve önemi, aydınlatma araçlarının tasarruflu kullanımı
+F.4.5.2.1. Uygun aydınlatma hakkında araştırma yapar.
+
+           Uygun aydınlatmanın göz sağlığı açısından önemi vurgulanır.
+
+F.4.5.2.2. Aydınlatma araçlarının tasarruflu kullanımının aile ve ülke ekonomisi bakımından önemini tartışır.
+F.4.5.3. Işık Kirliliği
+Önerilen Süre: 5 ders saati
+Konu / Kavramlar: Işık kirliliği ve olumsuz etkileri, ışık kirliliğini önlemek için yapılması gerekenler
+F.4.5.3.1. Işık kirliliğinin nedenlerini sorgular.
+F.4.5.3.2. Işık kirliliğinin, doğal hayata ve gök cisimlerinin gözlenmesine olan olumsuz etkilerini açıklar.
+F.4.5.3.3. Işık kirliliğini azaltmaya yönelik çözümler üretir.
+F.4.5.4. Geçmişten Günümüze Ses Teknolojileri
+Önerilen Süre: 3 ders saati
+Konu / Kavramlar: Ses düzeyini değiştirmeye yarayan teknolojiler, işitme yetimizi geliştirmeye yönelik teknolo-
+jiler, ses kayıt teknolojileri
+F.4.5.4.1. Geçmişte ve günümüzde kullanılan ses teknolojilerini karşılaştırır.
+           a. Teknolojinin ses araçlarının gelişimine olan katkısı vurgulanır, kronolojik sıralama ve ayrıntı verilmez.
+           b. Ses şiddetini değiştirmeye, işitme yetimizi geliştirmeye ve sesi kaydetmeye yarayan teknolojiler
+           üzerinde durulur.
+
+F.4.5.4.2. Şiddetli sese sahip teknolojik araçların olumlu ve olumsuz etkilerini araştırır.
+
+
+
+
+                                                                                                                           23
+        Fen Bilimleri Dersi Öğretim Programı
+
+
+
+F.4.5.5. Ses Kirliliği
+Önerilen Süre: 5 ders saati
+Konu / Kavramlar: Ses kirliliği ve olumsuz etkileri, ses kirliliğini önlemek için yapılması gerekenler
+F.4.5.5.1. Ses kirliliğinin nedenlerini sorgular.
+F.4.5.5.2. Ses kirliliğinin insan sağlığı ve çevre üzerindeki olumsuz etkilerini açıklar.
+F.4.5.5.3. Ses kirliliğini azaltmaya yönelik çözümler üretir.
+
+    F.4.6. İnsan ve Çevre / Canlılar ve Yaşam
+
+    Bu ünitede öğrencilerin yaşam için gerekli kaynakları, kaynakların tasarruflu kullanımına yönelik bilgi ve be-
+cerileri kazanmaları amaçlanmaktadır.
+F.4.6.1. Bilinçli Tüketici
+Önerilen Süre: 6 ders saati
+Konu / Kavramlar: Kaynak kullanımı, tasarruf, tutumluluk, geri dönüşüm
+F.4.6.1.1. Kaynakların kullanımında tasarruflu davranmaya özen gösterir.
+           a. Elektrik, su, besin gibi kaynakların tasarruflu kullanılmasının önemi vurgulanır.
+           b. Yeniden kullanmanın önemi üzerinde durulur.
+F.4.6.1.2. Yaşam için gerekli olan kaynakların ve geri dönüşümün önemini fark eder.
+           Su, besin, elektrik gibi kaynaklara değinilir.
+
+    F.4.7. Basit Elektrik Devreleri / Fiziksel Olaylar
+
+Bu ünitede öğrencilerin; işlevleriyle birlikte devre elemanlarını tanıyarak basit elektrik devresi oluşturmaları ve
+evlerdeki elektrik sistemleri ile basit elektrik devrelerini ilişkilendirmeleri amaçlanmaktadır.
+F.4.7.1. Basit Elektrik Devreleri
+Önerilen Süre: 6 ders saati
+Konu / Kavramlar: Devre elemanları, basit elektrik devresi kurulumu
+F.4.7.1.1. Basit elektrik devresini oluşturan devre elemanlarını işlevleri ile tanır.
+           Devre elemanı olarak, pil, ampul, kablo ve anahtar tanıtılır.
+F.4.7.1.2. Çalışan bir elektrik devresi kurar.
+           Ampul, pilden ve anahtardan oluşan devre kurulması istenir.
+F.4.7.1.3. Evde ve okuldaki elektrik düğmelerinin ve kabloların birer devre elemanı olduğunu bilir.
+           Elektrik düğmeleri ile lambalar arasında, duvar içinden geçen bağlantı kabloları olduğu vurgulanır.
+
+
+
+
+   24
+                                                                                                                Fen Bilimleri Dersi Öğretim Programı
+
+
+
+
+                    5. SINIF FEN BİLİMLERİ DERSİ ÖĞRETİM PROGRAMI
+
+                                                                                                                   Kazanım         Süre
+                         No                                 Ünite Adı                       Konu Alanı Adı
+                                                                                                                    Sayısı Ders Saati Yüzde %
+                                           * Fen, Mühendislik ve Girişimcilik Uygulamaları bölümündeki yönergelere göre öğrencilerden yıl
+
+
+
+
+0 Fen, Mühendislik ve Girişimcilik
+                                           içerisinde uygulamalar yapması beklenir.
+                                     1     Güneş, Dünya ve Ay                             Dünya ve Evren                7                24            16,6
+                                     2     Canlılar Dünyası                               Canlılar ve Yaşam             1                12             8,3
+                                     3     Kuvvetin Ölçülmesi ve Sürtünme                 Fiziksel Olaylar              5                12             8,3
+
+
+
+
+         Uygulamaları
+                                     4     Madde ve Değişim                               Madde ve Doğası               6                26            18,1
+                                     5     Işığın Yayılması                               Fiziksel Olaylar              6                22            15,3
+                                     6     İnsan ve Çevre                                 Canlılar ve Yaşam             8                20            13,9
+                                     7     Elektrik Devre Elemanları                      Fiziksel Olaylar              3                16            11,1
+                                           Fen, Mühendislik ve Girişimcilik Uygulamaları: Yıl Sonu Bilim Şenliği (Öğrencilerin
+                                           yıl içerisinde ortaya çıkardıkları ürünü etkili bir şekilde sunmaları beklenir.)
+                                                                                                                                         12            8,3
+
+                                                                                                       Toplam          36               144            100
+
+                     F.5.1. Güneş, Dünya ve Ay / Dünya ve Evren
+
+    Bu ünitede öğrencilerin; Güneş ve Ay’ın temel özelliklerini, şekillerini, boyutlarını ve yapılarını tanıyıp kavra-
+maları; Güneş’in dönme hareketini kavramaları; Ay’ın dönme ve dolanma hareketlerini kavramaları; Dünya ve
+Ay arasında hareket ilişkisine bağlı olarak Ay’ın evrelerinin meydana geldiğini açıklamaları; Güneş, Dünya ve
+Ay’ın birbirlerine göre hareketlerini kavramları; Dünya’da görülen yıkıcı doğa olayları hakkında bilgi ve beceriler
+kazanmaları hedeflenmektedir.
+
+F.5.1.1. Güneş’in Yapısı ve Özellikleri
+
+Önerilen Süre: 6 ders saati
+
+Konu / Kavramlar: Güneş’in yapısı ve dönme hareketi
+
+F.5.1.1.1. Güneş’in özelliklerini açıklar.
+
+                                         a. Güneş’in geometrik şekline değinilir.
+
+                                         b. Güneş’in de Dünya gibi katmanlardan oluştuğuna değinilir ancak katmanların yapısından
+                                         bahsedilmez.
+
+                                         c. Güneş’in dönme hareketi yaptığı belirtilir.
+
+F.5.1.1.2. Güneş’in büyüklüğünü Dünya’nın büyüklüğüyle karşılaştıracak şekilde model hazırlar.
+
+F.5.1.2. Ay’ın Yapısı ve Özellikleri
+
+Önerilen Süre: 4 ders saati
+
+Konu / Kavramlar: Ay’ın yapısı
+
+F.5.1.2.1. Ay’ın özelliklerini açıklar.
+                                         a. Ay’ın büyüklüğü belirtilir.
+                                         b. Ay’ın geometrik şekline değinilir.
+                                         c. Ay’ın yüzey yapısı hakkında bilgi verilir.
+
+                                         ç. Ay’ın atmosferinden bahsedilir.
+
+F.5.1.2.2. Ay’da canlıların yaşayabileceğine yönelik ürettiği fikirleri tartışır.
+
+
+                                                                                                                                                       25
+        Fen Bilimleri Dersi Öğretim Programı
+
+
+
+F.5.1.3. Ay’ın Hareketleri ve Evreleri
+
+Önerilen Süre: 8 ders saati
+
+Konu / Kavramlar: Dönme hareketleri ve sonuçları, dolanma hareketleri ve sonuçları, Ay’ın evreleri
+
+F.5.1.3.1. Ay’ın dönme ve dolanma hareketlerini açıklar.
+
+           a. Ay’ın dönme hareketi yaptığı belirtilir.
+
+           b. Ay’ın dolanma hareketi yaptığı belirtilir.
+
+           c. Zaman dilimi olarak ay kavramına değinilir.
+
+F.5.1.3.2. Ay’ın evreleri ile Ay’ın Dünya etrafındaki dolanma hareketi arasındaki ilişkiyi açıklar.
+
+           a. Ay’ın ana ve ara evreleri arasındaki farkı / farkları belirtilir.
+
+           b. Evrelerin oluş sırasına bağlı olarak isimleri belirtilir.
+
+           c. Ay’ın iki ana evresi arasında geçen sürenin bir hafta olduğu belirtilir.
+
+F.5.1.4. Güneş, Dünya ve Ay
+
+Önerilen Süre: 6 ders saati
+
+Konu / Kavramlar: Güneş, Dünya ve Ay’ın birbirlerine göre hareketleri
+
+F.5.1.4.1. Güneş, Dünya ve Ay’ın birbirlerine göre hareketlerini temsil eden bir model hazırlar.
+
+           a. Ay’ın Dünya etrafında dolanma yönü belirtilir.
+
+           b. Dünya’nın Güneş etrafındaki dolanma yönü belirtilir.
+
+           c. Dünya’dan bakıldığında Ay’ın hep aynı yüzünün görüldüğü belirtilir.
+
+
+
+    F.5.2. Canlılar Dünyası / Canlılar ve Yaşam
+
+   Bu ünitede öğrencilerin; canlıları, benzerlik ve farklılıklarına göre sınıflandırması, mikroskobu, mikroskobik
+canlıları, mantarları, bitkileri, hayvanları tanımasına yönelik bilgi ve beceriler kazanması amaçlanmaktadır.
+
+F.5.2.1. Canlıları Tanıyalım
+
+Önerilen Süre: 12 ders saati
+
+Konu / Kavramlar: Canlıların benzerlik ve farklılıkları, mikroskobik canlılar, mantarlar, bitkiler, hayvanlar, mik-
+roskop, hijyen, güvenlik tedbirleri
+
+F.5.2.1.1. Canlılara örnekler vererek benzerlik ve farklılıklarına göre sınıflandırır.
+           a. Canlılar; bitkiler, hayvanlar, mantarlar ve mikroskobik canlılar olarak sınıflandırılır.
+           b. Canlıların sınıflandırılmasında sistematik terimlerin (alem, cins, tür vb.) kullanımından kaçınılır.
+           c. Mikroskobik canlılar (bakteriler, amip, öglena ve paramesyum) ve şapkalı mantarlara örnekler verilir,
+           ancak yapısal ayrıntısına girilmez.
+
+           ç. Mikroskop yardımı ile mikroskobik canlıların varlığını gözlemler.
+
+           d. Zehirli mantarların yenilmemesi konusunda uyarı yapılır.
+
+
+
+
+   26
+                                                                                Fen Bilimleri Dersi Öğretim Programı
+
+
+
+
+    F.5.3. Kuvvetin Ölçülmesi ve Sürtünme / Fiziksel Olaylar
+
+     Bu ünitede öğrencilerin; doğada var olan çeşitli kuvvetleri tanıyarak kuvvetin büyüklüğünün dinamometre ile
+nasıl ölçüldüğünü keşfetmeleri; farklı yüzey / ortamlarda sürtünme kuvvetinin harekete olan etkisini gözlemleme-
+leri ve sürtünme kuvvetinin günlük yaşantımızdaki yeri ve öneminden haberdar olmaları; ayrıca sürtünme kuv-
+vetinin arttırılması ve azaltılmasına yönelik öğrendiği bilgilerden sonra, kendi fikirlerini ileri sürebilme becerileri
+ortaya koymaları, böylece yaratıcı ve yenilikçi düşünme becerisi kazanmaları amaçlanmaktadır.
+
+F.5.3.1. Kuvvetin Ölçülmesi
+
+Önerilen Süre: 6 ders saati
+
+Konu / Kavramlar: Kuvvetin büyüklüğünün ölçülmesi, kuvvet birimi
+
+F.5.3.1.1. Kuvvetin büyüklüğünü dinamometre ile ölçer.
+
+          Kuvvet birimi olarak Newton (N) kullanılır.
+
+F.5.3.1.2. Basit araç gereçler kullanarak bir dinamometre modeli tasarlar.
+
+F.5.3.2. Sürtünme Kuvveti
+
+Önerilen Süre: 6 ders saati
+
+Konu / Kavramlar: Sürtünme kuvvetinin kaygan ve pürüzlü yüzeylerdeki uygulamaları, sürtünme kuvvetinin
+günlük yaşamdaki uygulamaları
+
+F.5.3.2.1. Sürtünme kuvvetine günlük yaşamdan örnekler verir.
+
+F.5.3.2.2. Sürtünme kuvvetinin çeşitli ortamlarda harekete etkisini deneyerek keşfeder.
+
+          Sürtünme kuvvetinin, pürüzlü ve kaygan yüzeylerde harekete etkisi ile ilgili deneyler yapılır.
+
+F.5.3.2.3. Günlük yaşamda sürtünmeyi artırma veya azaltmaya yönelik yeni fikirler üretir.
+
+    F.5.4. Madde ve Değişim / Madde ve Doğası
+
+    Bu ünitede öğrencilerin; maddenin hâl değiştirmesi sürecinde oluşan erime, donma, kaynama, yoğunlaş-
+ma (yoğuşma), buharlaşma, süblimleşme ve kırağılaşma olaylarını ısı alınıp verilmesi temelinde açıklamaları ve
+erime, donma ve kaynama noktalarını kullanarak saf maddeleri ayırt etmeleri amaçlanmaktadır. Ayrıca öğren-
+cilerin, ısı ve sıcaklık kavramları arasındaki temel farkları kavrayarak ısınma ve soğuma esnasında maddelerde
+meydana gelen genleşme ve büzülme olaylarını açıklamaları amaçlanmaktadır.
+
+F.5.4.1. Maddenin Hâl Değişimi
+
+Önerilen Süre: 6 ders saati
+
+Konu / Kavramlar: Erime, donma, kaynama, yoğunlaşma (yoğuşma), buharlaşma, süblimleşme, kırağılaşma
+
+F.5.4.1.1. Maddelerin ısı etkisiyle hâl değiştirebileceğine yönelik yaptığı deneylerden elde ettiği verilere dayalı
+çıkarımlarda bulunur.
+          Sıvıların her sıcaklıkta buharlaştığı fakat belirli sıcaklıkta kaynadığı belirtilerek buharlaşma ve kaynama
+          arasındaki temel fark açıklanır.
+
+F.5.4.2. Maddenin Ayırt Edici Özellikleri
+
+Önerilen Süre: 6 ders saati
+
+Konu / Kavramlar: Erime ve donma noktası, kaynama noktası
+
+F.5.4.2.1. Yaptığı deneyler sonucunda saf maddelerin erime, donma, kaynama noktalarını belirler.
+
+          Erime, donma, kaynama noktalarının ayırt edici özellikler olduğu vurgulanır.
+
+
+                                                                                                                       27
+        Fen Bilimleri Dersi Öğretim Programı
+
+
+
+F.5.4.3. Isı ve Sıcaklık
+
+Önerilen Süre: 7 ders saati
+
+Konu / Kavramlar: Isı, sıcaklık, ısı alışverişi
+
+F.5.4.3.1. Isı ve sıcaklık arasındaki temel farkları açıklar.
+
+F.5.4.3.2. Sıcaklığı farklı olan sıvıların karıştırılması sonucu ısı alışverişi olduğuna yönelik deneyler yaparak so-
+nuçlarını yorumlar.
+
+F.5.4.4. Isı Maddeleri Etkiler
+
+Önerilen Süre: 7 ders saati
+
+Konu / Kavramlar: Genleşme, büzülme
+
+F.5.4.4.1. Isı etkisiyle maddelerin genleşip büzüleceğine yönelik deneyler yaparak deneylerin sonuçlarını tartışır.
+
+F.5.4.4.2. Günlük yaşamdan örnekleri genleşme ve büzülme olayları ile ilişkilendirir.
+
+
+    F.5.5. Işığın Yayılması / Fiziksel Olaylar
+
+    Bu ünitede öğrencilerin; ışığın farklı ortamlarda nasıl yayıldığını keşfetmeleri, ışığın doğrusal bir yol ile yayıl-
+dığını kavramaları ve bu durumu basit ışın çizimleriyle göstermeleri, ışığın yansıma şekillerini kavramaları, mad-
+deleri ışık geçirgenliğine göre sınıflandırma becerisi göstermeleri, tam gölgenin nasıl oluştuğunu tahmin etmeleri
+ve cisimlerin tam gölge boylarını etkileyen faktörleri keşfetmeleri amaçlanmaktadır.
+F.5.5.1. Işığın Yayılması
+Önerilen Süre : 4 ders saati
+Konu / Kavramlar: Işığın yayılması
+F.5.5.1.1. Bir kaynaktan çıkan ışığın her yönde ve doğrusal bir yol izlediğini gözlemleyerek çizimle gösterir.
+F.5.5.2. Işığın Yansıması
+Önerilen Süre: 6 ders saati
+Konu / Kavramlar: Düzgün yansıma, dağınık yansıma, gelen ışın, yansıyan ışın, yüzey normali
+F.5.5.2.1. Işığın düzgün ve pürüzlü yüzeylerdeki yansımalarını gözlemleyerek çizimle gösterir.
+F.5.5.2.2. Işığın yansımasında gelen ışın, yansıyan ışın ve yüzeyin normali arasındaki ilişkiyi açıklar.
+F.5.5.3. Işığın Maddeyle Karşılaşması
+Önerilen Süre : 4 ders saati
+Konu / Kavramlar: Saydam maddeler, yarı saydam maddeler, saydam olmayan maddeler
+F.5.5.3.1. Maddeleri, ışığı geçirme durumlarına göre sınıflandırır.
+F.5.5.4. Tam Gölge
+Önerilen Süre: 8 ders saati
+Konu / Kavramlar: Tam gölge, tam gölgeyi etkileyen değişkenler
+F.5.5.4.1. Tam gölgenin nasıl oluştuğunu gözlemleyerek basit ışın çizimleri ile gösterir.
+           Yarı gölge konusuna girilmez.
+F.5.5.4.2. Tam gölgeyi etkileyen değişkenlerin neler olduğunu deneyerek keşfeder.
+
+           Tam gölge oluşumunda sadece cismin ve ışık kaynağının konumları ile gölgenin büyüklüğü arasındaki
+           ilişki üzerinde durulur.
+
+
+
+
+   28
+                                                                                     Fen Bilimleri Dersi Öğretim Programı
+
+
+
+
+    F.5.6. İnsan ve Çevre / Canlılar ve Yaşam
+
+     Bu ünitede öğrencilerin; çevre sorunlarının neden ve sonuçlarını sorgulayabilmeleri, biyoçeşitlilik, nesli tüke-
+nen ve tükenme tehlikesi olan canlıları ve bu canlı türlerini korumak için yapılması gerekenleri, insan faaliyetleri
+sonucu oluşan çevre sorunlarına karşı duyarlılık ve bu sorunların çözümüne yönelik bilgi ve beceriler kazanma-
+ları amaçlanmaktadır.
+
+F.5.6.1. Biyoçeşitlilik
+
+Önerilen Süre: 6 ders saati
+
+Konu / Kavramlar: Biyoçeşitlilik, doğal yaşam, nesli tükenen canlılar, habitat, ekosistem
+
+F.5.6.1.1. Biyoçeşitliliğin doğal yaşam için önemini sorgular.
+                             ,
+           Ülkemizde ve Dünya da nesli tükenen veya tükenme tehlikesi ile karşı karşıya olan bitki ve hayvanlara
+           örnekler verir.
+
+F.5.6.1.2. Biyoçeşitliliği tehdit eden faktörleri, araştırma verilerine dayalı olarak tartışır.
+
+F.5.6.2. İnsan ve Çevre İlişkisi
+
+Önerilen Süre: 10 ders saati
+
+Konu / Kavramlar: Çevre kirliliği, çevreyi koruma ve güzelleştirme, insan-çevre etkileşimi (insanın çevreye etki-
+si), yerel ve küresel çevre sorunları
+
+F.5.6.2.1. İnsan ve çevre arasındaki etkileşimin önemini ifade eder.
+
+           Çevre kirliliğinin insanların sağlığı üzerindeki olumsuz etkilerine değinilir.
+
+F.5.6.2.2. Yakın çevresindeki veya ülkemizdeki bir çevre sorununun çözümüne ilişkin öneriler sunar.
+
+F.5.6.2.3. İnsan faaliyetleri sonucunda gelecekte oluşabilecek çevre sorunlarına yönelik çıkarımda bulunur.
+
+F.5.6.2.4. İnsan-çevre etkileşiminde yarar ve zarar durumlarını örnekler üzerinde tartışır.
+
+F.5.6.3. Yıkıcı Doğa Olayları
+
+Önerilen Süre: 4 ders saati
+
+Konu / Kavramlar: Yıkıcı doğa olayları ve korunma yolları
+
+F.5.6.3.1. Doğal süreçlerin neden olduğu yıkıcı doğa olaylarını açıklar.
+
+           Depremler, volkanik patlamalar, seller, heyelanlar, hortum, kasırgalara ayrıntıya girilmeden değinilir.
+
+F.5.6.3.2. Yıkıcı doğa olaylarından korunma yollarını ifade eder.
+
+
+
+
+                                                                                                                            29
+        Fen Bilimleri Dersi Öğretim Programı
+
+
+
+
+    F.5.7. Elektrik Devre Elemanları / Fiziksel Olaylar
+
+   Bu ünitede öğrencilerin; farklı elektrik devrelerindeki pil ve lamba sayısını değiştirerek bu değişimin devre
+üzerindeki etkilerini keşfetmeleri, devre elemanlarını sembollerle göstererek devre şeması çizmeleri, devre şe-
+malarının ortak bilimsel dil açısından önemini kavramaları, çizdikleri devreleri kurmaları ve çalıştırmaları amaç-
+lanmaktadır.
+
+F.5.7.1. Devre Elemanlarının Sembollerle Gösterimi ve Devre Şemaları
+
+Önerilen Süre: 8 ders saati
+
+Konu / Kavramlar: Devre elemanlarının sembolleri, devre şemaları
+
+F.5.7.1.1. Bir elektrik devresindeki elemanları sembolleriyle gösterir.
+
+           Devre sembollerinin ortak bilimsel dil açısından önemi belirtilir.
+
+F.5.7.1.2. Çizdiği elektrik devresinin şemasını kurar.
+
+F.5.7.2. Basit Bir Elektrik Devresinde Lamba Parlaklığını Etkileyen Değişkenler
+
+Önerilen Süre: 8 ders saati
+
+Konu / Kavramlar: Pil sayısı, lamba sayısı
+
+F.5.7.2.1. Bir elektrik devresindeki ampul parlaklığını etkileyen değişkenlerin neler olduğunu tahmin ederek tah-
+minlerini test eder.
+
+           a. Bağımlı, bağımsız ve kontrol edilen değişken kavram grupları, örneklerle açıklanır.
+
+           b. Bağımsız değişken olarak pil sayısı ve ampul sayısı dikkate alınır.
+
+           c. Paralel bağlamaya girilmez.
+
+
+
+
+   30
+                                                                                                                Fen Bilimleri Dersi Öğretim Programı
+
+
+
+
+                    6. SINIF FEN BİLİMLERİ DERSİ ÖĞRETİM PROGRAMI
+
+                                                                                                                   Kazanım         Süre
+                         No                                 Ünite Adı                       Konu Alanı Adı
+                                                                                                                    Sayısı Ders Saati Yüzde %
+                                           * Fen, Mühendislik ve Girişimcilik Uygulamaları bölümündeki yönergelere göre öğrencilerden yıl
+
+
+
+
+0 Fen, Mühendislik ve Girişimcilik
+                                           içerisinde uygulamalar yapması beklenir.
+                                     1     Güneş Sistemi ve Tutulmalar                    Dünya ve Evren               5                 14             9,7
+                                     2     Vücudumuzdaki Sistemler                        Canlılar ve Yaşam            11                24            16,7
+                                     3     Kuvvet ve Hareket                              Fiziksel Olaylar             5                 14             9,7
+
+
+
+
+         Uygulamaları
+                                     4     Madde ve Isı                                   Madde ve Doğası              13                28            19,4
+                                     5     Ses ve Özellikleri                             Fiziksel Olaylar             9                 22            15,3
+                                     6     Vücudumuzdaki Sistemler ve Sağlığı             Canlılar ve Yaşam            11                18            12,5
+                                     7     Elektriğin İletimi                             Fiziksel Olaylar             5                 12             8,3
+                                           Fen, Mühendislik ve Girişimcilik Uygulamaları: Yıl Sonu Bilim Şenliği (Öğrencilerin
+                                           yıl içerisinde ortaya çıkardıkları ürünü etkili bir şekilde sunmaları beklenir.)
+                                                                                                                                         12            8,3
+
+                                                                                                       Toplam          59               144            100
+
+                     F.6.1. Güneş Sistemi ve Tutulmalar / Dünya ve Evren
+
+     Bu ünitede öğrencilerin; Güneş sistemini ve Güneş sisteminde bulunan gök cisimlerinin birbirleriyle olan
+ilişkilerini tanımaları, Güneş ve Ay tutulmalarına ilişkin bilgi ve becerileri kazanmaları hedeflenmektedir.
+
+F.6.1.1. Güneş Sistemi
+
+Önerilen Süre: 6 ders saati
+
+Konu / Kavramlar: Güneş sistemi, gezegenler, meteor, gök taşı, asteroit
+
+F.6.1.1.1. Güneş sistemindeki gezegenleri birbirleri ile karşılaştırır.
+
+                                         a. Gezegenlerin temel özelliklerine (karasal, gazsal, iç gezegen, dış gezegen) değinilir.
+                                         b. Gezegenlerin uyduları olduğundan bahsedilir.
+                                         c. Gezegenlerin büyüklüklerine uzamsal olarak değinilir.
+                                         ç. Gezegenlerin Güneş’e olan uzaklık sıralamasına değinilir.
+
+                                         d. Meteor, gök taşı, asteroit kavramlarına değinilir.
+
+F.6.1.1.2. Güneş sistemindeki gezegenleri, Güneş’e yakınlıklarına göre sıralayarak bir model oluşturur.
+
+F.6.1.2. Güneş ve Ay Tutulmaları
+
+Önerilen Süre: 8 ders saati
+
+Konu / Kavramlar: Güneş tutulması, Ay tutulması
+
+F.6.1.2.1.Güneş tutulmasının nasıl oluştuğunu tahmin eder.
+
+                                         a. Güneş tutulması esnasında Ay’ın hangi evrede olduğuna değinilir.
+
+                                         b. Her ay Güneş tutulmasının olmadığına değinilir.
+
+F.6.1.2.2. Ay tutulmasının nasıl oluştuğunu tahmin eder.
+
+                                         a. Ay tutulması esnasında Ay’ın hangi evrede olduğuna değinilir.
+
+                                         b. Her ay, Ay tutulmasının olmadığına değinilir.
+
+F.6.1.2.3. Güneş ve Ay tutulmasını temsil eden bir model oluşturur.
+                                                                                                                                                       31
+        Fen Bilimleri Dersi Öğretim Programı
+
+
+
+
+    F.6.2. Vücudumuzdaki Sistemler / Canlılar ve Yaşam
+
+   Bu ünitede öğrencilerin; destek ve hareket, sindirim, dolaşım, solunum ve boşaltım sistemlerine ait yapı ve
+organlara ilişkin bilgi ve beceriler kazanmaları amaçlanmaktadır.
+
+F.6.2.1. Destek ve Hareket Sistemi
+
+Önerilen Süre: 4 ders saati
+
+Konu / Kavramlar: Kıkırdak, kemik ve kemik çeşitleri, eklem ve eklem çeşitleri, kaslar ve kas çeşitleri
+
+F.6.2.1.1. Destek ve hareket sistemine ait yapıları örneklerle açıklar.
+
+           a. Kemiklerin yapısına girilmeksizin kemik çeşitleri kısa, uzun ve yassı olarak verilir.
+
+           b. Eklem çeşitleri ayrıntılara girilmeksizin verilir.
+
+           c. Kas çeşitlerinin çalışma prensipleri (istemli - istemsiz) ve yorulma durumları çerçevesinde verilerek
+           ayrıntılı yapısına girilmez.
+
+F.6.2.2. Sindirim Sistemi
+
+Önerilen Süre: 6 ders saati
+
+Konu / Kavramlar: Sindirim sistemini oluşturan yapı ve organlar, fiziksel (mekanik) ve kimyasal sindirim, enzim-
+ler, karaciğer, pankreas, karaciğer ve pankreasın sindirimdeki görevleri
+
+F.6.2.2.1. Sindirim sistemini oluşturan yapı ve organların görevlerini modeller kullanarak açıklar.
+
+F.6.2.2.2. Besinlerin kana geçebilmesi için fiziksel (mekanik) ve kimyasal sindirime uğraması gerektiği çıkarımını yapar.
+
+           a. Kimyasal sindirim denklemlerine girilmeden sadece kimyasal (mekanik) ve fiziksel sindirimin
+           tanımları verilir.
+
+           b. Kimyasal sindirimde enzimlerin görev aldığı belirtilir ancak yapıları, çalışma mekanizmaları ve
+           isimlerine değinilmez.
+
+F.6.2.2.3. Sindirime yardımcı organların görevlerini açıklar.
+
+           Karaciğer ve pankreasın yapısına girilmeksizin sindirimdeki görevleri açıklanır ve salgıların ince
+           bağırsağa döküldüğü belirtilir.
+
+F.6.2.3. Dolaşım Sistemi
+
+Önerilen Süre: 6 ders saati
+
+Konu / Kavramlar: Dolaşım sistemini oluşturan yapı ve organlar, kalbin yapısı ve görevi, kan damarları, büyük
+ve küçük kan dolaşımı, kan grupları, kan bağışı, dolaşım sistemi
+
+F.6.2.3.1. Dolaşım sistemini oluşturan yapı ve organların görevlerini model kullanarak açıklar.
+
+           a. Kalbin dört odacığı, kalbi oluşturan yapılar ve isimleri verilmeden belirtilir.
+
+           b. Kalbi oluşturan yapıların ve kapakçıkların isimlerine yer verilmez.
+
+           c. Kalbin çalışma mekanizmasına değinilmez.
+
+           ç. Nabız ve tansiyona değinilir.
+
+           d. Lenf dolaşımına değinilmez.
+
+F.6.2.3.2. Büyük ve küçük kan dolaşımını şema üzerinde inceleyerek bunların görevlerini açıklar.
+
+           Atardamar, toplardamar ve kılcal damarların ayrıntılı yapısına girilmeden görevleri belirtilir.
+
+
+
+
+   32
+                                                                              Fen Bilimleri Dersi Öğretim Programı
+
+
+
+
+F.6.2.3.3. Kanın yapısını ve görevlerini tanımlar.
+          a. Kan hücrelerinin yapısı verilmeden sadece görevleri açıklanır.
+
+          b. Alyuvarlarda hemoglobin ile gaz alışverişine değinilmez.
+
+F.6.2.3.4. Kan grupları arasındaki kan alışverişini ifade eder.
+
+          a. Kan gruplarında moleküler temellere girilmez.
+
+          b. Kan alışverişinin, uygulamalarda aynı gruplar arasında yapılması esas alındığından “genel alıcı” ve
+          “genel verici” ifadeleri kullanılmaz.
+
+          c. Rh faktörüne kısaca değinilir ancak kan uyuşmazlığına girilmez.
+
+F.6.2.3.5. Kan bağışının toplum açısından önemini değerlendirir.
+
+          a. Kızılay‘a vurgu yapılır.
+
+          b. Kan bağışı sırasında dikkat edilmesi gereken hijyene vurgu yapılır.
+
+F.6.2.4. Solunum Sistemi
+
+Önerilen Süre: 4 ders saati
+
+Konu / Kavramlar: Solunum sistemini oluşturan yapı ve organlar, akciğerler
+
+F.6.2.4.1. Solunum sistemini oluşturan yapı ve organların görevlerini modeller kullanarak açıklar.
+
+          Gaz alışveriş mekanizması ve solunum gazlarının kandaki taşınımı anlatılmaz.
+
+F.6.2.5. Boşaltım Sistemi
+
+Önerilen Süre: 4 ders saati
+
+Konu / Kavramlar: Boşaltım, böbrekler, deri, akciğer, kalın bağırsak
+
+F.6.2.5.1. Boşaltım sistemini oluşturan yapı ve organları model üzerinde göstererek görevlerini özetler.
+
+          a. Böbreklerin boşaltım sistemindeki görev ve önemi vurgulanır fakat böbreğin ayrıntılı yapısı (nefron,
+          kabuk, havuzcuk, öz vb.) verilmez.
+
+          b. Kalın bağırsak, deri ve akciğerin yapısına girilmeden görevleri özetlenir.
+
+
+    F.6.3. Kuvvet ve Hareket / Fiziksel Olaylar
+
+    Bu ünitede öğrencilerin; kuvvetin özelliklerini fark etmeleri, bileşke kuvveti deneyle ve çizimle göstermeleri,
+dengelenmiş ve dengelenmemiş kuvvetleri ve bunların cisimlere etkilerini keşfetmeleri; sabit süratli hareket için
+yol, zaman ve sürat arasındaki ilişkiyi kavramaları, bu ilişkiyi grafik üzerinde göstermeleri ve grafikleri yorumla-
+maları amaçlanmaktadır.
+
+F.6.3.1. Bileşke Kuvvet
+
+Önerilen Süre: 8 ders saati
+
+Konu / Kavramlar: Kuvvetin özellikleri (yön, doğrultu, büyüklük), bileşke kuvvet (net kuvvet), aynı doğrultulu ve
+aynı yönlü kuvvetlerde bileşke kuvvet, aynı doğrultulu ve zıt yönlü kuvvetlerde bileşke kuvvet, dengelenmiş ve
+dengelenmemiş kuvvetler
+
+F.6.3.1.1. Bir cisme etki eden kuvvetin yönünü, doğrultusunu ve büyüklüğünü çizerek gösterir.
+
+
+
+
+                                                                                                                     33
+        Fen Bilimleri Dersi Öğretim Programı
+
+
+
+F.6.3.1.2. Bir cisme etki eden birden fazla kuvveti deneyerek gözlemler.
+
+           Aynı doğrultudaki kuvvetlerin bileşkesi üzerinde durulur. Doğrultuları farklı kuvvetlerin bileşkesine
+           girilmez.
+
+F.6.3.1.3. Dengelenmiş ve dengelenmemiş kuvvetleri, cisimlerin hareket durumlarını gözlemleyerek karşılaştırır.
+
+F.6.3.2. Sabit Süratli Hareket
+
+Önerilen Süre: 6 ders saati
+
+Konu / Kavramlar: Yol, zaman, sürat ve birimleri, sabit süratli hareketin yol-zaman ve sürat-zaman grafikleri
+
+F.6.3.2.1. Sürati tanımlar ve birimini ifade eder.
+
+           a. Sürat birimleri olarak metre/saniye (m/sn.) ve kilometre/saat (km/sa.) dikkate alınır.
+
+           b. Yer değiştirme ve hız kavramlarına girilmez.
+
+           c. Matematiksel bağıntılara girilmez.
+
+           ç. Birim dönüştürme yaptırılmaz.
+
+F.6.3.2.2. Yol, zaman ve sürat arasındaki ilişkiyi grafik üzerinde gösterir.
+
+
+    F.6.4. Madde ve Isı / Madde ve Doğası
+
+      Bu ünitede öğrencilerin; maddelerin hareketli taneciklerden oluştuğunu; maddede meydana gelen değişim-
+leri, kütle ve hacmi kullanarak maddenin yoğunluğunu hesaplayıp yoğunluğun canlılar için önemini kavramaları,
+ısı iletimi ve yalıtımını irdeleyerek ısı yalıtım teknolojisinin aile ve ülke ekonomisine katkısını, yakıt türlerini, ısı
+amaçlı kullanılan yakıtların çevre üzerindeki etkilerini kavramaları amaçlanmaktadır.
+
+F.6.4.1. Maddenin Tanecikli Yapısı
+
+Önerilen Süre: 6 ders saati
+
+Konu / Kavramlar: Tanecikli yapı, boşluklu yapı, hareketli yapı
+
+F.6.4.1.1. Maddelerin; tanecikli, boşluklu ve hareketli yapıda olduğunu ifade eder.
+
+           Hareketli yapı ile ilgili titreşim, öteleme ve dönme kavramlarına değinilir.
+
+F.6.4.1.2. Hâl değişimine bağlı olarak maddenin tanecikleri arasındaki boşluk ve taneciklerin hareketliliğinin
+değiştiğini deney yaparak karşılaştırır.
+
+F.6.4.2. Yoğunluk
+
+Önerilen Süre: 8 ders saati
+
+Konu / Kavramlar: Yoğunluk, yoğunluk birimi
+
+F.6.4.2.1. Yoğunluğu tanımlar.
+
+           a. Yoğunluğun madde için ayırt edici bir özellik olduğu vurgulanır.
+
+           b. Yoğunluk birimi olarak g/cm3 kullanılır.
+
+F.6.4.2.2. Tasarladığı deneyler sonucunda çeşitli maddelerin yoğunluklarını hesaplar.
+
+F.6.4.2.3. Birbiri içinde çözünmeyen sıvıların yoğunluklarını deney yaparak karşılaştırır.
+
+F.6.4.2.4. Suyun katı ve sıvı hâllerine ait yoğunlukları karşılaştırarak bu durumun canlılar için önemini tartışır.
+
+
+
+
+   34
+                                                                                      Fen Bilimleri Dersi Öğretim Programı
+
+
+
+F.6.4.3. Madde ve Isı
+
+Önerilen Süre: 8 ders saati
+
+Konu / Kavramlar: Isı iletkenliği, ısı yalıtkanlığı, ısı yalıtımı, ısı yalıtım malzemeleri
+
+F.6.4.3.1. Maddeleri, ısı iletimi bakımından sınıflandırır.
+
+F.6.4.3.2. Binalarda kullanılan ısı yalıtım malzemelerinin seçilme ölçütlerini belirler.
+
+F.6.4.3.3. Alternatif ısı yalıtım malzemeleri geliştirir.
+
+F.6.4.3.4. Binalarda ısı yalıtımının önemini, aile ve ülke ekonomisi ve kaynakların etkili kullanımı bakımından tar-
+tışır.
+
+F.6.4.4. Yakıtlar
+
+Önerilen Süre: 6 ders saati
+
+Konu / Kavramlar: Katı yakıtlar, sıvı yakıtlar, gaz yakıtlar, yenilenebilir ve yenilenemez enerji kaynakları
+
+F.6.4.4.1. Yakıtları, katı, sıvı ve gaz yakıtlar olarak sınıflandırıp yaygın şekilde kullanılan yakıtlara örnekler verir.
+
+           Fosil yakıtların sınırlı olduğu ve yenilenemez enerji kaynaklarından biri olduğu belirtilir ve yenilenebilir
+           enerji kaynaklarının önemi örnekler verilerek vurgulanır.
+
+F.6.4.4.2. Farklı türdeki yakıtların ısı amaçlı kullanımının, insan ve çevre üzerine etkilerini tartışır.
+
+F.6.4.4.3. Soba ve doğal gaz zehirlenmeleri ile ilgili alınması gereken tedbirleri araştırır ve rapor eder.
+
+
+    F.6.5. Ses ve Özellikleri / Fiziksel Olaylar
+
+    Bu ünitede öğrencilerin; sesin yayıldığı ortamları tahmin etmeleri ve bu tahminleri test etmeleri, farklı cisim-
+lerde üretilen seslerin farklı olduğunu ve aynı sesin farklı ortamlarda farklı duyulduğunu fark etmeleri, sesin sürat
+ve enerjiye sahip olduğunu kavramaları, sesin maddeyle etkileştiğini, etkileşim sonucunda sesin madde tarafın-
+dan soğurulduğunu veya yansıtıldığını gözlemlemeleri, akustik kavramını ve mimarideki akustik uygulamalarını
+kavramaları amaçlanmaktadır.
+
+F.6.5.1. Sesin Yayılması
+
+Önerilen Süre: 4 ders saati
+
+Konu / Kavramlar: Sesin katılarda yayılması, sesin sıvılarda yayılması, sesin gazlarda yayılması
+
+F.6.5.1.1. Sesin yayılabildiği ortamları tahmin eder ve tahminlerini test eder.
+
+F.6.5.2. Sesin Farklı Ortamlarda Farklı Duyulması
+
+Önerilen Süre: 6 ders saati
+
+Konu / Kavramlar: Farklı cisimlerde üretilen seslerin farklılığı, aynı sesin farklı ortamlarda farklı duyulması
+
+F.6.5.2.1. Ses kaynağının değişmesiyle seslerin farklı işitildiğini deneyerek keşfeder.
+
+F.6.5.2.2. Sesin yayıldığı ortamın değişmesiyle farklı işitildiğini deneyerek keşfeder.
+
+           Frekans kavramına girilmez.
+
+
+
+
+                                                                                                                             35
+        Fen Bilimleri Dersi Öğretim Programı
+
+
+
+F.6.5.3. Sesin Sürati
+
+Önerilen Süre: 4 ders saati
+
+Konu / Kavramlar: Sesin sürati, ses enerjisi
+
+F.6.5.3.1. Sesin farklı ortamlardaki süratini karşılaştırır.
+
+           a. Sesin boşlukta neden yayılmadığı belirtilir.
+
+           b. Işık ve sesin havadaki sürati; şimşek, yıldırım ve gök gürültüsü olayları üzerinden karşılaştırılır.
+
+           c. Sesin bir enerji türü olduğuna değinilir.
+
+F.6.5.4. Sesin Maddeyle Etkileşmesi
+
+Önerilen Süre: 8 ders saati
+
+Konu / Kavramlar: Sesin yansıması, sesin soğurulması, ses yalıtımı, akustik uygulamalar
+
+F.6.5.4.1. Sesin yansıma ve soğurulmasına örnekler verir.
+
+F.6.5.4.2. Sesin yayılmasını önlemeye yönelik tahminlerde bulunur ve tahminlerini test eder.
+
+F.6.5.4.3. Ses yalıtımının önemini açıklar.
+
+           Ses yalıtımı için geliştirilen teknolojik ve mimari uygulamalara değinilir.
+
+F.6.5.4.4. Akustik uygulamalarına örnekler verir.
+
+           Modern ve kültürel mimarideki uygulamalara vurgu yapılır. Örneğin Süleymaniye Camii’nin akustik
+           mimarisine atıf yapılır.
+
+F.6.5.4.5. Sesin yalıtımı veya akustik uygulamalarına örnek teşkil edecek ortam tasarımı yapar.
+
+
+    F.6.6. Vücudumuzdaki Sistemler ve Sağlığı / Canlılar ve Yaşam
+
+    Bu ünitede öğrencilerin; denetleyici ve düzenleyici sistemler, duyu organları, ilgili yapı ve organları bilmeleri,
+bunlara ait bilgi ve beceriler kazanmaları, sistemlerin sağlığı ve sistem sağlığını korumak için yapılması gereken-
+lere yönelik çözümler üretmelerine ilişkin bilgi ve becerileri kazanmaları amaçlanmaktadır.
+
+F.6.6.1. Denetleyici ve Düzenleyici Sistemler
+
+Önerilen Süre: 11 ders saati
+
+Konu / Kavramlar: Sinir sistemi, sinir sisteminin bölümleri, merkezî ve çevresel sinir sistemi, refleks, iç salgı
+bezleri, iç salgı bezlerinin görevleri, çocukluktan ergenliğe geçiş, ergen sağlığı
+
+F.6.6.1.1. Sinir sistemini, merkezî ve çevresel sinir sisteminin görevlerini model üzerinde açıklar.
+
+           a. Merkezî sinir sistemi beyin ve omurilik olarak ayrılır. Beynin bölümlerine değinilmez. Omurilik soğanı,
+           beyincik ve omuriliğin sadece görevleri verilir.
+
+           b. Belirtilen sinir sistemi kısımlarının ayrıntılı yapısına girilmez.
+
+           c. Reflekslere ayrıntıya girilmeden değinilir.
+
+F.6.6.1.2. İç salgı bezlerinin vücut için önemini fark eder.
+
+           a. İç salgı bezlerinin yapılarına girilmez.
+
+           b. Büyüme, tiroksin, adrenalin, glukagon ve insülin hormonuna değinilir.
+
+           c. Hormonal değişikliklerin ergenlik ile ilişkisine değinilir.
+
+
+
+   36
+                                                                                Fen Bilimleri Dersi Öğretim Programı
+
+
+
+
+F.6.6.1.3. Çocukluktan ergenliğe geçişte oluşan bedensel ve ruhsal değişimleri açıklar.
+
+          Diğer gelişim dönemleri ve özellikleri verilmez.
+
+F.6.6.1.4. Ergenlik döneminin sağlıklı bir şekilde geçirilebilmesi için nelerin yapılabileceğini, araştırma verilerine
+dayalı olarak tartışır.
+
+F.6.6.1.5. Denetleyici ve düzenleyici sistemlerin vücudumuzdaki diğer sistemlerin düzenli ve eş güdümlü çalış-
+masına olan etkisini tartışır.
+
+F.6.6.2. Duyu Organları
+
+Önerilen Süre: 4 ders saati
+
+Konu / Kavramlar: Duyu organları, duyu organlarının yapıları, duyu organlarının sağlığı, duyu organları arasın-
+daki ilişki, teknoloji
+
+F.6.6.2.1. Duyu organlarına ait yapıları model üzerinde göstererek açıklar.
+
+          Duyu organlarının ayrıntılı yapılarına girilmez.
+
+F.6.6.2.2. Koku alma ve tat alma duyuları arasındaki ilişkiyi, tasarladığı bir deneyle gösterir.
+
+F.6.6.2.3. Duyu organlarındaki kusurlara ve bu kusurların giderilmesinde kullanılan teknolojilere örnekler verir.
+
+          a. Göz kusurlarından miyopluk, hipermetropluk, astigmatlık ve şaşılığın sebeplerine değinilmeden
+          tedavi yöntemleri kısaca açıklanır.
+
+          b. Görme ve işitme engelli bireylerin yaşamlarını kolaylaştıran teknolojiler vurgulanır.
+
+F.6.6.2.4. Duyu organlarının sağlığını korumak için alınması gereken tedbirleri tartışır.
+
+F.6.6.3. Sistemlerin Sağlığı
+
+Önerilen Süre: 3 ders saati
+
+Konu / Kavramlar: Cücelik, devlik, diyabet, guatr, duyu organı hastalıkları, kemik kırılmaları, romatizma, ishal,
+ülser, kanser, sarılık, anemi, zatürre, grip, böbrek taşı, böbrek yetmezliği, diyaliz, alkol, sigara, organ bağışı, ilk
+yardım
+
+F.6.6.3.1. Sistemlerin sağlığı için yapılması gerekenleri araştırma verilerine dayalı olarak tartışır.
+
+          a. Sistem hastalıklarından Türkiye’de en sık rastlanan hastalıklara değinilir.
+
+          b. Bilinçsiz ilaç kullanımının zararları vurgulanır.
+
+          c. Alkol ve sigara gibi zararlı alışkanlıkların insan sağlığına etkilerine değinilir. Alkol ve sigara ile
+          mücadelede Yeşilaya vurgu yapılır.
+
+          ç. İlk yardım ile ilgili temel bilgiler verilir.
+
+F.6.6.3.2. Organ bağışının toplumsal dayanışma açısından önemini kavrar.
+
+
+
+
+                                                                                                                       37
+         Fen Bilimleri Dersi Öğretim Programı
+
+
+
+
+    F.6.7. Elektriğin İletimi / Fiziksel Olaylar
+
+    Bu ünitede öğrencilerin; elektriksel direncin bağlı olduğu faktörler, elektrik enerjisinin iletiminin hangi mad-
+delerle sağlanacağı, iletkenlerin özelliklerinin, değişiminin devrede ne gibi etkiler oluşturacağı, iletken ve yalıt-
+kan maddelerin günlük yaşamda hangi amaçlar için kullanıldığı hakkında bilgi ve beceriler kazanmaları amaç-
+lanmaktadır.
+
+F.6.7.1. İletken ve Yalıtkan Maddeler
+
+Önerilen Süre: 4 ders saati
+
+Konu / Kavramlar: İletken maddeler, yalıtkan maddeler, iletken ve yalıtkan maddelerin kullanım alanları
+
+F.6.7.1.1. Tasarladığı elektrik devresini kullanarak maddeleri, elektriği iletme durumlarına göre sınıflandırır.
+
+F.6.7.1.2. Maddelerin elektriksel iletkenlik ve yalıtkanlık özelliklerinin günlük yaşamda hangi amaçlar için kulla-
+nıldığını örneklerle açıklar.
+
+F.6.7.2. Elektriksel Direnç ve Bağlı Olduğu Faktörler
+
+Önerilen Süre: 8 ders saati
+
+Konu / Kavramlar: Elektriksel direnç, elektriksel direncin bağlı olduğu faktörler (kesit alanı, uzunluk, iletkenin
+cinsi)
+
+F.6.7.2.1. Bir elektrik devresindeki ampulün parlaklığının bağlı olduğu değişkenleri tahmin eder ve tahminlerini
+deneyerek test eder.
+
+            a. Ampulün parlaklığının değiştirilmesinde devredeki iletkenin uzunluğu, dik kesit alanı ve iletkenin
+            cinsi değişkenleri üzerinde durulur.
+
+            b. Elektriksel direnç ve bağlı olduğu faktörlerle ilgili olarak matematiksel bağıntıya girilmez.
+
+F.6.7.2.2. Elektriksel direnci tanımlar.
+
+            a. Ohm Yasası’na girilmez.
+
+            b. Elektriksel direnç, “maddelerin, elektrik enerjisinin iletimine karşı gösterdikleri zorluk” olarak
+            tanımlanır.
+
+            c. Akım kavramına girilmez.
+
+            ç. Direncin büyüklüğünün ölçülmesine ve birimine girilmez.
+
+F.6.7.2.3. Ampulün içindeki telin bir direncinin olduğunu fark eder.
+
+
+
+
+   38
+                                                                                                                 Fen Bilimleri Dersi Öğretim Programı
+
+
+
+
+                    7. SINIF FEN BİLİMLERİ DERSİ ÖĞRETİM PROGRAMI
+
+                                                                                                                    Kazanım         Süre
+                         No                                   Ünite Adı                      Konu Alanı Adı
+                                                                                                                     Sayısı Ders Saati Yüzde %
+                                            * Fen, Mühendislik ve Girişimcilik Uygulamaları bölümündeki yönergelere göre öğrencilerden yıl
+
+
+
+
+0 Fen, Mühendislik ve Girişimcilik
+                                            içerisinde uygulamalar yapması beklenir.
+                                     1      Güneş Sistemi ve Ötesi                         Dünya ve Evren               10                16             11,1
+                                     2      Hücre ve Bölünmeler                            Canlılar ve Yaşam            8                 16            11,1
+                                     3      Kuvvet ve Enerji                               Fiziksel Olaylar             8                 20            13,9
+
+
+
+
+         Uygulamaları
+                                     4      Saf Madde ve Karışımlar                        Madde ve Doğası              16                28             19,4
+                                     5      Işığın Madde ile Etkileşimi                    Fiziksel Olaylar             12                26            18,05
+                                     6      Canlılarda Üreme, Büyüme ve Gelişme            Canlılar ve Yaşam            7                 18            12,5
+                                     7      Elektrik Devreleri                             Fiziksel Olaylar             6                  8             5,6
+                                            Fen, Mühendislik ve Girişimcilik Uygulamaları: Yıl Sonu Bilim Şenliği (Öğrencilerin
+                                            yıl içerisinde ortaya çıkardıkları ürünü etkili bir şekilde sunmaları beklenir.)
+                                                                                                                                          12             8,3
+
+                                                                                                        Toplam          67               144            100
+
+
+                     F.7.1. Güneş Sistemi ve Ötesi / Dünya ve Evren
+
+     Bu ünitede öğrencilerin; Güneş sistemini ve Güneş sisteminde bulunan gök cisimlerini ve birbirleriyle olan
+ilişkileri tanımaları, teleskobun önemli bir gözlem aracı olması münasebetiyle gök bilimdeki önemini kavramaları
+ve teknoloji boyutu dikkate alınarak uzay araştırmalarının sağladığı katkılar hakkında bilgi ve beceriler kazanma-
+ları; uzay kirliliğinin sebeplerini tartışmaları; Türk-İslam bilim insanlarının uzay araştırmalarına yaptıkları katkıları
+anlamaları; yıldız, yıldız çeşitleri, takımyıldızlar, galaksileri tanımaları hedeflenmektedir.
+F.7.1.1. Uzay Araştırmaları
+Önerilen Süre: 8 ders saati
+Konu / Kavramlar: Uydu, uzay kirliliği, gökyüzü gözlem araçları
+F.7.1.1.1. Uzay teknolojilerini açıklar.
+                                         a. Yapay uydulara değinilir.
+                                         b. Türkiye’nin uzaya gönderdiği uydulara ve görevlerine değinilir.
+F.7.1.1.2. Uzay kirliliğinin nedenlerini ifade ederek bu kirliliğin yol açabileceği olası sonuçları tahmin eder.
+F.7.1.1.3. Teknoloji ile uzay araştırmaları arasındaki ilişkiyi açıklar.
+
+F.7.1.1.4. Teleskobun yapısını ve ne işe yaradığını açıklar.
+                                         a. Teleskop çeşitlerine değinilir.
+                                         b. Işık kirliliğine değinilir.
+F.7.1.1.5. Teleskobun gök bilimin gelişimindeki önemine yönelik çıkarımda bulunur.
+                                         a. Rasathane (gözlemevi) kurulma yerlerinin seçimine ve bu yerlerin taşıdığı şartlara değinilir.
+                                         b. Batılı gök bilimciler ve Türk İslam gök bilimcilerinin katkılarına değinilir.
+F.7.1.1.6. Basit bir teleskop modeli hazırlayarak sunar.
+
+
+
+
+                                                                                                                                                         39
+        Fen Bilimleri Dersi Öğretim Programı
+
+
+
+F.7.1.2. Güneş Sistemi Ötesi: Gök Cisimleri
+Önerilen Süre: 8 ders saati
+Konu / Kavramlar: Yıldız, takımyıldız, galaksi, kara delik
+F.7.1.2.1. Yıldız oluşum sürecinin farkına varır.
+           a. Bulutsu kavramına değinilir.
+           b. Bulutsu örnekleri verilir.
+           c. Karadelik kavramına değinilir.
+F.7.1.2.2. Yıldız kavramını açıklar.
+           a. Yıldız çeşitlerine değinilir.
+           b. Dünya'dan bakıldığı şekliyle görülen yıldız gruplarının, isimlendirmesi olan takımyıldızlara değinilir.
+           c. Gök cisimleri arası uzaklığın ışık yılı cinsinden ifade edildiğine değinilir.
+F.7.1.2.3. Galaksilerin yapısını açıklar.
+           a. Galaksi çeşitlerine değinilir.
+           b. Galaksi örnekleri olarak Samanyolu ve Andromeda galaksilerine değinilir.
+F.7.1.2.4. Evren kavramını açıklar.
+
+
+    F.7.2. Hücre ve Bölünmeler / Canlılar ve Yaşam
+
+     Bu ünitede öğrencilerin; hayvan ve bitki hücrelerini ayırt edebilmesi, hücre-doku-organ-sistem ve organizma
+ilişkisini kavraması amaçlanmaktadır. Ayrıca mitoz ve mayoz bölünme aşamalarını tanımlayabilmeleri, üreme
+hücrelerinin oluşumunu, mitoz ve mayoz arasındaki farklılıkları kavramasına ilişkin bilgi ve beceriler kazanmaları
+amaçlanmaktadır.
+
+F.7.2.1. Hücre
+
+Önerilen Süre: 6 ders saati
+
+Konu / Kavramlar: Hücre, bitki ve hayvan hücresi arasındaki benzerlik ve farklılıklar, dokular, hücre-doku-
+organ-sistem-organizma ilişkisi, DNA, gen, kromozom
+
+F.7.2.1.1. Hayvan ve bitki hücrelerini, temel kısımları ve görevleri açısından karşılaştırır.
+           a. Hücrenin temel kısımları için sadece hücre zarı, sitoplazma ve çekirdek verilir.
+           b. Hücre organellerinin ayrıntılı yapıları verilmeden sadece isim ve görevlerine değinilir.
+           c. DNA, gen ve kromozom kavramları arasındaki ilişkiden bahsedilir.
+F.7.2.1.2. Geçmişten günümüze, hücrenin yapısı ile ilgili görüşleri teknolojik gelişmelerle ilişkilendirerek tartışır.
+
+           Bilimsel bilgilerin kesin olmayıp değişebileceği ve gelişebileceği vurgulanır.
+F.7.2.1.3. Hücre-doku-organ-sistem-organizma ilişkisini açıklar.
+
+           Hücre-doku-organ-sistem-organizma kavramlarının tanımlarına ve aralarındaki ilişkilere değinilir.
+F.7.2.2. Mitoz
+
+Önerilen Süre: 4 ders saati
+
+Konu / Kavramlar: Hücre bölünmesi, mitozun evreleri, mitozda kromozomların önemi, mitozun canlılar için önemi
+
+F.7.2.2.1. Mitozun canlılar için önemini açıklar.
+
+F.7.2.2.2. Mitozun birbirini takip eden farklı evrelerden oluştuğunu açıklar.
+
+           Mitoz evrelerinin adları verilmez.
+
+
+   40
+                                                                                   Fen Bilimleri Dersi Öğretim Programı
+
+
+
+
+F.7.2.3. Mayoz
+
+Önerilen Süre: 6 ders saati
+
+Konu / Kavramlar: Üreme hücrelerinin mayozla oluşumu, mayozun canlılar için önemi, mayozu mitozdan ayıran
+özellikler
+
+F.7.2.3.1. Mayozun canlılar için önemini açıklar.
+           Mayoz evreleri sadece Mayoz I ve Mayoz II olarak verilir.
+F.7.2.3.2. Üreme ana hücrelerinde mayozun nasıl gerçekleştiğini model üzerinde gösterir.
+
+           Gamet oluşumları sırasında hücre isimlerine değinilmez. Sadece sperm ve yumurta verilir.
+F.7.2.3.3. Mayoz ve mitoz arasındaki farkları karşılaştırır.
+
+           Mayoz ve mitoz arasındaki farklılıklar verilirken bölünme evrelerindeki farklılıklara değinilmez.
+
+
+    F.7.3. Kuvvet ve Enerji / Fiziksel Olaylar
+
+    Bu ünitede öğrencilerin; kütle ve ağırlık kavramlarını öğrenmeleri ve aralarındaki ilişki ve farklılıkları kavra-
+maları, yer çekiminden hareketle gök cisimleri arasındaki kütle çekiminin varlığından haberdar olmaları, fizik-
+sel anlamda yapılan işi tanımlamaları, işi etkileyen faktörleri ve işin birimini ifade etmeleri, kuvvet-iş ve enerji
+arasındaki ilişkiyi fark etmeleri, enerji çeşitlerini sınıflandırmaları, sürtünme kuvvetinin enerji üzerindeki etkisini
+gözlemlemeleri, hava ve su direncinin etkilerine yönelik tasarımlar yapmaları, bilgi ve beceriler kazanmaları
+amaçlanmaktadır.
+
+F.7.3.1. Kütle ve Ağırlık İlişkisi
+
+Önerilen Süre: 6 ders saati
+
+Konu / Kavramlar: Kütle, ağırlık, yer çekimi, kütle çekimi
+
+F.7.3.1.1. Kütleye etki eden yer çekimi kuvvetini ağırlık olarak adlandırır.
+
+           a. Ağırlığın bir kuvvet olduğu vurgulanır.
+           b. Dinamometre kullanılarak ağırlık ölçümü yaptırılır.
+F.7.3.1.2. Kütle ve ağırlık kavramlarını karşılaştırır.
+F.7.3.1.3. Yer çekimini kütle çekimi olarak gök cisimleri temelinde açıklar.
+
+           Matematiksel bağıntılara girilmez.
+F.7.3.2. Kuvvet, İş ve Enerji İlişkisi
+
+Önerilen Süre: 6 ders saati
+Konu / Kavramlar: Fiziksel iş, kinetik enerji, çekim potansiyel enerjisi, esneklik potansiyel enerjisi
+
+F.7.3.2.1. Fiziksel anlamda yapılan işin, uygulanan kuvvet ve alınan yolla ilişkili olduğunu açıklar.
+
+           a. İşin birimi joule olarak verilir.
+           b. Matematiksel bağıntılara girilmez.
+F.7.3.2.2. Enerjiyi iş kavramı ile ilişkilendirerek, kinetik ve potansiyel enerji olarak sınıflandırır.
+
+           a. Potansiyel enerji, çekim potansiyel enerjisi ve esneklik potansiyel enerjisi şeklinde sınıflandırılır.
+           b. Potansiyel enerjinin kütle ve yüksekliğe, kinetik enerjinin kütle ve sürate bağlı olduğu belirtilir.
+           c. Matematiksel bağıntılara girilmez.
+
+
+
+
+                                                                                                                          41
+        Fen Bilimleri Dersi Öğretim Programı
+
+
+
+F.7.3.3. Enerji Dönüşümleri
+
+Önerilen Süre: 8 ders saati
+
+Konu / Kavramlar: Enerjinin korunumu, sürtünme ile kinetik enerji kaybı, hava ve su direnci
+
+F.7.3.3.1. Kinetik ve potansiyel enerji türlerinin birbirine dönüşümünden hareketle enerjinin korunduğu sonucunu çıkarır.
+
+F.7.3.3.2. Sürtünme kuvvetinin kinetik enerji üzerindeki etkisini örneklerle açıklar.
+           a. Sürtünme kuvvetinin kinetik enerji üzerindeki etkisinin örneklendirilmesinde sürtünmeli yüzeyler,
+           hava direnci ve su direnci dikkate alınır.
+           b. Sürtünen yüzeylerin ısındığı, basit bir deneyle gösterilerek kinetik enerji kaybının ısı enerjisine
+           dönüştüğü vurgulanır.
+F.7.3.3.3. Hava veya su direncinin etkisini azaltmaya yönelik bir araç tasarlar.
+
+           a. Hava veya su direncinin farklı taşıtların tasarımındaki etkisine değinilir.
+           b. Tasarımlar çizimle ortaya konulur, üç boyutlu bir ürüne dönüştürülmez.
+
+
+    F.7.4. Saf Madde ve Karışımlar / Madde ve Doğası
+
+    Bu ünitede öğrencilerin atomun; proton, nötron ve elektrondan oluşan yapısını bilmeleri; saf ve saf olmayan
+madde temelinde element, bileşik ve karışımları sınıflandırmaları amaçlanmaktadır. Ayrıca, karışımların ayrılma-
+sında kullanılan bazı ayırma tekniklerini, elementlerin sembollerini ve bileşiklerin formüllerini öğrenmeleri, çözün-
+me olayını, çözücü ve çözünen moleküllerin ilişkisiyle açıklamaları, evsel katı ve sıvı atıkların kontrol edilmesi,
+geri dönüşüm ve yeniden kullanmanın önemini kavramaları amaçlanmaktadır.
+
+F.7.4.1. Maddenin Tanecikli Yapısı
+
+Önerilen Süre: 6 ders saati
+
+Konu / Kavramlar: Atom (çekirdek, katman, proton, nötron, elektron), bilimsel bilginin özelliği, molekül
+
+F.7.4.1.1. Atomun yapısını ve yapısındaki temel parçacıklarını söyler.
+
+F.7.4.1.2. Geçmişten günümüze atom kavramı ile ilgili düşüncelerin nasıl değiştiğini sorgular.
+
+           a. Atom teorileri ile ilgili ayrıntıya girilmez.
+           b. Bilimsel bilginin zamanla değişebileceğine vurgu yapılır.
+           c. Bilimsel bilgi türlerinden teori hakkında genel bilgi verilir.
+F.7.4.1.3. Aynı veya farklı atomların bir araya gelerek molekül oluşturacağını ifade eder.
+
+F.7.4.1.4. Çeşitli molekül modelleri oluşturarak sunar.
+
+F.7.4.2. Saf Maddeler
+
+Önerilen Süre: 6 ders saati
+
+Konu / Kavramlar: Element, elementlerin sembolleri, bileşik, bileşik formülleri
+
+F.7.4.2.1. Saf maddeleri, element ve bileşik olarak sınıflandırarak örnekler verir.
+
+F.7.4.2.2. Periyodik sistemdeki ilk 18 elementin ve yaygın elementlerin (altın, gümüş, bakır, çinko, kurşun, civa,
+platin, demir ve iyot) isimlerini, sembollerini ve bazı kullanım alanlarını ifade eder.
+
+F.7.4.2.3. Yaygın bileşiklerin formüllerini, isimlerini ve bazı kullanım alanlarını ifade eder.
+
+
+
+
+   42
+                                                                                  Fen Bilimleri Dersi Öğretim Programı
+
+
+
+F.7.4.3. Karışımlar
+
+Önerilen Süre: 6 ders saati
+
+Konu / Kavramlar: Homojen karışım, çözelti (çözünen, çözücü), heterojen karışım, çözünme, çözünme hızına
+etki eden faktörler
+
+F.7.4.3.1. Karışımları, homojen ve heterojen olarak sınıflandırarak örnekler verir.
+
+          Homojen karışımların çözelti olarak da ifade edilebileceği vurgulanır.
+F.7.4.3.2. Günlük yaşamda karşılaştığı çözücü ve çözünenleri kullanarak çözelti hazırlar.
+
+F.7.4.3.3. Çözünme hızına etki eden faktörleri deney yaparak belirler.
+          a. Temas yüzeyi, karıştırma ve sıcaklık faktörlerine değinilir.
+          b. Bağımlı, bağımsız ve kontrol edilen değişken kavram gruplarına vurgu yapılır.
+
+
+F.7.4.4. Karışımların Ayrılması
+
+Önerilen Süre: 4 ders saati
+
+Konu / Kavramlar: Buharlaştırma, yoğunluk farkı, damıtma
+
+F.7.4.4.1. Karışımların ayrılması için kullanılabilecek yöntemlerden uygun olanı seçerek uygular.
+
+          Karışımların ayrılmasında kullanılabilecek yöntemlerden buharlaştırma, yoğunluk farkı ve damıtma
+          üzerinde durulur.
+
+F.7.4.5. Evsel Atıklar ve Geri Dönüşüm
+
+Önerilen Süre: 6 ders saati
+
+Konu / Kavramlar: Evsel katı atık maddeler, evsel sıvı atık maddeler, geri dönüşüm, yeniden kullanma
+
+F.7.4.5.1. Evsel atıklarda geri dönüştürülebilen ve dönüştürülemeyen maddeleri ayırt eder.
+
+F.7.4.5.2. Evsel katı ve sıvı atıkların geri dönüşümüne ilişkin proje tasarlar.
+
+F.7.4.5.3. Geri dönüşümü, kaynakların etkili kullanımı açısından sorgular.
+
+          Geri dönüşüm tesislerinin ekonomiye katkısı vurgulanır.
+
+F.7.4.5.4. Yakın çevresinde atık kontrolüne özen gösterir.
+
+          a. Atık kontrolü ile ilgili kamu ve sivil toplum kuruluşlarının çalışmalarına değinilir.
+
+          b. Tıbbi atık ile temas etmemesi gerektiği hatırlatılır.
+
+F.7.4.5.5. Yeniden kullanılabilecek eşyalarını, ihtiyacı olanlara iletmeye yönelik proje geliştirir.
+
+
+    F.7.5. Işığın Madde ile Etkileşimi / Fiziksel Olaylar
+
+    Bu ünitede öğrencilerin; ayna ve mercek çeşitleri ve kullanım alanları; ışığın soğurulması, bu bağlamda
+cisimlerin renkli görünmeleri ve güneş enerjisinden yararlanma yolları hakkında bilgi ve beceriler kazanmaları;
+ayrıca gelecekteki güneş enerjisinden yararlanma sistemlerini tasarlamaları, böylece yaratıcı ve yenilikçi düşün-
+me becerisi kazanmaları amaçlanmaktadır.
+
+F.7.5.1. Işığın Soğurulması
+
+Önerilen Süre: 10 ders saati
+
+Konu / Kavramlar: Işığın soğurulması, cisimlerin siyah, beyaz ve renkli görünmesi, güneş enerjisi
+
+F.7.5.1.1. Işığın madde ile etkileşimi sonucunda madde tarafından soğurulabileceğini keşfeder.
+
+                                                                                                                         43
+        Fen Bilimleri Dersi Öğretim Programı
+
+
+
+
+F.7.5.1.2. Beyaz ışığın tüm ışık renklerinin bileşiminden oluştuğu sonucunu çıkarır.
+
+F.7.5.1.3. Gözlemleri sonucunda cisimlerin, siyah, beyaz ve renkli görünmesinin nedenini, ışığın yansıması ve
+soğurulmasıyla ilişkilendirir.
+
+           Renk filtrelerine girilmez.
+
+F.7.5.1.4. Güneş enerjisinin günlük yaşam ve teknolojideki yenilikçi uygulamalarına örnekler verir.
+
+           Kaynakların etkili kullanımı bakımından güneş enerjisinin önemi vurgulanır.
+
+F.7.5.1.5. Güneş enerjisinden gelecekte nasıl yararlanılacağına ilişkin ürettiği fikirleri tartışır.
+
+F.7.5.2. Aynalar
+
+Önerilen Süre: 6 ders saati
+
+Konu / Kavramlar: Düz ayna, çukur ayna, tümsek ayna
+
+F.7.5.2.1. Ayna çeşitlerini gözlemleyerek kullanım alanlarına örnekler verir.
+
+F.7.5.2.2. Düz, çukur ve tümsek aynalarda oluşan görüntüleri karşılaştırır.
+
+           a. Özel ışınlarla görüntü çizimine girilmez.
+
+           b. Matematiksel bağıntılara girilmez.
+
+           c. Çukur aynada cismin görüntüsünün özelliklerinin (büyük / küçük, ters / düz) cismin aynaya olan
+           uzaklığına göre değişebileceği belirtilir.
+
+F.7.5.3. Işığın Kırılması ve Mercekler
+
+Önerilen Süre: 10 ders saati
+
+Konu / Kavramlar: Işığın kırılması, mercekler (ince kenarlı mercekler, kalın kenarlı mercekler), odak noktası
+
+F.7.5.3.1. Ortam değiştiren ışığın izlediği yolu gözlemleyerek kırılma olayının sebebini ortam değişikliği ile ilişkilendirir.
+
+           a. Tam yansımaya ve prizmalarda kırılmaya girilmez.
+
+           b. Snell (Kırılma) Yasası'na girilmez.
+
+F.7.5.3.2. Işığın kırılmasını, ince ve kalın kenarlı mercekler kullanarak deneyle gözlemler.
+
+F.7.5.3.3. İnce ve kalın kenarlı merceklerin odak noktalarını deneyerek belirler.
+
+           a. Ormanlık alanlara bırakılan cam atıklarının yangın riski oluşturabileceğine değinilir.
+
+           b. Özel ışınlarla görüntü çizimine girilmez.
+
+           c. Matematiksel bağıntılara girilmez.
+
+           ç. İnce ve kalın kenarlı merceklerin odak noktaları çizimle gösterilir.
+
+F.7.5.3.4. Merceklerin günlük yaşam ve teknolojideki kullanım alanlarına örnekler verir.
+
+F.7.5.3.5. Ayna veya mercekleri kullanarak bir görüntüleme aracı tasarlar.
+
+           Öncelikle tasarımını çizimle ifade etmesi istenir. İmkânlar uygunsa üç boyutlu modele dönüştürmesi
+           istenebilir.
+
+
+
+
+   44
+                                                                              Fen Bilimleri Dersi Öğretim Programı
+
+
+
+
+    F.7.6. Canlılarda Üreme, Büyüme ve Gelişme / Canlılar ve Yaşam
+
+    Bu ünitede öğrencilerin; insanın üreme, büyüme ve gelişme süreçlerini açıklayabilmeleri ve ergen sağlığı
+için alınabilecek tedbirleri tartışmalarına ilişkin bilgi ve beceriler kazanmaları amaçlanmaktadır. Ayrıca bitki ve
+hayvanlardaki üreme, büyüme ve gelişme süreçlerini karşılaştırmaları, büyüme ve gelişmeye etki eden faktörleri
+keşfetmeleri ve bir bitki veya bir hayvanın bakımını üstlenmeleri ve sorumluluk kazanmalarına ilişkin bilgi ve be-
+ceriler kazanmaları amaçlanmaktadır.
+
+F.7.6.1. İnsanda Üreme, Büyüme ve Gelişme
+
+Önerilen Süre: 6 ders saati
+
+Konu / Kavramlar: İnsanda üreme, insanda üremeyi sağlayan yapı ve organlar, sperm, yumurta, zigot, embri-
+yo, fetüs ve bebek arasındaki ilişki
+
+F.7.6.1.1. İnsanda üremeyi sağlayan yapı ve organları şema üzerinde göstererek açıklar.
+
+           a. Üreme hücrelerinin yapıları verilmez.
+
+           b. Neslin devamı için üreme hücrelerinin oluşturulduğu vurgulanır.
+
+           c. Üreme sistemi sağlığında hijyenin önemi vurgulanır.
+
+F.7.6.1.2. Sperm, yumurta, zigot, embriyo, fetüs ve bebek arasındaki ilişkiyi açıklar.
+
+           Embriyonun gelişim evrelerine girilmez.
+
+F.7.6.1.3. Embriyonun sağlıklı gelişebilmesi için alınması gereken tedbirleri, araştırma verilerine dayalı olarak
+tartışır.
+
+F.7.6.2. Bitki ve Hayvanlarda Üreme, Büyüme ve Gelişme
+
+Önerilen Süre: 12 ders saati
+
+Konu / Kavramlar: Eşeysiz üreme (vejetatif üreme, bölünme, tomurcuklanma ve rejenerasyon), eşeyli üreme,
+büyüme ve gelişme
+
+F.7.6.2.1. Bitki ve hayvanlardaki üreme çeşitlerini karşılaştırır.
+
+           a. Eşeyli üreme türlerine girilmez fakat eşeysiz üreme türlerine örnek verilerek değinilir.
+
+           b. Metagenez (döl almaşı) konularına değinilmez.
+
+           c. Hayvanlardaki iç ve dış döllenme ile iç ve dış gelişmeye değinilmez. Başkalaşım, doğurarak ve
+           yumurtayla çoğalma konularına kısaca değinilir.
+
+F.7.6.2.2. Bitki ve hayvanlardaki büyüme ve gelişme süreçlerini örnekler vererek açıklar.
+
+           a. Tohumun çimlenmesini etkileyen faktörlerle ilgili olarak bağımlı, bağımsız ve kontrol edilen değiş-
+           kenleri içeren bir deney yapılması sağlanır.
+
+           b.Çiçekli bir bitki örneği üzerinde durulur.
+
+F.7.6.2.3. Bitki ve hayvanlarda büyüme ve gelişmeye etki eden temel faktörleri açıklar.
+
+F.7.6.2.4. Bir bitki veya hayvanın bakımını üstlenir ve gelişim sürecini rapor eder.
+
+
+
+
+                                                                                                                     45
+        Fen Bilimleri Dersi Öğretim Programı
+
+
+
+
+    F.7.7. Elektrik Devreleri / Fiziksel Olaylar
+
+     Bu ünitede öğrencilerin; seri ve paralel bağlama çeşitlerini dikkate alarak devre çizmeleri ve kurmaları ve
+buna bağlı olarak devredeki lambanın parlaklığının değişebileceğini fark etmeleri, elektrik enerjisinin teknolojik
+uygulamaları da dikkate alınarak ısı, ışık ve hareket enerjisine dönüşümü hakkında bilgi ve beceriler kazanmala-
+rı; ayrıca gelecekteki özgün aydınlatma sistemlerini tasarlamaları, böylece yaratıcı ve yenilikçi düşünme bece-
+risi kazanmaları amaçlanmaktadır.
+
+F.7.7.1. Ampullerin Bağlanma Şekilleri
+
+Önerilen Süre: 8 ders saati
+
+Konu / Kavramlar: Seri bağlama, paralel bağlama, elektrik akımı, gerilim
+
+F.7.7.1.1. Seri ve paralel bağlı ampullerden oluşan bir devre şeması çizer.
+
+F.7.7.1.2. Ampullerin seri ve paralel bağlandığı durumlardaki parlaklıklarını devre üzerinde gözlemleyerek çıka-
+rımda bulunur.
+
+F.7.7.1.3. Elektrik akımını tanımlar.
+
+F.7.7.1.4. Elektrik enerjisinin devrelere akım yoluyla aktarıldığını açıklar.
+
+F.7.7.1.5. Bir devre elemanının uçları arasındaki gerilim ile üzerinden geçen akımı ilişkilendirir.
+
+           a. Gerilim kavramı piller üzerinden açıklanır.
+
+           b. Bir iletkende gerilim, akım ve direnç arasındaki ilişki Ohm Yasası üzerinden açıklanır. Matematiksel
+           hesaplamalara girilmez.
+
+F.7.7.1.6. Özgün bir aydınlatma aracı tasarlar.
+
+           Öncelikle tasarımını çizimle ifade etmesi istenir. Şartlar uygunsa üç boyutlu modele dönüştürmesi
+           istenebilir.
+
+
+
+
+   46
+                                                                                                                Fen Bilimleri Dersi Öğretim Programı
+
+
+
+
+                    8. SINIF FEN BİLİMLERİ DERSİ ÖĞRETİM PROGRAMI
+
+                                                                                                                   Kazanım         Süre
+                         No                                 Ünite Adı                       Konu Alanı Adı
+                                                                                                                    Sayısı Ders Saati Yüzde %
+                                           * Fen, Mühendislik ve Girişimcilik Uygulamaları bölümündeki yönergelere göre öğrencilerden yıl
+
+
+
+
+0 Fen, Mühendislik ve Girişimcilik
+                                           içerisinde uygulamalar yapması beklenir.
+                                     1     Mevsimler ve İklim                             Dünya ve Evren               3                 14            9,7
+                                     2     DNA ve Genetik Kod                             Canlılar ve Yaşam            13                22            15,3
+                                     3     Basınç                                         Fiziksel Olaylar             3                 10            6,9
+
+
+
+
+         Uygulamaları
+                                     4     Madde ve Endüstri                              Madde ve Doğası              17                28            19,4
+                                     5     Basit Makineler                                Fiziksel Olaylar             2                 10            6,9
+                                     6     Enerji Dönüşümleri ve Çevre Bilimi             Canlılar ve Yaşam            12                24            16,7
+                                     7     Elektrik Yükleri ve Elektrik Enerjisi          Fiziksel Olaylar             11                24            16,7
+                                           Fen, Mühendislik ve Girişimcilik Uygulamaları: Yıl Sonu Bilim Şenliği (Öğrencilerin
+                                                                                                                                         12            8,3
+                                           yıl içerisinde ortaya çıkardıkları ürünü etkili bir şekilde sunmaları beklenir.)
+                                                                                                       Toplam          61               144            100
+
+
+                     F.8.1. Mevsimler ve İklim / Dünya ve Evren
+
+    Bu ünitede öğrencilerin; mevsimlerin oluşumunda Dünya'nın hareketlerinin, konumunun ve birim yüzeye dü-
+şen ışığın etkisini kavramaları; iklimlerin oluşumu ve hava olayları hakkında bilgi edinmeleri; iklim bilimi hakkında
+bilgi sahibi olmaları; küresel iklim değişiklikleri ve etkileri hakkında bilgi ve beceriler kazanmaları hedeflenmek-
+tedir.
+F.8.1.1. Mevsimlerin Oluşumu
+Önerilen Süre: 8 ders saati
+Konu / Kavramlar: Dünya’nın dönme ekseni, dolanma düzlemi, ısı enerjisi, mevsimler
+F.8.1.1.1. Mevsimlerin oluşumuna yönelik tahminlerde bulunur.
+                                         a. Dünya’nın dönme ekseni olduğuna değinilir.
+
+                                         b. Dünya’nın dönme ekseni ile Güneş etrafındaki dolanma düzlemi arasındaki ilişkiye değinilir.
+
+                                         c. Işığın birim yüzeye düşen enerji miktarının mevsimler üzerindeki etkisine değinilir.
+
+F.8.1.2. İklim ve Hava Hareketleri
+Önerilen Süre: 6 ders saati
+Konu / Kavramlar: : İklim, iklim bilimi, iklim bilimci, küresel iklim değişiklikleri
+F.8.1.2.1. İklim ve hava olayları arasındaki farkı açıklar.
+F.8.1.2.2. İklim biliminin (klimatoloji) bir bilim dalı olduğunu ve bu alanda çalışan uzmanlara iklim bilimci (klima-
+tolog) adı verildiğini söyler.
+
+
+
+
+                                                                                                                                                       47
+        Fen Bilimleri Dersi Öğretim Programı
+
+
+
+
+    F.8.2. DNA ve Genetik Kod / Canlılar ve Yaşam
+
+   Bu ünitede öğrencilerin; DNA ve genetik kod ile ilişkili kavramları açıklamaları ve aralarındaki ilişkileri keşfet-
+meleri, kalıtım, mutasyon, modifikasyon, adaptasyon, seçilim, varyasyon, genetik mühendisliği ve biyoteknoloji
+uygulamalarının farkında olmaları ve olumlu/olumsuz etkilerini tartışmalarına ilişkin bilgi ve beceriler kazanmaları
+amaçlanmaktadır.
+F.8.2.1. DNA ve Genetik Kod
+
+Önerilen Süre: 4 ders saati
+
+Konu / Kavramlar: DNA’nın yapısı, DNA’nın kendini eşlemesi, nükleotid, gen, kromozom
+
+F.8.2.1.1. Nükleotid, gen, DNA ve kromozom kavramlarını açıklayarak bu kavramlar arasında ilişki kurar.
+
+           Bazların isimleri verilirken pürin ve pirimidin ayrımına girilmez.
+F.8.2.1.2. DNA’nın yapısını model üzerinde gösterir.
+
+           a. Hidrojen, glikozit, ester, fosfodiester bağlarına girilmez.
+
+           b. DNA’daki hataların onarılıp onarılmadığı belirtilir.
+
+           c. DNA’daki nükleotid hesaplamaları verilmez.
+
+F.8.2.1.3. DNA’nın kendini nasıl eşlediğini ifade eder.
+
+           a. Replikasyon ifadesi kullanılmaz.
+
+           b. Eşlenme deneyleri anlatılmaz.
+
+           c. Eşlenme ile ilgili hesaplama sorularına girilmez.
+
+F.8.2.2. Kalıtım
+
+Önerilen Süre: 10 ders saati
+
+Konu / Kavramlar: Gen, genotip, fenotip, saf döl, melez döl, baskın, çekinik, çaprazlama, cinsiyet, akraba evlilik-
+leri
+
+F.8.2.2.1. Kalıtım ile ilgili kavramları tanımlar.
+
+           a. Gen, fenotip, genotip, saf döl ve melez döl kavramlarına değinilir.
+
+           b. Baskın ve çekinik gen kavramlarına değinilir.
+
+F.8.2.2.2. Tek karakter çaprazlamaları ile ilgili problemler çözerek sonuçlar hakkında yorum yapar.
+
+           a. Çaprazlamalarda sadece bezelye karakterleri kullanılır.
+
+           b. Diğer canlılarda da karakterlerin aktarımının benzer olduğu vurgulanır.
+
+           c. İnsanda çocuğun cinsiyetinin babadan gelen eşey kromozomu ile belirlendiği vurgulanır.
+
+F.8.2.2.3. Akraba evliliklerinin genetik sonuçlarını tartışır.
+
+F.8.2.3. Mutasyon ve Modifikasyon
+
+Önerilen Süre: 2 ders saati
+
+Konu / Kavramlar: Mutasyon, modifikasyon
+
+F.8.2.3.1. Örneklerden yola çıkarak mutasyonu açıklar.
+
+F.8.2.3.2. Örneklerden yola çıkarak modifikasyonu açıklar.
+
+F.8.2.3.3. Mutasyonla modifikasyon arasındaki farklar ile ilgili çıkarımda bulunur.
+
+
+
+   48
+                                                                                Fen Bilimleri Dersi Öğretim Programı
+
+
+
+
+F.8.2.4. Adaptasyon (Çevreye Uyum)
+
+Önerilen Süre: 2 ders saati
+
+Konu / Kavramlar: Adaptasyon, doğal seçilim, varyasyon
+
+F.8.2.4.1. Canlıların yaşadıkları çevreye uyumlarını gözlem yaparak açıklar.
+
+           Adaptasyonların kalıtsal olduğu vurgulanır.
+
+F.8.2.5. Biyoteknoloji
+
+Önerilen Süre: 4 ders saati
+
+Konu / Kavramlar: Genetik mühendisliği,yapay seçilim, biyoteknolojik çalışmalar, biyoteknoloji uygulamalarının
+çevreye etkisi
+
+F.8.2.5.1. Genetik mühendisliğini ve biyoteknolojiyi ilişkilendirir.
+
+           Islah, aşılama, gen aktarımı, klonlama, gen tedavisi örnekleri üzerinde durulur.
+
+F.8.2.5.2. Biyoteknolojik uygulamalar kapsamında oluşturulan ikilemlerle bu uygulamaların insanlık için yararlı
+ve zararlı yönlerini tartışır.
+
+F.8.2.5.3. Gelecekteki genetik mühendisliği ve biyoteknoloji uygulamalarının neler olabileceği hakkında tah-
+minde bulunur.
+
+
+    F.8.3. Basınç / Fiziksel Olaylar
+
+   Bu ünitede öğrencilerin; katı, sıvı ve gaz basınçlarını ve bu basınçları etkileyen faktörler hakkında bilgi ve
+beceriler kazanmaları, aynı zamanda basıncın günlük hayattaki uygulamalarını fark etmeleri amaçlanmaktadır.
+
+F.8.3.1. Basınç
+
+Önerilen Süre: 10 ders saati
+
+Konu / Kavramlar: Basınç, katı basıncını etkileyen değişkenler, sıvı basıncını etkileyen değişkenler, basıncın
+günlük yaşam ve teknolojideki uygulamaları
+
+F.8.3.1.1. Katı basıncını etkileyen değişkenleri deneyerek keşfeder.
+
+           Basınç birimi olarak Pascal verilir. Matematiksel bağıntılara girilmez.
+
+F.8.3.1.2. Sıvı basıncını etkileyen değişkenleri tahmin eder ve tahminlerini test eder.
+
+           a. Gazların da sıvılara benzer şekilde basınç uyguladıkları belirtilir. Açık hava basıncı örneklendirilir.
+
+           b. Matematiksel bağıntılara girilmez.
+
+           c. Gaz basıncını etkileyen değişkenlere girilmez.
+
+F.8.3.1.3. Katı, sıvı ve gazların basınç özelliklerinin günlük yaşam ve teknolojideki uygulamalarına örnekler verir.
+
+           a. Sıvı basıncı ile ilgili Pascal prensibinin uygulamalarından örnekler verilir.
+
+           b. Bilimsel bilgi türü olarak ilke ve prensiplere vurgu yapılır.
+
+
+
+
+                                                                                                                       49
+        Fen Bilimleri Dersi Öğretim Programı
+
+
+
+
+    F.8.4. Madde ve Endüstri / Madde ve Doğası
+
+   Bu ünitede öğrencilerin; elementleri metal, ametal ve soygaz olarak sınıflandırıldığını bilmeleri, maddede
+meydana gelen değişimleri, fiziksel ve kimyasal değişim olarak sınıflandırmaları; asit-baz kavramları ve asit yağ-
+murlarına ilişkin bilgi ve beceriler kazanmaları amaçlanmaktadır.
+
+F.8.4.1. Periyodik Sistem
+
+Önerilen Süre: 4 ders saati
+
+Konu / Kavramlar: Grup, periyot, periyodik sistemin sınıflandırılması
+
+F.8.4.1.1. Periyodik sistemde, grup ve periyotların nasıl oluşturulduğunu açıklar.
+
+           Periyodik sisteme duyulan ihtiyaç ve periyodik sistemin oluşturulma süreci ayrıntıya girilmeden
+           vurgulanır.
+
+F.8.4.1.2. Elementleri periyodik tablo üzerinde metal, yarımetal ve ametal olarak sınıflandırır.
+
+           a. Elementlerin özelliklerine girilmez.
+
+           b. Soygazların üzerinde durulur.
+
+F.8.4.2. Fiziksel ve Kimyasal Değişimler
+
+Önerilen Süre: 4 ders saati
+
+Konu / Kavramlar: Fiziksel değişim, kimyasal değişim
+
+F.8.4.2.1. Fiziksel ve kimyasal değişim arasındaki farkları, çeşitli olayları gözlemleyerek açıklar.
+F.8.4.3. Kimyasal Tepkimeler
+Önerilen Süre: 3 ders saati
+Konu / Kavramlar: Kimyasal tepkimelerin oluşumu, kütlenin korunumu
+F.8.4.3.1. Bileşiklerin kimyasal tepkime sonucunda oluştuğunu bilir.
+           Kimyasal tepkime denklemlerine formüller kullanılarak girilmez.
+
+F.8.4.4. Asitler ve Bazlar
+Önerilen Süre: 8 ders saati
+Konu / Kavramlar: Asit, baz, pH, asit yağmurları, asit yağmurlarına karşı çözüm önerileri
+F.8.4.4.1. Asit ve bazların genel özelliklerini ifade eder.
+F.8.4.4.2. Asit ve bazlara günlük yaşamdan örnekler verir.
+F.8.4.4.3. Günlük hayatta ulaşılabilecek malzemeleri asit-baz ayracı olarak kullanır.
+F.8.4.4.4. Maddelerin asitlik ve bazlık durumlarına ilişkin pH değerlerini kullanarak çıkarımda bulunur.
+           Konu ile ilgili deney yolu ile çıkarımlarda bulunmaları sağlanır.
+
+F.8.4.4.5. Asit ve bazların çeşitli maddeler üzerindeki etkilerini gözlemler.
+F.8.4.4.6. Asit ve bazların temizlik malzemesi olarak kullanılması esnasında oluşabilecek tehlikelerle ilgili gerekli
+tedbirleri alır.
+F.8.4.4.7. Asit yağmurlarının önlenmesine yönelik çözüm önerileri sunar.
+           Asit yağmurlarının oluşum sebepleri ve sonuçlarına değinilir.
+
+F.8.4.5. Maddenin Isı ile Etkileşimi
+Önerilen Süre: 5 ders saati
+Konu / Kavramlar: Isı ve öz ısının bağlı olduğu faktörler
+
+   50
+                                                                                 Fen Bilimleri Dersi Öğretim Programı
+
+
+
+F.8.4.5.1. Isınmanın maddenin cinsine, kütlesine ve/veya sıcaklık değişimine bağlı olduğunu deney yaparak keşfeder.
+           a. Q=m.c. Δt bağıntısına girilmez.
+
+           b. Bağımlı, bağımsız ve kontrol edilen değişkenler örneklerle açıklanır.
+
+F.8.4.5.2. Hâl değiştirmek için gerekli ısının maddenin cinsi ve kütlesiyle ilişkili olduğunu deney yaparak keşfeder.
+           a. Saf maddelerin hâl değişimi sırasında sıcaklığının sabit kaldığına değinilir.
+
+           b. Matematiksel hesaplamalara girilmez.
+
+
+
+F.8.4.5.3. Maddelerin hâl değişimi ve ısınma grafiğini çizerek yorumlar.
+F.8.4.5.4. Günlük yaşamda meydana gelen hâl değişimleri ile ısı alışverişini ilişkilendirir.
+F.8.4.6.Türkiye’de Kimya Endüstrisi
+Önerilen Süre: 4 ders saati
+Konu / Kavramlar: İthal edilen kimyasal ürünler, ihraç edilen kimyasal ürünler, ülkemizdeki kimya endüstrisinin
+gelişimine katkı sağlayan resmî/özel kurumlar, kimya temelli meslekler
+F.8.4.6.1. Geçmişten günümüze Türkiye’deki kimya endüstrisinin gelişimini araştırır.
+           a. Ülkemizdeki kimya endüstrisinin gelişimine katkı sağlayan resmi / özel kurum ve sivil toplum kuru-
+           luşlarının yaptığı çalışmalara değinilir.
+
+           b. İthal ve ihraç edilen kimyasal ürünlerden birkaç önemli örnek verilerek Türkiye kimya endüstrisinin
+           işleyişine değinilir.
+
+F.8.4.6.2. Kimya endüstrisinde meslek dallarını araştırır ve gelecekteki yeni meslek alanları hakkında öneriler sunar.
+
+
+    F.8.5. Basit Makineler / Fiziksel Olaylar
+
+     Bu ünitede öğrencilerin; günlük yaşamda sıkça karşılaştıkları basit makine çeşitleri hakkında bilgi ve bece-
+riler kazanmaları; kazandıkları bilgi ve becerileri ortaya koyarak günlük yaşamda iş kolaylığı sağlayacak özgün
+basit makine düzenekleri tasarlamaları; böylece yaratıcı ve yenilikçi düşünme becerisi kazanmaları amaçlan-
+maktadır.
+
+F.8.5.1. Basit Makineler
+
+Önerilen Süre: 10 ders saati
+
+Konu / Kavramlar: Sabit makara, hareketli makara, palanga, kaldıraç, eğik düzlem, çıkrık, basit makinelerin
+kullanım alanları
+
+F.8.5.1.1. Basit makinelerin sağladığı avantajları örnekler üzerinden açıklar.
+
+           a. Basit makinelerden, sabit makara, hareketli makara, palanga, kaldıraç, eğik düzlem ve çıkrık üze-
+           rinde durulur.
+
+           b. Dişli çarklar, vida ve kasnakların da birer basit makine olduğu görsellerle belirtilir, ayrıntıya girilmez.
+
+           c. Basit makinelerde işten kazanç olmadığı vurgulanır.
+
+           ç. Matematiksel bağıntılara girilmez.
+
+F.8.5.1.2. Basit makinelerden yararlanarak günlük yaşamda iş kolaylığı sağlayacak bir düzenek tasarlar.
+
+           Öncelikle tasarımını çizimle ifade etmesi istenir. Şartlar uygunsa üç boyutlu modele dönüştürmesi
+           istenebilir.
+
+
+
+
+                                                                                                                        51
+        Fen Bilimleri Dersi Öğretim Programı
+
+
+
+
+    F.8.6. Enerji Dönüşümleri ve Çevre Bilimi / Canlılar ve Yaşam
+
+     Bu ünitede öğrencilerin; fotosentez, solunum, enerji dönüşümlerini kavramaları, besin zinciri ve bu zinciri
+oluşturan elemanları açıklayabilmeleri ve elemanlar arasındaki ilişkiyi keşfetmeleri, çevre bilimle ilgili yaşam içe-
+risindeki madde döngülerini fark etmeleri, çevre sorunlarını bilmeleri ve çevre sorunlarına karşı çözüm önerileri
+sunabilmeleri bunlara ilişkin bilgi ve beceriler kazanmaları amaçlanmaktadır.
+
+F.8.6.1. Besin Zinciri ve Enerji Akışı
+
+Önerilen Süre: 2 ders saati
+
+Konu / Kavramlar: Besin zinciri, besin ağı, üretici, tüketici, ayrıştırıcı, ekoloji piramidi, biyolojik birikim
+
+F.8.6.1.1. Besin zincirindeki üretici, tüketici, ayrıştırıcılara örnekler verir.
+
+           a. Parazit besin zincirlerine değinilmez.
+
+           b. Ekoloji piramitlerinde enerji aktarımı, vücut büyüklüğü, birey sayısı ve biyolojik birikim vurgulanır.
+
+F.8.6.2. Enerji Dönüşümleri
+
+Önerilen Süre: 8 ders saati
+
+Konu / Kavramlar: Fotosentez, fotosentez hızını etkileyen faktörler, solunum, oksijensiz solunum, oksijenli solunum
+
+F.8.6.2.1. Bitkilerde besin üretiminde fotosentezin önemini fark eder.
+
+           a. Fotosentezde karbondioksit ve su kullanıldığı, besin ve oksijen üretildiği vurgulanır. Kimyasal denk-
+           lemine girilmez.
+
+           b. Fotosentezin yapay ışıkta da meydana gelebileceği vurgulanır.
+
+           c. Fotosentez yapan canlıların üretici olduğu ifade edilir.
+
+F.8.6.2.2. Fotosentez hızını etkileyen faktörler ile ilgili çıkarımlarda bulunur.
+
+           Işık rengi, karbondioksit miktarı, su miktarı, ışık şiddeti ve sıcaklık vurgulanır.
+
+F.8.6.2.3. Canlılarda solunumun önemini belirtir.
+
+           a. Solunumun kimyasal denklemine girilmez.
+
+           b. Bitkilerin gece ve gündüz solunum yaptığına değinilir.
+
+           c. Oksijenli ve oksijensiz solunum evrelerine girilmeden verilir fakat açığa çıkan enerji miktarları sayısal
+           olarak belirtilmez.
+
+           ç. ATP’nin yapısına girilmeden isminden bahsedilir.
+
+F.8.6.3. Madde Döngüleri ve Çevre Sorunları
+
+Önerilen Süre: 8 ders saati
+
+Konu / Kavramlar: Su döngüsü, oksijen döngüsü, azot döngüsü, karbon döngüsü, ozon tabakası, küresel ısınma
+
+F.8.6.3.1. Madde döngülerini şema üzerinde göstererek açıklar.
+
+F.8.6.3.2. Madde döngülerinin yaşam açısından önemini sorgular.
+
+F.8.6.3.3. Küresel iklim değişikliklerinin nedenlerini ve olası sonuçlarını tartışır.
+
+           a. Sera etkisi açıklanır.
+
+           b. Küresel iklim değişikliği bağlamında çevre sorunlarının Dünya'nın geleceğine ve insan yaşamına
+           nasıl bir etkisi olabileceği sorgulanır.
+
+
+
+
+   52
+                                                                                   Fen Bilimleri Dersi Öğretim Programı
+
+
+
+
+           c. Çevre sorunlarının dünyanın geleceğine nasıl bir etkisinin olabileceğine yönelik öngörüleri sanatsal
+           yollarla ifade etmeleri istenir.
+
+           ç. Öğrencilerin ekolojik ayak izini hesaplaması (uzantısı edu, org ve mil gibi güvenli sitelerden yarar-
+           lanılabilinir) sağlanır.
+
+           d. Dünya ülkelerinin küresel iklim değişikliğini önlemek için aldıkları önlemlere (ör. Kyoto Protokolü)
+           değinilir.
+
+F.8.6.4. Sürdürülebilir Kalkınma
+
+Önerilen Süre: 6 ders saati
+
+Konu / Kavramlar: Sürdürülebilir yaşam, kaynakların tasarruflu kullanımı, geri dönüşüm
+
+F.8.6.4.1. Kaynakların kullanımında tasarruflu davranmaya özen gösterir.
+
+F.8.6.4.2. Kaynakların tasarruflu kullanımına yönelik proje tasarlar.
+
+F.8.6.4.3. Geri dönüşüm için katı atıkların ayrıştırılmasının önemini açıklar.
+
+F.8.6.4.4. Geri dönüşümün ülke ekonomisine katkısına ilişkin araştırma verilerini kullanarak çözüm önerileri sunar.
+
+F.8.6.4.5. Kaynakların tasarruflu kullanılmaması durumunda gelecekte karşılaşılabilecek problemleri belirterek
+çözüm önerileri sunar.
+
+
+    F.8.7. Elektrik Yükleri ve Elektrik Enerjisi / Fiziksel Olaylar
+
+     Bu ünitede öğrencilerin; elektrik yüklerini tanımaları, elektrik yükleri arasında itme ve çekme kuvvetleri oldu-
+ğunun farkına varmaları; cisimlerin, sahip oldukları elektrik yükü bakımından üç farklı durumda olabileceklerini
+ve “topraklama” olayını kavramaları; elektroskopun, cisimlerin sahip olduğu elektrik yüklerinin tespitinde kolaylık
+sağladığını deneyerek gözlemlemeleri, elektrik enerjisinin ısı, ışık ve hareket enerjilerine, hareket enerjisinin de
+elektrik enerjisine dönüşebileceğini deneyerek gözlemlemeleri, güç santrallerinde elektrik enerjisinin nasıl üre-
+tildiğini ve bunların doğurabileceği zararlı veya yararlı durumları tahmin etmeleri, elektrik enerjisinin bilinçli ve
+tasarruflu kullanılmasına yönelik bilgi ve beceri kazanmaları hedeflenmektedir.
+
+F.8.7.1. Elektrik Yükleri ve Elektriklenme
+
+Önerilen Süre: 6 ders saati
+
+Konu / Kavramlar: Elektrik yükleri, elektrik yükleri arasındaki itme ve çekme kuvvetleri, elektriklenme çeşitleri
+
+F.8.7.1.1. Elektriklenmeyi, bazı doğa olayları ve teknolojideki uygulama örnekleri ile açıklar.
+
+F.8.7.1.2. Elektrik yüklerini sınıflandırarak aynı ve farklı cins elektrik yüklerinin birbirlerine etkisini açıklar.
+
+F.8.7.1.3. Deneyler yaparak elektriklenme çeşitlerini fark eder.
+
+F.8.7.2. Elektrik Yüklü Cisimler
+
+Önerilen Süre: 8 ders saati
+
+Konu / Kavramlar: Pozitif yüklü cisim, negatif yüklü cisim, elektroskop, topraklama
+
+F.8.7.2.1. Cisimleri, sahip oldukları elektrik yükleri bakımından sınıflandırır.
+
+           Özellikle nötr cismin, yüksüz cisim anlamına gelmediği; nötr cisimlerde pozitif ve negatif yük miktar-
+           larının eşit olduğu vurgusu yapılır. Elektroskopun yük ölçümünde kullanıldığı belirtilir, çalışma prensi-
+           bine girilmez.
+
+
+
+
+                                                                                                                          53
+        Fen Bilimleri Dersi Öğretim Programı
+
+
+
+F.8.7.2.2. Topraklamayı açıklar.
+
+           Topraklamanın günlük yaşam ve teknolojideki uygulamaları dikkate alınarak can ve mal güvenliği
+           açısından önemine vurgu yapılır.
+
+F.8.7.3. Elektrik Enerjisinin Dönüşümü
+
+Önerilen Süre: 10 ders saati
+
+Konu / Kavramlar: Elektrik enerjisinin ısı ve ışık enerjisine dönüşümü, elektrik enerjisinin hareket enerjisine ve
+hareket enerjisinin elektrik enerjisine dönüşümü, güç santralleri, elektrik enerjisinin bilinçli ve tasarruflu kullanımı
+
+F.8.7.3.1. Elektrik enerjisinin ısı, ışık ve hareket enerjisine dönüştüğü uygulamalara örnekler verir.
+
+           a. Güvenlik açısından elektrik sigortasının önemi üzerinde durulur.
+
+           b. Robotların, elektrik enerjisinin, hareket enerjisine dönüşümü temel alınarak geliştirildiği vurgulanır.
+
+F.8.7.3.2. Elektirik enerjisinin ısı, ışık veya hareket enerjisine dönüşümü temel alan bir model tasarlar.
+
+           Öncelikle tasarımlarını çizimle ifade etmeleri istenir. Şartlar uygunsa üç boyutlu modele dönüştürmesi
+           istenebilir.
+
+F.8.7.3.3. Güç santrallerinde elektrik enerjisinin nasıl üretildiğini açıklar.
+
+           Güç santrallerinden hidroelektrik, termik, rüzgâr, jeotermal ve nükleer santrallere değinilir.
+
+F.8.7.3.4. Güç santrallerinin avantaj ve dezavantajları konusunda fikirler üretir.
+
+           Güç santrallerinin yarar-zarar ve riskler yönünden değerlendirilmesine yönelik fikir üretmeleri ve bu
+           fikirlerini savunmaları istenir.
+
+F.8.7.3.5. Elektrik enerjisinin bilinçli ve tasarruflu kullanılmasının aile ve ülke ekonomisi bakımından önemini tartışır.
+
+           a. Enerji verimliliği konusunda ülkemizdeki resmî kurumlar ve sivil toplum kuruluşları tarafından
+           yapılan çalışmalar ve elektrik enerjisi kullanımı bakımından yapılması gerekenler belirtilir.
+           b. Kaçak elektrik kullanımının ülke ekonomisine verdiği zarar vurgulanır.
+
+F.8.7.3.6. Evlerde elektriği tasarruflu kullanmaya özen gösterir.
+
+           Öğrencilerden elektrik faturasını azaltmaya yönelik uzun süreli çalışmalar yapmaları istenir, süreç izlenir.
+
+
+
+
+   54
+56
+

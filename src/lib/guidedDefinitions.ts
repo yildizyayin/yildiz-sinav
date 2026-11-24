@@ -260,6 +260,11 @@ export function parseAnswerKeyWorkbookRows(rows: unknown[][], subjects: SubjectO
   const testNameColumn = workbookHeaderIndex(headers, /TESTADI|ACIKLAMATESTADI/) >= 0 ? workbookHeaderIndex(headers, /TESTADI|ACIKLAMATESTADI/) : 2;
   const answerColumn = workbookHeaderIndex(headers, /DOGRUCEVAP/) >= 0 ? workbookHeaderIndex(headers, /DOGRUCEVAP/) : 8;
   const publisherTitleColumn = workbookHeaderIndex(headers, /KAZANIMKODU|KAZANIM/) >= 0 ? workbookHeaderIndex(headers, /KAZANIMKODU|KAZANIM/) : 10;
+  // Owner (5 Nov, Fenomen 8): the template's Durum column (İptal / Değerlendirme dışı), a Kabul Edilen Cevaplar column
+  // (e.g. A/B/C/D: any marked answer is correct) and the per-row Şık Sayısı are read; before this they were ignored.
+  const statusColumn = workbookHeaderIndex(headers, /^DURUM$/);
+  const acceptedColumn = workbookHeaderIndex(headers, /KABULEDILEN|ALTERNATIFCEVAP/);
+  const rowOptionColumn = workbookHeaderIndex(headers, /SIKSAYISI/);
   const questionColumns: Record<string, number> = {};
   for (const booklet of ['A', 'B', 'C', 'D']) {
     const column = workbookHeaderIndex(headers, new RegExp(`${booklet}SORUNO`));
@@ -287,8 +292,9 @@ export function parseAnswerKeyWorkbookRows(rows: unknown[][], subjects: SubjectO
   const optionCount = (Number(optionLabelIndex >= 0 ? metadataValues[optionLabelIndex + 1] : '') || undefined) as 4 | 5 | undefined;
   const warnings: string[] = [];
   const unknownLines: string[] = [];
-  const grouped = new Map<string, Array<{ questionNumbers: Record<string, number>; answer: string; reference: OutcomeReference | null; }>>();
+  const grouped = new Map<string, Array<{ questionNumbers: Record<string, number>; answer: string; accepted: string[]; status: 'ACTIVE' | 'CANCELLED' | 'EXCLUDED'; reference: OutcomeReference | null; }>>();
   const detectedBooklets: string[] = [];
+  const rowOptionCounts = new Set<number>();
 
   for (const row of values.slice(headerIndex + 1)) {
     if (!row.some(Boolean)) continue;
@@ -300,7 +306,14 @@ export function parseAnswerKeyWorkbookRows(rows: unknown[][], subjects: SubjectO
       const value = Number(row[column]);
       if (Number.isInteger(value) && value > 0) questionNumbers[booklet] = value;
     }
-    const answer = cleanAnswers(row[answerColumn] || '').slice(0, 1);
+    const statusValue = norm(statusColumn >= 0 ? row[statusColumn] || '' : '');
+    const status: 'ACTIVE' | 'CANCELLED' | 'EXCLUDED' = /^(CANCELLED|IPTAL)/.test(statusValue) ? 'CANCELLED' : /^(EXCLUDED|DEGERLENDIRMEDISI)/.test(statusValue) ? 'EXCLUDED' : 'ACTIVE';
+    const acceptedList = acceptedColumn >= 0 ? [...new Set(String(row[acceptedColumn] || '').split(/[|\/,;\s]+/).map((value) => cleanAnswers(value).slice(0, 1)).filter(Boolean))] : [];
+    const rawAnswer = cellText(row[answerColumn]);
+    // a cancelled / excluded question needs no answer of its own; the server still keeps one letter in its place
+    const answer = cleanAnswers(rawAnswer || '').slice(0, 1) || acceptedList[0] || (status !== 'ACTIVE' ? 'A' : '');
+    const rowOption = Number(rowOptionColumn >= 0 ? row[rowOptionColumn] : 0);
+    if (rowOption === 4 || rowOption === 5) rowOptionCounts.add(rowOption);
     const publisherTitle = cellText(row[publisherTitleColumn]);
     const officialCode = row
       .slice(Math.max(publisherTitleColumn + 1, 0))
@@ -313,11 +326,12 @@ export function parseAnswerKeyWorkbookRows(rows: unknown[][], subjects: SubjectO
     const primaryQuestion = Object.values(questionNumbers)[0];
     if (!subject || !primaryQuestion || !answer) {
       unknownLines.push(row.map((cell, index) => cell ? `${columnLabel(index)}=${cell}` : '').filter(Boolean).join(' | '));
+      if (subject && primaryQuestion) warnings.push(`${subject.name} ${primaryQuestion}. soru okunamadı: cevap "${rawAnswer || 'boş'}" geçerli bir şık değil. Doğru cevabı düzeltin; her işaretleme doğru sayılacaksa Kabul Edilen Cevaplar sütununa A/B/C/D, soru iptalse Durum sütununa İPTAL yazın.`);
       continue;
     }
     for (const booklet of Object.keys(questionNumbers)) if (!detectedBooklets.includes(booklet)) detectedBooklets.push(booklet);
     const group = grouped.get(subject.id) || [];
-    group.push({ questionNumbers, answer, reference });
+    group.push({ questionNumbers, answer, accepted: acceptedList.length ? acceptedList : [answer], status, reference });
     grouped.set(subject.id, group);
   }
 
@@ -335,7 +349,7 @@ export function parseAnswerKeyWorkbookRows(rows: unknown[][], subjects: SubjectO
     for (const booklet of detectedBooklets) {
       const questionNumbers = sorted.map((row) => row.questionNumbers[booklet] || Object.values(row.questionNumbers)[0]);
       const refs = sorted.map((row) => row.reference);
-      entries.push({ subjectId, bookletCode: booklet, answers: sorted.map((row) => row.answer).join(''), optionCount: optionCount || 5, acceptedAnswers: sorted.map((row) => [row.answer]), questionStatuses: sorted.map(() => 'ACTIVE'), outcomeRefs: refs, outcomeRefsByQuestion: refs.map((ref) => ref ? [ref] : []), bookletQuestionNumbers: questionNumbers });
+      entries.push({ subjectId, bookletCode: booklet, answers: sorted.map((row) => row.answer).join(''), optionCount: optionCount || (rowOptionCounts.has(5) ? 5 : rowOptionCounts.has(4) ? 4 : 5), acceptedAnswers: sorted.map((row) => row.accepted), questionStatuses: sorted.map((row) => row.status), outcomeRefs: refs, outcomeRefsByQuestion: refs.map((ref) => ref ? [ref] : []), bookletQuestionNumbers: questionNumbers });
       questionCountsByBooklet[subjectId][booklet] = questionNumbers.length;
     }
   }
@@ -651,12 +665,13 @@ export function buildAnswerKeyTemplateRows(input: { title: string; gradeLevel: s
   put(26, 0, 'Ders Kodu'); put(26, 2, 'Test No'); put(26, 4, 'İlk Soru No'); put(26, 6, 'Son Soru No'); put(26, 8, 'Alternatif Sıra'); put(26, 10, 'Kazanım Ders Kodu');
   input.sections.forEach((item, index) => { const row = 27 + index; put(row, 0, item.subjectCode); put(row, 2, index + 1); put(row, 4, item.questionStart); put(row, 6, item.questionEnd); put(row, 10, item.subjectCode); });
   const answerHeaderRow = 34;
-  // Columns: 0 test no, 2 test name, 4.. one question-number column per booklet, 8 answer, 10 publisher outcome, 24 MEB code, 26 MEB title, 28 status.
+  // Columns: 0 test no, 2 test name, 4.. one question-number column per booklet, 8 answer, 10 publisher outcome, 24 MEB code, 26 MEB title, 28 status
+  // (ACTIVE / İPTAL / DEĞERLENDİRME DIŞI), 30 option count, 32 accepted answers (e.g. A/B/C/D, empty = only the answer).
   const bookletColumn: Record<string, number> = { A: 4, B: 5, C: 6, D: 7 };
   put(answerHeaderRow - 1, 0, 'CEVAP ANAHTARI');
   put(answerHeaderRow, 0, 'Test No'); put(answerHeaderRow, 2, 'Açıklama / Test Adı');
   for (const b of templateBooklets) put(answerHeaderRow, bookletColumn[b], `${b} Soru No`);
-  put(answerHeaderRow, 8, 'Doğru Cevap'); put(answerHeaderRow, 10, 'Yayınevi Kazanımı'); put(answerHeaderRow, 24, 'MEB Kazanım Kodu'); put(answerHeaderRow, 26, 'MEB Kazanım Adı'); put(answerHeaderRow, 28, 'Durum'); put(answerHeaderRow, 30, 'Şık Sayısı');
+  put(answerHeaderRow, 8, 'Doğru Cevap'); put(answerHeaderRow, 10, 'Yayınevi Kazanımı'); put(answerHeaderRow, 24, 'MEB Kazanım Kodu'); put(answerHeaderRow, 26, 'MEB Kazanım Adı'); put(answerHeaderRow, 28, 'Durum'); put(answerHeaderRow, 30, 'Şık Sayısı'); put(answerHeaderRow, 32, 'Kabul Edilen Cevaplar');
   let answerRow = answerHeaderRow + 1;
   input.sections.forEach((item, testIndex) => {
     for (let offset = 0; offset < item.questionCount; offset++) {

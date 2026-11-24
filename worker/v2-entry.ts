@@ -35,6 +35,24 @@ async function institutionDashboard(env:Env,user:AuthUser,url:URL):Promise<Respo
     all<any>(env.DB.prepare(`SELECT DISTINCT e.id,e.title,e.exam_type,e.grade_level,e.exam_date,e.status FROM exams e LEFT JOIN exam_institutions ei ON ei.exam_id=e.id AND ei.institution_id=? WHERE (e.institution_id=? OR e.institution_id IS NULL OR ei.enabled=1) ORDER BY coalesce(e.exam_date,e.created_at) DESC LIMIT 8`).bind(institutionId,institutionId)),
   ]);
   const worksheetPublished=await one<{c:number}>(env.DB.prepare(`SELECT count(*) c FROM worksheets WHERE status='PUBLISHED'`));
+  // Owner (9 Nov, "iş odaklı sade"): what the institution should do today, all within this institution's active season.
+  const activeClass=`FROM classes c JOIN institution_seasons se ON se.id=c.season_id AND se.status='ACTIVE' WHERE c.institution_id=? AND c.active=1`;
+  const [attendanceMissing,withoutAccount,withoutNumber,teacherless]=await Promise.all([
+    all<any>(env.DB.prepare(`SELECT c.id,c.name,(SELECT count(*) FROM student_enrollments e JOIN student_entities st ON st.id=e.student_id AND st.status='ACTIVE' WHERE e.class_id=c.id AND e.status='ACTIVE') student_count ${activeClass}
+      AND EXISTS(SELECT 1 FROM student_enrollments e WHERE e.class_id=c.id AND e.status='ACTIVE')
+      AND NOT EXISTS(SELECT 1 FROM attendance_period_sessions s WHERE s.class_id=c.id AND s.attendance_date=date('now','+3 hours') AND s.session_type='DAILY' AND s.status IN ('COMPLETED','CORRECTED'))
+      ORDER BY c.grade_level,c.section`).bind(institutionId)),
+    one<{c:number}>(env.DB.prepare(`SELECT count(DISTINCT e.student_id) c FROM student_enrollments e JOIN student_entities st ON st.id=e.student_id AND st.status='ACTIVE' JOIN institution_seasons se ON se.id=e.season_id AND se.status='ACTIVE'
+      WHERE e.institution_id=? AND e.status='ACTIVE' AND NOT EXISTS(SELECT 1 FROM users u WHERE u.student_id=e.student_id AND u.role='STUDENT' AND u.active=1)`).bind(institutionId)),
+    one<{c:number}>(env.DB.prepare(`SELECT count(DISTINCT e.student_id) c FROM student_enrollments e JOIN student_entities st ON st.id=e.student_id AND st.status='ACTIVE' JOIN institution_seasons se ON se.id=e.season_id AND se.status='ACTIVE'
+      WHERE e.institution_id=? AND e.status='ACTIVE' AND trim(coalesce(e.student_number,''))=''`).bind(institutionId)),
+    all<any>(env.DB.prepare(`SELECT c.id,c.name ${activeClass} AND NOT EXISTS(SELECT 1 FROM teacher_assignments ta WHERE ta.class_id=c.id AND ta.active=1) ORDER BY c.grade_level,c.section`).bind(institutionId)),
+  ]);
+  const today={
+    attendanceMissing:attendanceMissing.map((c:any)=>({id:c.id,name:c.name,student_count:Number(c.student_count||0)})),
+    studentsWithoutAccount:Number(withoutAccount?.c||0),studentsWithoutNumber:Number(withoutNumber?.c||0),
+    classesWithoutTeacher:teacherless.map((c:any)=>({id:c.id,name:c.name})),
+  };
   return json({ok:true,institution,cards:[
     {label:'Aktif Öğrenci',value:activeStudents?.c??0},
     {label:'Aktif Sınıf',value:classes?.c??0},
@@ -42,7 +60,7 @@ async function institutionDashboard(env:Env,user:AuthUser,url:URL):Promise<Respo
     {label:'Bekleyen Optik',value:pendingScans?.c??0},
     {label:'Atanmış Föy',value:assignedWorksheets?.c??0},
     {label:'Yayınlanmış Föy',value:worksheetPublished?.c??0},
-  ],recentExams});
+  ],recentExams,today});
 }
 
 async function opticalPrepareV2(env:Env,user:AuthUser,url:URL):Promise<Response>{

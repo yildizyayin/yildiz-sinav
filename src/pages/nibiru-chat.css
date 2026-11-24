@@ -1,0 +1,60 @@
+/* Nibiru 2.0 chat (13 Nov 2026): calm, roomy, conversation first. */
+.nbc{display:flex;flex-direction:column;gap:12px;max-width:860px;margin:0 auto;min-height:calc(100vh - 140px);min-width:0}
+.nbc-head{display:flex;align-items:center;gap:12px}
+.nbc-head h1{margin:0;font-size:1.35rem;line-height:1.1}
+.nbc-head p{margin:2px 0 0;color:var(--muted,#64748b);font-size:.9rem}
+.nbc-head-tools{margin-left:auto;display:flex;gap:6px}
+.nbc-voice{margin:-4px 0 0;font-size:.8rem}
+.nbc-voice:empty{display:none}
+.nbc-select{display:grid;gap:6px;font-weight:600}
+.nbc-lab{display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;padding:12px 14px;border:1px solid #bcd3f7;border-radius:16px;background:#f4f8ff}
+.nbc-lab>div{display:grid;gap:2px}
+.nbc-lab label{display:grid;gap:4px;font-weight:600}
+.nbc-thread{flex:1;display:flex;flex-direction:column;gap:18px;padding:8px 2px 4px;min-width:0}
+.nbc-empty{display:grid;justify-items:center;text-align:center;gap:14px;padding:28px 8px 8px}
+.nbc-empty h2{margin:0;font-size:1.45rem;font-weight:650;letter-spacing:-.01em}
+.nbc-starters{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;width:100%;max-width:620px}
+.nbc-starters button{text-align:left;padding:14px 16px;border-radius:16px;border:1px solid var(--line,#e2e8f0);background:var(--surface,#fff);font:inherit;font-weight:500;cursor:pointer;line-height:1.35;color:inherit;transition:border-color .15s,background .15s}
+.nbc-starters button:hover{border-color:#93b4ef;background:#f6f9ff}
+.nbc-row{display:flex;min-width:0}
+.nbc-row.user{justify-content:flex-end}
+.nbc-user{max-width:82%;padding:10px 15px;border-radius:20px 20px 6px 20px;background:var(--primary,#1d4ed8);color:#fff;white-space:pre-wrap;line-height:1.5;overflow-wrap:anywhere}
+.nbc-assistant{display:flex;gap:12px;align-items:flex-start;min-width:0;max-width:100%}
+.nbc-assistant>:first-child{flex:0 0 auto;margin-top:2px}
+.nbc-body{min-width:0;flex:1}
+.nbc-specialist{font-size:.72rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted,#64748b);margin-bottom:4px}
+.nbc-text{font-size:1rem;line-height:1.65;overflow-wrap:anywhere}
+.nbc-text p{margin:0 0 .7em}.nbc-text p:last-child{margin-bottom:0}
+.nbc-text ul{margin:.2em 0 .7em;padding-left:1.25em}.nbc-text li{margin:.15em 0}
+.nbc-caret{display:inline-block;width:8px;height:1.05em;margin-left:2px;vertical-align:text-bottom;background:currentColor;opacity:.55;animation:nbc-blink 1s steps(2) infinite}
+@keyframes nbc-blink{50%{opacity:0}}
+.nbc-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.nbc-action{display:inline-flex;align-items:center;gap:6px;padding:9px 14px;border-radius:999px;border:1px solid #c7d7f5;background:#f2f6ff;color:#1e3a8a;font:inherit;font-weight:600;font-size:.9rem;text-decoration:none;cursor:pointer}
+.nbc-action.video{background:#fff4e5;border-color:#f6d39b;color:#8a4b00}
+.nbc-tools{margin-top:6px}
+.nbc-tools .ghost{font-size:.8rem;opacity:.75}
+.nbc-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.nbc-chips button{padding:7px 12px;border-radius:999px;border:1px solid var(--line,#e2e8f0);background:var(--surface,#fff);font:inherit;font-size:.88rem;cursor:pointer;color:inherit}
+.nbc-dots{display:flex;gap:5px;padding:12px 4px}
+.nbc-dots i{width:7px;height:7px;border-radius:50%;background:#94a3b8;animation:nbc-dot 1.2s infinite ease-in-out}
+.nbc-dots i:nth-child(2){animation-delay:.15s}.nbc-dots i:nth-child(3){animation-delay:.3s}
+@keyframes nbc-dot{0%,80%,100%{transform:translateY(0);opacity:.4}40%{transform:translateY(-4px);opacity:1}}
+.nbc-composer{position:sticky;bottom:calc(10px + env(safe-area-inset-bottom,0px));display:flex;align-items:flex-end;gap:8px;padding:8px;border:1px solid var(--line,#dbe3ef);border-radius:26px;background:var(--surface,#fff);box-shadow:0 10px 30px rgba(15,23,42,.08);z-index:5}
+.nbc-composer textarea{flex:1;min-width:0;resize:none;border:0;outline:0;background:transparent;font:inherit;font-size:1rem;line-height:1.45;padding:9px 4px;max-height:160px;color:inherit}
+.nbc-icon{flex:0 0 auto;width:42px;height:42px;border-radius:50%;border:0;display:grid;place-items:center;background:#eef2f8;color:#334155;cursor:pointer}
+.nbc-icon.send{background:var(--primary,#1d4ed8);color:#fff}
+.nbc-icon.rec{background:#dc2626;color:#fff}
+.nbc-icon:disabled{opacity:.45;cursor:default}
+.nbc-foot{font-size:.75rem;text-align:center;margin:0}
+.nbc-more summary{cursor:pointer;font-weight:600;color:var(--muted,#64748b)}
+.nbc-links{justify-content:center}
+.nbc-video{position:fixed;inset:0;z-index:80;background:rgba(2,6,23,.6);display:grid;place-items:center;padding:16px}
+.nbc-video-box{width:min(820px,100%);background:var(--surface,#fff);border-radius:18px;padding:12px;display:grid;gap:10px}
+.nbc-video-head{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.nbc-video-head strong{overflow-wrap:anywhere}
+.nbc-frame{position:relative;aspect-ratio:16/9;border-radius:12px;overflow:hidden;background:#000}
+.nbc-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+@media(max-width:600px){.nbc-starters{grid-template-columns:1fr}.nbc-user{max-width:88%}.nbc-text{font-size:.98rem}.nbc-empty h2{font-size:1.2rem}}
+/* the student/parent bottom dock is 72px high on phones: keep the composer and the last lines above it */
+@media(max-width:900px){.app-shell:is(.role-student,.role-parent) .nbc{padding-bottom:96px}.app-shell:is(.role-student,.role-parent) .nbc-composer{bottom:calc(96px + env(safe-area-inset-bottom,0px))}}
+.nbc-composer textarea{border:0!important;box-shadow:none!important;outline:0!important;min-height:0}

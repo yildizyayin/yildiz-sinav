@@ -42,6 +42,7 @@ export function PrivacyNotices() {
   const [rows, setRows] = useState<any[]>([]);
   const [form, setForm] = useState({ audience: 'STUDENT', version: '1.0', title: 'Kişisel Verilerin İşlenmesine İlişkin Aydınlatma Metni', body: '' });
   const [busy, setBusy] = useState(false);
+  const [edit, setEdit] = useState<{ id: string; status: string; title: string; body: string } | null>(null);
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
   const load = () => api<any>('/api/admin/privacy/notices').then((r) => setRows(r.items || [])).catch((e) => setError(e instanceof ApiError ? e.message : 'Liste yüklenemedi.'));
@@ -53,6 +54,9 @@ export function PrivacyNotices() {
     finally { setBusy(false); }
   };
   const create = async (e: React.FormEvent) => { e.preventDefault(); if (await run('/api/admin/privacy/notices', form, 'Taslak kaydedildi.')) setForm((f) => ({ ...f, body: '' })); };
+  const open = async (id: string) => { try { const r = await api<any>(`/api/admin/privacy/notices/${id}`); setEdit({ id, status: r.notice.status, title: r.notice.title, body: r.notice.body || '' }); } catch (e) { setError(e instanceof ApiError ? e.message : 'Metin açılamadı.'); } };
+  const saveEdit = async () => { if (edit && await run(`/api/admin/privacy/notices/${edit.id}/body`, { title: edit.title, body: edit.body }, 'Taslak güncellendi.')) setEdit(null); };
+  const placeholders = edit ? (edit.body.match(/\[[^\]\n]{2,}\]/g) || []).length : 0;
   const move = (id: string, status: string, label: string) => { if (status !== 'ACTIVE' || confirm('Bu metin yayımlansın mı? Bu rol için önceki yayındaki metin kaldırılır ve kullanıcılar girişte yeni metni onaylar.')) void run(`/api/admin/privacy/notices/${id}/status`, { status }, label); };
 
   return <div className="page">
@@ -70,10 +74,20 @@ export function PrivacyNotices() {
       </form>
       <p className="muted">Şablon yalnız başlangıç içindir; köşeli parantezli alanlar avukat tarafından doldurulmalı ve metin hukuk incelemesinden geçmelidir.</p>
     </section>
+    {edit && <section className="panel">
+      <h2><FileText size={18} /> {edit.status === 'DRAFT' ? 'Taslağı oku ve düzenle' : 'Metin'}</h2>
+      {placeholders > 0 && <div className="alert">Doldurulacak {placeholders} köşeli parantezli alan var; bunlar doldurulmadan metin yayımlanamaz.</div>}
+      <div className="form-grid">
+        <label style={{ gridColumn: '1 / -1' }}>Başlık<input value={edit.title} readOnly={edit.status !== 'DRAFT'} onChange={(e) => setEdit({ ...edit, title: e.target.value })} /></label>
+        <label style={{ gridColumn: '1 / -1' }}>Metin<textarea rows={22} value={edit.body} readOnly={edit.status !== 'DRAFT'} onChange={(e) => setEdit({ ...edit, body: e.target.value })} /></label>
+        <div style={{ gridColumn: '1 / -1', display: 'flex', gap: 8 }}>{edit.status === 'DRAFT' && <button className="primary" disabled={busy} onClick={() => void saveEdit()}>Kaydet</button>}<button className="secondary" onClick={() => setEdit(null)}>Kapat</button></div>
+      </div>
+    </section>}
     <section className="panel">
       <h2>Sürümler</h2>
       <div className="table-card"><table><thead><tr><th>Rol</th><th>Sürüm</th><th>Başlık</th><th>Durum</th><th>Onaylayan kişi</th><th>İşlem</th></tr></thead><tbody>
         {rows.map((r) => <tr key={r.id}><td>{AUDIENCES[r.audience] || r.audience}</td><td>{r.version}</td><td>{r.title}</td><td>{STATUS[r.status] || r.status}</td><td>{r.receipt_count ?? '—'}</td><td style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+          <button className="secondary" disabled={busy} onClick={() => void open(r.id)}>{r.status === 'DRAFT' ? 'Oku / düzenle' : 'Oku'}</button>
           {r.status === 'DRAFT' && <button className="secondary" disabled={busy} onClick={() => move(r.id, 'LEGAL_REVIEW', 'Hukuk incelemesine gönderildi.')}>Hukuk incelemesine</button>}
           {r.status === 'LEGAL_REVIEW' && <button className="primary" disabled={busy} onClick={() => move(r.id, 'ACTIVE', 'Metin yayımlandı.')}>Hukuk onayladı · yayımla</button>}
           {r.status === 'ACTIVE' && <button className="secondary" disabled={busy} onClick={() => move(r.id, 'RETIRED', 'Metin yayından kaldırıldı.')}>Yayından kaldır</button>}

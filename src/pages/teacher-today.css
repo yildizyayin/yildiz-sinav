@@ -1,0 +1,13 @@
+/* Teacher home "Bugün" section (owner, 9 Nov: iş odaklı sade). Uses the panel's own colour variables. */
+.teacher-today{margin:4px 0 20px}
+.teacher-today-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+.teacher-today-card{display:flex;flex-direction:column;gap:10px;margin:0}
+.teacher-today-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.teacher-today-head h3{margin:0;font-size:17px}
+.teacher-today-card p{margin:0}
+.teacher-today-card .muted{color:var(--muted,#59666c)}
+.teacher-today-card .ok-text{color:#166534;font-weight:600}
+.teacher-today-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.teacher-today-list li{display:flex;flex-direction:column;gap:2px;padding:10px 12px;border-radius:12px;background:var(--workspace-soft,#f4f7f6);border:1px solid var(--border,#e5e9e7)}
+.teacher-today-list li span{font-weight:600;font-size:14px;line-height:1.35}
+.teacher-today-list li small{color:var(--muted,#59666c);font-size:12px}

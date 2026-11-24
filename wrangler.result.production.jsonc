@@ -3,6 +3,9 @@
   "name": "anunex-result-prod",
   "main": "./worker/result-worker-entry.ts",
   "compatibility_date": "2026-08-26",
+  "placement": {
+    "mode": "smart"
+  },
   "compatibility_flags": ["nodejs_compat"],
   "observability": {
     "enabled": true,

@@ -49,16 +49,18 @@ export async function importProductionCurricula({query,imports,evidence,runId}){
  for(const code of new Set(imports.map(p=>p.subjectCode))){if((await query('SELECT id FROM subjects WHERE code=? AND active=1',[code])).length!==1)throw Error('SUBJECT_NOT_UNIQUE:'+code);}
  for(const item of imports){
   const subjects=await query('SELECT id FROM subjects WHERE code=? AND active=1',[item.subjectCode]);if(subjects.length!==1)throw Error('SUBJECT_NOT_UNIQUE:'+item.subjectCode);
-  const entry=curriculumInsert(item,subjects[0].id),title=`${item.grade}. Sınıf ${item.subjectCode} / ${item.scopeKind} / ANUNEX 2027–2028 hedef kapsamı`;
+  // Owner (9 Nov): the previous MEB programmes (mufredat.meb.gov.tr, MEB_MUFREDAT) are imported the same verified way.
+  const sourceKind=item.sourceKind||'MEB_TYMM';
+  const entry=curriculumInsert(item,subjects[0].id),title=item.sourceTitle||`${item.grade}. Sınıf ${item.subjectCode} / ${item.scopeKind} / ANUNEX 2027–2028 hedef kapsamı`;
   let existing=await query("SELECT * FROM curriculum_versions WHERE academic_year=? AND program_code='SCHOOL' AND grade_level=? AND program_version=?",[item.academicYear,item.grade,item.programVersion]);
   if(existing.length>1)throw Error('DUPLICATE_VERSION');
   if(existing.length&&existing[0].id!==entry.id){
    if(existing[0].verified!==1)throw Error('FOREIGN_UNVERIFIED_VERSION');
   }else if(!existing.length){
-   await query("INSERT INTO curriculum_versions(id,academic_year,grade_level,program_version,authority,verified,source_url,program_code,source_kind,source_title) VALUES(?,?,?,?,'MEB',0,?,'SCHOOL','MEB_TYMM',?)",[entry.id,item.academicYear,item.grade,item.programVersion,item.sourceUrl,title]);
+   await query("INSERT INTO curriculum_versions(id,academic_year,grade_level,program_version,authority,verified,source_url,program_code,source_kind,source_title) VALUES(?,?,?,?,'MEB',0,?,'SCHOOL',?,?)",[entry.id,item.academicYear,item.grade,item.programVersion,item.sourceUrl,sourceKind,title]);
    existing=await query('SELECT * FROM curriculum_versions WHERE id=?',[entry.id]);
   }
-  const v=existing[0];if(v.source_url!==item.sourceUrl||v.authority!=='MEB'||v.source_kind!=='MEB_TYMM')throw Error('VERSION_CONTEXT_CHANGED');
+  const v=existing[0];if(v.source_url!==item.sourceUrl||v.authority!=='MEB'||v.source_kind!==sourceKind)throw Error('VERSION_CONTEXT_CHANGED');
   if(v.verified!==1){
    // Staged versions are invisible to generation. Interrupted imports safely resume.
    await query(entry.sql,entry.params);
@@ -66,17 +68,18 @@ export async function importProductionCurricula({query,imports,evidence,runId}){
   const rows=await query("SELECT o.code,o.title,o.unit,o.grade_level,o.subject_id,o.active,o.official,n.active node_active,n.academic_year node_year,n.grade_level node_grade,n.curriculum_version_id node_version,n.official_code node_code FROM outcomes o LEFT JOIN learning_nodes n ON n.id='ln_'||o.id WHERE o.curriculum_version_id=?",[v.id]);
   if(rows.length!==item.outcomes.length||contentHash(rows)!==contentHash(item.outcomes)||rows.some(o=>o.grade_level!==item.grade||o.subject_id!==subjects[0].id||o.active!==1||o.official!==1||o.node_active!==1||o.node_year!==item.academicYear||o.node_grade!==item.grade||o.node_version!==v.id||o.node_code!==o.code))throw Error('IMPORTED_CONTEXT_MISMATCH:'+item.programVersion);
   const eventId='oke_prod_'+digest([v.id,contentHash(rows)]).slice(0,24);
-  await query("INSERT OR IGNORE INTO official_knowledge_events(id,source_kind,authority,entity_type,entity_id,academic_year,source_url,source_title,source_verified_at,content_hash,row_count,verification_method) VALUES(?,'MEB_TYMM','MEB','CURRICULUM_VERSION',?,?,?,?,?,?,?,'OFFICIAL_REFETCH_EXACT_CONTENT_OWNER_AUTHORIZED')",[eventId,v.id,item.academicYear,item.sourceUrl,title,evidence.verifiedAt,contentHash(rows),rows.length]);
+  await query("INSERT OR IGNORE INTO official_knowledge_events(id,source_kind,authority,entity_type,entity_id,academic_year,source_url,source_title,source_verified_at,content_hash,row_count,verification_method) VALUES(?,?,'MEB','CURRICULUM_VERSION',?,?,?,?,?,?,?,'OFFICIAL_REFETCH_EXACT_CONTENT_OWNER_AUTHORIZED')",[eventId,sourceKind,v.id,item.academicYear,item.sourceUrl,title,evidence.verifiedAt,contentHash(rows),rows.length]);
   // Publication only follows complete row, node and provenance validation.
   await query("UPDATE curriculum_versions SET verified=1,verified_at=? WHERE id=? AND verified=0 AND EXISTS(SELECT 1 FROM official_knowledge_events WHERE id=?)",[evidence.verifiedAt,v.id,eventId]);
   if((await query('SELECT verified FROM curriculum_versions WHERE id=?',[v.id]))[0]?.verified!==1)throw Error('CURRICULUM_PUBLICATION_FAILED');
-  await query("INSERT OR IGNORE INTO audit_logs(id,action,entity_type,entity_id,details_json) VALUES(?,'CURRICULUM_PRODUCTION_IMPORTED','curriculum_version',?,?)",['aud_'+eventId,v.id,JSON.stringify({githubRunId:runId,contentHash:contentHash(rows),outcomeCount:rows.length,annualPlanVerified:false,exam2028ScopeVerified:false})]);
+  await query("INSERT OR IGNORE INTO audit_logs(id,action,entity_type,entity_id,details_json) VALUES(?,'CURRICULUM_PRODUCTION_IMPORTED','curriculum_version',?,?)",['aud_'+eventId,v.id,JSON.stringify({githubRunId:runId,sourceKind,contentHash:contentHash(rows),outcomeCount:rows.length,annualPlanVerified:false,exam2028ScopeVerified:false})]);
   results.push({programVersion:item.programVersion,outcomes:rows.length,reused:v.verified===1});
   console.log('PRODUCTION_CURRICULUM_PROGRESS '+JSON.stringify(results.at(-1)));
  }
  return results;
 }
-export async function productionSetup(){
+/** Production D1 for the protected app-only workflow (resolved from the live production Worker's own binding). */
+export async function productionDatabase(){
  if(process.env.GITHUB_ACTIONS!=='true'||!process.env.GITHUB_RUN_ID||process.env.GITHUB_REPOSITORY!=='yildizyayin/yildiz-sinav')throw Error('PROTECTED_REPOSITORY_WORKFLOW_REQUIRED');
  const account=process.env.CLOUDFLARE_ACCOUNT_ID,token=process.env.CLOUDFLARE_API_TOKEN;
  if(!account||!token)throw Error('PRODUCTION_CREDENTIALS_REQUIRED');
@@ -86,6 +89,11 @@ export async function productionSetup(){
  if(!bindings.some(b=>b.name==='ENVIRONMENT'&&b.type==='plain_text'&&(b.text??b.value)==='production'))throw Error('PRODUCTION_BINDING_REQUIRED');
  const db=bindings.find(b=>b.name==='DB'&&b.type==='d1');if(!db)throw Error('PRODUCTION_DB_REQUIRED');
  const query=async(sql,params=[])=>{const result=await cf(`/d1/database/${db.id||db.database_id}/query`,{sql,params});if(!Array.isArray(result)||result.some(r=>r.success===false))throw Error('PRODUCTION_QUERY_FAILED');return result[0].results;};
+ return query;
+}
+export async function productionSetup(){
+ if(process.env.GITHUB_ACTIONS!=='true'||!process.env.GITHUB_RUN_ID||process.env.GITHUB_REPOSITORY!=='yildizyayin/yildiz-sinav')throw Error('PROTECTED_REPOSITORY_WORKFLOW_REQUIRED');
+ const query=await productionDatabase();
  const branches=JSON.parse(await readFile('data/question-branch-catalog-2028.json','utf8')),math=JSON.parse(await readFile('data/question-full-math-target-2028.json','utf8')),registry=JSON.parse(await readFile('data/app-question-scope-2028.json','utf8'));
  const imports=productionCurriculumPlan(branches,math,registry);
  const evidence=await reverifyCurricula(branches,math,async url=>{const r=await fetch(url,{redirect:'error',signal:AbortSignal.timeout(45000)});if(!r.ok)throw Error('OFFICIAL_SOURCE_HTTP_'+r.status);const html=await r.text();if(html.length>5e6)throw Error('SOURCE_TOO_LARGE');return html;});

@@ -28,9 +28,20 @@ import {
   buildManualParserDefinition,
   defaultManualAnswerBlocks,
   defaultManualFields,
+  manualFromDefinition,
+  manualLayoutProblems,
+  manualSamplePreview,
   type ManualOpticalField,
   type ManualAnswerBlock,
 } from "../lib/opticalManual";
+
+/** Owner (5 Nov): an optic is defined only by typed numbers; FMT, photo, TXT analysis and JSON tools stay hidden. */
+const SHOW_ADVANCED_OPTIC_TOOLS = false;
+/** The dialog always shows 15 test rows; saved tests come first. */
+function padAnswerBlocks(saved: ManualAnswerBlock[]): ManualAnswerBlock[] {
+  const rest = defaultManualAnswerBlocks().filter((b) => !saved.some((x) => x.code === b.code));
+  return [...saved, ...rest].slice(0, Math.max(15, saved.length));
+}
 
 type Section = "parser" | "camera" | "fiducials";
 type Method = "FMT" | "PHOTO" | "TXT" | "MANUAL";
@@ -332,7 +343,9 @@ export function Opticals() {
     }),
     [answerRanges, setAnswerRanges] = useState<AnswerRange[]>([]);
   const [manualRecordLength, setManualRecordLength] = useState(0),
-    [manualIndexBase, setManualIndexBase] = useState<0 | 1>(0);
+    [manualIndexBase, setManualIndexBase] = useState<0 | 1>(1);
+  const [dialogSampleText, setDialogSampleText] = useState(""),
+    [dialogSampleName, setDialogSampleName] = useState("");
   const [manualFields, setManualFields] =
       useState<ManualOpticalField[]>(defaultManualFields),
     [manualAnswers, setManualAnswers] = useState<ManualAnswerBlock[]>(
@@ -402,14 +415,12 @@ export function Opticals() {
     setFmtDefinition(parser?.type === "fmt" ? parser : null);
     const fixedParser = parser?.type === "fmt" ? parser.fixedWidth : parser;
     if (fixedParser) {
-      setManualRecordLength(Number(fixedParser.recordLength || 0));
-      setManualIndexBase(parser?.indexBase === 1 ? 1 : 0);
-      setManualFields(
-        manualFieldFromDefinition(defaultManualFields(), fixedParser),
-      );
-      setManualAnswers(
-        manualAnswersFromDefinition(defaultManualAnswerBlocks(), fixedParser),
-      );
+      // stored positions are 0-based; the screen shows the character number the user counts (from 1)
+      const shown = manualFromDefinition(fixedParser);
+      setManualRecordLength(shown.recordLength);
+      setManualIndexBase(1);
+      setManualFields(shown.fields);
+      setManualAnswers(padAnswerBlocks(shown.answers));
     }
   };
   useEffect(() => {
@@ -433,24 +444,18 @@ export function Opticals() {
     return () => URL.revokeObjectURL(url);
   }, [photo]);
 
-  const persistManualDialogDefinition = async (versionId: string) => {
-    if (!versionId) return { saved: false, reason: "Sürüm oluşturulamadı." };
-    const largestEnd = Math.max(
-      0,
-      ...manualFields.filter((field) => field.enabled).map((field) => Number(field.start || 0) + Number(field.length || 0)),
-      ...manualAnswers.filter((block) => block.enabled).map((block) => Number(block.start || 0) + Number(block.length || 0)),
-    );
-    const recordLength = manualRecordLength || largestEnd;
-    if (!recordLength) return { saved: false, reason: "Kayıt uzunluğu, girilen alanların bitişlerinden hesaplanamadı." };
-    if (!manualFields.some((field) => field.key === "name" && field.enabled && field.length > 0)) {
-      return { saved: false, reason: "Ad, Soyad alanını etkinleştirip başlangıç ve uzunluk girin." };
+  /** One step (owner, 5 Nov): the typed numbers are checked, saved and published; a published optic gets a new version. */
+  const persistManualDialogDefinition = async (templateId: string) => {
+    if (!templateId) return { saved: false, reason: "Optik kaydı bulunamadı." };
+    const problems = manualLayoutProblems(manualRecordLength, manualFields, manualAnswers);
+    if (problems.length) return { saved: false, reason: problems.join(" · ") };
+    try {
+      const r = await api<any>(`/api/optical-definitions/${templateId}/manual`, { method: "PUT", body: JSON.stringify({ recordLength: manualRecordLength, fields: manualFields, answers: manualAnswers }) });
+      return { saved: true, reason: "", version: r?.version as string, rebound: Number(r?.rebound || 0) };
+    } catch (e: any) {
+      const details = Array.isArray(e?.details) ? ` ${e.details.join(" · ")}` : "";
+      return { saved: false, reason: `${e.message}${details}` };
     }
-    if (!manualAnswers.some((block) => block.enabled && block.length > 0)) {
-      return { saved: false, reason: "En az bir Test/cevap bloğunu etkinleştirip başlangıç ve uzunluk girin." };
-    }
-    const definition = buildManualParserDefinition(recordLength, manualFields, manualAnswers, manualIndexBase);
-    await api(`/api/optical-definition-versions/${versionId}/parser`, { method: "PUT", body: JSON.stringify({ definition }) });
-    return { saved: true, reason: "" };
   };
 
   const createTemplate = async () => {
@@ -465,22 +470,28 @@ export function Opticals() {
     setBusy(true);
     setError("");
     try {
+      const problems = manualLayoutProblems(manualRecordLength, manualFields, manualAnswers);
+      if (problems.length) throw new Error(`Kaydetmeden önce düzeltin: ${problems.join(" · ")}`);
       const r = await api<any>("/api/optical-definitions", {
         method: "POST",
-        body: JSON.stringify(newTemplate),
+        body: JSON.stringify({ ...newTemplate, formType: "MANUAL" }),
       });
       await loadTemplates();
       setSelectedTemplateId(r.templateId);
       setSelectedVersionId(r.versionId);
       setMethod(newTemplate.formType);
-      const manualResult = newTemplate.formType === "MANUAL"
-        ? await persistManualDialogDefinition(r.versionId)
-        : { saved: true, reason: "" };
-      await loadVersion(r.versionId);
+      const manualResult = await persistManualDialogDefinition(r.templateId);
+      await loadTemplates();
+      if (!manualResult.saved) {
+        // the card exists; keep the dialog open on it so the numbers can be corrected and saved again
+        setFormDialogMode("edit");
+        setEditTemplate({ name: newTemplate.name, vendor: newTemplate.vendor, opticalCode: newTemplate.opticalCode, formType: "MANUAL", sortOrder: newTemplate.sortOrder || 1, educationLevel: newTemplate.educationLevel || "" });
+        setError(`Optik kartı oluşturuldu ama okuma alanları kaydedilmedi: ${manualResult.reason}`);
+        return;
+      }
+      await loadTemplate(r.templateId);
       setFormDialogOpen(false);
-      setNotice(manualResult.saved
-        ? "Optik kartı ve manuel okuma parametreleri kaydedildi."
-        : `Optik kartı kaydedildi. Manuel okuma parametreleri henüz kaydedilmedi: ${manualResult.reason}`);
+      setNotice(`Optik kaydedildi ve yayına alındı (${manualResult.version}).`);
     } catch (e: any) {
       setError(e.message);
     } finally {
@@ -492,13 +503,15 @@ export function Opticals() {
     setFormDialogOpen(true);
     setNewTemplate((current) => ({ ...current, name: "", vendor: "", opticalCode: "", formType: "MANUAL", sortOrder: 1, version: "v1", educationLevel: listFilter.level && listFilter.level !== "NONE" ? listFilter.level : "" }));
     setManualRecordLength(0);
-    setManualIndexBase(0);
+    setManualIndexBase(1);
     setManualFields(defaultManualFields());
     setManualAnswers(defaultManualAnswerBlocks());
+    setDialogSampleText(""); setDialogSampleName("");
     setError("");
     setNotice("");
   };
   const openEditForm = (templateId: string) => {
+    setDialogSampleText(""); setDialogSampleName("");
     setFormDialogMode("edit");
     setFormDialogOpen(true);
     setSelectedTemplateId(templateId);
@@ -600,16 +613,18 @@ export function Opticals() {
       await createTemplate();
       return;
     }
+    const problems = manualLayoutProblems(manualRecordLength, manualFields, manualAnswers);
+    if (problems.length) { setError(`Kaydetmeden önce düzeltin: ${problems.join(" · ")}`); return; }
     const templateSaved = await saveTemplate();
     if (!templateSaved) return;
-    const manualResult = editTemplate.formType === "MANUAL"
-      ? await persistManualDialogDefinition(selectedVersionId)
-      : { saved: true, reason: "" };
-    if (selectedVersionId) await loadVersion(selectedVersionId);
+    setBusy(true);
+    const manualResult = await persistManualDialogDefinition(selectedTemplateId);
+    setBusy(false);
+    if (!manualResult.saved) { setError(`Okuma alanları kaydedilmedi: ${manualResult.reason}`); return; }
+    await loadTemplates();
+    await loadTemplate(selectedTemplateId);
     setFormDialogOpen(false);
-    setNotice(manualResult.saved
-      ? "Optik kartı ve manuel okuma parametreleri güncellendi."
-      : `Optik kartı güncellendi. Manuel okuma parametreleri henüz kaydedilmedi: ${manualResult.reason}`);
+    setNotice(`Optik düzeltildi ve yayına alındı (${manualResult.version})${manualResult.rebound ? `; bu optiği kullanan ${manualResult.rebound} sınav bağlantısı yeni sürüme geçti` : ""}. Daha önce okunmuş yüklemeler eski sürümle kalır.`);
   };
   const deleteTemplate = async (templateId = selectedTemplateId) => {
     if (
@@ -1119,20 +1134,32 @@ export function Opticals() {
           ["student_number", "first_name", "last_name", "name", "class", "grade_class", "section", "booklet", "tckn"],
           ["phone", "gender", "track", "school_type", "institution_code"],
         ];
+        const num = (value: string) => { const n = Number(value); return Number.isFinite(n) ? Math.trunc(n) : 0; };
+        const range = (start: number, length: number) => start > 0 && length > 0 ? `${start}–${start + length - 1}` : "—";
         const renderField = (key: string) => {
           const field = fieldByKey(key);
           if (!field) return null;
-          return <div className="optical-schoolizyon-row" key={field.key}>
-            <label className="optical-schoolizyon-name"><input type="checkbox" checked={field.enabled} onChange={(e) => setManualFields((items) => items.map((item) => item.key === field.key ? { ...item, enabled: e.target.checked } : item))} /> <span>{field.label}</span></label>
-            <input aria-label={`${field.label} başlangıç`} type="number" min="0" value={field.start || ""} onChange={(e) => setManualFields((items) => items.map((item) => item.key === field.key ? { ...item, start: Number(e.target.value) || 0 } : item))} />
-            <input aria-label={`${field.label} uzunluk`} type="number" min="0" value={field.length || ""} onChange={(e) => setManualFields((items) => items.map((item) => item.key === field.key ? { ...item, length: Number(e.target.value) || 0 } : item))} />
+          const update = (patch: Partial<ManualOpticalField>) => setManualFields((items) => items.map((item) => item.key === field.key ? { ...item, ...patch } : item));
+          return <div className="optical-schoolizyon-row optical-manual-1b" key={field.key}>
+            <label className="optical-schoolizyon-name"><input type="checkbox" checked={field.enabled} onChange={(e) => update({ enabled: e.target.checked })} /> {field.label}</label>
+            <input aria-label={`${field.label} başlangıç`} type="number" min="1" disabled={!field.enabled} value={field.enabled && field.start ? field.start : ""} onChange={(e) => update({ start: num(e.target.value) })} />
+            <input aria-label={`${field.label} hane sayısı`} type="number" min="1" disabled={!field.enabled} value={field.enabled && field.length ? field.length : ""} onChange={(e) => update({ length: num(e.target.value) })} />
+            <span className="optical-manual-range">{field.enabled ? range(field.start, field.length) : ""}</span>
           </div>;
         };
-        const renderTest = (block: ManualAnswerBlock) => <div className="optical-schoolizyon-row" key={block.code}>
-          <label className="optical-schoolizyon-name"><input type="checkbox" checked={block.enabled} onChange={(e) => setManualAnswers((items) => items.map((item) => item.code === block.code ? { ...item, enabled: e.target.checked } : item))} /> <span>{block.label}</span></label>
-          <input aria-label={`${block.label} başlangıç`} type="number" min="0" value={block.start || ""} onChange={(e) => setManualAnswers((items) => items.map((item) => item.code === block.code ? { ...item, start: Number(e.target.value) || 0 } : item))} />
-          <input aria-label={`${block.label} uzunluk`} type="number" min="0" value={block.length || ""} onChange={(e) => setManualAnswers((items) => items.map((item) => item.code === block.code ? { ...item, length: Number(e.target.value) || 0 } : item))} />
-        </div>;
+        const renderTest = (block: ManualAnswerBlock) => {
+          const update = (patch: Partial<ManualAnswerBlock>) => setManualAnswers((items) => items.map((item) => item.code === block.code ? { ...item, ...patch, ...(patch.length !== undefined ? { questionCount: patch.length } : {}) } : item));
+          return <div className="optical-schoolizyon-row optical-manual-1b" key={block.code}>
+            <label className="optical-schoolizyon-name"><input type="checkbox" checked={block.enabled} onChange={(e) => update({ enabled: e.target.checked })} /> {block.label}</label>
+            <input aria-label={`${block.label} başlangıç`} type="number" min="1" disabled={!block.enabled} value={block.enabled && block.start ? block.start : ""} onChange={(e) => update({ start: num(e.target.value) })} />
+            <input aria-label={`${block.label} soru sayısı`} type="number" min="1" disabled={!block.enabled} value={block.enabled && block.length ? block.length : ""} onChange={(e) => update({ length: num(e.target.value) })} />
+            <span className="optical-manual-range">{block.enabled ? range(block.start, block.length) : ""}</span>
+          </div>;
+        };
+        const problems = manualLayoutProblems(manualRecordLength, manualFields, manualAnswers);
+        const touched = manualRecordLength > 0 || manualFields.some((f) => f.enabled && (f.start || f.length)) || manualAnswers.some((a) => a.enabled);
+        const optionCount = manualAnswers.find((a) => a.enabled)?.options || 5;
+        const preview = dialogSampleText ? manualSamplePreview(dialogSampleText, manualFields, manualAnswers) : null;
         const ownerLabel = user?.role === "SUPER_ADMIN" ? "Ana Havuz · Süper Admin" : "Kurum optiği · mevcut kurum";
         return <div className="optical-form-dialog-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setFormDialogOpen(false); }}>
           <section className="optical-form-dialog" role="dialog" aria-modal="true" aria-labelledby="optical-form-dialog-title">
@@ -1146,21 +1173,34 @@ export function Opticals() {
               <div className="optical-schoolizyon-top-fields">
                 <label className="dialog-field-name">Form Adı *<input value={form.name} onChange={(e) => formDialogMode === "edit" ? setEditTemplate((x) => ({ ...x, name: e.target.value })) : setNewTemplate((x) => ({ ...x, name: e.target.value }))} placeholder="Form adı" /></label>
                 <label className="dialog-field-order">Sıra<input type="number" min="1" value={form.sortOrder || 1} onChange={(e) => formDialogMode === "edit" ? setEditTemplate((x) => ({ ...x, sortOrder: Number(e.target.value) || 1 })) : setNewTemplate((x) => ({ ...x, sortOrder: Number(e.target.value) || 1 }))} /></label>
-                <label className="dialog-field-type">Form Türü *<select value={form.formType} onChange={(e) => formDialogMode === "edit" ? setEditTemplate((x) => ({ ...x, formType: e.target.value as Method })) : setNewTemplate((x) => ({ ...x, formType: e.target.value as Method }))}><option value="MANUAL">Kullanıcıya özel</option><option value="FMT">FMT</option><option value="TXT">TXT / DAT</option><option value="PHOTO">Fotoğraf / kamera</option></select></label>
                 <label className="dialog-field-publisher">Yayınevi *<input value={form.vendor} onChange={(e) => formDialogMode === "edit" ? setEditTemplate((x) => ({ ...x, vendor: e.target.value })) : setNewTemplate((x) => ({ ...x, vendor: e.target.value }))} placeholder="Yayınevi" /></label>
                 <label className="dialog-field-level">Kademe<select value={form.educationLevel || ""} onChange={(e) => formDialogMode === "edit" ? setEditTemplate((x) => ({ ...x, educationLevel: e.target.value })) : setNewTemplate((x) => ({ ...x, educationLevel: e.target.value }))}><option value="">Belirtilmemiş</option>{OPTICAL_LEVELS.map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>
                 <label className="dialog-field-code">Optik kodu *<input value={form.opticalCode} onChange={(e) => formDialogMode === "edit" ? setEditTemplate((x) => ({ ...x, opticalCode: e.target.value })) : setNewTemplate((x) => ({ ...x, opticalCode: e.target.value }))} placeholder="Optik kodu" /></label>
                 <label className="dialog-field-owner">Kullanıcı *<div className="optical-user-picker"><input value={ownerLabel} readOnly /><button type="button" className="secondary" onClick={() => setNotice(`${ownerLabel} seçildi.`)}>Seç</button></div></label>
               </div>
-              <div className="optical-schoolizyon-section-head"><strong>Alan</strong><span>Baş.</span><span>Uz.</span></div>
+              <div className="optical-manual-settings">
+                <label>Satır uzunluğu (karakter) *<input aria-label="Satır uzunluğu" type="number" min="1" value={manualRecordLength || ""} onChange={(e) => setManualRecordLength(num(e.target.value))} placeholder="Örn. 180" /></label>
+                <label>Şık sayısı<select aria-label="Şık sayısı" value={optionCount} onChange={(e) => { const v = Number(e.target.value) === 4 ? 4 : 5; setManualAnswers((items) => items.map((item) => ({ ...item, options: v }))); }}><option value={4}>4 şık (LGS, ortaokul)</option><option value={5}>5 şık (TYT, AYT)</option></select></label>
+                <p className="optical-manual-hint">Haneler 1'den sayılır: TXT satırındaki 20. karakter <b>20</b>'dir. <b>Başlangıç</b> ilk hane, <b>Hane</b> kaç karakter olduğu; sağda okunacak aralık görünür (ör. 20 ve 5 → 20–24). Testlerde hane sayısı soru sayısıdır.</p>
+              </div>
+              {touched && problems.length > 0 && <div className="alert warning optical-manual-problems" role="status"><strong>Kaydetmeden önce düzeltin</strong><ul>{problems.map((x, i) => <li key={i}>{x}</li>)}</ul></div>}
+              {touched && problems.length === 0 && <div className="alert success optical-manual-problems" role="status">Alanlar çakışmıyor ve satır uzunluğu içinde. Kaydedince optik hemen yayına alınır.</div>}
+              <div className="optical-schoolizyon-section-head"><strong>Alan</strong><span>Başlangıç</span><span>Hane</span><span>Aralık</span></div>
               <div className="optical-schoolizyon-columns">
                 <div>{identityColumns[0].map(renderField)}</div>
                 <div>{identityColumns[1].map(renderField)}{manualAnswers.slice(0, 4).map(renderTest)}</div>
                 <div>{manualAnswers.slice(4, 15).map(renderTest)}</div>
               </div>
+              <div className="optical-manual-sample">
+                <label className="secondary">Örnek TXT/DAT ile kontrol et (isteğe bağlı)<input type="file" accept=".txt,.dat,.TXT,.DAT" hidden onChange={async (e) => { const f = e.target.files?.[0]; e.target.value = ""; if (!f) return; setDialogSampleName(f.name); setDialogSampleText(await f.text()); }} /></label>
+                <small>Dosya alanları değiştirmez; yalnız girdiğiniz hanelerden ne okunacağını gösterir.</small>
+                {preview && <div className="optical-manual-preview"><strong>{dialogSampleName}</strong> · ilk {preview.rows.length} satır · satır uzunlukları {[...new Set(preview.lineLengths)].join(", ")}{manualRecordLength && preview.lineLengths.some((l) => l !== manualRecordLength) ? <span className="warning"> (girdiğiniz satır uzunluğu {manualRecordLength})</span> : null}
+                  <div className="optical-list-scroll"><table className="optical-list-table"><thead><tr>{preview.areas.map((a) => <th key={a.name}>{a.name}<small>{a.first}–{a.last}</small></th>)}</tr></thead><tbody>{preview.rows.map((row, i) => <tr key={i}>{row.map((cell, j) => <td key={j}><code>{cell.replace(/ /g, "·") || "∅"}</code></td>)}</tr>)}</tbody></table></div>
+                </div>}
+              </div>
             </div>
             <div className="optical-form-dialog-footer">
-              <button type="button" className="primary" disabled={busy || !form.name.trim() || !form.vendor.trim() || !form.opticalCode.trim()} onClick={() => void saveFormDialog()}><Save size={16} /> Kaydet</button>
+              <button type="button" className="primary" disabled={busy || !form.name.trim() || !form.vendor.trim() || !form.opticalCode.trim() || manualLayoutProblems(manualRecordLength, manualFields, manualAnswers).length > 0} onClick={() => void saveFormDialog()}><Save size={16} /> Kaydet ve yayınla</button>
               <button type="button" className="different-save" disabled={busy || !form.name.trim() || !form.vendor.trim() || !form.opticalCode.trim()} onClick={saveDifferentForm}>Farklı Kaydet</button>
               <button type="button" className="secondary" onClick={() => setFormDialogOpen(false)}>Vazgeç</button>
             </div>
@@ -1377,7 +1417,7 @@ export function Opticals() {
             ))}
           </div>
         )}
-        {versionDetail && (
+        {SHOW_ADVANCED_OPTIC_TOOLS && versionDetail && (
           <>
             <div className="summary-strip" style={{ marginBottom: 20 }}>
               {readinessCards.map(([label, ok]) => (

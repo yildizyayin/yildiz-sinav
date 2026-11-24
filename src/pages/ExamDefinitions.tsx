@@ -107,6 +107,10 @@ export function ExamDefinitions() {
   const [booklets, setBooklets] = useState('A');
   const [subjects, setSubjects] = useState<SubjectConfig[]>([]);
   const [keyEntries, setKeyEntries] = useState<ParsedAnswerEntry[]>([]);
+  // Owner (5 Nov, Fenomen 8): a key read from the file but not saved at creation is kept for that exam until it is saved
+  const unsavedKeyRef = useRef<{ examId: string; entries: ParsedAnswerEntry[] } | null>(null);
+  // Owner (5 Nov): an exam's key is uploaded again from a file (with a preview), or its outcomes / the whole key cleared
+  const [keyImport, setKeyImport] = useState<{ fileName: string; entries: ParsedAnswerEntry[]; structure: SubjectConfig[]; booklets: string[]; mismatches: string[]; warnings: string[]; unread: number; questions: number } | null>(null);
   const [outcomeMappings, setOutcomeMappings] = useState<OutcomeMap[]>([]);
   const [assignedInstitutions, setAssignedInstitutions] = useState<string[]>([]);
   const [outcomeRequired, setOutcomeRequired] = useState(false);
@@ -181,7 +185,10 @@ export function ExamDefinitions() {
       acc[key] = current;
       return acc;
     }, {}))) entries.push(group as ParsedAnswerEntry);
-    setKeyEntries(entries);
+    const unsaved = unsavedKeyRef.current;
+    const serverHasKey = (data.answerKey || []).some((x: any) => x.correct_answer);
+    if (unsaved && unsaved.examId === id && !serverHasKey) setKeyEntries(unsaved.entries);
+    else { if (unsaved && unsaved.examId === id) unsavedKeyRef.current = null; setKeyEntries(entries); }
     const maps: OutcomeMap[] = [];
     for (const r of data.answerKey || []) for (const outcomeId of String(r.outcome_ids || '').split(',').filter(Boolean)) maps.push({ subjectId: r.subject_id, questionNo: Number(r.question_no), outcomeId });
     setOutcomeMappings(maps);
@@ -302,7 +309,7 @@ export function ExamDefinitions() {
     const cfg = Object.entries(result.questionCounts).map(([subjectId, questionCount], index) => { const questionStart = result.questionStarts[subjectId] || 1; const optionCount = result.entries.find((entry) => entry.subjectId === subjectId)?.optionCount || 5; return { subjectId, questionCount, questionStart, questionEnd: questionStart + questionCount - 1, optionCount, questionStatus: 'ACTIVE' as const, wrongDivisor: selectedChoice.defaultWrongDivisor, sortOrder: index + 1 }; });
     setSubjects(cfg);
     const outcomeNotice = result.entries.some((entry) => (entry.outcomeRefs || []).some(Boolean)) ? ` ${mappingSummary.matched} kazanım otomatik eşleşti; ${mappingSummary.ambiguous + mappingSummary.missing + mappingSummary.unverified} kayıt manuel kontrol bekliyor.` : '';
-    const warningNotice = result.warnings?.length ? ` Uyarı: ${result.warnings.join(' ')}` : '';
+    const warningNotice = result.warnings?.length ? ` Uyarı: ${result.warnings.join(' ')}` : result.unknownLines?.length ? ` Uyarı: ${result.unknownLines.length} satır okunamadı.` : '';
     setNotice(`Cevap anahtarı analiz edildi: ${cfg.length} ders, ${cfg.reduce((n, x) => n + x.questionCount, 0)} soru, ${result.detectedBooklets.length} kitapçık.${outcomeNotice}${warningNotice}`);
   };
 
@@ -383,7 +390,12 @@ export function ExamDefinitions() {
         await api(`/api/exam-definitions/${created.id}/structure`, { method: 'PUT', body: JSON.stringify({ booklets: booklets.split(',').map((x) => x.trim()).filter(Boolean), subjects }) });
       }
       if (keyEntries.length) {
-        await api(`/api/exam-definitions/${created.id}/answer-key`, { method: 'PUT', body: JSON.stringify({ entries: keyEntries, outcomeMode: requiresOfficialOutcomes ? 'OFFICIAL_REQUIRED' : 'OPTIONAL' }) });
+        try {
+          await api(`/api/exam-definitions/${created.id}/answer-key`, { method: 'PUT', body: JSON.stringify({ entries: keyEntries, outcomeMode: requiresOfficialOutcomes ? 'OFFICIAL_REQUIRED' : 'OPTIONAL' }) });
+        } catch (e: any) {
+          unsavedKeyRef.current = { examId: created.id, entries: keyEntries };
+          throw new Error(`Cevap anahtarı kaydedilemedi: ${e.message} Dosyadan okunan cevaplar Cevap anahtarı bölümünde duruyor; gerekirse yapıyı düzeltip “Cevap anahtarını kaydet” düğmesine basın`);
+        }
         if (answerKeyFile) { await uploadArchiveForExam(created.id, 'QUALIFIED_ANSWER_KEY', answerKeyFile, { documentKind: 'OUTCOME_TABLE', title: answerKeyFile.name, source: 'ANSWER_KEY_PARSER' }); }
       }
       const documentFailures: string[] = [];
@@ -407,7 +419,7 @@ export function ExamDefinitions() {
       setNotice(documentFailures.length ? `Sınav oluşturuldu; bazı belgeler daha sonra tekrar yüklenmeli: ${documentFailures.join(' · ')}` : definitionMode === 'OUTCOME' ? 'Sınav oluşturuldu. Şimdi soru-kazanım eşleştirmelerini tamamlayın.' : 'Sınav taslak olarak kaydedildi. Eksikleri kontrol edip Sınavı aktifleştir düğmesini kullanın.');
       await loadRows();
     } catch (e: any) {
-      if (savedId) { openExamDefinition(savedId); await loadRows().catch(() => undefined); setError(`Sınav taslağı kaydedildi; sonraki adım tamamlanamadı: ${e.message}. Bu kaydı düzenleyerek devam edin.`); }
+      if (savedId) { openExamDefinition(savedId); await loadRows().catch(() => undefined); setError(`Sınav taslağı kaydedildi; sonraki adım tamamlanamadı. ${e.message}. Bu kaydı düzenleyerek devam edin.`); }
       else setError(e.message);
     } finally { setBusy(false); setSaveReviewOpen(false); }
   };
@@ -421,8 +433,17 @@ export function ExamDefinitions() {
     if (!selectedId) return;
     setBusy(true); setError('');
     try {
-      await api(`/api/exam-definitions/${selectedId}/structure`, { method: 'PUT', body: JSON.stringify({ booklets: booklets.split(',').map((x) => x.trim()).filter(Boolean), subjects }) });
-      setNotice('Dersler, soru sayıları ve kitapçıklar kaydedildi.'); await loadDetail(selectedId); await loadRows();
+      const body = JSON.stringify({ booklets: booklets.split(',').map((x) => x.trim()).filter(Boolean), subjects });
+      // Owner (5 Nov): answers that no longer fit are shown before they are dropped; everything else is kept
+      const preview = await api<any>(`/api/exam-definitions/${selectedId}/structure?preview=1`, { method: 'PUT', body });
+      const lost = preview?.droppedAnswers || {};
+      const lostTotal = Number(lost.removedQuestions || 0) + Number(lost.removedBooklets || 0) + Number(lost.optionE || 0);
+      if (lostTotal > 0) {
+        const parts = [lost.removedQuestions ? `${lost.removedQuestions} cevap kaldırılan sorularda` : '', lost.removedBooklets ? `${lost.removedBooklets} cevap kaldırılan kitapçıklarda` : '', lost.optionE ? `${lost.optionE} cevap "E" şıkkı (test 4 şıklı oluyor)` : ''].filter(Boolean).join(', ');
+        if (!window.confirm(`Bu değişiklikle cevap anahtarından ${lostTotal} cevap silinecek: ${parts}. Diğer ${Number(preview.keptAnswers || 0)} cevap ve kazanım eşleştirmeleri korunur. Devam edilsin mi?`)) return;
+      }
+      const saved = await api<any>(`/api/exam-definitions/${selectedId}/structure`, { method: 'PUT', body });
+      setNotice(Number(saved?.keptAnswers || 0) > 0 ? `Dersler, soru sayıları ve kitapçıklar kaydedildi. Cevap anahtarındaki ${saved.keptAnswers} cevap korundu.` : 'Dersler, soru sayıları ve kitapçıklar kaydedildi.'); await loadDetail(selectedId); await loadRows();
     } catch (e: any) { setError(e.message); } finally { setBusy(false); }
   };
 
@@ -449,11 +470,73 @@ export function ExamDefinitions() {
     if (patch.accepted !== undefined) { const parsed = patch.accepted.split(/[|/,]/).map((x) => cleanAnswers(x).slice(0, 1)).filter(Boolean); acceptedAnswers[index] = parsed.length ? parsed : [entry.answers[index] || '']; }
     return { ...entry, questionStatuses: statuses, acceptedAnswers };
   }));
+  const readKeyFileForExam = async (file?: File) => {
+    if (!file || !detail) return;
+    setError(''); setNotice('');
+    try {
+      let result;
+      if (file.name.toLowerCase().endsWith('.xlsx')) {
+        const workbook = XLSX.read(await file.arrayBuffer(), { type: 'array' });
+        const sheet = workbook.Sheets[workbook.SheetNames[0]];
+        result = parseAnswerKeyWorkbookRows(sheet ? XLSX.utils.sheet_to_json(sheet, { header: 1, defval: '' }) as unknown[][] : [], options.subjects as SubjectOption[]);
+      } else result = parseAnswerKeyFileText(await file.text(), options.subjects as SubjectOption[]);
+      if (!result.entries.length) throw new Error('Dosyada okunabilen cevap satırı bulunamadı. CEVAP ANAHTARI bölümünü ve test adlarını kontrol edin.');
+      const current = (detail.subjects || []) as any[];
+      const defaultDivisor = Number(current[0]?.wrong_divisor ?? 4);
+      const structure: SubjectConfig[] = Object.entries(result.questionCounts).map(([subjectId, questionCount], index) => {
+        const existing = current.find((x) => x.subject_id === subjectId);
+        const questionStart = result.questionStarts[subjectId] || 1;
+        const optionCount = (result.entries.find((e) => e.subjectId === subjectId)?.optionCount || 5) as 4 | 5;
+        return { subjectId, questionCount, questionStart, questionEnd: questionStart + questionCount - 1, optionCount, questionStatus: 'ACTIVE', wrongDivisor: existing ? Number(existing.wrong_divisor) : defaultDivisor, sortOrder: index + 1 };
+      });
+      const mismatches: string[] = [];
+      for (const s of structure) {
+        const existing = current.find((x) => x.subject_id === s.subjectId);
+        const name = subjectName(options, s.subjectId);
+        if (!existing) { mismatches.push(`${name}: dosyada var, sınavda yok`); continue; }
+        if (Number(existing.question_count) !== s.questionCount) mismatches.push(`${name}: dosyada ${s.questionCount} soru, sınavda ${existing.question_count}`);
+        if (Number(existing.option_count || 5) !== s.optionCount) mismatches.push(`${name}: dosyada ${s.optionCount} şık, sınavda ${existing.option_count || 5}`);
+        if (Number(existing.question_start || 1) !== s.questionStart) mismatches.push(`${name}: dosyada ${s.questionStart}. sorudan başlıyor, sınavda ${existing.question_start || 1}.`);
+      }
+      for (const existing of current) if (!structure.some((s) => s.subjectId === existing.subject_id)) mismatches.push(`${subjectName(options, existing.subject_id)}: sınavda var, dosyada yok`);
+      const fileBooklets = [...new Set(result.entries.map((e) => e.bookletCode))].sort();
+      const examBooklets = (detail.booklets || []).map((b: any) => b.code).sort();
+      if (fileBooklets.join(',') !== examBooklets.join(',')) mismatches.push(`Kitapçıklar: dosyada ${fileBooklets.join(', ')}, sınavda ${examBooklets.join(', ')}`);
+      setKeyImport({ fileName: file.name, entries: result.entries, structure, booklets: fileBooklets, mismatches, warnings: result.warnings || [], unread: result.unknownLines.length, questions: structure.reduce((n, s) => n + s.questionCount, 0) });
+    } catch (e: any) { setError(e.message); }
+  };
+  const applyKeyImport = async (updateStructure: boolean) => {
+    if (!selectedId || !keyImport) return;
+    setBusy(true); setError('');
+    try {
+      if (updateStructure) {
+        const body = JSON.stringify({ booklets: keyImport.booklets, subjects: keyImport.structure, reason: `Yapı cevap anahtarı dosyasına göre güncellendi (${keyImport.fileName}).` });
+        await api(`/api/exam-definitions/${selectedId}/structure`, { method: 'PUT', body });
+      }
+      await api(`/api/exam-definitions/${selectedId}/answer-key`, { method: 'PUT', body: JSON.stringify({ entries: keyImport.entries, replaceSource: true, reason: `Cevap anahtarı dosyadan yeniden yüklendi (${keyImport.fileName}).` }) });
+      if (unsavedKeyRef.current?.examId === selectedId) unsavedKeyRef.current = null;
+      setNotice(`Cevap anahtarı ${keyImport.fileName} dosyasından yüklendi: ${keyImport.questions} soru, ${keyImport.booklets.length} kitapçık${updateStructure ? '; sınav yapısı dosyaya göre güncellendi' : ''}. Eski anahtar ve kazanım bağlantıları değiştirildi.`);
+      setKeyImport(null);
+      await loadDetail(selectedId); await loadRows();
+    } catch (e: any) { setError(e.message); } finally { setBusy(false); }
+  };
+  const clearKey = async (scope: 'OUTCOMES' | 'ALL') => {
+    if (!selectedId) return;
+    const question = scope === 'ALL' ? 'Cevap anahtarının tamamı ve kazanım eşleştirmeleri silinecek. Sınav taslak olarak kalır; sonra yeniden yükleyebilirsiniz. Devam edilsin mi?' : 'Bu sınavın bütün kazanım eşleştirmeleri (resmî ve yayınevi) silinecek; cevaplar kalır. Devam edilsin mi?';
+    if (!window.confirm(question)) return;
+    setBusy(true); setError('');
+    try {
+      const r = await api<any>(`/api/exam-definitions/${selectedId}/answer-key`, { method: 'DELETE', body: JSON.stringify({ scope }) });
+      setNotice(scope === 'ALL' ? `Cevap anahtarı silindi (${r?.deleted?.answers || 0} cevap). Dosyadan yeniden yükleyebilirsiniz.` : `Kazanım eşleştirmeleri silindi (${Number(r?.deleted?.outcomeLinks || 0) + Number(r?.deleted?.publisherLinks || 0)} bağlantı).`);
+      await loadDetail(selectedId); await loadRows();
+    } catch (e: any) { setError(e.message); } finally { setBusy(false); }
+  };
   const saveAnswerKey = async () => {
     if (!selectedId) return;
     setBusy(true); setError('');
     try {
       await api(`/api/exam-definitions/${selectedId}/answer-key`, { method: 'PUT', body: JSON.stringify({ entries: keyEntries }) });
+      if (unsavedKeyRef.current?.examId === selectedId) unsavedKeyRef.current = null;
       setNotice('Cevap anahtarı kaydedildi.'); await loadDetail(selectedId); await loadRows();
     } catch (e: any) { setError(e.message); } finally { setBusy(false); }
   };
@@ -741,7 +824,7 @@ export function ExamDefinitions() {
       {detail.exam.status === 'DRAFT' && canEditDetail && <ExamStartDate examId={selectedId} onSaved={() => { void loadDetail(selectedId); void loadRows(); }}/>}
       {detail.exam.status === 'DRAFT' && <ExamReadiness readiness={detail.readiness}/>}
       {detail.exam.status !== 'DRAFT' && user?.role === 'SUPER_ADMIN' && <ExamCorrectionToggle examId={selectedId} onChanged={() => void loadDetail(selectedId)}/>}
-      {detail.exam.status !== 'DRAFT' && !detail.editable && canEditDetail && <ExamScoringCorrection examId={selectedId} onSaved={() => void loadDetail(selectedId)}/>}
+      {detail.exam.status !== 'DRAFT' && !detail.editable && canEditDetail && <ExamScoringCorrection key={`${selectedId}:${detail.correctionOpen ? 'open' : 'closed'}`} examId={selectedId} onSaved={() => void loadDetail(selectedId)}/>}
       {(detail.exam.status === 'DRAFT' || detail.editable) && canEditDetail && <section className="panel" style={{marginBottom:20}}><h2>Sınav kartı ve puanlama</h2>{detail.exam.status !== 'DRAFT' && <p className="muted">Sınav aktif; henüz değerlendirilmiş öğrencisi olmadığı için her şeyi değiştirebilirsiniz. İlk sonuçlar oluşunca kilitlenir.</p>}<div className="form-grid">
         <label>Sınav adı<input value={createForm.title} onChange={e=>setCreateForm(f=>({...f,title:e.target.value}))}/></label>
         <label>Yayınevi<input value={createForm.publisherName} onChange={e=>setCreateForm(f=>({...f,publisherName:e.target.value}))}/></label>
@@ -754,7 +837,7 @@ export function ExamDefinitions() {
       {(detail.exam.status === 'DRAFT'||detail.answerKeyEditable) && canEditDetail && <>
         {(detail.exam.status==='DRAFT'||detail.editable)&&<div className="panel approved-key-structure" style={{ marginBottom: 20 }}><div className="panel-head"><div><h2>Dersler ve soru aralıkları</h2><p>Başlangıç/bitiş numarası ve 4 veya 5 şık yapısı soru tanımının parçasıdır.</p></div></div><label>Kitapçıklar<input value={booklets} onChange={(e) => setBooklets(e.target.value)} /></label><div className="cards-list">{visibleSubjects.map((s: any) => { const cfg = subjects.find((x) => x.subjectId === s.id); return <div className="list-card" key={s.id}><label className="approved-key-subject-toggle"><input type="checkbox" aria-label={`${s.name} dersini seç`} checked={selectedSubjectIds.has(s.id)} onChange={(e) => toggleSubject(s.id, e.target.checked)} /></label><div style={{ flex: 1 }}><strong>{s.name}</strong><span>{s.code}</span></div>{cfg && <><label className="compact-field">Başlangıç<input type="number" value={cfg.questionStart} onChange={(e) => patchSubject(s.id, { questionStart: Number(e.target.value), questionEnd: Number(e.target.value) + cfg.questionCount - 1 })} /></label><label className="compact-field">Bitiş<input type="number" value={cfg.questionEnd} onChange={(e) => patchSubject(s.id, { questionEnd: Number(e.target.value), questionCount: Number(e.target.value) - cfg.questionStart + 1 })} /></label><label className="compact-field">Şık<select value={cfg.optionCount} onChange={(e) => patchSubject(s.id, { optionCount: Number(e.target.value) as 4 | 5 })}><option value="4">4</option><option value="5">5</option></select></label><label className="compact-field">Yanlış götürme<input type="number" step="0.5" value={cfg.wrongDivisor} onChange={(e) => patchSubject(s.id, { wrongDivisor: Number(e.target.value) })} /></label></>}</div>; })}</div><button className="secondary" onClick={saveStructure}><Save size={16} /> Yapıyı Kaydet</button></div>}
 
-        {!!detail.subjects?.length && !!detail.booklets?.length && <div className="panel approved-key-editor" style={{ marginBottom: 20 }}><div className="panel-head"><div><h2>Cevap anahtarı</h2>{detail.correctionOpen&&<p>Düzeltme açık. Kaydettikten sonra yeniden değerlendirin ve sonuçları yayınlayın.</p>}<p>Doğru cevap, alternatif kabul, soru durumu ve kazanım bağlantısı aynı tanımda tutulur.</p></div><CheckCircle2 /></div>{detail.subjects.map((s: any) => <div key={s.subject_id} style={{ padding: 14, marginBottom: 12, border: '1px solid var(--border,#e5e7eb)', borderRadius: 12 }}><strong>{s.name} · {s.question_count} soru · {s.option_count || 5} şık</strong>{detail.booklets.map((b: any) => { const entry = keyEntries.find((x) => x.subjectId === s.subject_id && x.bookletCode === b.code); return <div key={b.code}><label>{b.code} Kitapçığı<input value={entry?.answers || ''} onChange={(e) => setKey(s.subject_id, b.code, e.target.value)} placeholder={`${s.question_count} cevap`} /><small>{entry?.answers.length || 0}/{s.question_count}</small></label><div className="question-meta-grid">{Array.from({ length: Number(s.question_count) }, (_, index) => { const questionNo = Number(s.question_start || 1) + index; const status = entry?.questionStatuses?.[index] || 'ACTIVE'; const accepted = entry?.acceptedAnswers?.[index]; const acceptedText = Array.isArray(accepted) ? accepted.join('|') : accepted || entry?.answers?.[index] || ''; return <div key={questionNo}><strong>{questionNo}</strong><select aria-label={`${b.code} ${questionNo} durumu`} value={status} onChange={(e) => setQuestionMetadata(s.subject_id, b.code, index, { status: e.target.value as any })}><option value="ACTIVE">Aktif</option><option value="CANCELLED">İptal</option><option value="EXCLUDED">Değerlendirme dışı</option></select><input aria-label={`${b.code} ${questionNo} kabul`} value={acceptedText} onChange={(e) => setQuestionMetadata(s.subject_id, b.code, index, { accepted: e.target.value })} placeholder="A veya A|B" /></div>; })}</div></div>; })}</div>)}          <button className="primary" onClick={saveAnswerKey}><Save size={16} /> Cevap Anahtarını Kaydet</button></div>}
+        {!!detail.subjects?.length && !!detail.booklets?.length && <div className="panel approved-key-editor" style={{ marginBottom: 20 }}><div className="panel-head"><div><h2>Cevap anahtarı</h2>{detail.correctionOpen&&<p>Düzeltme açık. Kaydettikten sonra yeniden değerlendirin ve sonuçları yayınlayın.</p>}<p>Doğru cevap, alternatif kabul, soru durumu ve kazanım bağlantısı aynı tanımda tutulur.</p></div><CheckCircle2 /></div><div className="key-manage-bar"><label className="secondary key-upload"><FileUp size={16} /> Dosyadan yeniden yükle<input type="file" accept=".xlsx,.csv,.txt" hidden onChange={(e) => { void readKeyFileForExam(e.target.files?.[0]); e.target.value = ''; }} /></label><button type="button" className="ghost" disabled={busy} onClick={() => void clearKey('OUTCOMES')}>Kazanımları sil</button>{detail.exam.status === 'DRAFT' && <button type="button" className="ghost danger" disabled={busy} onClick={() => void clearKey('ALL')}>Cevap anahtarını sil</button>}</div>{keyImport && <div className={`key-import-preview alert ${keyImport.mismatches.length || keyImport.warnings.length ? 'warning' : 'info'}`} role="status"><strong>{keyImport.fileName}</strong><p>{keyImport.questions} soru · kitapçık {keyImport.booklets.join(', ')} · {keyImport.structure.length} ders{keyImport.unread ? ` · ${keyImport.unread} satır okunamadı` : ''}</p>{!!keyImport.warnings.length && <ul>{keyImport.warnings.map((w, i) => <li key={i}>{w}</li>)}</ul>}{keyImport.mismatches.length ? <><p>Dosya sınavın yapısıyla uyuşmuyor:</p><ul>{keyImport.mismatches.map((m, i) => <li key={i}>{m}</li>)}</ul>{!keyImport.unread && <p>Yapıyı dosyaya göre güncellerseniz uyan cevaplar korunur, sonra anahtar dosyadakiyle değiştirilir.</p>}</> : <p>Yapı uyuşuyor. Kaydedince mevcut cevap anahtarı ve kazanım bağlantıları bu dosyadakilerle değiştirilir.</p>}{!!keyImport.unread && <p><strong>Okunamayan satır olduğu için kaydedilemez.</strong> Dosyayı düzeltip yeniden yükleyin; yoksa sınavın yapısı eksik sorularla değişebilir.</p>}<div className="key-import-actions"><button type="button" className="ghost" disabled={busy} onClick={() => setKeyImport(null)}>Vazgeç</button>{keyImport.unread ? null : keyImport.mismatches.length ? <button type="button" className="primary" disabled={busy} onClick={() => void applyKeyImport(true)}>Yapıyı güncelle ve anahtarı değiştir</button> : <button type="button" className="primary" disabled={busy} onClick={() => void applyKeyImport(false)}>Anahtarı bununla değiştir</button>}</div></div>}{detail.subjects.map((s: any) => <div key={s.subject_id} style={{ padding: 14, marginBottom: 12, border: '1px solid var(--border,#e5e7eb)', borderRadius: 12 }}><strong>{s.name} · {s.question_count} soru · {s.option_count || 5} şık</strong>{detail.booklets.map((b: any) => { const entry = keyEntries.find((x) => x.subjectId === s.subject_id && x.bookletCode === b.code); return <div key={b.code}><label>{b.code} Kitapçığı<input value={entry?.answers || ''} onChange={(e) => setKey(s.subject_id, b.code, e.target.value)} placeholder={`${s.question_count} cevap`} /><small>{entry?.answers.length || 0}/{s.question_count}</small></label><div className="question-meta-grid">{Array.from({ length: Number(s.question_count) }, (_, index) => { const questionNo = Number(s.question_start || 1) + index; const status = entry?.questionStatuses?.[index] || 'ACTIVE'; const accepted = entry?.acceptedAnswers?.[index]; const acceptedText = Array.isArray(accepted) ? accepted.join('|') : accepted || entry?.answers?.[index] || ''; return <div key={questionNo}><strong>{questionNo}</strong><select aria-label={`${b.code} ${questionNo} durumu`} value={status} onChange={(e) => setQuestionMetadata(s.subject_id, b.code, index, { status: e.target.value as any })}><option value="ACTIVE">Aktif</option><option value="CANCELLED">İptal</option><option value="EXCLUDED">Değerlendirme dışı</option></select><input aria-label={`${b.code} ${questionNo} kabul`} value={acceptedText} onChange={(e) => setQuestionMetadata(s.subject_id, b.code, index, { accepted: e.target.value })} placeholder="A veya A|B" /></div>; })}</div></div>; })}</div>)}          <button className="primary" onClick={saveAnswerKey}><Save size={16} /> Cevap Anahtarını Kaydet</button></div>}
 
         {detail.exam.status!=='ARCHIVED'&&detail.exam.owner_type === 'CENTRAL' && user?.role === 'SUPER_ADMIN' && <div className="panel" style={{ marginBottom: 20 }}><div className="panel-head"><div><h2>Hangi kurumlar kullanacak?</h2><p>Kurum seçmek zorunlu değil. Hiç kurum seçmezseniz merkezi sınav <strong>tüm kurumlarda</strong> kullanılır; kurum seçerseniz yalnız seçtikleriniz kullanır. Sonucu olan bir kurum listeden çıkarılamaz.</p></div></div><div className={`alert ${(detail.institutions||[]).some((x:any)=>Number(x.enabled))?'warning':'info'}`}>{(detail.institutions||[]).some((x:any)=>Number(x.enabled))?`Şu an yalnız ${(detail.institutions||[]).filter((x:any)=>Number(x.enabled)).length} kuruma açık.`:'Şu an tüm kurumlara açık.'}{(detail.institutions||[]).some((x:any)=>Number(x.enabled))&&<button className="ghost" type="button" onClick={()=>void openToAllInstitutions()}>Tüm kurumlara aç</button>}</div><div className="cards-list">{options.institutions?.map((i: any) => <label className="list-card" key={i.id}><input type="checkbox" checked={assignedInstitutions.includes(i.id)} onChange={(e) => setAssignedInstitutions((x) => e.target.checked ? [...new Set([...x, i.id])] : x.filter((id) => id !== i.id))} /><div><strong>{i.name}</strong><span>{i.status}</span></div></label>)}</div><button className="secondary" onClick={saveInstitutions}><Save size={16} /> Kurumları Kaydet</button></div>}
       </>}

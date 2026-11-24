@@ -1,3 +1,4 @@
+import { questionTopicVideos } from './question-topic-videos';
 import { isLearnerRole, publishedForLearnersSql } from './exam-schedule';
 import {BANDS,BAND_SQL,bandShortage,bandTargets,parseDifficultyMix,MAX_OUTCOMES,joinSteps,narrowingMessage,outcomeWhere,parseAcademicYear,parseOutcomeCodes,selectionSteps,type SelectionInput} from './studio-selection';
 import {examOutcomePayloadSql} from './exam-outcome-history';
@@ -15,7 +16,7 @@ import { bookletOrder, bookletUsable, checkGroupIntegrity, stemGroupsInstalled, 
 import { layoutStudioBooklet, renderStudioAnswerKey, renderStudioPdf, STUDIO_OPTICAL_CAPACITY, StudioPrintError, type StudioBranding } from './studio-pdf';
 import { documentLayoutSettings, studioPrintCheck, studioRevision } from './studio-print-check';
 import { normalizeLayoutSettings } from './print-layout';
-import { reportSnapshotStatements } from './report-snapshot';
+import { nextSnapshotVersion, reportSnapshotStatements } from './report-snapshot';
 import { withExamOperationLock, listExamOperationLocks, recoverExamOperationLock } from './exam-operation-lock';
 import { examCorrectionOpen } from './exam-publication-guard';
 
@@ -229,8 +230,7 @@ export async function freezeExam(env:Env,user:AuthUser,examId:string):Promise<Re
 async function writeAppSnapshot(env:Env,p:any,examId:string,actorId:string|null,live:boolean):Promise<Response>{
   const incomplete=await one<{c:number}>(env.DB.prepare(`SELECT count(*) c FROM scan_batches sb WHERE sb.exam_id=? AND sb.status<>'COMMITTED' AND EXISTS (SELECT 1 FROM scan_evaluation_progress progress WHERE progress.batch_id=sb.id)`).bind(examId));
   if(Number(incomplete?.c||0))return badRequest('Başlamış değerlendirme tamamlanmadan sonuçlar dondurulamaz.','EVALUATION_INCOMPLETE');
-  const lastSnapshot=await one<{version:number}>(env.DB.prepare('SELECT MAX(version) version FROM (SELECT snapshot_version version FROM exam_result_snapshots WHERE exam_id=? UNION ALL SELECT retired_through_version FROM result_artifact_retirements WHERE exam_id=?)').bind(examId,examId));
-  const version=Math.max(Number(p.snapshot_version||0),Number(lastSnapshot?.version||0))+1; const networkId=p.scope==='NETWORK'?p.network_id:null;
+  const version=await nextSnapshotVersion(env,examId,Number(p.snapshot_version||0)); const networkId=p.scope==='NETWORK'?p.network_id:null;
   const participantCountRow=await one<any>(env.DB.prepare(`SELECT COUNT(*) count FROM exam_results er JOIN exam_participants ep ON ep.id=er.participant_id WHERE ep.exam_id=?`).bind(examId));
   if(!Number(participantCountRow?.count||0))return badRequest('Sonuçlandırılmış katılımcı bulunmuyor.','NO_RESULTS');
   const snapshotStatements=await reportSnapshotStatements(env,examId,version);
@@ -624,7 +624,8 @@ export async function studentPracticeQuestions(request:Request,env:Env,user:Auth
   const u=new URL(request.url);const enrollment=await one<any>(env.DB.prepare(`SELECT e.id enrollment_id,e.institution_id,e.season_id,e.grade_level,s.academic_year FROM student_enrollments e LEFT JOIN institution_seasons s ON s.id=e.season_id AND s.institution_id=e.institution_id WHERE e.student_id=? AND e.institution_id=? AND e.status='ACTIVE' ORDER BY e.created_at DESC,e.id DESC LIMIT 1`).bind(user.student_id,user.institution_id));
   if(!enrollment)return forbidden('Bu kurumda aktif öğrenci kaydınız bulunmuyor.');
   if(!env.SESSION_SECRET)return json({ok:false,error:{code:'PRACTICE_SIGNING_UNAVAILABLE',message:'Soru doğrulama yapılandırması hazır değil.'}},503);
-  const gradeValue=u.searchParams.get('gradeLevel')||enrollment?.grade_level;if(!gradeValue)return badRequest('Öğrencinin aktif sınıf bilgisi bulunamadı.','ENROLLMENT_REQUIRED');
+  // owner (10 Nov 2026): a student practises only their own grade; a gradeLevel in the address is ignored
+  const gradeValue=enrollment?.grade_level;if(!gradeValue)return badRequest('Öğrencinin aktif sınıf bilgisi bulunamadı.','ENROLLMENT_REQUIRED');
   const grade=Number(gradeValue);if(!Number.isInteger(grade)||grade<1||grade>12)return badRequest('Geçersiz sınıf seviyesi.','INVALID_GRADE');
   const subject=u.searchParams.get('subjectId');const nodeId=u.searchParams.get('nodeId');const difficulty=u.searchParams.get('difficultyLevel');const limit=Math.max(1,Math.min(20,Number(u.searchParams.get('limit')||10)));
   const wh=[`q.review_status='APPROVED'`,`q.copyright_status IN ('OWNED','LICENSED','PUBLIC_DOMAIN')`,`q.grade_level=?`,`(q.owner_type='PLATFORM' OR (q.owner_type='INSTITUTION' AND q.owner_id=?))`,`q.correct_answer IS NOT NULL`,`q.options_json IS NOT NULL`];const ps:any[]=[grade,enrollment?.institution_id||user.institution_id||null];
@@ -674,7 +675,10 @@ export async function submitStudentPractice(request:Request,env:Env,user:AuthUse
       ON CONFLICT(student_id,node_id) DO UPDATE SET mastery=ROUND(((student_learning_state.mastery*student_learning_state.evidence_count)+(excluded.mastery*excluded.evidence_count))/(student_learning_state.evidence_count+excluded.evidence_count),4),confidence=MIN(1,student_learning_state.confidence+0.1),evidence_count=student_learning_state.evidence_count+1,last_evidence_at=CURRENT_TIMESTAMP,updated_at=CURRENT_TIMESTAMP`).bind(user.student_id,link.node_id,result));
   }
   await env.DB.batch(statements);await audit(env.DB,user.id,user.institution_id,'QUESTION_PRACTICE_SUBMITTED','question_bank',questionId,{attemptId,runId,correct,linkedOutcomeCount:links.length});
-  return json({ok:true,attemptId,runId,correct,correctAnswer:q.correct_answer,solutionText:q.solution_text||null});
+  const verifiedLink=links.find(link=>Number(link.verified)===1&&link.academicYear===q.academic_year&&
+    Number(link.gradeLevel)===Number(q.grade_level)&&link.subjectId===q.subject_id);
+  const topicVideos=correct ? [] : await questionTopicVideos(env,verifiedLink?.outcomeId??null,user.institution_id).catch(()=>[]);
+  return json({ok:true,attemptId,runId,correct,correctAnswer:q.correct_answer,solutionText:q.solution_text||null,topicVideos});
 }
 
 async function learningState(request:Request,env:Env,user:AuthUser):Promise<Response>{
