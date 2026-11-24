@@ -72,6 +72,25 @@ gsql.push(`INSERT OR REPLACE INTO guidance_plan_entries(id,plan_id,month,kind,ar
 for (let k = 0; k < 6; k++) gsql.push(`INSERT OR REPLACE INTO guidance_screen_logs(student_id,institution_id,log_date,entered_by,screen_minutes,bedtime) VALUES('stu_t8_2',${q(INST)},date('now','+3 hours','-${k} days'),'STUDENT',${280 + k * 10},'00:${String(10 + k).padStart(2, '0')}')`);
 out.push(...gsql.map((x) => `${x};`));
 
+// Nibiru veli uygulaması örnek sohbeti (owner, 24 Nov 2026: the showcase has no cron, so the parent's Nibiru would
+// open empty in a sales meeting). Duru Akın (8/A) — the numbers match her TANITIM exams. Fixed ids, replaced on reload;
+// the first messages stay unread so the badge shows. Times are relative to the moment the content is loaded.
+const nb = [];
+const msg = (id, user, student, author, origin, text, minutesAgo, payload, unread) => nb.push(
+  `INSERT OR REPLACE INTO nibiru_messages(id,user_id,student_id,author,origin,text,payload_json,read_at,created_at) VALUES(${q(id)},${q(user)},${q(student)},${q(author)},${q(origin)},${q(text)},${q(payload ? JSON.stringify(payload) : null)},${unread ? 'NULL' : "CURRENT_TIMESTAMP"},datetime('now','-${minutesAgo} minutes'));`);
+const P = 'usr_t_parent', S = 'usr_t_stu8', D = 'stu_t8_1';
+const result = { type: 'RESULT', title: 'TANITIM LGS Denemesi 2', date: '2027-11-12', net: 36.33, percent: 73, delta: 13, trend: [23.33, 36.33] };
+const topics = { type: 'TOPICS', items: [{ subject: 'Matematik', title: 'Üslü ifadeler', percent: 25 }, { subject: 'Türkçe', title: 'Dinlediklerini sınıflandırma', percent: 25 }, { subject: 'Din Kültürü', title: 'Kader ve kaza', percent: 25 }] };
+msg('nbm_tanitim_p1', P, D, 'NIBIRU', 'PROACTIVE', 'Duru’nun **TANITIM LGS Denemesi 2** sonucu açıklandı: **36,33 net**, bir önceki sınava göre +13. Ayrıntılara birlikte bakmak ister misiniz?', 2880, { cards: [result], suggestions: ['Hangi konularda zorlanıyor?', 'Evde nasıl destek olabilirim?'] }, false);
+msg('nbm_tanitim_p2', P, D, 'USER', 'CHAT', 'Hangi konularda zorlanıyor?', 2870, null, false);
+msg('nbm_tanitim_p3', P, D, 'NIBIRU', 'CHAT', 'En çok desteğe ihtiyaç duyduğu konular aşağıda. Matematikte üslü ifadeler için 4 dakikalık konu bölümü ve birkaç kısa soru iyi gelir.', 2870, { cards: [topics] }, false);
+msg('nbm_tanitim_p4', P, D, 'USER', 'CHAT', 'Evde nasıl destek olabilirim?', 2860, null, false);
+msg('nbm_tanitim_p5', P, D, 'NIBIRU', 'CHAT', 'Her gün aynı saatte 20 dakikalık kısa bir çalışma yeterli. Bitirince ne öğrendiğini size anlatmasını isteyin; anlatmak en iyi tekrardır. Rehber öğretmenin önerisi de burada:', 2860, { cards: [{ type: 'GUIDE', items: [{ id: 'tanitim_guide', title: 'Evde çalışma düzeni', body: 'Çalışma masasında telefon olmasın. 25 dakika çalışma, 5 dakika mola. Haftada bir gün tamamen dinlenme günü olsun.', url: null }] }] }, false);
+msg('nbm_tanitim_p6', P, D, 'NIBIRU', 'PROACTIVE', 'Duru için haftanın özeti: 1 sınav, 0 gün devamsızlık, 4 gün çalışma kaydı (180 soru). İyi bir hafta dilerim!', 1440, { cards: [result], suggestions: ['Hangi konularda zorlanıyor?'] }, false);
+msg('nbm_tanitim_p7', P, D, 'NIBIRU', 'PROACTIVE', 'Rehber öğretmen bir görüşme planladı: **Perşembe 14:00**. Görüşmeden bir gün önce hatırlatırım.', 30, {}, true);
+msg('nbm_tanitim_s1', S, D, 'NIBIRU', 'PROACTIVE', '**TANITIM LGS Denemesi 2** sonucun açıklandı: **36,33 net**, bir önceki sınava göre +13 👏 İstersen zorlandığın konulara birlikte bakalım.', 2880, { cards: [result], suggestions: ['Hangi konularda zorlanıyorum?', 'Bugün ne çalışayım?'] }, true);
+out.push(...nb);
+
 mkdirSync('tmp', { recursive: true });
 writeFileSync('tmp/tanitim-content.sql', `${out.join('\n')}\n`);
 console.log(`Generated ${n} more TANITIM activities → tmp/tanitim-content.sql`);
