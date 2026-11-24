@@ -48,7 +48,7 @@ export function OutcomeVideos() {
 
   return <div className="ov">
     <div className="page-head"><div><span className="eyebrow">İçerik</span><h1>Kazanım Videoları</h1>
-      <p className="muted">Bir kazanıma bağlı 3–5 dakikalık YouTube seçenekleri soru havuzunda ortak kullanılır. Öğrenci hazır olan seçeneklerden birini seçer.</p></div></div>
+      <p className="muted">Bir kazanıma bağlı kısa YouTube videoları ve kesitleri soru havuzunda ortak kullanılır. Öğrenci hazır olan seçeneklerden birini seçer.</p></div></div>
     {error && <div className="alert error" role="alert">{error}</div>}{notice && <div className="alert success">{notice}</div>}
 
     {st && <div className="ov-stats">

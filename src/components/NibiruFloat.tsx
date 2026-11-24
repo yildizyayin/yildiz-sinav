@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { NibiruMark } from './NibiruMark';
+import { api } from '../api';
 import './NibiruFloat.css';
 
 /**
@@ -28,6 +29,9 @@ export function NibiruFloat() {
   const drag = useRef<{ id: number; dx: number; dy: number; sx: number; sy: number; lx: number; moved: boolean; t: number } | null>(null);
   const lastTap = useRef(0);
 
+  // 24 Nov 2026: Nibiru may have written first — a small count on the planet, like a chat app
+  const [unread, setUnread] = useState(0);
+  useEffect(() => { let live = true; const get = () => api<any>('/api/nibiru/unread').then((r) => { if (live) setUnread(Number(r.unread) || 0); }).catch(() => undefined); void get(); const id = window.setInterval(get, 120_000); return () => { live = false; window.clearInterval(id); }; }, [pathname]);
   useEffect(() => { const on = () => setPos((p) => clamp(p)); window.addEventListener('resize', on); return () => window.removeEventListener('resize', on); }, []);
   if (pathname.startsWith('/nibiru')) return null;
 
@@ -64,8 +68,9 @@ export function NibiruFloat() {
   };
 
   return <button type="button" className={`nibiru-float${dragging ? ' dragging' : ''}${settling ? ' settling' : ''}`} style={{ transform: `translate3d(${pos.x}px,${pos.y}px,0)` }}
-    aria-label="Nibiru ile konuş (gezegeni sürükleyerek taşıyabilirsin)" title="Nibiru · dokun: konuş · sürükle: taşı · iki kez dokun: döndür"
+    aria-label={`Nibiru ile konuş${unread ? ` (${unread} yeni mesaj)` : ""} (gezegeni sürükleyerek taşıyabilirsin)`} title="Nibiru · dokun: konuş · sürükle: taşı · iki kez dokun: döndür"
     onPointerDown={down} onPointerMove={move} onPointerUp={up} onPointerCancel={up} onKeyDown={key}>
+    {unread > 0 && <span className="nibiru-float-badge" aria-label={`${unread} okunmamış mesaj`}>{unread > 9 ? '9+' : unread}</span>}
     <span className="nibiru-float-planet" style={{ transform: `rotate(${angle}deg)` }}><NibiruMark size={SIZE - 8} state={dragging ? 'active' : 'idle'} /></span>
   </button>;
 }

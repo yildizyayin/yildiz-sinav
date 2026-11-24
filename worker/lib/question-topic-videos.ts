@@ -8,7 +8,7 @@ export function selectTopicVideos(rows: Candidate[]) {
   const videos = [];
   for (const row of rows) {
     const id = youtubeId(row.url);
-    if (!id || ids.has(id) || !Number.isInteger(row.seconds) || row.seconds < 180 || row.seconds > 300 ||
+    if (!id || ids.has(id) || !Number.isInteger(row.seconds) || row.seconds < 180 || row.seconds > 325 ||
         !Number.isInteger(row.start) || row.start < 0) continue;
     ids.add(id);
     videos.push({ id, title: row.title, channel: row.channel || null, catalog: Boolean(row.catalog), url: watchUrl(id, row.start), start: row.start,
@@ -29,11 +29,11 @@ export async function questionTopicVideos(env: Env, outcomeId: string | null, in
       FROM learning_videos WHERE node_id=? AND provider='YOUTUBE' AND approved=1 AND active=1
       UNION ALL
       SELECT 'https://www.youtube.com/watch?v='||c.youtube_video_id,c.title,c.start_seconds,
-        c.end_seconds-c.start_seconds,2,printf('%02d',c.position),c.channel_title,1
+        c.end_seconds-c.start_seconds,CASE WHEN c.curated=1 THEN 2 ELSE 3 END,printf('%02d',c.position),c.channel_title,1
       FROM outcome_video_choices c WHERE c.outcome_id=? AND c.checked_at > datetime('now','-30 days')
         AND NOT EXISTS (SELECT 1 FROM outcome_video_blocks b
           WHERE b.outcome_id=c.outcome_id AND b.youtube_video_id=c.youtube_video_id)
-    ) WHERE seconds BETWEEN 180 AND 300 ORDER BY priority,id
+    ) WHERE seconds BETWEEN 180 AND 325 ORDER BY priority,id
   `).bind(outcomeId,institutionId,`ln_${outcomeId}`,outcomeId));
   return selectTopicVideos(rows);
 }

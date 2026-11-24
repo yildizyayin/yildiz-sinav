@@ -6,3 +6,4 @@
 .nibiru-float:focus-visible{outline:3px solid #60a5fa;outline-offset:3px}
 @media (prefers-reduced-motion:reduce){.nibiru-float.settling,.nibiru-float-planet{transition:none}}
 @media print{.nibiru-float{display:none}}
+.nibiru-float-badge{position:absolute;top:-4px;right:-4px;z-index:1;min-width:22px;height:22px;padding:0 6px;border-radius:999px;background:#ef4444;color:#fff;font:800 12px/22px system-ui,sans-serif;text-align:center;box-shadow:0 0 0 2px #fff;pointer-events:none}

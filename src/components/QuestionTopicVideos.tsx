@@ -17,7 +17,7 @@ export function QuestionTopicVideos({ videos, onRemove }: { videos: TopicVideo[]
         {video.catalog && onRemove && <button type="button" className="ghost" onClick={() => onRemove(video.id)}
           aria-label={`Kaldır: ${video.title}`}>Kaldır</button>}
       </li>)}
-    </ul> : <p>Bu kazanım için 3–5 dakikalık video henüz hazır değil.</p>}
+    </ul> : <p>Bu kazanım için kısa video henüz hazır değil.</p>}
     {selected && embed && <>
       <iframe key={selected.id} title={selected.title} src={embed} allow="encrypted-media; picture-in-picture" allowFullScreen
         referrerPolicy="strict-origin-when-cross-origin" style={{ width: '100%', aspectRatio: '16/9', border: 0 }} />

@@ -254,10 +254,10 @@ export async function findOutcomeVideo(env: Env, outcomeId: string): Promise<{ s
   const choices = rankTopicChoices(cands, o);
   // A successful search replaces the set atomically. The last good set survives provider errors.
   if (cands.length) await env.DB.batch([
-    env.DB.prepare('DELETE FROM outcome_video_choices WHERE outcome_id=?').bind(outcomeId),
+    env.DB.prepare('DELETE FROM outcome_video_choices WHERE outcome_id=? AND curated=0').bind(outcomeId),
     ...choices.map((c, position) => env.DB.prepare(
       `INSERT INTO outcome_video_choices(outcome_id,youtube_video_id,title,start_seconds,end_seconds,position,channel_title,checked_at)
-       VALUES(?,?,?,?,?,?,?,CURRENT_TIMESTAMP)`
+       VALUES(?,?,?,?,?,?,?,CURRENT_TIMESTAMP) ON CONFLICT(outcome_id,youtube_video_id) DO NOTHING`
     ).bind(outcomeId,c.id,c.title,c.start,c.end,position,c.channel)),
   ]);
   if (!cands.length) return { status: 'NOT_FOUND', reason: foundIds ? 'NO_SAFE_CANDIDATE' : 'NO_CANDIDATE', detail };
@@ -316,7 +316,7 @@ export function rankTopicChoices(candidates: SearchCandidate[], outcome: {title:
     // Turkish audio/metadata is preferred. Strong Turkish outcome wording supplies
     // a fallback signal when the uploader did not set a language tag.
     if (c.language && c.language !== 'tr') continue;
-    const chapter = c.chapters.filter(ch => ch.end-ch.start >= 180 && ch.end-ch.start <= 300 && matches(ch.title) >= need)
+    const chapter = c.chapters.filter(ch => ch.end-ch.start >= 180 && ch.end-ch.start <= 325 && matches(ch.title) >= need)
       .sort((a,b)=>matches(b.title)-matches(a.title))[0];
     const fullVideo = c.duration >= 180 && c.duration <= 300 && matches(c.title) >= need;
     if (!chapter && !fullVideo) continue;
@@ -342,7 +342,11 @@ async function refreshTopicChoices(env: Env) {
         const o = { ...r, title:r.outcome_title };
         const v = videos.get(r.youtube_video_id);
         const candidate = youtubeCandidateAvailable(v) ? searchCandidate(v,o,distinctive(o.title)) : null;
-        const [choice] = candidate ? rankTopicChoices([candidate],o) : [];
+        const [choice] = r.curated === 1
+          ? (youtubeCandidateAvailable(v) && iso(v.contentDetails?.duration) >= r.end_seconds
+              ? [{title:r.title,channel:String(v.snippet?.channelTitle || r.channel_title || '').slice(0,120),start:r.start_seconds,end:r.end_seconds}]
+              : [])
+          : (candidate ? rankTopicChoices([candidate],o) : []);
         return choice ? [env.DB.prepare(`UPDATE outcome_video_choices SET title=?,channel_title=?,start_seconds=?,end_seconds=?,checked_at=CURRENT_TIMESTAMP
           WHERE outcome_id=? AND youtube_video_id=? AND checked_at IS ?`).bind(choice.title,choice.channel,choice.start,choice.end,r.outcome_id,r.youtube_video_id,r.checked_at)] : [
           env.DB.prepare(`UPDATE outcome_video_queue SET choices_checked_at=NULL,status='WAITING',next_try_at=NULL
