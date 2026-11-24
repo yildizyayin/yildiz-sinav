@@ -256,7 +256,7 @@ export function Layout() {
       <div className="page-wrap"><PrivacyNoticeGate/>{logoutError&&<div className="alert error" role="alert">{logoutError}</div>}<LicenseBoundary><PageLoader routeKey={location.pathname+location.search}><Outlet/></PageLoader></LicenseBoundary></div>
     </main>
     {user.role==='STUDENT'&&<StudentDock items={visibleNav} onMenu={()=>setMobileNavOpen(true)}/>}
-    {user.role==='STUDENT'&&<NibiruFloat/>}
+    {(user.role==='STUDENT'||user.role==='PARENT')&&<NibiruFloat/>}
     {user.role==='PARENT'&&<ParentDock onMenu={()=>setMobileNavOpen(true)}/>}
   </div>;
 }

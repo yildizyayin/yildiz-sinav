@@ -720,3 +720,9 @@ Dış öneri üzerine 360 px'te kontrol edildi; tespitler doğrulandı. Yapılac
 - Hız: bir aramadan gelen videolar aynı sınıf ve dersteki diğer kazanımlar için de denenir (ek kota harcanmaz).
 - Sıra: sorusu olan kazanımlar, sonra 5–7, sonra 9–11; Matematik/Fen/Türkçe önce, İngilizce en son.
 - Not (23 Kasım): Node 22.23.5 ile gelen SQLite 3.54 alt sorgu JSON'unu metin yaptı; sonuç arşivi kaydı `json()` ile düzeltildi (PR #557).
+
+### 24 Kasım 2026 · Nibiru veli uygulaması (WhatsApp yerine)
+- Karar (sahip): WhatsApp kanalı ekranlardan kaldırıldı (kod duruyor, sunucuda kapalı). Veli Nibiru'yu WhatsApp gibi kullanır: telefonuna "Nibiru" simgesi olarak ekler, dokununca doğrudan sohbet açılır; sağ üstteki ANUNEX düğmesiyle panele geçer, panelde sağ alttaki Nibiru gezegeniyle geri döner.
+- Veli tarayıcıdan girişte de önce Nibiru'yu görür (oturumda bir kez).
+- Gerekçe: mesaj başına ücret yok, şirket/Meta doğrulaması gerekmez, veri kendi sistemimizde kalır. Telegram/BiP/WhatsApp/mağaza uygulaması karşılaştırıldı.
+- Sıradaki: Nibiru bildirimleri (sonuç açıklandı, rehber öğretmenden mesaj) — bildirimde kişisel bilgi yok.

@@ -60,7 +60,7 @@ const studentJourney=[
 ];
 
 const integrations=[
-  {icon:MessageCircle,label:'WhatsApp akademik kanal',text:'Öğrenci, veli ve kurum arasında doğrulanmış kimlikle çalışan güvenli akademik iletişim. Kurumun WhatsApp Business hattı bağlandığında açılır.',state:'Kuruma özel aktivasyon',steps:['Kurum duyuru, ödev ve sınav hatırlatmasını seçer','Onaylı şablon doğru öğrenci veya veliye gider','Nibiru yanıtı rol ve veri sınırları içinde kişiselleştirir']},
+  {icon:MessageCircle,label:'Nibiru veli uygulaması',text:'Veli Nibiru’yu telefonuna ekler ve WhatsApp gibi yazar; doğrulanmış kimlikle çocuğunun sonuçlarını ve desteğini konuşur. Mağaza ya da ücret gerekmez.',state:'Her veliye açık',steps:['Veli bir kez “Ana ekrana ekle” der','Nibiru simgesine dokununca sohbet açılır','Nibiru yanıtı rol ve veri sınırları içinde kişiselleştirir']},
   {icon:PlayCircle,label:'YouTube mikro öğrenme',text:'Yanlış veya boş sorudan doğrudan doğru video desteğine uzanan kazanım bazlı akış.',state:'Kuruma özel aktivasyon',steps:['Yayınevi veya öğretmen onaylı video varsa önce o açılır','Yoksa kazanıma uygun kısa ve güvenli adaylar taranır','En fazla 5 aday, kazanım ve yaş düzeyine göre sıralanır']},
   {icon:Camera,label:'Telefon kamerası + optik',text:'Kişiselleştirilmiş optik hazırlama, kamera ile cevap yakalama ve ham görseli kalıcılaştırmayan akış.',state:'Çalışan çekirdek',steps:['Öğrenci ve sınava özel optik hazırlanır','Telefon kamerası cevapları güvenli biçimde yakalar','Sonuç kazanım ve kişisel öğrenme akışına bağlanır']},
   {icon:BrainCircuit,label:'Nibiru uzman orkestrasyonu',text:'Eğitim koçu, branş öğretmeni, rehberlik, veli rehberi ve kurum içgörüsü tek kimlik altında.',state:'Kademeli',steps:['Kullanıcının rolü ve sorusu anlaşılır','Yanıt yalnız yetkili, doğrulanmış veriye dayanır','Gelişmiş yapay zekâ yanıtları KVKK süreci tamamlanınca açılır']},
@@ -191,7 +191,7 @@ export function MarketingHome(){
                 <div className="wa-message incoming nibiru-message m8"><b>Nibiru</b>Rica ederim Seval Hanım. Aras Bulut’un çabasını fark etmeniz ve gelişimini baskı kurmadan desteklemeniz çok kıymetli. İhtiyaç duyduğunuzda buradayım.<span>10:05</span></div>
               </div><div className="wa-compose"><span>Mesaj</span><Mic2/></div>
             </div>
-            <div className="story-explain"><span>WHATSAPP AKADEMİK KANAL</span><h3>Veli sorar; Nibiru kimliği, yetkiyi ve doğru dili birlikte korur.</h3><ul><li><CheckCircle2/> Veli ve öğrenci ilişkisi doğrulanır</li><li><CheckCircle2/> Karne açık mesaj yerine güvenli bağlantıyla paylaşılır</li><li><CheckCircle2/> Olumsuz sonuçlarda yargılayan değil, gelişimi destekleyen MEB’e uygun dil kullanılır</li></ul></div>
+            <div className="story-explain"><span>NIBIRU VELİ UYGULAMASI</span><h3>Veli sorar; Nibiru kimliği, yetkiyi ve doğru dili birlikte korur.</h3><ul><li><CheckCircle2/> Veli ve öğrenci ilişkisi doğrulanır</li><li><CheckCircle2/> Karne açık mesaj yerine güvenli bağlantıyla paylaşılır</li><li><CheckCircle2/> Olumsuz sonuçlarda yargılayan değil, gelişimi destekleyen MEB’e uygun dil kullanılır</li></ul></div>
           </article>
           <article className="youtube-learning-story">
             <div className="youtube-result-head"><div><span>ANUNEX · SINAV SONUCU</span><h3>Matematik · Çarpanlar ve Katlar</h3><p>Aras Bulut bu kazanımda 4 sorunun 2’sinde desteğe ihtiyaç duyuyor.</p></div><span className="yt-score">2 / 4</span></div>
