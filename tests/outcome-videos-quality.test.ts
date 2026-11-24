@@ -39,7 +39,7 @@ describe('kazanım videosu kalite', () => {
     expect(await recheckAutoVideos(t.env)).toEqual({ checked: 0, removed: 0 }); // each clip once
   });
 
-  it('skips the wrong grade and reuses results for another outcome without another outcome query', async () => {
+  it('skips the wrong-grade candidate and uses one search for the other outcome of the same grade and subject', async () => {
     const t = await evaluatedExam('direct', { outcomes: true });
     t.db.exec(`INSERT INTO outcomes(id,curriculum_version_id,subject_id,grade_level,code,topic,title,official,active) VALUES('o_tur2','cv8','sub_tur',8,'T.8.1.2','Okuma','Metindeki söz sanatlarını belirler.',1,1)`);
     Object.assign(t.env, { YOUTUBE_API_KEY: 'synthetic' });
@@ -49,7 +49,7 @@ describe('kazanım videosu kalite', () => {
     ]);
     const r = await findOutcomeVideo(t.env, 'o_tur1');
     expect(r).toMatchObject({ status: 'FOUND', reason: 'CHAPTER', shared: 1 });
-    expect(urls.filter((u) => u.includes('/search'))).toHaveLength(2);
+    expect(urls.filter((u) => u.includes('/search'))).toHaveLength(1);
     expect(t.db.prepare(`SELECT youtube_video_id v,start_seconds s FROM outcome_auto_videos WHERE outcome_id='o_tur1' AND status='ACTIVE'`).get()).toEqual({ v: 'EEEEEEEEEEE', s: 60 });
     expect(t.db.prepare(`SELECT youtube_video_id v,start_seconds s,search_query q FROM outcome_auto_videos WHERE outcome_id='o_tur2' AND status='ACTIVE'`).get()).toMatchObject({ v: 'EEEEEEEEEEE', s: 300, q: expect.stringContaining('(aynı arama)') });
     expect(t.db.prepare(`SELECT status FROM outcome_video_queue WHERE outcome_id='o_tur2'`).get()).toMatchObject({ status: 'FOUND' });

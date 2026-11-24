@@ -19,13 +19,13 @@ describe('shared outcome video catalog',()=>{
     let searches=0;
     vi.stubGlobal('fetch',vi.fn(async (input:URL)=>{
       if(input.pathname.endsWith('/search')) {
-        const page=searches++===0 ? ids.slice(0,3) : ids.slice(2);
+        const page=searches++===0 ? ids : ids.slice(2); // owner, 23 Nov 2026: one search an outcome when it gives usable videos
         return Response.json({items:page.map(videoId=>({id:{videoId}}))});
       }
       return Response.json({items:found.filter(v=>input.searchParams.get('id')?.split(',').includes(v.id))});
     }));
     await findOutcomeVideo(t.env,'o_tur1');
-    expect(searches).toBe(2);
+    expect(searches).toBe(1);
     const options=await t.request('/api/outcome-videos/catalog/o_tur1','GET',undefined,'teacher');
     expect(options.data.videos.map((v:any)=>v.id)).toEqual(ids.slice(0,5).reverse());
     expect(options.data.videos[0]).toMatchObject({channel:'Eğitim',durationSeconds:240});

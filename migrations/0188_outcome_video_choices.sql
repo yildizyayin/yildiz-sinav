@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS outcome_video_choices (
   youtube_video_id TEXT NOT NULL,
   title TEXT NOT NULL,
   start_seconds INTEGER NOT NULL CHECK (start_seconds >= 0),
-  end_seconds INTEGER NOT NULL CHECK (end_seconds - start_seconds BETWEEN 180 AND 325),
+  end_seconds INTEGER NOT NULL CHECK (end_seconds - start_seconds BETWEEN 45 AND 325),
   curated INTEGER NOT NULL DEFAULT 0 CHECK (curated IN (0, 1)),
   position INTEGER NOT NULL CHECK (position BETWEEN 0 AND 4),
   PRIMARY KEY (outcome_id, youtube_video_id)

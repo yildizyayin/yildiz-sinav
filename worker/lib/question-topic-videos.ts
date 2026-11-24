@@ -8,7 +8,7 @@ export function selectTopicVideos(rows: Candidate[]) {
   const videos = [];
   for (const row of rows) {
     const id = youtubeId(row.url);
-    if (!id || ids.has(id) || !Number.isInteger(row.seconds) || row.seconds < 180 || row.seconds > 325 ||
+    if (!id || ids.has(id) || !Number.isInteger(row.seconds) || row.seconds < 45 || row.seconds > 325 ||
         !Number.isInteger(row.start) || row.start < 0) continue;
     ids.add(id);
     videos.push({ id, title: row.title, channel: row.channel || null, catalog: Boolean(row.catalog), url: watchUrl(id, row.start), start: row.start,
@@ -33,7 +33,7 @@ export async function questionTopicVideos(env: Env, outcomeId: string | null, in
       FROM outcome_video_choices c WHERE c.outcome_id=? AND c.checked_at > datetime('now','-30 days')
         AND NOT EXISTS (SELECT 1 FROM outcome_video_blocks b
           WHERE b.outcome_id=c.outcome_id AND b.youtube_video_id=c.youtube_video_id)
-    ) WHERE seconds BETWEEN 180 AND 325 ORDER BY priority,id
+    ) WHERE seconds BETWEEN 45 AND 325 ORDER BY priority,id
   `).bind(outcomeId,institutionId,`ln_${outcomeId}`,outcomeId));
   return selectTopicVideos(rows);
 }

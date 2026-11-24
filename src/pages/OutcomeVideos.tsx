@@ -98,7 +98,7 @@ export function OutcomeVideos() {
           {canAdd && !o.teacher && <button type="button" onClick={() => { setAdding(adding === o.id ? null : o.id); setForm({ url: '', title: '', start: '', end: '' }); }}>Okulun videosunu ekle</button>}
           {canAdd && o.teacher && <button type="button" disabled={busy} onClick={() => act(() => api(`/api/outcome-videos/teacher/${encodeURIComponent(o.teacher.id)}`, { method: 'DELETE' }), 'Okulunuzun videosu kaldırıldı.')}>Okulun videosunu kaldır</button>}
         </div>
-        {catalog?.id === o.id && <QuestionTopicVideos key={o.id} videos={catalog.videos} onRemove={user?.role === 'SUPER_ADMIN' && !busy ? videoId => void act(async () => {
+        {catalog?.id === o.id && <QuestionTopicVideos key={o.id} videos={catalog?.videos ?? []} onRemove={user?.role === 'SUPER_ADMIN' && !busy ? videoId => void act(async () => {
           await api(`/api/outcome-videos/catalog/${encodeURIComponent(o.id)}/${encodeURIComponent(videoId)}`,{method:'DELETE'});
           await loadCatalog(o.id, true);
           if (cov) await loadCoverage();

@@ -197,7 +197,7 @@ export function cleanTitle(title: string) {
 }
 const cleanTopic = (t: string | null) => String(t || '').replace(/^\s*\d+\.?\s*(?:ünite|tema|bölüm)\s*[:.-]?\s*/i, '').trim();
 
-/** Two searches at most: the precise one first, then a broader one when the first gives nothing usable. */
+/** At most two queries: the precise one; the broader one only when the precise one gives nothing usable. */
 export function searchQueries(o: any) {
   const title = cleanTitle(o.title).split(' ').slice(0, 9).join(' ');
   const grade = o.grade_level ? `${o.grade_level}. sınıf` : null;
@@ -248,7 +248,8 @@ export async function findOutcomeVideo(env: Env, outcomeId: string): Promise<{ s
       if (c) results.set(c.id, c);
     }
     detail = `"${q}": ${ids.length} sonuç, ${available} güvenli, ${results.size-before} uygun süreli`;
-    if (rankTopicChoices([...results.values()], o).length === 5) break;
+    // owner, 23 Nov 2026: one search an outcome — the broader second search only when the first gives nothing usable
+    if (results.size) break;
   }
   const cands = [...results.values()].sort((a,b) => b.titleHit-a.titleHit || b.views-a.views);
   const choices = rankTopicChoices(cands, o);
@@ -306,19 +307,21 @@ function searchCandidate(video: any, outcome: any, keys: string[]) {
     titleHit: overlap(stems(title), keys), views: Number(video.statistics?.viewCount || 0) };
 }
 
+/** Short, outcome-named videos (1–3 minutes) are most of what is found; they count as choices too. */
+export const CHOICE_MIN = 45;
 export function rankTopicChoices(candidates: SearchCandidate[], outcome: {title:string;grade_level?:number}) {
   const keys = distinctive(outcome.title);
   const need = Math.max(1, Math.ceil(keys.length * 0.6));
   const matches = (title: string) => overlap(stems(title), keys);
-  const choices = [];
+  const choices: { id: string; title: string; channel: string; start: number; end: number; match: number; turkish: boolean; views: number }[] = [];
   if (!keys.length) return choices;
   for (const c of candidates) {
     // Turkish audio/metadata is preferred. Strong Turkish outcome wording supplies
     // a fallback signal when the uploader did not set a language tag.
     if (c.language && c.language !== 'tr') continue;
-    const chapter = c.chapters.filter(ch => ch.end-ch.start >= 180 && ch.end-ch.start <= 325 && matches(ch.title) >= need)
+    const chapter = c.chapters.filter(ch => ch.end-ch.start >= CHOICE_MIN && ch.end-ch.start <= 325 && matches(ch.title) >= need)
       .sort((a,b)=>matches(b.title)-matches(a.title))[0];
-    const fullVideo = c.duration >= 180 && c.duration <= 300 && matches(c.title) >= need;
+    const fullVideo = c.duration >= CHOICE_MIN && c.duration <= 300 && matches(c.title) >= need;
     if (!chapter && !fullVideo) continue;
     const source = chapter ?? { start: 0, end: c.duration, title: c.title };
     choices.push({ id: c.id, title: c.title, channel: c.channel, start: source.start, end: source.end,

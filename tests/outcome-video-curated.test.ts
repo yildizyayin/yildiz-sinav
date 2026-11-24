@@ -23,7 +23,7 @@ it('binds the three publisher chapters to matching MEB outcomes and preserves th
     VALUES('cv_legacy','2026-2027',5,'LEGACY',1,'SCHOOL','MEB');
     INSERT INTO outcomes(id,curriculum_version_id,subject_id,grade_level,code,title,official,active)
     VALUES('legacy','cv_legacy','sub_mat',5,'MAT.5.1.2','Farklı içerik',1,1);`);
-  const migration = readFileSync(new URL('../migrations/0187_outcome_video_choices.sql', import.meta.url), 'utf8');
+  const migration = readFileSync(new URL('../migrations/0188_outcome_video_choices.sql', import.meta.url), 'utf8');
   const curatedSeed = migration.slice(migration.indexOf('WITH clips'));
   t.db.exec(curatedSeed);
   t.db.exec(curatedSeed);
