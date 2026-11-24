@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { ArrowRight, BarChart3, BookOpen, BookOpenCheck, BrainCircuit, Building2, CalendarClock, Camera, Check, CheckCircle2, ChevronRight, ClipboardCheck, FileText, Gamepad2, GraduationCap, HeartHandshake, Layers3, LineChart, LockKeyhole, MapPin, MessageCircle, Mic2, Monitor, Network, Phone, PlayCircle, ScanLine, Send, ShieldCheck, Sparkles, Target, Trophy, UserRoundCheck, Users, Volume2 } from 'lucide-react';
 import { AnunexBrand } from '../components/AnunexBrand';
+import { NibiruPhoneDemo } from '../components/NibiruPhoneDemo';
 import { NibiruMark } from '../components/NibiruMark';
 import { PilotApplicationForm } from '../components/PilotApplicationForm';
 import { SITE_NIBIRU_OPEN_EVENT, SiteNibiruChat } from '../components/SiteNibiruChat';
@@ -174,24 +175,11 @@ export function MarketingHome(){
       </section>
 
       <section className="connected-demo connected-real-stories">
-        <div className="connected-heading"><span>ÖRNEK GÖRÜNÜM · İLETİŞİM VE ÖĞRENME AKIŞI</span><h2>Nibiru yalnız cevap vermez.<br/><em>Kimi dinlediğini ve neyi koruması gerektiğini bilir.</em></h2><p>WhatsApp görüşmesi doğrulanmış veli kimliğiyle, YouTube seçimi öğrencinin gerçek sınav kazanımıyla çalışır. Hassas sonuçlar mesajda açık bırakılmaz; güvenli ANUNEX bağlantısıyla paylaşılır.</p></div>
+        <div className="connected-heading"><span>ÖRNEK GÖRÜNÜM · İLETİŞİM VE ÖĞRENME AKIŞI</span><h2>Nibiru yalnız cevap vermez.<br/><em>Kimi dinlediğini ve neyi koruması gerektiğini bilir.</em></h2><p>Nibiru veli uygulaması doğrulanmış veli kimliğiyle, YouTube seçimi öğrencinin gerçek sınav kazanımıyla çalışır. Hassas sonuçlar bildirimde yer almaz; yalnız ANUNEX’in içinde görünür.</p></div>
         <div className="real-story-grid">
           <article className="whatsapp-phone-story">
-            <div className="phone-hardware"><div className="phone-island"/><div className="wa-header"><button aria-label="Geri">‹</button><NibiruMark size={40} state="active" title="Nibiru"/><div><strong>Nibiru · ANUNEX</strong><small><i/> Akademik asistan · çevrimiçi</small></div></div>
-              <div className="wa-encryption"><LockKeyhole/> Mesajlar kurum politikası ve KVKK sınırlarında işlenir.</div>
-              <div className="wa-chat-thread">
-                <div className="wa-day">BUGÜN</div>
-                <div className="wa-message outgoing m1">Merhaba Nibiru<span>10:02 ✓✓</span></div>
-                <div className="wa-message incoming nibiru-message m2"><b>Nibiru</b>Merhaba Seval Hanım. Aras Bulut’un velisi olarak sizi tanıdım. Bugün size hangi konu hakkında bilgi vermemi istersiniz?<span>10:02</span></div>
-                <div className="wa-message outgoing m3">Deneme sınavı sonucu açıklandı mı?<span>10:03 ✓✓</span></div>
-                <div className="wa-message incoming nibiru-message m4"><b>Nibiru</b>Evet, sonuç açıklandı. Aras Bulut’un karnesini güvenli bağlantı olarak şimdi sizinle paylaştım.<button><FileText/> Karnesini güvenle aç</button><span>10:03</span></div>
-                <div className="wa-message outgoing m5">Sonuçları sence nasıl?<span>10:04 ✓✓</span></div>
-                <div className="wa-message incoming nibiru-message m6"><b>Nibiru</b>Son dört denemeye göre düzenli bir ilerleme görüyorum. Matematikte “çarpanlar ve katlar” kazanımında kısa tekrar yararlı olur. Sonuç tek başına bir etiket değildir; öğretmeniyle birlikte belirlenen çalışma planını izlemenizi öneririm.<span>10:04</span></div>
-                <div className="wa-message outgoing m7">Teşekkür ederim.<span>10:05 ✓✓</span></div>
-                <div className="wa-message incoming nibiru-message m8"><b>Nibiru</b>Rica ederim Seval Hanım. Aras Bulut’un çabasını fark etmeniz ve gelişimini baskı kurmadan desteklemeniz çok kıymetli. İhtiyaç duyduğunuzda buradayım.<span>10:05</span></div>
-              </div><div className="wa-compose"><span>Mesaj</span><Mic2/></div>
-            </div>
-            <div className="story-explain"><span>NIBIRU VELİ UYGULAMASI</span><h3>Veli sorar; Nibiru kimliği, yetkiyi ve doğru dili birlikte korur.</h3><ul><li><CheckCircle2/> Veli ve öğrenci ilişkisi doğrulanır</li><li><CheckCircle2/> Karne açık mesaj yerine güvenli bağlantıyla paylaşılır</li><li><CheckCircle2/> Olumsuz sonuçlarda yargılayan değil, gelişimi destekleyen MEB’e uygun dil kullanılır</li></ul></div>
+            <NibiruPhoneDemo/>
+            <div className="story-explain"><span>NIBIRU VELİ UYGULAMASI</span><h3>Veli Nibiru’ya WhatsApp gibi yazar; önemli bir şey olduğunda ilk Nibiru yazar.</h3><ul><li><CheckCircle2/> Telefona bir kez eklenir; mağaza da ücret de gerekmez</li><li><CheckCircle2/> Sonuç açıklanınca bildirim gelir; bildirimde ad ya da not yer almaz</li><li><CheckCircle2/> Net, gelişim ve zorlanılan konular kartlarla; rehber öğretmenin onayladığı öneriler</li><li><CheckCircle2/> Veli ve öğrenci ilişkisi doğrulanır; olumsuz sonuçta yargılamayan, MEB’e uygun dil</li></ul></div>
           </article>
           <article className="youtube-learning-story">
             <div className="youtube-result-head"><div><span>ANUNEX · SINAV SONUCU</span><h3>Matematik · Çarpanlar ve Katlar</h3><p>Aras Bulut bu kazanımda 4 sorunun 2’sinde desteğe ihtiyaç duyuyor.</p></div><span className="yt-score">2 / 4</span></div>
