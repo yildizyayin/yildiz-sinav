@@ -1,5 +1,7 @@
 # ANUNEX bildirim planı — taslak (13 Kasım 2026)
 
+> **Güncelleme 24 Kasım 2026 (sahip kararı):** WhatsApp kaldırıldı; veli ve öğrenci kanalı **Nibiru uygulaması** (sohbete Nibiru'nun ilk mesajı + metinsiz telefon bildirimi). Uygulananlar: sonuç açıklandı, devamsızlık, rehberden gelenler (haftalık program, ekran günlüğü isteği, rehber notu, anket, mesajın okunması), görüşme planlandı ve 1 gün önce hatırlatma, pazar akşamı haftalık özet (veli), öğretmen/yönetici bildirimleri (acil rehberlik talebi → rehber öğretmen, pilot başvurusu → süper admin, lisans bitişine 30/7 gün → kurum yöneticisi; zil bildirimi de düşer). 22:00–08:00 telefon bildirimleri sabaha kalır (acil rehberlik hariç). Herkes Nibiru menüsünde "Bildirim tercihlerim"den türleri kapatabilir. E-posta (Resend) şirket kurulunca; SMS ücretli olduğu için sonra.
+
 Amaç: Trendyol'daki "siparişiniz alındı → kargoda → teslim edildi" düzeni gibi, ANUNEX'te de önemli anlarda kullanıcıya **kısa, güvenli ve tutarlı** bildirim gitmesi. Kanallar: uygulama içi, e-posta, SMS, WhatsApp; ileride RCS (Android'de marka adı/logolu SMS).
 
 ## 1. İlkeler
