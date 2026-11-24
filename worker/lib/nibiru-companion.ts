@@ -266,7 +266,8 @@ async function notifyPhones(env: Env, people: Set<string>, urgent: Set<string>) 
 // ---------------------------------------------------------------------------------------------------- more first messages
 const parentsOf = async (env: Env, studentId: string) => (await all<{ id: string }>(env.DB.prepare(`SELECT parent_user_id id FROM parent_student_links WHERE student_id=? AND active=1`).bind(studentId))).map((r) => r.id);
 const studentUsersOf = async (env: Env, studentId: string) => (await all<{ id: string }>(env.DB.prepare(`SELECT id FROM users WHERE student_id=? AND role='STUDENT' AND active=1`).bind(studentId))).map((r) => r.id);
-const fmtDate = (v: string) => { const d = new Date(String(v).replace(' ', 'T') + (String(v).length > 10 && !/[zZ+]/.test(String(v).slice(10)) ? 'Z' : '')); return d.toLocaleString('tr-TR', { timeZone: 'Europe/Istanbul', day: 'numeric', month: 'long', weekday: 'long', hour: '2-digit', minute: '2-digit' }); };
+/** A meeting time as the counsellor typed it — Istanbul local time without a zone ("2026-11-24T17:00"). */
+export const fmtDate = (v: string) => { const t = String(v).replace(' ', 'T'); const d = new Date(/([zZ]|[+-]\d\d:?\d\d)$/.test(t) ? t : `${t.length === 16 ? `${t}:00` : t}+03:00`); return d.toLocaleString('tr-TR', { timeZone: 'Europe/Istanbul', day: 'numeric', month: 'long', weekday: 'long', hour: '2-digit', minute: '2-digit' }); };
 
 /** Staff see these in the bell too; the text never names a student. */
 async function bell(env: Env, userId: string, institutionId: string | null, type: string, title: string, body: string, url: string, entityId: string) {
@@ -313,8 +314,8 @@ async function moreEvents(env: Env, people: Set<string>, urgent: Set<string>, li
   }
   // meetings: planned, and a reminder the day before
   for (const m of await all<any>(env.DB.prepare(`SELECT g.id,g.kind,g.scheduled_at,ms.student_id,g.created_at>=datetime('now','-2 days') fresh,
-        datetime(g.scheduled_at) BETWEEN datetime('now') AND datetime('now','+30 hours') soon
-      FROM guidance_meetings g JOIN guidance_meeting_students ms ON ms.meeting_id=g.id WHERE g.status='PLANNED' AND datetime(g.scheduled_at)>datetime('now') AND (g.created_at>=datetime('now','-2 days') OR datetime(g.scheduled_at)<=datetime('now','+30 hours')) LIMIT ?`).bind(limit))) {
+        datetime(g.scheduled_at) BETWEEN datetime('now','+3 hours') AND datetime('now','+33 hours') soon
+      FROM guidance_meetings g JOIN guidance_meeting_students ms ON ms.meeting_id=g.id WHERE g.status='PLANNED' AND datetime(g.scheduled_at)>datetime('now','+3 hours') AND (g.created_at>=datetime('now','-2 days') OR datetime(g.scheduled_at)<=datetime('now','+33 hours')) LIMIT ?`).bind(limit))) {
     const when = fmtDate(m.scheduled_at);
     const users = [...(m.kind === 'PARENT' ? [] : await studentUsersOf(env, m.student_id)), ...(['PARENT', 'INDIVIDUAL'].includes(m.kind) ? await parentsOf(env, m.student_id) : [])];
     for (const uid of users) {
