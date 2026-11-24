@@ -104,6 +104,18 @@ describe('A082 bulk question import', () => {
     expect(r.data.rows[1].warnings).toEqual([]);
   });
 
+  it('requires an image only for rows marked as visual during production', async () => {
+    const t = await setup();
+    const rows = [
+      row({ sourceLabel: 'ANUNEX özgün içerik' }),
+      row({ stem: 'Görselli olarak planlanan soru?', imageRequired: true }),
+    ];
+    const preview = await t.request('/api/admin/question-import/preview', 'POST', { rows });
+    expect(preview.data.rows.map((q: any) => q.status)).toEqual(['READY', 'INVALID']);
+    expect(preview.data.rows[1].errors[0]).toContain('Görseli zorunlu');
+    expect(rowsFromJson(JSON.stringify(rows))[1].imageRequired).toBe(true);
+  });
+
   it('seals a stem image on the original question, resets review, and attaches it only once', async () => {
     const t = await setup();
     const objects = new Map<string, any>();

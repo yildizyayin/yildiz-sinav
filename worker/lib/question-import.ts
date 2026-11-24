@@ -26,7 +26,7 @@ export function stemSimilarity(a: string, b: string) {
 }
 export const SIMILAR_AT = 0.7; // a warning only, so a false alarm costs little
 
-export type ImportRow = { sourceLabel?: unknown; gradeLevel?: unknown; outcomeCode?: unknown; stem?: unknown; optionA?: unknown; optionB?: unknown; optionC?: unknown; optionD?: unknown; optionE?: unknown; correctAnswer?: unknown; solution?: unknown; difficultyLevel?: unknown; copyrightStatus?: unknown; imageBase64?: unknown; imageAlt?: unknown };
+export type ImportRow = { sourceLabel?: unknown; gradeLevel?: unknown; outcomeCode?: unknown; stem?: unknown; optionA?: unknown; optionB?: unknown; optionC?: unknown; optionD?: unknown; optionE?: unknown; correctAnswer?: unknown; solution?: unknown; difficultyLevel?: unknown; copyrightStatus?: unknown; imageBase64?: unknown; imageAlt?: unknown; imageRequired?: unknown };
 type Clean = { sourceLabel: string; gradeLevel: number; outcomeCode: string; stem: string; options: { label: string; text: string }[]; correctAnswer: string; solution: string | null; difficultyLevel: number; copyrightStatus: string; image?: { data: Uint8Array<ArrayBuffer>; alt: string } };
 
 function questionImage(base64: unknown, altText: unknown, errors: string[]): Clean['image'] {
@@ -71,8 +71,9 @@ export function checkRow(r: ImportRow): { row?: Clean; errors: string[] } {
   const d = str(r.difficultyLevel); const difficultyLevel = d ? Number(d) : 3; if (!Number.isInteger(difficultyLevel) || difficultyLevel < 1 || difficultyLevel > 6) errors.push('Zorluk 1–6 arasında olmalı.');
   const copyrightStatus = str(r.copyrightStatus).toUpperCase(); if (!(COPYRIGHTS as readonly string[]).includes(copyrightStatus)) errors.push(`Telif durumu zorunlu: ${COPYRIGHTS.join(', ')}.`);
   const image = questionImage(r.imageBase64, r.imageAlt, errors);
-  if (/^FB\./.test(outcomeCode) && /^ANUNEX özgün içerik(?: |$)/u.test(sourceLabel) && !image && !errors.length)
-    errors.push('ANUNEX Fen Bilimleri sorusu, soru kökü görseliyle birlikte aktarılmalıdır.');
+  const imageRequired = r.imageRequired === true || str(r.imageRequired).toLowerCase() === 'true';
+  if (imageRequired && !image && !errors.length)
+    errors.push('Görseli zorunlu olarak işaretlenen soru, soru kökü görseliyle birlikte aktarılmalıdır.');
   return errors.length ? { errors } : { row: { sourceLabel, gradeLevel, outcomeCode, stem, options, correctAnswer, solution, difficultyLevel, copyrightStatus, ...(image && { image }) }, errors };
 }
 
