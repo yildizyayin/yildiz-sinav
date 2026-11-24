@@ -384,11 +384,12 @@ async function prefs(request: Request, env: Env, user: AuthUser) {
 // ---------------------------------------------------------------------------------------------------- right after a change
 /**
  * 24 Nov 2026 (owner: "görüşme planladım, bildirim gelmedi" on the showcase): first messages do not wait for the
- * 15-minute cron — a change that can create one (a meeting, a programme, a shared note, a published result, attendance,
+ * 15-minute cron — a change that can create one (a meeting, a programme, a shared note, attendance,
  * a pilot application) runs the same pass right away. The showcase has no cron at all, so this is its only path.
  * At most once every 20 seconds per isolate.
  */
-const WRITE_PATHS = /^\/api\/(guidance[a-z-]*\/|platform\/exam-center\/[^/]+\/publish|school\/attendance|pilot-applications)/;
+// result publication stays with the cron: publishing is a staged step and its first messages can wait minutes
+const WRITE_PATHS = /^\/api\/(guidance[a-z-]*\/|school\/attendance|pilot-applications)/;
 let lastAfterWrite = 0;
 export function nibiruAfterWrite(request: Request, env: Env, ctx: { waitUntil(p: Promise<unknown>): void } | undefined, response: Response) {
   if (!ctx || request.method === 'GET' || !response.ok || !WRITE_PATHS.test(new URL(request.url).pathname)) return;
