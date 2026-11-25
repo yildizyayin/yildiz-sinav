@@ -9,6 +9,7 @@ import { getAuthUser } from './lib/auth';
 import { all, json, one, uuid } from './lib/db';
 import { gradeProfile, nibiruStudentPrompts } from '../src/lib/gradeProfile';
 import { startUniverseSession, submitUniverseSession, universeSessionView } from './lib/learning-universe/sessions';
+import { checkUniverseItem } from './lib/learning-universe/item-check';
 import { listNibiruExams, nibiruExamView, startNibiruExam, submitNibiruExam } from './lib/learning-universe/nibiru-exam';
 import { universeMap } from './lib/learning-universe/map';
 
@@ -243,12 +244,17 @@ const UNIVERSE_MESSAGES:Record<string,[number,string]>={
  NOT_ENOUGH_QUESTIONS:[409,'Bu deneme için daha önce görmediğin yeterli onaylı soru henüz yok.'],
  EXAM_NOT_FOUND:[404,'Deneme bulunamadı.'],
  ALL_QUESTIONS_REQUIRED:[400,'Bütün sorular gönderilmeli; boş bıraktıkların boş sayılır.'],
+ ITEM_NOT_FOUND:[404,'Bu soru bu etkinlikte yok.'],
+ ITEM_LOCKED:[409,'Bu soru boş geçildi; cevabı artık değiştirilemez.'],
+ ANSWER_REQUIRED:[400,'Kontrol için önce bir cevap seç.'],
 };
 /** Nibiru Öğrenme Evreni: start a play, read it, submit it (graded on the server, once). */
 async function universeApi(request:Request,env:Env,user:AuthUser,path:string){
  const out=(r:any,status=200)=>{if(r.ok)return json(r,status);const[code,message]=UNIVERSE_MESSAGES[r.reason]||[400,'Etkinlik güncellenemedi.'];return json({...r,error:{code:r.reason,message,details:{available:r.available??null,needed:r.needed??null,repeatAvailable:r.repeatAvailable??null}}},code)};
  if(path==='/api/student-standard/universe/map'&&request.method==='GET'){const m=await universeMap(env,user);return m?json(m):out({ok:false,reason:'STUDENT_ONLY'});}
  if(path==='/api/student-standard/universe/sessions'&&request.method==='POST'){const body=await request.json().catch(()=>({}));const r=await startUniverseSession(env,user,body);if(!r.ok)return out(r);return json(await universeSessionView(env,user,r.sessionId),r.reused?200:201);}
+ const chk=path.match(/^\/api\/student-standard\/universe\/sessions\/([^/]+)\/items\/(\d{1,3})\/check$/);
+ if(chk&&request.method==='POST'){const body=await request.json().catch(()=>({}));const r=await checkUniverseItem(env,user,chk[1],chk[2],body);return out(r);}
  const m=path.match(/^\/api\/student-standard\/universe\/sessions\/([^/]+)(\/submit)?$/);
  if(m&&!m[2]&&request.method==='GET'){const v=await universeSessionView(env,user,m[1]);return v?json(v):out({ok:false,reason:'SESSION_NOT_FOUND'});}
  if(m&&m[2]&&request.method==='POST'){const body=await request.json().catch(()=>({}));const r=await submitUniverseSession(env,user,m[1],body);if(!r.ok)return out(r);return json(await universeSessionView(env,user,m[1]));}

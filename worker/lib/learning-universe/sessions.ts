@@ -143,7 +143,7 @@ export async function universeSessionView(env: Env, user: AuthUser, id: string) 
   const done = s.status === 'SUBMITTED';
   return {
     ok: true,
-    session: { id: s.id, status: s.status, mode: s.mode, template: { code: s.template_code, kind: s.template_kind, title: s.template_title }, outcome: { id: s.outcome_id, code: s.outcome_code, title: s.outcome_title },
+    session: { id: s.id, status: s.status, mode: s.mode, template: { code: s.template_code, kind: s.template_kind, title: s.template_title }, outcome: { id: s.outcome_id, code: s.outcome_code, title: s.outcome_title }, gradeLevel: s.grade_level,
       timed: !!s.timed, secondsPerItem: s.timed ? s.seconds_per_item : null, itemCount: s.item_count, answered: s.answered_count, correct: s.correct_count, xp: s.xp_awarded, expiresAt: s.expires_at },
     items: rows.map((r) => ({ seq: r.seq, kind: r.kind, repeat: !!r.repeat, content: parse(r.public_json, {}), ...(done ? { response: parse(r.response_json), correct: r.correct == null ? null : !!r.correct, partial: r.partial, key: parse(r.answer_json, {}) } : {}) })),
   };
@@ -159,10 +159,12 @@ export async function submitUniverseSession(env: Env, user: AuthUser, id: string
   if (s.status !== 'OPEN' || String(s.expires_at) < new Date().toISOString().replace('T', ' ').slice(0, 19)) return { ok: false, reason: 'SESSION_EXPIRED' };
   const given = new Map<number, any>();
   for (const a of Array.isArray(body?.answers) ? body.answers : []) { const seq = Number(a?.seq); if (Number.isInteger(seq) && !given.has(seq) && JSON.stringify(a?.response ?? null).length <= 4000) given.set(seq, a?.response ?? null); }
-  const rows = await all<any>(env.DB.prepare(`SELECT seq,kind,answer_json FROM lu_session_items WHERE session_id=? ORDER BY seq`).bind(id));
+  const rows = await all<any>(env.DB.prepare(`SELECT seq,kind,answer_json,response_json,correct,answered_at FROM lu_session_items WHERE session_id=? ORDER BY seq`).bind(id));
   const st: D1PreparedStatement[] = [];
   let answered = 0, correct = 0;
   for (const r of rows) {
+    // an item already checked one by one (animated games) keeps its locked answer: a resend cannot change it
+    if (r.answered_at && r.response_json) { answered++; if (r.correct) correct++; continue; }
     const response = given.get(r.seq);
     const blank = response == null || (typeof response === 'object' && !Object.values(response).some((v) => v != null && v !== '' && !(Array.isArray(v) && !v.length)));
     if (blank) { st.push(env.DB.prepare(`UPDATE lu_session_items SET response_json=NULL,correct=NULL,partial=NULL,answered_at=NULL WHERE session_id=? AND seq=?`).bind(id, r.seq)); continue; }
