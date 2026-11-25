@@ -19,6 +19,7 @@ import { frozenMiniTestReport } from './lib/frozen-mini-test-report';
 import { PDFDocument } from 'pdf-lib';
 import { buildDejavuBook, dejavuPrintInput } from './lib/dejavu';
 import { validateContent } from './lib/learning-universe/grading';
+import { importContentPack } from './lib/learning-universe/content-pack';
 import { cancelUniverseTask, classTaskOutcomes, createUniverseTask, listUniverseTasks, TASK_STAFF, universeTaskDetail } from './lib/learning-universe/tasks';
 import { featureEnabledFor } from './lib/platform-feature-policy';
 import { authoringOutcomes, contentGaps, institutionUniverseUsage, listTemplates, universeUsage, updateTemplate, XP_RULES } from './lib/learning-universe/admin';
@@ -628,6 +629,10 @@ async function universeContents(request:Request,env:Env,user:AuthUser,url:URL):P
       WHERE (?='SUPER_ADMIN' OR (c.owner_type='INSTITUTION' AND c.owner_id=?) OR (c.owner_type='PLATFORM' AND c.review_status='APPROVED'))
         AND (? IS NULL OR c.outcome_id=?) AND (? IS NULL OR c.review_status=?) ORDER BY c.updated_at DESC LIMIT 200`).bind(user.role,user.institution_id,outcomeId,outcomeId,status,status));
     return json({ok:true,contents:rows.map(({public_json,...r})=>({...r,content:JSON.parse(public_json||'{}')}))});
+  }
+  if(path==='/api/reporting/universe/contents/bulk'&&request.method==='POST'){
+    const r=await importContentPack(env,user,await request.json().catch(()=>({})));
+    return r.ok?json(r,201):apiError(r.status,r.code,r.message);
   }
   if(path==='/api/reporting/universe/contents'&&request.method==='POST'){
     const b:any=await request.json().catch(()=>({}));

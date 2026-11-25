@@ -2,6 +2,7 @@ import type { AuthUser, Env } from '../../types';
 import { all, one, uuid } from '../db';
 import { hydrateQuestionMedia } from '../question-content';
 import { seenQuestionIds } from '../dejavu';
+import { playHistory, reviewOrder } from './spacing';
 import { gradeItem } from './grading';
 
 /**
@@ -66,7 +67,9 @@ function publicContent(kind: string, pub: any) {
 
 async function pickQuestions(env: Env, ctx: any, outcome: any, studentId: string, need: number, allowRepeat: boolean) {
   const [pool, seen] = await Promise.all([questionPool(env, ctx, outcome), seenQuestionIds(env, studentId)]);
-  const fresh = pool.filter((q) => !seen.has(q.id)), met = pool.filter((q) => seen.has(q.id));
+  const fresh = pool.filter((q) => !seen.has(q.id));
+  let met = pool.filter((q) => seen.has(q.id));
+  if (allowRepeat && fresh.length < need && met.length) met = reviewOrder(met, await playHistory(env, studentId, 'QUESTION_BANK'));
   const chosen = [...fresh.slice(0, need).map((q) => ({ id: q.id, repeat: false })), ...(allowRepeat ? met.slice(0, Math.max(0, need - fresh.length)).map((q) => ({ id: q.id, repeat: true })) : [])];
   if (!chosen.length) return { items: [] as Item[], fresh: fresh.length, met: met.length };
   const rows = await all<any>(env.DB.prepare(`SELECT id,stem_text,options_json,correct_answer,content_mode FROM question_bank WHERE id IN (${chosen.map(() => '?').join(',')})`).bind(...chosen.map((c) => c.id)));
@@ -76,7 +79,9 @@ async function pickQuestions(env: Env, ctx: any, outcome: any, studentId: string
 }
 async function pickContents(env: Env, ctx: any, outcome: any, studentId: string, kind: string, need: number, allowRepeat: boolean) {
   const [pool, played] = await Promise.all([contentPool(env, ctx, outcome, kind), playedContentIds(env, studentId)]);
-  const fresh = pool.filter((c) => !played.has(c.id)), met = pool.filter((c) => played.has(c.id));
+  const fresh = pool.filter((c) => !played.has(c.id));
+  let met = pool.filter((c) => played.has(c.id));
+  if (allowRepeat && fresh.length < need && met.length) met = reviewOrder(met, await playHistory(env, studentId, 'GAME_CONTENT'));
   const chosen = [...fresh.slice(0, need).map((c) => ({ c, repeat: false })), ...(allowRepeat ? met.slice(0, Math.max(0, need - fresh.length)).map((c) => ({ c, repeat: true })) : [])];
   const items: Item[] = chosen.map(({ c, repeat }) => ({ kind, source: 'GAME_CONTENT' as const, refId: c.id, repeat, pub: publicContent(kind, parse(c.public_json, {})), answer: parse(c.answer_json, {}) }));
   return { items, fresh: fresh.length, met: met.length };

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { api } from '../api';
 import { useAuth } from '../auth';
+import { ContentPack } from '../components/universe/ContentPack';
 
 /**
  * Öğrenme Evreni merkezi (owner, 11 Nov 2026). Content: write activities for a verified outcome and approve them
@@ -90,6 +91,15 @@ function Content({ admin, onError, onNotice }: { admin: boolean; onError: (m: st
     } catch (e: any) { onError(e.message); }
   };
   const review = async (id: string, decision: 'APPROVED' | 'REJECTED') => { onError(''); try { await api(`/api/reporting/universe/contents/${encodeURIComponent(id)}/review`, { method: 'POST', body: JSON.stringify({ decision }) }); await loadList(); } catch (e: any) { onError(e.message); } };
+  // a person still decides on each one: only the boxes they tick are approved, each checked again by the server
+  const [picked, setPicked] = useState<Set<string>>(new Set());
+  const approvePicked = async () => {
+    onError(''); onNotice(''); let ok = 0; const fails: string[] = [];
+    for (const id of picked) { try { await api(`/api/reporting/universe/contents/${encodeURIComponent(id)}/review`, { method: 'POST', body: JSON.stringify({ decision: 'APPROVED' }) }); ok++; } catch (e: any) { fails.push(e.message); } }
+    setPicked(new Set()); await loadList();
+    if (ok) onNotice(`${ok} etkinlik onaylandı.`);
+    if (fails.length) onError(`${fails.length} etkinlik onaylanamadı: ${[...new Set(fails)].join(' ')}`);
+  };
   return <>
     <section className="panel" style={{ display: 'grid', gap: 12 }}>
       <h2 style={{ margin: 0, fontSize: 18 }}>Yeni etkinlik</h2>
@@ -107,12 +117,14 @@ function Content({ admin, onError, onNotice }: { admin: boolean; onError: (m: st
       {FIELDS[kind].map(([name, label, ph]) => <label key={name}>{label}<textarea rows={name === 'text' || name === 'transcript' ? 3 : 4} value={f[name] || ''} placeholder={ph} onChange={(e) => setF({ ...f, [name]: e.target.value })} /></label>)}
       <div><button className="primary" disabled={!outcomeId} onClick={() => void save()}>Onaya gönder</button></div>
     </section>
+    <ContentPack onDone={() => { setStatus('REVIEW'); void loadList(); }} />
     <section className="panel" style={{ display: 'grid', gap: 10 }}>
       <div style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}><h2 style={{ margin: 0, fontSize: 18 }}>Etkinlikler</h2>
-        <select value={status} onChange={(e) => setStatus(e.target.value)} aria-label="Durum">{Object.entries(STATUS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}</select></div>
+        <select value={status} onChange={(e) => { setStatus(e.target.value); setPicked(new Set()); }} aria-label="Durum">{Object.entries(STATUS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}</select>
+        {status === 'REVIEW' && picked.size > 0 && <button className="secondary" onClick={() => void approvePicked()}>Seçilen {picked.size} etkinliği onayla</button>}</div>
       {!list.length && <p className="muted">Bu durumda etkinlik yok.</p>}
       {list.map((c) => <div key={c.id} className="card" style={{ display: 'grid', gap: 6, padding: 12 }}>
-        <strong>{c.title || KINDS[c.content_kind] || c.content_kind} · {c.outcome_code}</strong>
+        <strong style={{ display: 'flex', gap: 8, alignItems: 'center' }}>{c.review_status === 'REVIEW' && (admin || c.owner_type === 'INSTITUTION') && <input type="checkbox" aria-label="Toplu onay için seç" checked={picked.has(c.id)} onChange={(e) => { const n = new Set(picked); if (e.target.checked) n.add(c.id); else n.delete(c.id); setPicked(n); }} />}{c.title || KINDS[c.content_kind] || c.content_kind} · {c.outcome_code}</strong>
         <span className="muted">{c.outcome_title} · {c.grade_level}. sınıf · {c.academic_year} · {RIGHTS[c.copyright_status] || c.copyright_status} · {c.owner_type === 'PLATFORM' ? 'Platform' : 'Kurum'} · {STATUS[c.review_status]}</span>
         <code style={{ whiteSpace: 'pre-wrap', fontSize: 12 }}>{JSON.stringify(c.content).slice(0, 400)}</code>
         {c.review_status === 'REVIEW' && (admin || c.owner_type === 'INSTITUTION') && <div style={{ display: 'flex', gap: 8 }}>
