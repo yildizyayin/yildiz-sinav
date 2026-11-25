@@ -361,6 +361,7 @@ function End({ result, best, title, outcome, onDetails }: { result: Session; bes
       <div><strong>{best}</strong><span>en uzun seri</span></div>
     </div>
     <div className="ua-talk"><Nibiru mood="happy" /><p className="ua-bubble">{pct >= 0.8 ? `${title || 'Oyun'} rozetin hazır! Yarın yeni görevlerle buradayım.` : 'Kaçırdıklarını aralıklı tekrarla sana yeniden getireceğim.'}</p></div>
+    {correct > 0 && <p className="ua-small">Gezegenine {correct} yeni parça eklendi; Öğrenme Evreni ana sayfasında görebilirsin.</p>}
     {outcome?.code && <p className="ua-earned">Bu oyunla çalıştığın kazanım: <b>{outcome.code}</b> {outcome.title}. Cevapların bu kazanımın kanıtı olarak karnene işlendi.</p>}
     <p className="ua-small">XP bir ödüldür; karnende yalnız doğru, yanlış ve boşların sayılır.</p>
     <div className="ua-row"><Link className="ua-next" to="/evren">Haritaya dön</Link><button type="button" className="ua-ghost" onClick={onDetails}>Cevapları gör</button></div>

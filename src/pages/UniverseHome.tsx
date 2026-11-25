@@ -5,6 +5,7 @@ import { ChevronDown, ClipboardList, Compass, Flame, RotateCcw, Sparkles, Target
 import { api } from '../api';
 import { NibiruMark } from '../components/NibiruMark';
 import '../components/universe/universe-map.css';
+import { MyPlanet } from '../components/universe/MyPlanet';
 
 /**
  * Nibiru Öğrenme Evreni — the learning map (owner, 11 Nov 2026). One page, three looks by age group:
@@ -36,6 +37,8 @@ export function UniverseHome() {
         <Link className="um-exam" to="/evren/deneme">Nibiru denemesi · 10 / 20 soru →</Link>
       </div>
     </header>
+
+    {d.planet && <MyPlanet data={d.planet} group={group} />}
 
     {d.tasks?.length > 0 && <section aria-labelledby="um-tasks">
       <h2 id="um-tasks" className="um-h2">Öğretmeninden görevler</h2>
