@@ -1,0 +1,24 @@
+/* Benim Gezegenim (owner, 25 Nov 2026): a deep-space card, the same in the light and the dark app theme. */
+.mp{--ink:#eef3ff;--soft:#a9b8e6;--line:rgba(150,180,255,.22);display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;align-items:center;padding:16px;border-radius:24px;color:var(--ink);color-scheme:dark;
+  background:radial-gradient(120% 90% at 80% 0,#1c1a6b 0,#0b1140 50%,#060b24 100%);box-shadow:0 18px 46px rgba(6,11,36,.28);overflow:hidden}
+@media(max-width:760px){.mp{grid-template-columns:1fr}}
+.mp-stage svg{display:block;width:100%;max-width:400px;height:auto;margin:0 auto;overflow:visible}
+.mp-spin{transform-origin:240px 240px;animation:mp-spin 90s linear infinite}
+.mp-stage svg:hover .mp-spin{animation-play-state:paused}
+@keyframes mp-spin{to{transform:rotate(360deg)}}
+.mp-grow{transform-box:fill-box;transform-origin:50% 100%;animation:mp-grow .7s cubic-bezier(.3,1.6,.5,1) both}
+@keyframes mp-grow{from{transform:scale(0)}}
+.mp-side{display:grid;gap:10px;min-width:0}
+.mp-side h2{margin:0;font-size:clamp(22px,3.4vw,30px);line-height:1.1;font-family:"Baloo 2",ui-rounded,system-ui,sans-serif;color:var(--ink)}
+.mp-lead{margin:0;color:var(--soft);line-height:1.5;font-weight:700}
+.mp-seeds{margin:0;padding:8px 12px;border-radius:12px;background:rgba(217,176,122,.12);border:1px solid rgba(217,176,122,.4);font-weight:700;font-size:14px;line-height:1.45}
+.mp-regions{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.mp-regions li{display:grid;grid-template-columns:12px auto 1fr;gap:8px;align-items:center;font-size:14px}
+.mp-regions i{width:12px;height:12px;border-radius:50%}
+.mp-regions span{color:var(--soft);text-align:right;font-variant-numeric:tabular-nums}
+.mp-recent{display:grid;gap:4px;padding-top:8px;border-top:1px solid var(--line)}
+.mp-recent>span{font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:800;color:#ffd166}
+.mp-recent ul{margin:0;padding-left:18px;display:grid;gap:3px;font-size:13.5px;color:var(--soft);line-height:1.4}
+.mp-recent b{color:var(--ink)}
+.mp[data-group="C"] .mp-side h2{font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+@media (prefers-reduced-motion:reduce){.mp-spin,.mp-grow{animation:none}}

@@ -4,6 +4,7 @@ import { outcomeQuestionTarget, unifiedOutcomeEvidence, type OutcomeEvidence } f
 import { gradeProfile } from '../../../src/lib/gradeProfile';
 import { studentContext } from './sessions';
 import { studentUniverseTasks } from './tasks';
+import { universePlanet } from './planet';
 
 /**
  * Nibiru Öğrenme Evreni — the learning map (owner, 11 Nov 2026).
@@ -113,6 +114,7 @@ export async function universeMap(env: Env, user: AuthUser, now = Date.now()) {
     reviewAfterDays: REVIEW_AFTER_DAYS,
     missions,
     tasks,
+    planet: await universePlanet(env, user.student_id!),
     summary: { outcomes: all_.length, playable: all_.filter(playable).length, learned: all_.filter((n) => n.stage === 'LEARNED').length },
     // subjects with something to play first, then by name
     subjects: [...subjects.values()].map((s) => ({ s, playable: [...s.planets.values()].flat().filter(playable).length })).sort((a, b) => b.playable - a.playable || a.s.name.localeCompare(b.s.name, 'tr')).map(({ s }) => ({ id: s.id, name: s.name, planets: [...s.planets.entries()].map(([name, nodes]) => ({
