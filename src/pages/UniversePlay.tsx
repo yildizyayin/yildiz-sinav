@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { api } from '../api';
 import { UniversePlayer, UniverseResults } from '../components/universe/UniversePlayer';
+import { UniverseArcade, arcadeGame } from '../components/universe/UniverseArcade';
 
 /**
  * Nibiru Öğrenme Evreni: one play (owner, 11 Nov 2026). Opened from the learning map with an outcome and a game kind.
@@ -32,6 +33,6 @@ export function UniversePlay() {
   return <>
     <div style={{ maxWidth: 760, margin: '0 auto 12px' }}><BreakReminder /></div>
     <div className="page-head" style={{ maxWidth: 760, margin: '0 auto' }}><div><span className="eyebrow">{data.session.template.title}{data.session.mode === 'REVIEW' ? ' · tekrar' : ''}</span><h1 style={{ fontSize: 'clamp(18px,3vw,24px)' }}>{data.session.outcome.code} · {data.session.outcome.title}</h1></div></div>
-    <UniversePlayer data={data} onDone={setResult} />
+    {arcadeGame(data) ? <div style={{ marginTop: 12 }}><UniverseArcade data={data} onDone={setResult} /></div> : <UniversePlayer data={data} onDone={setResult} />}
   </>;
 }
