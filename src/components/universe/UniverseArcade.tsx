@@ -4,6 +4,7 @@ import { api } from '../../api';
 import { readSoundSettings, writeSoundSettings } from '../../lib/glassSounds';
 import './universe-arcade.css';
 import { OwnRecord } from './MasteryStars';
+import { GoalLine, Reflection } from './Personal';
 
 /**
  * Öğrenme Evreni animasyonlu oyunlar (owner, 24–25 Nov 2026: "çok güzel olmuş bunun gibi yapalım"; Aşama 0 of the
@@ -363,6 +364,8 @@ function End({ result, best, title, outcome, onDetails }: { result: Session; bes
     </div>
     <div className="ua-talk"><Nibiru mood="happy" /><p className="ua-bubble">{pct >= 0.8 ? `${title || 'Oyun'} rozetin hazır! Yarın yeni görevlerle buradayım.` : 'Kaçırdıklarını aralıklı tekrarla sana yeniden getireceğim.'}</p></div>
     <OwnRecord p={(result as any).progress} />
+    <GoalLine goal={(result as any).progress?.goal} />
+    <Reflection sessionId={r.id} initial={r.reflection} />
     {correct > 0 && <p className="ua-small">Gezegenine {correct} yeni parça eklendi; Öğrenme Evreni ana sayfasında görebilirsin.</p>}
     {outcome?.code && <p className="ua-earned">Bu oyunla çalıştığın kazanım: <b>{outcome.code}</b> {outcome.title}. Cevapların bu kazanımın kanıtı olarak karnene işlendi.</p>}
     <p className="ua-small">XP bir ödüldür; karnende yalnız doğru, yanlış ve boşların sayılır.</p>

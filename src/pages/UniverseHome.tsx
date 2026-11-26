@@ -7,6 +7,7 @@ import { NibiruMark } from '../components/NibiruMark';
 import '../components/universe/universe-map.css';
 import { MyPlanet } from '../components/universe/MyPlanet';
 import { MasteryCard, Stars } from '../components/universe/MasteryStars';
+import { DailyGoalCard } from '../components/universe/Personal';
 
 /**
  * Nibiru Öğrenme Evreni — the learning map (owner, 11 Nov 2026). One page, three looks by age group:
@@ -40,6 +41,7 @@ export function UniverseHome() {
     </header>
 
     {d.planet && <MyPlanet data={d.planet} group={group} />}
+    <DailyGoalCard goal={d.dailyGoal} />
     <MasteryCard mastery={d.starSummary} play={play} />
 
     {d.tasks?.length > 0 && <section aria-labelledby="um-tasks">

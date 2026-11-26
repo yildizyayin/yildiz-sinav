@@ -6,6 +6,7 @@ import { studentContext } from './sessions';
 import { studentUniverseTasks } from './tasks';
 import { universePlanet } from './planet';
 import { starsOf } from './stars';
+import { againOutcomes, dailyGoal } from './personal';
 
 /**
  * Nibiru Öğrenme Evreni — the learning map (owner, 11 Nov 2026).
@@ -71,7 +72,7 @@ export async function universeMap(env: Env, user: AuthUser, now = Date.now()) {
   const ctx = await studentContext(env, user);
   if (!ctx) return null;
   const profile = gradeProfile(ctx.grade_level);
-  const [outcomes, kindsFor, evidence, week, xp, tasks] = await Promise.all([
+  const [outcomes, kindsFor, evidence, week, xp, tasks, again, goal] = await Promise.all([
     all<any>(env.DB.prepare(`SELECT o.id,o.code,o.title,o.topic,o.subtopic,o.subject_id,COALESCE(s.name,'Ders') subject_name FROM outcomes o JOIN curriculum_versions cv ON cv.id=o.curriculum_version_id LEFT JOIN subjects s ON s.id=o.subject_id
       WHERE o.active=1 AND cv.verified=1 AND cv.academic_year=? AND cv.grade_level=? AND o.grade_level=? ORDER BY s.name,o.code`).bind(ctx.academic_year, ctx.grade_level, ctx.grade_level)),
     gameAvailability(env, ctx),
@@ -79,6 +80,8 @@ export async function universeMap(env: Env, user: AuthUser, now = Date.now()) {
     one<any>(env.DB.prepare(`SELECT count(*) n FROM lu_sessions WHERE student_id=? AND status='SUBMITTED' AND date(submitted_at,'+3 hours')>=date('now','+3 hours','weekday 1','-7 days')`).bind(user.student_id)),
     one<any>(env.DB.prepare(`SELECT xp FROM gamification_profiles WHERE student_id=?`).bind(user.student_id)),
     studentUniverseTasks(env, user),
+    againOutcomes(env, user.student_id!),
+    dailyGoal(env, user.student_id!),
   ]);
   const evBy = new Map(evidence.map((e) => [e.outcomeId, e]));
 
@@ -98,7 +101,8 @@ export async function universeMap(env: Env, user: AuthUser, now = Date.now()) {
   const playable = (n: Node) => n.games.length > 0;
   // up to three suggestions for today: a due review, the weakest one in progress, something new — only if playable
   const missions: Array<{ type: 'REVIEW' | 'STRENGTHEN' | 'DISCOVER'; outcomeId: string; title: string; code: string | null; game: string }> = [];
-  const review = all_.filter((n) => n.reviewDue && playable(n)).sort((a, b) => (b.lastDays ?? 0) - (a.lastDays ?? 0))[0];
+  // the student's own "Tekrar etmeliyim" comes first, then a review that is due by the clock
+  const review = again.map((id) => all_.find((n) => n.id === id && playable(n))).find(Boolean) || all_.filter((n) => n.reviewDue && playable(n)).sort((a, b) => (b.lastDays ?? 0) - (a.lastDays ?? 0))[0];
   if (review) missions.push({ type: 'REVIEW', outcomeId: review.id, title: review.title, code: review.code, game: review.games[0].code });
   const order: Stage[] = ['DEVELOPING', 'STARTED', 'CONSOLIDATING'];
   const weak = all_.filter((n) => order.includes(n.stage) && playable(n) && n.id !== review?.id).sort((a, b) => order.indexOf(a.stage) - order.indexOf(b.stage))[0];
@@ -112,6 +116,7 @@ export async function universeMap(env: Env, user: AuthUser, now = Date.now()) {
     student: { gradeLevel: ctx.grade_level, academicYear: ctx.academic_year, designGroup: profile.designGroup },
     xp: { total: totalXp, level: Math.floor(totalXp / 200) + 1, toNext: 200 - (totalXp % 200) },
     week: { done: Number(week?.n || 0), goal: WEEKLY_GOAL },
+    dailyGoal: goal,
     reviewAfterDays: REVIEW_AFTER_DAYS,
     missions,
     tasks,
