@@ -6,6 +6,7 @@ import { api } from '../api';
 import { NibiruMark } from '../components/NibiruMark';
 import '../components/universe/universe-map.css';
 import { MyPlanet } from '../components/universe/MyPlanet';
+import { MasteryCard, Stars } from '../components/universe/MasteryStars';
 
 /**
  * Nibiru Öğrenme Evreni — the learning map (owner, 11 Nov 2026). One page, three looks by age group:
@@ -39,6 +40,7 @@ export function UniverseHome() {
     </header>
 
     {d.planet && <MyPlanet data={d.planet} group={group} />}
+    <MasteryCard mastery={d.starSummary} play={play} />
 
     {d.tasks?.length > 0 && <section aria-labelledby="um-tasks">
       <h2 id="um-tasks" className="um-h2">Öğretmeninden görevler</h2>
@@ -70,7 +72,7 @@ export function UniverseHome() {
               <ChevronDown size={18} aria-hidden="true" className="um-chev" />
             </button>
             {isOpen && <ul className="um-outcomes">{p.outcomes.map((o: any) => <li key={o.id}>
-              <div className="um-o-text"><span className={`um-stage ${o.stage.toLowerCase()}`}>{o.stageLabel}{o.reviewDue ? ' · tekrar zamanı' : ''}</span><strong>{o.code ? `${o.code} ` : ''}{o.title}</strong></div>
+              <div className="um-o-text">{typeof o.stars === 'number' && <Stars n={o.stars} dim={o.dim} size={14} />}<span className={`um-stage ${o.stage.toLowerCase()}`}>{o.stageLabel}{o.reviewDue ? ' · tekrar zamanı' : ''}</span><strong>{o.code ? `${o.code} ` : ''}{o.title}</strong></div>
               {o.games.length ? <div className="um-games">{o.games.map((g: any) => <Link key={g.code} className="um-game" to={play(o.id, g.code)}>{g.title}</Link>)}</div> : <small className="um-none">Bu kazanım için onaylı etkinlik hazırlanıyor.</small>}
             </li>)}</ul>}
           </div>;

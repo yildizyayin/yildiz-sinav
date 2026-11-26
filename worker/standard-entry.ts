@@ -10,6 +10,7 @@ import { all, json, one, uuid } from './lib/db';
 import { gradeProfile, nibiruStudentPrompts } from '../src/lib/gradeProfile';
 import { startUniverseSession, submitUniverseSession, universeSessionView } from './lib/learning-universe/sessions';
 import { checkUniverseItem } from './lib/learning-universe/item-check';
+import { personalProgress } from './lib/learning-universe/progress';
 import { listNibiruExams, nibiruExamView, startNibiruExam, submitNibiruExam } from './lib/learning-universe/nibiru-exam';
 import { universeMap } from './lib/learning-universe/map';
 
@@ -256,8 +257,8 @@ async function universeApi(request:Request,env:Env,user:AuthUser,path:string){
  const chk=path.match(/^\/api\/student-standard\/universe\/sessions\/([^/]+)\/items\/(\d{1,3})\/check$/);
  if(chk&&request.method==='POST'){const body=await request.json().catch(()=>({}));const r=await checkUniverseItem(env,user,chk[1],chk[2],body);return out(r);}
  const m=path.match(/^\/api\/student-standard\/universe\/sessions\/([^/]+)(\/submit)?$/);
- if(m&&!m[2]&&request.method==='GET'){const v=await universeSessionView(env,user,m[1]);return v?json(v):out({ok:false,reason:'SESSION_NOT_FOUND'});}
- if(m&&m[2]&&request.method==='POST'){const body=await request.json().catch(()=>({}));const r=await submitUniverseSession(env,user,m[1],body);if(!r.ok)return out(r);return json(await universeSessionView(env,user,m[1]));}
+ if(m&&!m[2]&&request.method==='GET'){const v=await universeSessionView(env,user,m[1]);return v?json({...v,progress:await personalProgress(env,user,m[1])}):out({ok:false,reason:'SESSION_NOT_FOUND'});}
+ if(m&&m[2]&&request.method==='POST'){const body=await request.json().catch(()=>({}));const r=await submitUniverseSession(env,user,m[1],body);if(!r.ok)return out(r);return json({...await universeSessionView(env,user,m[1]),progress:await personalProgress(env,user,m[1])});}
  // Nibiru denemesi: 10 or 20 new questions of the student's own grade, weaker outcomes first
  if(path==='/api/student-standard/universe/exams'&&request.method==='GET')return json({ok:true,exams:await listNibiruExams(env,user)});
  if(path==='/api/student-standard/universe/exams'&&request.method==='POST'){const body=await request.json().catch(()=>({}));const r=await startNibiruExam(env,user,body);if(!r.ok)return out(r);return json(await nibiruExamView(env,user,r.examId),r.reused?200:201);}
