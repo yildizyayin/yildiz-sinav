@@ -9,6 +9,8 @@ export interface Env {
   REPORT_EXPORT_QUEUE_NAME?: string;
   REPORT_EXPORT_FILES?: R2Bucket;
   DB: D1Database;
+  /** Sınıf Uzay Yarışı live rooms (Durable Object, SQLite-backed, free tier). */
+  RACE_ROOMS?: DurableObjectNamespace;
   FILES: R2Bucket;
   RESULT_ARTIFACTS_ENABLED?: string;
   RESULT_ARTIFACT_BACKGROUND_ENABLED?: string;

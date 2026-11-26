@@ -39,6 +39,10 @@ export function UniverseHome() {
     </header>
 
     {d.planet && <MyPlanet data={d.planet} group={group} />}
+    <section className="panel" style={{ display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }} aria-label="Sınıf Uzay Yarışı">
+      <div style={{ flex: 1, minWidth: 220 }}><strong>Sınıf Uzay Yarışı</strong><p className="muted" style={{ margin: '4px 0 0' }}>Öğretmenin tahtada yarış başlattıysa kodu gir, sınıfınla birlikte yarış.</p></div>
+      <Link className="primary" to="/evren/yaris">Sınıf yarışına katıl</Link>
+    </section>
 
     {d.tasks?.length > 0 && <section aria-labelledby="um-tasks">
       <h2 id="um-tasks" className="um-h2">Öğretmeninden görevler</h2>

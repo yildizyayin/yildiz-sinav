@@ -65,5 +65,21 @@
     "QUESTION_GENERATION_STRUCTURED_OUTPUT_ENABLED": "true",
     "QUESTION_GENERATION_VERIFIER_MODEL": "@cf/nvidia/nemotron-3-120b-a12b"
   },
-  "keep_vars": true
+  "keep_vars": true,
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "RACE_ROOMS",
+        "class_name": "RaceRoom"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "v1-class-race",
+      "new_sqlite_classes": [
+        "RaceRoom"
+      ]
+    }
+  ]
 }

@@ -39,5 +39,21 @@
     "QUESTION_AGENT_EXECUTION_ENABLED": "false",
     "QUESTION_VIDEO_RENDER_ENABLED": "false",
     "QUESTION_AUTOMATED_ACADEMIC_YEAR": "2027-2028"
-  }
+  },
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "RACE_ROOMS",
+        "class_name": "RaceRoom"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "v1-class-race",
+      "new_sqlite_classes": [
+        "RaceRoom"
+      ]
+    }
+  ]
 }
