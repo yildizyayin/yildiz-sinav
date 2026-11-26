@@ -16,7 +16,9 @@ vi.mock('../src/api', () => ({
 import { UniverseArcade, arcadeGame } from '../src/components/universe/UniverseArcade';
 import { caseFor } from '../src/components/universe/mysteryCases';
 (globalThis as any).IS_REACT_ACT_ENVIRONMENT = true;
-afterEach(() => { document.body.innerHTML = ''; calls.length = 0; });
+const roots: any[] = [];
+// unmount every screen before the test DOM goes away, so no animation frame runs after it
+afterEach(async () => { for (const r of roots.splice(0)) await act(async () => r.unmount()); document.body.innerHTML = ''; calls.length = 0; });
 const q = (seq: number) => ({ seq, kind: 'QUESTION', repeat: false, content: { stem: `Soru ${seq}`, options: [{ key: 'A', text: 'bir' }, { key: 'B', text: 'iki' }] } });
 const data = { session: { id: 'case-s', template: { kind: 'CHOICE', title: 'Bilgi Görevi' }, outcome: { id: 'o', code: 'M.5.1.1', title: 'Doğal sayılar' }, gradeLevel: 5, itemCount: 3, timed: false, secondsPerItem: null }, items: [q(1), q(2), q(3)] };
 
@@ -29,7 +31,8 @@ it('opens the mystery only for question plays asked as a case', () => {
 it('plays a whole case: question, clue, the student’s own elimination, accusation, and one submit', async () => {
   const c = caseFor('case-s');
   const node = document.createElement('div'); document.body.append(node);
-  await act(async () => createRoot(node).render(createElement(MemoryRouter, null, createElement(UniverseArcade, { data: data as any, onDone: () => undefined, style: 'mystery' }))));
+  const root = createRoot(node); roots.push(root);
+  await act(async () => root.render(createElement(MemoryRouter, null, createElement(UniverseArcade, { data: data as any, onDone: () => undefined, style: 'mystery' }))));
   const click = async (el: Element | null | undefined) => { await act(async () => { (el as HTMLElement).click(); }); };
   const btn = (t: string) => [...node.querySelectorAll('button')].find((b) => b.textContent?.includes(t));
   const sus = (id: string) => node.querySelector(`button[aria-label^="${c.suspects.find((s) => s.id === id)!.name}"]`);
