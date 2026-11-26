@@ -3,6 +3,7 @@ import { all, one, uuid } from '../db';
 import { hydrateQuestionMedia } from '../question-content';
 import { seenQuestionIds } from '../dejavu';
 import { playHistory, reviewOrder } from './spacing';
+import { byLevel, targetLevel } from './personal';
 import { gradeItem } from './grading';
 
 /**
@@ -36,7 +37,7 @@ export async function verifiedOutcomeFor(env: Env, outcomeId: string, ctx: any) 
 
 /** Content the platform / the student's institution may serve for this outcome, by kind. */
 async function questionPool(env: Env, ctx: any, outcome: any) {
-  return all<any>(env.DB.prepare(`SELECT q.id FROM question_bank q
+  return all<any>(env.DB.prepare(`SELECT q.id,q.difficulty_level FROM question_bank q
     WHERE q.review_status='APPROVED' AND q.copyright_status IN ${RIGHTS_SQL} AND q.grade_level=? AND (q.subject_id=? OR ? IS NULL)
       AND COALESCE(q.question_type,'MULTIPLE_CHOICE')='MULTIPLE_CHOICE' AND q.correct_answer IS NOT NULL AND q.options_json IS NOT NULL
       AND (q.owner_type='PLATFORM' OR (q.owner_type='INSTITUTION' AND q.owner_id=?))
@@ -44,7 +45,7 @@ async function questionPool(env: Env, ctx: any, outcome: any) {
     ORDER BY RANDOM() LIMIT 300`).bind(ctx.grade_level, outcome.subject_id, outcome.subject_id, ctx.institution_id, outcome.id));
 }
 async function contentPool(env: Env, ctx: any, outcome: any, kind: string) {
-  return all<any>(env.DB.prepare(`SELECT id,public_json,answer_json FROM lu_game_contents
+  return all<any>(env.DB.prepare(`SELECT id,public_json,answer_json,difficulty FROM lu_game_contents
     WHERE outcome_id=? AND content_kind=? AND review_status='APPROVED' AND copyright_status IN ${RIGHTS_SQL} AND grade_level=? AND academic_year=?
       AND (owner_type='PLATFORM' OR (owner_type='INSTITUTION' AND owner_id=?)) ORDER BY RANDOM() LIMIT 100`).bind(outcome.id, kind, ctx.grade_level, ctx.academic_year, ctx.institution_id));
 }
@@ -67,7 +68,8 @@ function publicContent(kind: string, pub: any) {
 
 async function pickQuestions(env: Env, ctx: any, outcome: any, studentId: string, need: number, allowRepeat: boolean) {
   const [pool, seen] = await Promise.all([questionPool(env, ctx, outcome), seenQuestionIds(env, studentId)]);
-  const fresh = pool.filter((q) => !seen.has(q.id));
+  // uyarlanır zorluk: the fresh questions nearest the student's own level come first
+  const fresh = byLevel(pool.filter((q) => !seen.has(q.id)), await targetLevel(env, studentId, outcome.id), (q) => q.difficulty_level);
   let met = pool.filter((q) => seen.has(q.id));
   if (allowRepeat && fresh.length < need && met.length) met = reviewOrder(met, await playHistory(env, studentId, 'QUESTION_BANK'));
   const chosen = [...fresh.slice(0, need).map((q) => ({ id: q.id, repeat: false })), ...(allowRepeat ? met.slice(0, Math.max(0, need - fresh.length)).map((q) => ({ id: q.id, repeat: true })) : [])];
@@ -79,7 +81,7 @@ async function pickQuestions(env: Env, ctx: any, outcome: any, studentId: string
 }
 async function pickContents(env: Env, ctx: any, outcome: any, studentId: string, kind: string, need: number, allowRepeat: boolean) {
   const [pool, played] = await Promise.all([contentPool(env, ctx, outcome, kind), playedContentIds(env, studentId)]);
-  const fresh = pool.filter((c) => !played.has(c.id));
+  const fresh = byLevel(pool.filter((c) => !played.has(c.id)), await targetLevel(env, studentId, outcome.id), (c) => c.difficulty);
   let met = pool.filter((c) => played.has(c.id));
   if (allowRepeat && fresh.length < need && met.length) met = reviewOrder(met, await playHistory(env, studentId, 'GAME_CONTENT'));
   const chosen = [...fresh.slice(0, need).map((c) => ({ c, repeat: false })), ...(allowRepeat ? met.slice(0, Math.max(0, need - fresh.length)).map((c) => ({ c, repeat: true })) : [])];
@@ -148,7 +150,7 @@ export async function universeSessionView(env: Env, user: AuthUser, id: string) 
   const done = s.status === 'SUBMITTED';
   return {
     ok: true,
-    session: { id: s.id, status: s.status, mode: s.mode, template: { code: s.template_code, kind: s.template_kind, title: s.template_title }, outcome: { id: s.outcome_id, code: s.outcome_code, title: s.outcome_title }, gradeLevel: s.grade_level,
+    session: { id: s.id, status: s.status, mode: s.mode, template: { code: s.template_code, kind: s.template_kind, title: s.template_title }, outcome: { id: s.outcome_id, code: s.outcome_code, title: s.outcome_title }, gradeLevel: s.grade_level, reflection: s.reflection ?? null,
       timed: !!s.timed, secondsPerItem: s.timed ? s.seconds_per_item : null, itemCount: s.item_count, answered: s.answered_count, correct: s.correct_count, xp: s.xp_awarded, expiresAt: s.expires_at },
     items: rows.map((r) => ({ seq: r.seq, kind: r.kind, repeat: !!r.repeat, content: parse(r.public_json, {}), ...(done ? { response: parse(r.response_json), correct: r.correct == null ? null : !!r.correct, partial: r.partial, key: parse(r.answer_json, {}) } : {}) })),
   };

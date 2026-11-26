@@ -4,6 +4,7 @@ import { outcomeQuestionTarget, unifiedOutcomeEvidence } from '../unified-outcom
 import { stageOf } from './map';
 import { studentContext } from './sessions';
 import { starsOf } from './stars';
+import { dailyGoal } from './personal';
 
 /**
  * Bireysel ilerleme (owner, 26 Nov 2026: "daha bireysel ilerlemeler daha bireysel oyunlar"; öğrenciler birbiriyle
@@ -32,5 +33,6 @@ export async function personalProgress(env: Env, user: AuthUser, sessionId: stri
     first: !earlier.length, previous: prev, change: prev ? now - prev.rate : null,
     bestBefore, newBest: bestBefore != null && now > bestBefore, plays: earlier.length + 1,
     ...starsOf(st.stage, st.reviewDue), stage: st.stage, stageLabel: st.stageLabel,
+    goal: await dailyGoal(env, user.student_id!),
   };
 }

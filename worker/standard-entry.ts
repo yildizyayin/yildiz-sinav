@@ -11,6 +11,7 @@ import { gradeProfile, nibiruStudentPrompts } from '../src/lib/gradeProfile';
 import { startUniverseSession, submitUniverseSession, universeSessionView } from './lib/learning-universe/sessions';
 import { checkUniverseItem } from './lib/learning-universe/item-check';
 import { personalProgress } from './lib/learning-universe/progress';
+import { setDailyGoal, setReflection } from './lib/learning-universe/personal';
 import { listNibiruExams, nibiruExamView, startNibiruExam, submitNibiruExam } from './lib/learning-universe/nibiru-exam';
 import { universeMap } from './lib/learning-universe/map';
 
@@ -248,6 +249,8 @@ const UNIVERSE_MESSAGES:Record<string,[number,string]>={
  ITEM_NOT_FOUND:[404,'Bu soru bu etkinlikte yok.'],
  ITEM_LOCKED:[409,'Bu soru boş geçildi; cevabı artık değiştirilemez.'],
  ANSWER_REQUIRED:[400,'Kontrol için önce bir cevap seç.'],
+ INVALID_REFLECTION:[400,'Kolaydı, Biraz zorlandım ya da Tekrar etmeliyim seçeneklerinden birini seç.'],
+ INVALID_GOAL:[400,'Günlük hedef 1, 2 ya da 3 oyun olabilir.'],
 };
 /** Nibiru Öğrenme Evreni: start a play, read it, submit it (graded on the server, once). */
 async function universeApi(request:Request,env:Env,user:AuthUser,path:string){
@@ -256,6 +259,9 @@ async function universeApi(request:Request,env:Env,user:AuthUser,path:string){
  if(path==='/api/student-standard/universe/sessions'&&request.method==='POST'){const body=await request.json().catch(()=>({}));const r=await startUniverseSession(env,user,body);if(!r.ok)return out(r);return json(await universeSessionView(env,user,r.sessionId),r.reused?200:201);}
  const chk=path.match(/^\/api\/student-standard\/universe\/sessions\/([^/]+)\/items\/(\d{1,3})\/check$/);
  if(chk&&request.method==='POST'){const body=await request.json().catch(()=>({}));const r=await checkUniverseItem(env,user,chk[1],chk[2],body);return out(r);}
+ const refl=path.match(/^\/api\/student-standard\/universe\/sessions\/([^/]+)\/reflection$/);
+ if(refl&&request.method==='POST'){const b:any=await request.json().catch(()=>({}));const r=await setReflection(env,user,refl[1],b.value);return out(r);}
+ if(path==='/api/student-standard/universe/goal'&&request.method==='POST'){const b:any=await request.json().catch(()=>({}));const r=await setDailyGoal(env,user,b.plays);return out(r);}
  const m=path.match(/^\/api\/student-standard\/universe\/sessions\/([^/]+)(\/submit)?$/);
  if(m&&!m[2]&&request.method==='GET'){const v=await universeSessionView(env,user,m[1]);return v?json({...v,progress:await personalProgress(env,user,m[1])}):out({ok:false,reason:'SESSION_NOT_FOUND'});}
  if(m&&m[2]&&request.method==='POST'){const body=await request.json().catch(()=>({}));const r=await submitUniverseSession(env,user,m[1],body);if(!r.ok)return out(r);return json({...await universeSessionView(env,user,m[1]),progress:await personalProgress(env,user,m[1])});}

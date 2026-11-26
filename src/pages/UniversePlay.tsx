@@ -5,6 +5,7 @@ import { api } from '../api';
 import { UniversePlayer, UniverseResults } from '../components/universe/UniversePlayer';
 import { UniverseArcade, arcadeGame } from '../components/universe/UniverseArcade';
 import { OwnRecord } from '../components/universe/MasteryStars';
+import { Reflection } from '../components/universe/Personal';
 
 /**
  * Nibiru Öğrenme Evreni: one play (owner, 11 Nov 2026). Opened from the learning map with an outcome and a game kind.
@@ -29,7 +30,7 @@ export function UniversePlay() {
     {error.data?.repeatAvailable > 0 && mode === 'PRACTICE' && <div><button className="secondary" onClick={() => setMode('REVIEW')}>Daha önce gördüklerimle tekrar yap ({error.data.repeatAvailable})</button></div>}
     <Link className="ghost" to="/evren">Öğrenme haritasına dön</Link>
   </div>;
-  if (result) return <>{(result as any).progress && <div style={{ display: 'flex', justifyContent: 'center', margin: '0 auto 12px', maxWidth: 760 }}><OwnRecord p={(result as any).progress} /></div>}<UniverseResults data={result} /><div style={{ textAlign: 'center', marginTop: 12 }}><Link className="primary" to="/evren">Haritaya dön</Link></div></>;
+  if (result) return <>{(result as any).progress && <div style={{ display: 'flex', justifyContent: 'center', margin: '0 auto 12px', maxWidth: 760 }}><OwnRecord p={(result as any).progress} /></div>}{result.session?.status === 'SUBMITTED' && <div style={{ display: 'flex', justifyContent: 'center', margin: '0 auto 12px', maxWidth: 760 }}><Reflection sessionId={result.session.id} initial={result.session.reflection} /></div>}<UniverseResults data={result} /><div style={{ textAlign: 'center', marginTop: 12 }}><Link className="primary" to="/evren">Haritaya dön</Link></div></>;
   if (!data) return <div className="panel">Hazırlanıyor…</div>;
   return <>
     <div style={{ maxWidth: 760, margin: '0 auto 12px' }}><BreakReminder /></div>
