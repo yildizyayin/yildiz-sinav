@@ -4,6 +4,10 @@ import { all, json, one, uuid } from './db';
 import { publishedForLearnersSql } from './exam-schedule';
 import { studentAcademicContext } from './nibiru';
 
+/** One clock for every time window here: the Worker's own time, so a window never depends on the database's clock
+ *  (and a check run with a set time sees the same windows). Built by us, never from input. */
+const sqlClock = () => new Date().toISOString().replace('T', ' ').slice(0, 19);
+
 /**
  * Nibiru veli uygulaması 2 (owner, 24 Nov 2026: "önerdiğin sırayla hepsini tek seferde yap"):
  *  1. the conversation is kept, like WhatsApp — every question and answer is saved and comes back when Nibiru opens;
@@ -130,7 +134,7 @@ async function feedback(request: Request, env: Env, user: AuthUser) {
 
 /** Super admin: how answers are rated, and the latest 👎 with the question that led to it (no names). */
 async function feedbackSummary(env: Env) {
-  const totals = await one<any>(env.DB.prepare(`SELECT sum(feedback=1) up, sum(feedback=-1) down, count(*) answers FROM nibiru_messages WHERE author='NIBIRU' AND created_at>=datetime('now','-30 days')`));
+  const totals = await one<any>(env.DB.prepare(`SELECT sum(feedback=1) up, sum(feedback=-1) down, count(*) answers FROM nibiru_messages WHERE author='NIBIRU' AND created_at>=datetime('${sqlClock()}','-30 days')`));
   const down = await all<any>(env.DB.prepare(`SELECT m.id,m.text answer,m.feedback_at,u.role,(SELECT q.text FROM nibiru_messages q WHERE q.user_id=m.user_id AND q.author='USER' AND q.created_at<=m.created_at ORDER BY q.created_at DESC, q.rowid DESC LIMIT 1) question
     FROM nibiru_messages m JOIN users u ON u.id=m.user_id WHERE m.feedback=-1 ORDER BY m.feedback_at DESC LIMIT 30`));
   return json({ ok: true, totals: { up: Number(totals?.up || 0), down: Number(totals?.down || 0), answers: Number(totals?.answers || 0) }, down: down.map((d) => ({ ...d, answer: String(d.answer).slice(0, 400), question: String(d.question || '').slice(0, 200) })) });
@@ -218,7 +222,7 @@ export async function runNibiruProactive(env: Env, limit = 200) {
       (SELECT group_concat(l.parent_user_id) FROM parent_student_links l WHERE l.student_id=ep.student_id AND l.active=1) parent_users
     FROM exam_participants ep JOIN exams e ON e.id=ep.exam_id JOIN exam_results er ON er.participant_id=ep.id JOIN student_entities s ON s.id=ep.student_id
     JOIN exam_delivery_profiles dp ON dp.exam_id=e.id
-    WHERE ${publishedForLearnersSql('e.id')} AND datetime(coalesce(dp.result_publish_at,dp.published_at))>=datetime('now','-3 days') LIMIT ?`).bind(limit)).catch(() => []);
+    WHERE ${publishedForLearnersSql('e.id')} AND datetime(coalesce(dp.result_publish_at,dp.published_at))>=datetime('${sqlClock()}','-3 days') LIMIT ?`).bind(limit)).catch(() => []);
   for (const r of results) {
     const ctx: any = await studentAcademicContext(env, r.student_id, null, true).catch(() => null);
     const card = ctx?.exams?.length ? resultCard(ctx.exams) : null;
@@ -233,14 +237,14 @@ export async function runNibiruProactive(env: Env, limit = 200) {
   }
   const absences = await all<any>(env.DB.prepare(`SELECT DISTINCT r.student_id,ps.attendance_date,s.first_name,(SELECT group_concat(l.parent_user_id) FROM parent_student_links l WHERE l.student_id=r.student_id AND l.active=1) parent_users
     FROM attendance_period_records r JOIN attendance_period_sessions ps ON ps.id=r.session_id JOIN student_entities s ON s.id=r.student_id
-    WHERE r.attendance_status='ABSENT' AND ps.session_type='DAILY' AND ps.status IN ('COMPLETED','CORRECTED') AND ps.attendance_date=date('now','+3 hours') LIMIT ?`).bind(limit)).catch(() => []);
+    WHERE r.attendance_status='ABSENT' AND ps.session_type='DAILY' AND ps.status IN ('COMPLETED','CORRECTED') AND ps.attendance_date=date('${sqlClock()}','+3 hours') LIMIT ?`).bind(limit)).catch(() => []);
   for (const a of absences) for (const uid of String(a.parent_users || '').split(',').filter(Boolean)) {
     if (await firstMessage(env, uid, a.student_id, 'ABSENCE', `${a.student_id}:${a.attendance_date}`, `Bilgilendirme: ${a.first_name} bugün okulda **devamsız** olarak işaretlendi. Bir yanlışlık olduğunu düşünüyorsanız okulla iletişime geçebilirsiniz.`, { suggestions: ['Bu dönem kaç gün devamsızlık var?'] })) people.add(uid);
   }
   const urgent = new Set<string>();
   await moreEvents(env, people, urgent, limit).catch((error) => console.error(JSON.stringify({ event: 'nibiru_events_failed', error: String(error) })));
   const pushed = await notifyPhones(env, people, urgent);
-  await env.DB.prepare(`DELETE FROM nibiru_messages WHERE created_at<datetime('now','-${KEEP_DAYS} days')`).run().catch(() => undefined);
+  await env.DB.prepare(`DELETE FROM nibiru_messages WHERE created_at<datetime('${sqlClock()}','-${KEEP_DAYS} days')`).run().catch(() => undefined);
   return { people: people.size, pushed };
 }
 
@@ -282,13 +286,13 @@ async function bell(env: Env, userId: string, institutionId: string | null, type
 async function moreEvents(env: Env, people: Set<string>, urgent: Set<string>, limit: number) {
   const add = (ok: boolean, uid: string) => { if (ok) people.add(uid); };
   // weekly programme given
-  for (const r of await all<any>(env.DB.prepare(`SELECT p.id,p.student_id,s.first_name FROM guidance_programs p JOIN student_entities s ON s.id=p.student_id WHERE p.status='GIVEN' AND p.given_at>=datetime('now','-2 days') LIMIT ?`).bind(limit))) {
+  for (const r of await all<any>(env.DB.prepare(`SELECT p.id,p.student_id,s.first_name FROM guidance_programs p JOIN student_entities s ON s.id=p.student_id WHERE p.status='GIVEN' AND p.given_at>=datetime('${sqlClock()}','-2 days') LIMIT ?`).bind(limit))) {
     for (const uid of await studentUsersOf(env, r.student_id)) add(await firstMessage(env, uid, r.student_id, 'PROGRAM', r.id, 'Rehber öğretmenin bu haftanın çalışma programını hazırladı. Birlikte bakalım mı?', { actions: [{ type: 'PLAN', label: 'Programımı aç', to: '/rehberligim' }], suggestions: ['Bugün ne çalışayım?'] }), uid);
     for (const uid of await parentsOf(env, r.student_id)) add(await firstMessage(env, uid, r.student_id, 'PROGRAM', r.id, `Rehber öğretmen ${r.first_name} için bu haftanın çalışma programını hazırladı.`, { actions: [{ type: 'PLAN', label: 'Haftalık gelişim', to: '/weekly-summary' }] }), uid);
   }
   // screen diary asked (a student or a whole class)
   for (const r of await all<any>(env.DB.prepare(`SELECT q.id,q.end_date,coalesce(q.student_id,e.student_id) student_id FROM guidance_screen_requests q LEFT JOIN student_enrollments e ON e.class_id=q.class_id AND e.status='ACTIVE' AND q.student_id IS NULL
-      WHERE q.created_at>=datetime('now','-2 days') AND q.end_date>=date('now','+3 hours') LIMIT ?`).bind(limit * 10))) {
+      WHERE q.created_at>=datetime('${sqlClock()}','-2 days') AND q.end_date>=date('${sqlClock()}','+3 hours') LIMIT ?`).bind(limit * 10))) {
     if (!r.student_id) continue;
     const text = 'Rehber öğretmenin birkaç gün boyunca ekran ve uyku günlüğü tutmanı istiyor. Her akşam bir dakika yeter.';
     for (const uid of await studentUsersOf(env, r.student_id)) add(await firstMessage(env, uid, r.student_id, 'SCREEN', r.id, text, { actions: [{ type: 'PLAN', label: 'Günlüğü aç', to: '/rehberligim' }] }), uid);
@@ -296,7 +300,7 @@ async function moreEvents(env: Env, people: Set<string>, urgent: Set<string>, li
   }
   // a guidance note shared with parents or students of a school/class
   for (const r of await all<any>(env.DB.prepare(`SELECT sh.id,sh.class_id,sh.institution_id,g.audience,g.title FROM guidance_resource_shares sh JOIN guidance_resources g ON g.id=sh.resource_id
-      WHERE sh.shared_at>=datetime('now','-2 days') AND g.active=1 AND g.review_status='APPROVED' AND g.audience IN ('PARENT','STUDENT') LIMIT ?`).bind(limit))) {
+      WHERE sh.shared_at>=datetime('${sqlClock()}','-2 days') AND g.active=1 AND g.review_status='APPROVED' AND g.audience IN ('PARENT','STUDENT') LIMIT ?`).bind(limit))) {
     const students = await all<{ student_id: string }>(env.DB.prepare(`SELECT student_id FROM student_enrollments WHERE institution_id=? AND status='ACTIVE' AND (? IS NULL OR class_id=?) LIMIT 2000`).bind(r.institution_id, r.class_id, r.class_id));
     for (const st of students) {
       const users = r.audience === 'PARENT' ? await parentsOf(env, st.student_id) : await studentUsersOf(env, st.student_id);
@@ -305,17 +309,17 @@ async function moreEvents(env: Env, people: Set<string>, urgent: Set<string>, li
   }
   // survey invitation
   for (const r of await all<any>(env.DB.prepare(`SELECT i.id,i.user_id,u.role,u.student_id FROM guidance_survey_invites i JOIN guidance_surveys v ON v.id=i.survey_id JOIN users u ON u.id=i.user_id
-      WHERE i.responded=0 AND v.created_at>=datetime('now','-3 days') LIMIT ?`).bind(limit)).catch(() => [])) {
+      WHERE i.responded=0 AND v.created_at>=datetime('${sqlClock()}','-3 days') LIMIT ?`).bind(limit)).catch(() => [])) {
     add(await firstMessage(env, r.user_id, r.role === 'STUDENT' ? r.student_id : null, 'SURVEY', r.id, 'Rehber öğretmenin kısa bir anket gönderdi. Birkaç dakikanı alır.', { actions: [{ type: 'PLAN', label: 'Ankete git', to: '/rehberime-yaz' }] }), r.user_id);
   }
   // the student's / parent's message to the guidance teacher was read
-  for (const r of await all<any>(env.DB.prepare(`SELECT id,sender_user_id,student_id FROM guidance_messages WHERE status<>'NEW' AND handled_at>=datetime('now','-2 days') AND sender_user_id IS NOT NULL LIMIT ?`).bind(limit))) {
+  for (const r of await all<any>(env.DB.prepare(`SELECT id,sender_user_id,student_id FROM guidance_messages WHERE status<>'NEW' AND handled_at>=datetime('${sqlClock()}','-2 days') AND sender_user_id IS NOT NULL LIMIT ?`).bind(limit))) {
     add(await firstMessage(env, r.sender_user_id, r.student_id, 'MESSAGE_SEEN', r.id, 'Rehber öğretmenin mesajını okudu. Gerekirse seninle görüşme planlayacak.', {}), r.sender_user_id);
   }
   // meetings: planned, and a reminder the day before
-  for (const m of await all<any>(env.DB.prepare(`SELECT g.id,g.kind,g.scheduled_at,ms.student_id,g.created_at>=datetime('now','-2 days') fresh,
-        datetime(g.scheduled_at) BETWEEN datetime('now','+3 hours') AND datetime('now','+33 hours') soon
-      FROM guidance_meetings g JOIN guidance_meeting_students ms ON ms.meeting_id=g.id WHERE g.status='PLANNED' AND datetime(g.scheduled_at)>datetime('now','+3 hours') AND (g.created_at>=datetime('now','-2 days') OR datetime(g.scheduled_at)<=datetime('now','+33 hours')) LIMIT ?`).bind(limit))) {
+  for (const m of await all<any>(env.DB.prepare(`SELECT g.id,g.kind,g.scheduled_at,ms.student_id,g.created_at>=datetime('${sqlClock()}','-2 days') fresh,
+        datetime(g.scheduled_at) BETWEEN datetime('${sqlClock()}','+3 hours') AND datetime('${sqlClock()}','+33 hours') soon
+      FROM guidance_meetings g JOIN guidance_meeting_students ms ON ms.meeting_id=g.id WHERE g.status='PLANNED' AND datetime(g.scheduled_at)>datetime('${sqlClock()}','+3 hours') AND (g.created_at>=datetime('${sqlClock()}','-2 days') OR datetime(g.scheduled_at)<=datetime('${sqlClock()}','+33 hours')) LIMIT ?`).bind(limit))) {
     const when = fmtDate(m.scheduled_at);
     const users = [...(m.kind === 'PARENT' ? [] : await studentUsersOf(env, m.student_id)), ...(['PARENT', 'INDIVIDUAL'].includes(m.kind) ? await parentsOf(env, m.student_id) : [])];
     for (const uid of users) {
@@ -344,7 +348,7 @@ async function moreEvents(env: Env, people: Set<string>, urgent: Set<string>, li
     }
   }
   // staff: urgent guidance request → the school's guidance teachers (never waits for morning)
-  for (const r of await all<any>(env.DB.prepare(`SELECT m.id,m.institution_id FROM guidance_messages m WHERE m.urgent=1 AND m.status='NEW' AND m.created_at>=datetime('now','-1 day') LIMIT ?`).bind(limit))) {
+  for (const r of await all<any>(env.DB.prepare(`SELECT m.id,m.institution_id FROM guidance_messages m WHERE m.urgent=1 AND m.status='NEW' AND m.created_at>=datetime('${sqlClock()}','-1 day') LIMIT ?`).bind(limit))) {
     for (const u of await all<{ id: string }>(env.DB.prepare(`SELECT id FROM users WHERE institution_id=? AND role='GUIDANCE_TEACHER' AND active=1`).bind(r.institution_id))) {
       if (await firstMessage(env, u.id, null, 'URGENT', r.id, 'Acil bir rehberlik talebi var. Lütfen Rehberlik Merkezi’nde bugünün listesine bakın.', { actions: [{ type: 'PLAN', label: 'Rehberlik Merkezi', to: '/' }] })) {
         people.add(u.id); urgent.add(u.id);
@@ -353,7 +357,7 @@ async function moreEvents(env: Env, people: Set<string>, urgent: Set<string>, li
     }
   }
   // staff: pilot application → super admins
-  for (const r of await all<any>(env.DB.prepare(`SELECT id,institution_name,city FROM pilot_applications WHERE created_at>=datetime('now','-2 days') LIMIT ?`).bind(limit)).catch(() => [])) {
+  for (const r of await all<any>(env.DB.prepare(`SELECT id,institution_name,city FROM pilot_applications WHERE created_at>=datetime('${sqlClock()}','-2 days') LIMIT ?`).bind(limit)).catch(() => [])) {
     for (const u of await all<{ id: string }>(env.DB.prepare(`SELECT id FROM users WHERE role='SUPER_ADMIN' AND active=1`))) {
       if (await firstMessage(env, u.id, null, 'PILOT', r.id, `Yeni pilot okul başvurusu: **${r.institution_name}**, ${r.city}.`, { actions: [{ type: 'PLAN', label: 'Başvurular', to: '/pilot-basvurulari' }] })) {
         people.add(u.id); await bell(env, u.id, null, 'PILOT_APPLICATION', 'Yeni pilot okul başvurusu', `${r.institution_name}, ${r.city}`, '/pilot-basvurulari', r.id);
