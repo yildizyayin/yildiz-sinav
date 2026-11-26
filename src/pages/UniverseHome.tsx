@@ -42,6 +42,7 @@ export function UniverseHome() {
 
     {d.planet && <MyPlanet data={d.planet} group={group} />}
     <DailyGoalCard goal={d.dailyGoal} />
+    <MysteryInvite subjects={d.subjects} play={play} />
     <MasteryCard mastery={d.starSummary} play={play} />
 
     {d.tasks?.length > 0 && <section aria-labelledby="um-tasks">
@@ -75,11 +76,23 @@ export function UniverseHome() {
             </button>
             {isOpen && <ul className="um-outcomes">{p.outcomes.map((o: any) => <li key={o.id}>
               <div className="um-o-text">{typeof o.stars === 'number' && <Stars n={o.stars} dim={o.dim} size={14} />}<span className={`um-stage ${o.stage.toLowerCase()}`}>{o.stageLabel}{o.reviewDue ? ' · tekrar zamanı' : ''}</span><strong>{o.code ? `${o.code} ` : ''}{o.title}</strong></div>
-              {o.games.length ? <div className="um-games">{o.games.map((g: any) => <Link key={g.code} className="um-game" to={play(o.id, g.code)}>{g.title}</Link>)}</div> : <small className="um-none">Bu kazanım için onaylı etkinlik hazırlanıyor.</small>}
+              {o.games.length ? <div className="um-games">{o.games.map((g: any) => <Link key={g.code} className="um-game" to={play(o.id, g.code)}>{g.title}</Link>)}{o.games.some((g: any) => g.code === 'LU_CHOICE') && <Link className="um-mystery" to={`${play(o.id, 'LU_CHOICE')}&style=mystery`}>🔍 Gizem Dosyası</Link>}</div> : <small className="um-none">Bu kazanım için onaylı etkinlik hazırlanıyor.</small>}
             </li>)}</ul>}
           </div>;
         })}</div>
       </>}
     </section>
   </div>;
+}
+
+/** Gizem Dosyası daveti: a case on an outcome the student is working on (or any with approved questions). */
+function MysteryInvite({ subjects, play }: { subjects: any[]; play: (o: string, t: string) => string }) {
+  const nodes = (subjects || []).flatMap((s: any) => s.planets.flatMap((p: any) => p.outcomes)).filter((o: any) => o.games?.some((g: any) => g.code === 'LU_CHOICE'));
+  const pick = nodes.find((o: any) => ['DEVELOPING', 'STARTED', 'CONSOLIDATING'].includes(o.stage)) || nodes[0];
+  if (!pick) return null;
+  return <section className="panel um-case" aria-label="Gizem Dosyası">
+    <span className="um-case-icon" aria-hidden="true">🔍</span>
+    <div style={{ flex: 1, minWidth: 220 }}><strong>Gizem Dosyası: yeni bir dava seni bekliyor</strong><p className="muted" style={{ margin: '4px 0 0' }}>Her ipucu {pick.code ? `${pick.code} ` : ''}kazanımından bir soruyla açılır. Şüphelileri ipuçlarıyla sen elersin.</p></div>
+    <Link className="primary" to={`${play(pick.id, 'LU_CHOICE')}&style=mystery`}>Dosyayı aç</Link>
+  </section>;
 }

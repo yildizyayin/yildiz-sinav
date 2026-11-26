@@ -71,3 +71,9 @@
 @media (prefers-reduced-motion:reduce){.um *{transition:none!important}}
 .um-break{display:grid;gap:6px;padding:14px 16px;border-radius:18px;background:linear-gradient(135deg,rgba(34,197,94,.14),rgba(6,182,212,.14)),var(--sd-card,#fff);border:1px solid rgba(6,182,212,.35);color:var(--um-ink,#0f1d3a)}
 .um-break button{justify-self:start;min-height:38px;padding:0 14px;border-radius:12px;border:1px solid var(--um-border,#cbd5e1);background:var(--um-card,#fff);font:inherit;font-weight:700;cursor:pointer}
+
+/* Gizem Dosyası girişleri (owner, 26 Nov 2026) */
+.um-mystery{display:inline-flex;align-items:center;min-height:40px;padding:0 14px;border-radius:12px;border:1px dashed #b08a3c;background:#f7efd9;color:#5b4a2c;text-decoration:none;font-weight:700;font-size:14px}
+.um-mystery:hover,.um-mystery:focus-visible{border-style:solid;color:#2b2217}
+.um-case{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.um-case-icon{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:#f3ead6;font-size:22px}
