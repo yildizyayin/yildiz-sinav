@@ -5,6 +5,7 @@ import { gradeProfile } from '../../../src/lib/gradeProfile';
 import { studentContext } from './sessions';
 import { studentUniverseTasks } from './tasks';
 import { universePlanet } from './planet';
+import { starsOf } from './stars';
 
 /**
  * Nibiru Öğrenme Evreni — the learning map (owner, 11 Nov 2026).
@@ -81,12 +82,12 @@ export async function universeMap(env: Env, user: AuthUser, now = Date.now()) {
   ]);
   const evBy = new Map(evidence.map((e) => [e.outcomeId, e]));
 
-  type Node = { id: string; code: string | null; title: string; stage: Stage; stageLabel: string; games: Array<{ code: string; kind: string; title: string }>; lastDays: number | null; reviewDue: boolean; uniqueQuestions: number };
+  type Node = { id: string; code: string | null; title: string; stage: Stage; stageLabel: string; games: Array<{ code: string; kind: string; title: string }>; lastDays: number | null; reviewDue: boolean; uniqueQuestions: number; stars: number; starsLabel: string; dim: boolean };
   const subjects = new Map<string, { id: string; name: string; planets: Map<string, Node[]> }>();
   const all_: Node[] = [];
   for (const o of outcomes) {
     const ev = evBy.get(o.id), st = stageOf(ev, now);
-    const node: Node = { id: o.id, code: o.code, title: o.title, ...st, games: kindsFor(o.id).map(({ code, kind, title }) => ({ code, kind, title })), uniqueQuestions: ev?.uniqueQuestions ?? 0 };
+    const node: Node = { id: o.id, code: o.code, title: o.title, ...st, ...starsOf(st.stage, st.reviewDue), games: kindsFor(o.id).map(({ code, kind, title }) => ({ code, kind, title })), uniqueQuestions: ev?.uniqueQuestions ?? 0 };
     all_.push(node);
     const sid = o.subject_id || 'other';
     if (!subjects.has(sid)) subjects.set(sid, { id: sid, name: o.subject_name, planets: new Map() });
@@ -115,6 +116,9 @@ export async function universeMap(env: Env, user: AuthUser, now = Date.now()) {
     missions,
     tasks,
     planet: await universePlanet(env, user.student_id!),
+    // Ustalık Yıldızları: the student's own stars only, never anyone else's
+    starSummary: { byStars: [0, 1, 2, 3].map((k) => all_.filter((n) => n.stars === k).length), stars: all_.reduce((n, o) => n + o.stars, 0), max: all_.length * 3,
+      reviewDue: all_.filter((n) => n.dim).sort((a, b) => (b.lastDays ?? 0) - (a.lastDays ?? 0)).slice(0, 4).map((n) => ({ id: n.id, code: n.code, title: n.title, game: n.games[0]?.code || null })) },
     summary: { outcomes: all_.length, playable: all_.filter(playable).length, learned: all_.filter((n) => n.stage === 'LEARNED').length },
     // subjects with something to play first, then by name
     subjects: [...subjects.values()].map((s) => ({ s, playable: [...s.planets.values()].flat().filter(playable).length })).sort((a, b) => b.playable - a.playable || a.s.name.localeCompare(b.s.name, 'tr')).map(({ s }) => ({ id: s.id, name: s.name, planets: [...s.planets.entries()].map(([name, nodes]) => ({

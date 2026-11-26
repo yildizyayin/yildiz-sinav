@@ -1,0 +1,27 @@
+/* Ustalık Yıldızları ve Kendi Rekorun (owner, 26 Nov 2026). Inherits the surrounding text colour, so it reads in the
+   light app pages and inside the dark game stage alike. */
+.ms-stars{display:inline-flex;gap:1px;vertical-align:-2px}
+.ms-stars .on{fill:#f5b301;stroke:#c98a00;stroke-width:.8}
+.ms-stars .off{fill:rgba(128,140,170,.28);stroke:none}
+.ms-stars.dim .on{fill:#d8c79a;stroke:#b8a46a;opacity:.6}
+.ms-card{display:grid;gap:12px}
+.ms-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.ms-head h2{margin:0;font-size:18px;margin-right:auto}
+.ms-total{font-weight:800;font-variant-numeric:tabular-nums;display:inline-flex;align-items:center;gap:6px}
+.ms-levels{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.ms-levels div{display:grid;justify-items:center;gap:4px;padding:10px;border-radius:14px;border:1px solid rgba(128,140,170,.25)}
+.ms-levels strong{font-size:24px;font-variant-numeric:tabular-nums;line-height:1}
+.ms-levels span{font-size:13px;font-weight:700;opacity:.8}
+.ms-review{display:grid;gap:6px;padding-top:8px;border-top:1px solid rgba(128,140,170,.25)}
+.ms-review ul{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.ms-review li{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:14px}
+.ms-review li span{flex:1;min-width:0;text-align:left}
+.ms-review a{font-weight:800;white-space:nowrap}
+.ms-record{display:grid;gap:4px;justify-items:center;text-align:center;padding:12px 16px;border-radius:16px;background:rgba(255,209,102,.12);border:1px solid rgba(255,209,102,.5);max-width:56ch;line-height:1.45;font-weight:700}
+.ms-tag{font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:800;color:#c98a00}
+.ua .ms-tag{color:#ffd166}
+.ms-best{font-size:18px;animation:ms-pop .5s cubic-bezier(.3,1.6,.5,1)}
+.ms-now{display:inline-flex;gap:6px;align-items:center;font-size:14px}
+@keyframes ms-pop{from{transform:scale(.7);opacity:.2}}
+@media(max-width:480px){.ms-levels{grid-template-columns:1fr 1fr 1fr;gap:6px}}
+@media (prefers-reduced-motion:reduce){.ms-best{animation:none}}
