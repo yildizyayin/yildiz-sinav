@@ -14,7 +14,7 @@ import { Reflection } from '../components/universe/Personal';
 export function UniversePlay() {
   const [q] = useSearchParams();
   const outcomeId = q.get('outcome') || '', templateCode = q.get('template') || 'LU_CHOICE';
-  const style = q.get('style') === 'mystery' ? 'mystery' : null;
+  const style = q.get('style') === 'mystery' || q.get('style') === 'escape' ? q.get('style') : null;
   const [mode, setMode] = useState<'PRACTICE' | 'REVIEW'>(q.get('mode') === 'REVIEW' ? 'REVIEW' : 'PRACTICE');
   const [data, setData] = useState<any>(null);
   const [result, setResult] = useState<any>(null);
@@ -35,7 +35,7 @@ export function UniversePlay() {
   if (!data) return <div className="panel">Hazırlanıyor…</div>;
   return <>
     <div style={{ maxWidth: 760, margin: '0 auto 12px' }}><BreakReminder /></div>
-    <div className="page-head" style={{ maxWidth: 760, margin: '0 auto' }}><div><span className="eyebrow">{style === 'mystery' ? 'Gizem Dosyası' : data.session.template.title}{data.session.mode === 'REVIEW' ? ' · tekrar' : ''}</span><h1 style={{ fontSize: 'clamp(18px,3vw,24px)' }}>{data.session.outcome.code} · {data.session.outcome.title}</h1></div></div>
+    <div className="page-head" style={{ maxWidth: 760, margin: '0 auto' }}><div><span className="eyebrow">{style === 'mystery' ? 'Gizem Dosyası' : style === 'escape' ? 'Kaçış Odası' : data.session.template.title}{data.session.mode === 'REVIEW' ? ' · tekrar' : ''}</span><h1 style={{ fontSize: 'clamp(18px,3vw,24px)' }}>{data.session.outcome.code} · {data.session.outcome.title}</h1></div></div>
     {arcadeGame(data, style) ? <div style={{ marginTop: 12 }}><UniverseArcade data={data} onDone={setResult} style={style} /></div> : <UniversePlayer data={data} onDone={setResult} />}
   </>;
 }

@@ -8,6 +8,7 @@ import '../components/universe/universe-map.css';
 import { MyPlanet } from '../components/universe/MyPlanet';
 import { MasteryCard, Stars } from '../components/universe/MasteryStars';
 import { DailyGoalCard } from '../components/universe/Personal';
+import { BabyNibi } from '../components/universe/BabyNibi';
 
 /**
  * Nibiru Öğrenme Evreni — the learning map (owner, 11 Nov 2026). One page, three looks by age group:
@@ -28,6 +29,7 @@ export function UniverseHome() {
   if (error) return <div className="alert error">{error}</div>;
   if (!d) return <div className="panel">Evren yükleniyor…</div>;
   const group = d.student.designGroup || 'B';
+  const feed = (d.starSummary?.reviewDue || []).find((r: any) => r.game);
   const weekPct = Math.min(100, Math.round((d.week.done / Math.max(1, d.week.goal)) * 100));
   return <div className="um" data-group={group}>
     <BreakReminder />
@@ -40,6 +42,7 @@ export function UniverseHome() {
       </div>
     </header>
 
+    {group === 'A' && <BabyNibi correct={d.planet?.total || 0} reviewDue={d.starSummary?.reviewDue || []} playsToday={d.dailyGoal?.done || 0} feedTo={feed ? `${play(feed.id, feed.game)}&mode=REVIEW` : null} />}
     {d.planet && <MyPlanet data={d.planet} group={group} />}
     <DailyGoalCard goal={d.dailyGoal} />
     <MysteryInvite subjects={d.subjects} play={play} />
@@ -76,7 +79,7 @@ export function UniverseHome() {
             </button>
             {isOpen && <ul className="um-outcomes">{p.outcomes.map((o: any) => <li key={o.id}>
               <div className="um-o-text">{typeof o.stars === 'number' && <Stars n={o.stars} dim={o.dim} size={14} />}<span className={`um-stage ${o.stage.toLowerCase()}`}>{o.stageLabel}{o.reviewDue ? ' · tekrar zamanı' : ''}</span><strong>{o.code ? `${o.code} ` : ''}{o.title}</strong></div>
-              {o.games.length ? <div className="um-games">{o.games.map((g: any) => <Link key={g.code} className="um-game" to={play(o.id, g.code)}>{g.title}</Link>)}{o.games.some((g: any) => g.code === 'LU_CHOICE') && <Link className="um-mystery" to={`${play(o.id, 'LU_CHOICE')}&style=mystery`}>🔍 Gizem Dosyası</Link>}</div> : <small className="um-none">Bu kazanım için onaylı etkinlik hazırlanıyor.</small>}
+              {o.games.length ? <div className="um-games">{o.games.map((g: any) => <Link key={g.code} className="um-game" to={play(o.id, g.code)}>{g.title}</Link>)}{o.games.some((g: any) => g.code === 'LU_CHOICE') && <><Link className="um-mystery" to={`${play(o.id, 'LU_CHOICE')}&style=mystery`}>🔍 Gizem Dosyası</Link><Link className="um-mystery um-escape" to={`${play(o.id, 'LU_CHOICE')}&style=escape`}>🚪 Kaçış Odası</Link></>}</div> : <small className="um-none">Bu kazanım için onaylı etkinlik hazırlanıyor.</small>}
             </li>)}</ul>}
           </div>;
         })}</div>
@@ -85,14 +88,14 @@ export function UniverseHome() {
   </div>;
 }
 
-/** Gizem Dosyası daveti: a case on an outcome the student is working on (or any with approved questions). */
+/** Hikâyeli oyun daveti (Gizem Dosyası, Kaçış Odası): on an outcome the student is working on (or any with approved questions). */
 function MysteryInvite({ subjects, play }: { subjects: any[]; play: (o: string, t: string) => string }) {
   const nodes = (subjects || []).flatMap((s: any) => s.planets.flatMap((p: any) => p.outcomes)).filter((o: any) => o.games?.some((g: any) => g.code === 'LU_CHOICE'));
   const pick = nodes.find((o: any) => ['DEVELOPING', 'STARTED', 'CONSOLIDATING'].includes(o.stage)) || nodes[0];
   if (!pick) return null;
-  return <section className="panel um-case" aria-label="Gizem Dosyası">
+  return <section className="panel um-case" aria-label="Hikâyeli oyunlar">
     <span className="um-case-icon" aria-hidden="true">🔍</span>
-    <div style={{ flex: 1, minWidth: 220 }}><strong>Gizem Dosyası: yeni bir dava seni bekliyor</strong><p className="muted" style={{ margin: '4px 0 0' }}>Her ipucu {pick.code ? `${pick.code} ` : ''}kazanımından bir soruyla açılır. Şüphelileri ipuçlarıyla sen elersin.</p></div>
-    <Link className="primary" to={`${play(pick.id, 'LU_CHOICE')}&style=mystery`}>Dosyayı aç</Link>
+    <div style={{ flex: 1, minWidth: 220 }}><strong>Bir dava ve kilitli bir kapı seni bekliyor</strong><p className="muted" style={{ margin: '4px 0 0' }}>İki oyunda da her adım {pick.code ? `${pick.code} ` : ''}kazanımından bir soruyla açılır. Şüphelileri sen elersin, kapının şifresini sen çözersin.</p></div>
+    <div className="um-case-actions"><Link className="primary" to={`${play(pick.id, 'LU_CHOICE')}&style=mystery`}>Dosyayı aç</Link><Link className="secondary" to={`${play(pick.id, 'LU_CHOICE')}&style=escape`}>Odaya gir</Link></div>
   </section>;
 }
