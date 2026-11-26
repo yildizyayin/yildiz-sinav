@@ -41,6 +41,7 @@ export function EscapeGame({ sessionId, items, check, scored, say, onFinish, bus
   const [code, setCode] = useState<number[]>([]);
   const [door, setDoor] = useState<'locked' | 'shake' | 'open'>('locked');
   const qBox = useRef<HTMLDivElement>(null);
+  const doorRef = useRef<HTMLDivElement>(null);
   // on a phone the question sits under the door: bring it into view when an object opens
   useEffect(() => { if (active) qBox.current?.scrollIntoView?.({ behavior: 'smooth', block: 'nearest' }); }, [active]);
   const qOf = (id: string) => qs[room.objects.findIndex((o) => o.id === id)];
@@ -69,7 +70,7 @@ export function EscapeGame({ sessionId, items, check, scored, say, onFinish, bus
     if (next.length < 3) return;
     const ok = next.every((d, k) => d === digits[room.sign[k]]);
     if (ok) { setDoor('open'); say('happy', 'Klik! Kapı açılıyor…'); }
-    else { setDoor('shake'); say('oops', 'Kod tutmadı. Kapının üstündeki sıraya bak ve eşyaların rakamlarını o sırayla gir.'); setTimeout(() => { setDoor('locked'); setCode([]); }, 600); }
+    else { setDoor('shake'); say('oops', 'Kod tutmadı. Kapının üstündeki sıraya bak ve eşyaların rakamlarını o sırayla gir.'); setTimeout(() => { if (!doorRef.current?.isConnected) return; setDoor('locked'); setCode([]); }, 600); }
   };
   const q = active ? qOf(active)?.content || {} : null;
   const right = res?.key?.correct as string | undefined;
@@ -81,7 +82,7 @@ export function EscapeGame({ sessionId, items, check, scored, say, onFinish, bus
         <div className="er-objects">{room.objects.map((o) => <button key={o.id} type="button" className={`er-obj${opened[o.id] ? ' done' : ''}${active === o.id ? ' active' : ''}`} disabled={!!opened[o.id] || (!!active && active !== o.id)} onClick={() => open(o.id)} aria-label={`${o.name}${opened[o.id] ? `, rakam ${digits[o.id]}` : ', aç'}`}>
           <ObjectArt art={o.art} /><span>{o.name}</span>{opened[o.id] && <b className="er-digit">{digits[o.id]}</b>}
         </button>)}</div>
-        <div className={`er-door ${door}`} aria-label={door === 'open' ? 'Kapı açık' : 'Kilitli kapı'}>
+        <div ref={doorRef} className={`er-door ${door}`} aria-label={door === 'open' ? 'Kapı açık' : 'Kilitli kapı'}>
           <div className="er-sign">Kod sırası: {room.sign.map((id) => nameOf(id)).join(' → ')}</div>
           <div className="er-frame"><div className="er-leaf"><span className="er-knob" /></div></div>
           <div className="er-code" aria-live="polite">{[0, 1, 2].map((k) => <i key={k}>{code[k] ?? '•'}</i>)}</div>

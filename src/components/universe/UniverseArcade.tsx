@@ -318,13 +318,13 @@ function Rocket({ item, check, scored, say, next, last, busy }: GameProps & { sa
   const launch = () => {
     setPhase('ignite'); sfx.launch();
     let t = 0; const puff = setInterval(() => { const f = rocket.current?.querySelector('.flame')?.getBoundingClientRect(); if (f) for (let k = 0; k < 3; k++) smoke(f.left + f.width / 2, f.bottom); if (++t > 40) clearInterval(puff); }, 45);
-    setTimeout(() => { setPhase('launch'); const [x, y] = center(rocket.current); burst(x, y + 80, ['#ffd166', '#ff8a3d', '#fff'], 30, 5); }, 600);
+    setTimeout(() => { if (!rocket.current?.isConnected) return; setPhase('launch'); const [x, y] = center(rocket.current); burst(x, y + 80, ['#ffd166', '#ff8a3d', '#fff'], 30, 5); }, 600);
   };
   const submit = async () => {
     const r = await check(item.seq, { order: placed }); if (!r) return;
     setRes(r); scored(r.correct, rocket.current, true);
     if (r.correct) { say('happy', 'Sistemler hazır… 3, 2, 1, ateşle!'); launch(); }
-    else { setPhase('bad'); say('oops', 'Bazı parçalar yanlış yerdeydi. Yeşil gösterilen doğru sıra; bir dahakine roket senin!'); setTimeout(() => setPhase(''), 600); }
+    else { setPhase('bad'); say('oops', 'Bazı parçalar yanlış yerdeydi. Yeşil gösterilen doğru sıra; bir dahakine roket senin!'); setTimeout(() => { if (rocket.current?.isConnected) setPhase(''); }, 600); }
   };
   const keyOrder: string[] = res?.key?.order || [];
   const shown = res && !res.correct ? keyOrder : placed;
@@ -358,9 +358,11 @@ function Rocket({ item, check, scored, say, next, last, busy }: GameProps & { sa
 function End({ result, best, title, outcome, onDetails }: { result: Session; best: number; title?: string; outcome?: any; onDetails: () => void }) {
   const r = result.session, total = r.itemCount || result.items.length, correct = r.correct || 0, xp = r.xp || 0;
   const [shownXp, setShownXp] = useState(0);
-  useEffect(() => { const t0 = performance.now(); let id = 0; const tick = (t: number) => { const k = Math.min(1, (t - t0) / 1100); setShownXp(Math.round(xp * (1 - Math.pow(1 - k, 3)))); if (k < 1) id = requestAnimationFrame(tick); }; id = requestAnimationFrame(tick); return () => cancelAnimationFrame(id); }, [xp]);
+  const box = useRef<HTMLDivElement>(null);
+  // the count-up stops as soon as the screen is gone (left the page, or a test cleared it), so no update runs after it
+  useEffect(() => { const t0 = performance.now(); let id = 0; const tick = (t: number) => { if (!box.current?.isConnected) return; const k = Math.min(1, (t - t0) / 1100); setShownXp(Math.round(xp * (1 - Math.pow(1 - k, 3)))); if (k < 1) id = requestAnimationFrame(tick); }; id = requestAnimationFrame(tick); return () => cancelAnimationFrame(id); }, [xp]);
   const pct = total ? correct / total : 0;
-  return <div className="ua-end">
+  return <div className="ua-end" ref={box}>
     <div className="ua-medal">★<small>ROZET</small></div>
     <h2>{pct >= 0.8 ? 'Muhteşem!' : pct >= 0.5 ? 'Çok iyi!' : 'Güzel başlangıç!'}</h2>
     <div className="ua-stats">
