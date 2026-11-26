@@ -21,16 +21,45 @@ export function ContentPackageImport({ onDone }: { onDone: (message: string) => 
   const [progress, setProgress] = useState('');
   const patch = (k: number, v: Partial<Row>) => setRows((r) => r.map((x, i) => (i === k ? { ...x, ...v } : x)));
 
+  const load = async (outs: PkgOutcome[], index: Map<string, any>) => {
+    if (!outs.length) throw new Error('Pakette Kazanimlar/<KOD>/Sorular.json bulunamadı. ANUNEX paket ZIP’ini ya da ZIP’ten çıkarılmış klasörü seçin.');
+    outs.sort((a, b) => a.code.localeCompare(b.code, 'tr', { numeric: true }));
+    setFiles(index); setPkg(packageName(outs[0])); setRows(outs.map((o) => ({ o })));
+  };
   const pick = async (list: FileList | null) => {
     setError(''); setRows([]); setProgress('');
     if (!list?.length) return;
     try {
       const all = [...list]; const index = fileIndex(all);
       const jsons = all.filter((f) => /(^|\/)Kazanimlar\/[^/]+\/Sorular\.json$/.test((f as any).webkitRelativePath || f.name));
-      if (!jsons.length) throw new Error('Seçilen klasörde Kazanimlar/<KOD>/Sorular.json bulunamadı. ZIP’ten çıkarılmış paket klasörünü seçin.');
-      const outs = (await Promise.all(jsons.map(async (f) => outcomeFromJson(await f.text())))).sort((a, b) => a.code.localeCompare(b.code, 'tr', { numeric: true }));
-      setFiles(index); setPkg(packageName(outs[0])); setRows(outs.map((o) => ({ o })));
+      await load(await Promise.all(jsons.map(async (f) => outcomeFromJson(await f.text()))), index);
     } catch (e: any) { setError(e.message); }
+  };
+  // the package ZIPs themselves: read in place (only the table of contents first, each file when it is sent)
+  const pickZip = async (list: FileList | null) => {
+    setError(''); setRows([]); setProgress('');
+    if (!list?.length) return;
+    try {
+      setProgress('ZIP içeriği okunuyor…');
+      const { ZipReader, BlobReader, TextWriter } = await import('@zip.js/zip.js');
+      const index = new Map<string, any>(); const outs: PkgOutcome[] = [];
+      for (const z of [...list]) {
+        const entries = await new ZipReader(new BlobReader(z)).getEntries();
+        for (const e of entries) {
+          if (e.directory) continue;
+          const at = e.filename.indexOf('Kazanimlar/'); if (at < 0) continue;
+          const path = e.filename.slice(at);
+          index.set(path, e);
+          if (/^Kazanimlar\/[^/]+\/Sorular\.json$/.test(path)) outs.push(outcomeFromJson(await (e as any).getData(new TextWriter())));
+        }
+      }
+      setProgress(''); await load(outs, index);
+    } catch (e: any) { setProgress(''); setError(e.message || 'ZIP okunamadı.'); }
+  };
+  const body = async (file: any, path: string) => {
+    if (file instanceof Blob) return file;
+    const { BlobWriter } = await import('@zip.js/zip.js');
+    return file.getData(new BlobWriter(mimeOf(path)));
   };
   const preview = async () => {
     setBusy(true); setError('');
@@ -52,7 +81,7 @@ export function ContentPackageImport({ onDone }: { onDone: (message: string) => 
           const path = paths.get(m.sha256), file = path ? files.get(path) : null;
           if (!file) throw new Error(`${r.o.code}: ${path || m.sha256} dosyası seçilen klasörde yok.`);
           setProgress(`${r.o.code} · dosya ${n + 1}/${p.need.length} yükleniyor`);
-          await api(`/api/admin/content-package/media/${m.sha256}`, { method: 'PUT', body: file, headers: { 'Content-Type': mimeOf(path!) } });
+          await api(`/api/admin/content-package/media/${m.sha256}`, { method: 'PUT', body: await body(file, path!), headers: { 'Content-Type': mimeOf(path!) } });
           sent++;
         }
         setProgress(`${r.o.code} · sorular havuza ekleniyor`);
@@ -70,11 +99,18 @@ export function ContentPackageImport({ onDone }: { onDone: (message: string) => 
   return <details className="panel" style={{ marginBottom: 12 }}>
     <summary style={{ cursor: 'pointer', fontWeight: 700, display: 'flex', alignItems: 'center', gap: 8 }}><FolderUp size={16} /> İçerik paketi aktar (soru + görsel + çözüm videosu + konu videosu)</summary>
     <div style={{ display: 'grid', gap: 10, marginTop: 10 }}>
-      <p className="muted" style={{ margin: 0 }}>ZIP’ten çıkardığınız paket klasörünü seçin. Sorular incelemeye girer; her dosya sunucuda özetiyle doğrulanır. Yarıda kalırsa yeniden başlatın, kaldığı yerden devam eder.</p>
-      <label className="secondary" style={{ justifySelf: 'start' }}>Paket klasörünü seç
-        <input type="file" multiple style={{ display: 'none' }} {...({ webkitdirectory: '', directory: '' } as any)} onChange={(e) => void pick(e.target.files)} />
-      </label>
+      <p className="muted" style={{ margin: 0 }}>Paket ZIP dosyalarını doğrudan seçin (iki parça varsa ikisini birlikte). Sorular incelemeye girer; her dosya sunucuda özetiyle doğrulanır. Yarıda kalırsa yeniden başlatın, kaldığı yerden devam eder.</p>
+      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
+        <label className="secondary" style={{ cursor: 'pointer', order: 2 }}>ya da çıkarılmış klasörü seç
+          <input type="file" multiple style={{ display: 'none' }} disabled={busy} {...({ webkitdirectory: '', directory: '' } as any)} onChange={(e) => void pick(e.target.files)} />
+        </label>
+        <label className="primary" style={{ cursor: 'pointer', order: 1 }}>ZIP dosyalarını seç
+          <input type="file" accept=".zip,application/zip" multiple style={{ display: 'none' }} disabled={busy} onChange={(e) => void pickZip(e.target.files)} />
+        </label>
+      </div>
+      <small className="muted">Klasör seçerken pencere dosyaları göstermez, yalnız klasörleri gösterir; bu normaldir. Klasörü seçip “Yükle”ye basın.</small>
       {error && <div className="alert error" role="alert">{error}</div>}
+      {progress && <div className="alert info" role="status">{progress}</div>}
       {rows.length > 0 && <>
         <div className="form-grid">
           <label>Paket adı<input value={pkg} onChange={(e) => setPkg(e.target.value)} disabled={busy} /></label>
@@ -90,7 +126,7 @@ export function ContentPackageImport({ onDone }: { onDone: (message: string) => 
             <td>{r.preview ? TOPIC[r.preview.topic?.status] || '—' : '—'}</td>
           </tr>; })}</tbody>
         </table></div>
-        {progress && <div className="alert info" role="status">{progress}</div>}
+        
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
           <button className="secondary" disabled={busy || !rights} onClick={() => void preview()}>{busy && !progress ? 'Kontrol ediliyor…' : 'Ön raporu hazırla'}</button>
           <button className="primary" disabled={busy || !rights || !previewed} onClick={() => void run()}>Dosyaları yükle ve incelemeye al</button>
