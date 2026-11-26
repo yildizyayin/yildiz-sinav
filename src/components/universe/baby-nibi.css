@@ -1,0 +1,16 @@
+/* Bebek Nibi (owner, 26 Nov 2026): a small companion card for grades 4–6. */
+.bn{display:flex;gap:16px;align-items:center;flex-wrap:wrap;background:linear-gradient(135deg,#eef3ff,#fff7e6)}
+.bn-pet{width:110px;height:110px;flex:0 0 auto;display:grid;place-items:center;border-radius:50%;background:radial-gradient(circle at 50% 70%,rgba(111,140,255,.18),transparent 70%)}
+.bn-art{width:110px;height:110px;animation:bn-bob 3s ease-in-out infinite}
+.bn-egg .bn-art{animation:bn-wobble 2.6s ease-in-out infinite;transform-origin:50% 90%}
+.bn-sleepy .bn-art{animation-duration:5s}
+.bn-happy .bn-art{animation:bn-hop 1.6s ease-in-out infinite}
+.bn-text{flex:1;min-width:200px;display:grid;gap:4px}
+.bn-kicker{font-size:12px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:#4a5aa8}
+.bn-line{margin:0;font-weight:800;font-size:17px;line-height:1.4;color:#1f2a5a}
+.bn-grow{color:#5b6690}
+.bn-feed{white-space:nowrap}
+@keyframes bn-bob{50%{transform:translateY(-4px)}}
+@keyframes bn-hop{0%,100%{transform:translateY(0)}30%{transform:translateY(-10px)}45%{transform:translateY(0)}}
+@keyframes bn-wobble{0%,70%,100%{transform:rotate(0)}78%{transform:rotate(-6deg)}86%{transform:rotate(6deg)}}
+@media (prefers-reduced-motion:reduce){.bn-art{animation:none!important}}

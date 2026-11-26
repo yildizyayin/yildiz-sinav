@@ -6,6 +6,7 @@ import './universe-arcade.css';
 import { OwnRecord } from './MasteryStars';
 import { GoalLine, Reflection } from './Personal';
 import { MysteryGame } from './MysteryGame';
+import { EscapeGame } from './EscapeGame';
 
 /**
  * Öğrenme Evreni animasyonlu oyunlar (owner, 24–25 Nov 2026: "çok güzel olmuş bunun gibi yapalım"; Aşama 0 of the
@@ -24,8 +25,8 @@ type Check = { correct: boolean; partial: number; key: any; explanation: string 
 export const ARCADE_KINDS: Record<string, string> = { CHOICE: 'meteor', TIMED: 'meteor', MATCH: 'sky', ORDER: 'rocket' };
 /** The play can run as an animated game when its kind has one and every item is of that game's content. */
 export function arcadeGame(data: Session | null, style?: string | null): string | null {
-  // Gizem Dosyası: a story frame over approved questions of the outcome (owner, 26 Nov 2026)
-  if (style === 'mystery' && ['CHOICE', 'TIMED'].includes(data?.session?.template?.kind) && (data?.items?.length || 0) >= 3 && data!.items.every((it) => it.kind === 'QUESTION')) return 'mystery';
+  // Gizem Dosyası and Kaçış Odası: story frames over approved questions of the outcome (owner, 26 Nov 2026)
+  if ((style === 'mystery' || style === 'escape') && ['CHOICE', 'TIMED'].includes(data?.session?.template?.kind) && (data?.items?.length || 0) >= 3 && data!.items.every((it) => it.kind === 'QUESTION')) return style;
   const game = ARCADE_KINDS[data?.session?.template?.kind];
   if (!game || !data?.items?.length) return null;
   const need = game === 'meteor' ? 'QUESTION' : game === 'sky' ? 'PAIRS' : 'SEQUENCE';
@@ -117,7 +118,7 @@ export function UniverseArcade({ data, onDone, style }: { data: Session; onDone:
   const [i, setI] = useState(0);
   const [responses, setResponses] = useState<Record<number, any>>({});
   const [stats, setStats] = useState({ correct: 0, combo: 0, best: 0 });
-  const [mood, setMood] = useState<{ m: '' | 'happy' | 'oops'; text: string; n: number }>({ m: '', text: game === 'mystery' ? 'Dedektif, bir dava var! Her ipucu bir soruyla açılıyor.' : game === 'meteor' ? 'Meteorlar geliyor! Doğru cevabı taşıyana dokun.' : game === 'sky' ? 'Soldaki yıldızı sağdaki eşine sürükle ya da ikisine sırayla dokun.' : 'Parçaları alttan başlayarak yerleştir, sonra roketi kontrol et.', n: 0 });
+  const [mood, setMood] = useState<{ m: '' | 'happy' | 'oops'; text: string; n: number }>({ m: '', text: game === 'mystery' ? 'Dedektif, bir dava var! Her ipucu bir soruyla açılıyor.' : game === 'escape' ? 'Kapı kilitli! Eşyaları istediğin sırayla aç, rakamları topla.' : game === 'meteor' ? 'Meteorlar geliyor! Doğru cevabı taşıyana dokun.' : game === 'sky' ? 'Soldaki yıldızı sağdaki eşine sürükle ya da ikisine sırayla dokun.' : 'Parçaları alttan başlayarak yerleştir, sonra roketi kontrol et.', n: 0 });
   const [result, setResult] = useState<Session | null>(null);
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
@@ -167,7 +168,8 @@ export function UniverseArcade({ data, onDone, style }: { data: Session; onDone:
     <p className="ua-outcome"><span>Kazanım</span><b>{s.outcome?.code}</b>{s.outcome?.title}</p>
     {item.repeat && !result && <p className="ua-note">Tekrar: bu içeriği daha önce gördün.</p>}
     {!result && game === 'mystery' && <MysteryGame sessionId={s.id} items={items} check={check} scored={scored} say={say} onFinish={() => void finish()} busy={busy} onStep={(n) => setI(Math.min(n, items.length - 1))} />}
-    {!result && game !== 'mystery' && <div className="ua-stage">
+    {!result && game === 'escape' && <EscapeGame sessionId={s.id} items={items} check={check} scored={scored} say={say} onFinish={() => void finish()} busy={busy} onStep={(n) => setI(Math.min(n, items.length - 1))} />}
+    {!result && game !== 'mystery' && game !== 'escape' && <div className="ua-stage">
       {game === 'meteor' && <Meteor key={item.seq} item={item} band={band} timed={s.timed ? s.secondsPerItem : null} check={check} scored={scored} next={next} last={i + 1 === items.length} busy={busy} />}
       {game === 'sky' && <Sky key={item.seq} item={item} check={check} scored={scored} say={say} next={next} last={i + 1 === items.length} busy={busy} />}
       {game === 'rocket' && <Rocket key={item.seq} item={item} check={check} scored={scored} say={say} next={next} last={i + 1 === items.length} busy={busy} />}

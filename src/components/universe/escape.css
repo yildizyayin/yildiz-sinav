@@ -1,0 +1,51 @@
+/* Kaçış Odası (owner, 26 Nov 2026): a room with three objects and a locked door on the game's space stage. */
+.er{display:grid;gap:14px;padding:14px}
+.er-room{background:linear-gradient(180deg,rgba(28,40,110,.85),rgba(12,18,60,.9));border:1px solid rgba(150,180,255,.22);border-radius:20px;padding:16px clamp(12px,3vw,22px);color:#eef3ff}
+.er-room h3{margin:0 0 4px;font-size:clamp(20px,4vw,28px)}
+.er-intro{margin:0;color:#a9b8e6;line-height:1.5;max-width:66ch}
+.er-scene{display:grid;grid-template-columns:minmax(0,1fr) minmax(200px,240px);gap:16px;margin-top:14px;align-items:start}
+@media(max-width:640px){.er-scene{grid-template-columns:1fr}}
+.er-objects{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+@media(max-width:420px){.er-objects{gap:6px}.er-obj{padding:6px 4px;font-size:12px}.er-obj svg{height:56px}.er-digit{width:32px;height:32px;font-size:18px;right:-4px}}
+.er-obj{position:relative;display:grid;gap:6px;justify-items:center;padding:10px;border-radius:16px;border:2px solid rgba(150,180,255,.3);background:rgba(255,255,255,.06);color:#eef3ff!important;font-weight:800;min-width:0;transition:transform .2s}
+.er-obj svg{width:100%;max-width:110px;height:80px}
+.er-obj:not(:disabled){cursor:pointer;box-shadow:0 0 0 3px rgba(255,209,102,.45);animation:er-glow 2.4s ease-in-out infinite}
+.er-obj:not(:disabled):hover{transform:translateY(-3px)}
+.er-obj.active{box-shadow:0 0 0 3px #ffd166;animation:none}
+.er-obj.done{border-color:#3ee08f;background:rgba(62,224,143,.1)}
+.er-obj:disabled:not(.done):not(.active){opacity:.55}
+.er-digit{position:absolute;top:-10px;right:-8px;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font-size:22px;background:#ffd166;color:#3a2200;box-shadow:0 4px 14px rgba(0,0,0,.35);animation:er-pop .45s cubic-bezier(.3,1.6,.5,1)}
+@keyframes er-glow{50%{box-shadow:0 0 0 6px rgba(255,209,102,.18)}}
+@keyframes er-pop{from{transform:scale(0) rotate(-40deg)}}
+.er-door{display:grid;gap:8px;padding:12px;border-radius:16px;background:#3b2a1a;border:3px solid #6b4a2b;color:#fdf3e1}
+.er-door.shake{animation:ua-shake .45s}
+.er-door.open{border-color:#3ee08f}
+.er-sign{font-size:13px;font-weight:800;background:#1f150c;border-radius:8px;padding:6px 8px;text-align:center;line-height:1.35}
+.er-frame{height:70px;border-radius:8px;overflow:hidden;background:radial-gradient(circle at 60% 50%,#fff6c9,#ffd166 45%,#b4781e)}
+.er-leaf{position:relative;height:100%;border-radius:8px;background:repeating-linear-gradient(90deg,#8a5a33 0 14px,#7a4e2b 14px 28px);transform-origin:left center;transition:transform .8s cubic-bezier(.3,1.2,.5,1)}
+.er-door.open .er-leaf{transform:scaleX(.14)}
+.er-knob{position:absolute;right:12px;top:30px;width:12px;height:12px;border-radius:50%;background:#ffd166}
+.er-code{display:flex;justify-content:center;gap:8px}
+.er-code i{font-style:normal;width:36px;height:42px;display:grid;place-items:center;border-radius:8px;background:#0f172a;color:#3ee08f;font-family:ui-monospace,monospace;font-size:22px;font-weight:800}
+.er-pad{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.er-pad button{min-height:40px;border-radius:10px;border:0;background:#5b4330;color:#fdf3e1;font-weight:800;font-size:17px;cursor:pointer}
+.er-pad button:disabled{opacity:.45;cursor:default}
+.er-pad button:not(:disabled):hover{background:#7a5a40}
+.er-q{display:grid;gap:10px;padding:14px;border-radius:18px;border:1px solid rgba(150,180,255,.22);background:rgba(10,18,60,.8);color:#eef3ff}
+.er-qhead{margin:0;font-weight:800;color:#ffd166}
+.er-stem{margin:0;font-weight:800;font-size:clamp(17px,3.4vw,21px);line-height:1.3}
+.er-img{max-width:min(100%,480px);max-height:240px;object-fit:contain;border-radius:10px;background:#fff}
+.er-opts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+@media(max-width:560px){.er-opts{grid-template-columns:1fr}}
+.er-opt{display:flex;gap:10px;align-items:center;text-align:left;border:1px solid rgba(150,180,255,.22);background:linear-gradient(180deg,rgba(42,63,156,.9),rgba(24,37,106,.9));border-radius:14px;padding:10px 12px;font-weight:700;color:#eef3ff;min-width:0}
+.er-opt b{flex:0 0 30px;height:30px;display:grid;place-items:center;border-radius:9px;background:rgba(255,255,255,.12)}
+.er-opt span{min-width:0;overflow-wrap:anywhere}
+.er-opt:not(:disabled):hover{box-shadow:0 0 0 2px #ffd166}
+.er-opt.right{box-shadow:0 0 0 3px #3ee08f}.er-opt.wrong{box-shadow:0 0 0 3px #ff6b7d;animation:ua-shake .45s}.er-opt.dim{opacity:.45}
+.er-fb{display:flex;flex-wrap:wrap;gap:10px;align-items:center;font-weight:800}
+.er-fb .good{color:#3ee08f}.er-fb .bad{color:#ff6b7d}
+.er-why{flex-basis:100%;color:#a9b8e6;font-weight:700;font-size:14px;line-height:1.45}
+.er-out{display:grid;gap:12px;justify-items:center;text-align:center;padding:18px;border-radius:20px;border:1px solid rgba(150,180,255,.22);background:radial-gradient(120% 90% at 50% 0,rgba(255,220,140,.35),rgba(8,14,48,.65));color:#eef3ff}
+.er-out h3{margin:0;font-size:clamp(24px,5vw,34px)}
+.er-out p{margin:0;max-width:60ch;line-height:1.55;color:#dbe4ff}
+@media (prefers-reduced-motion:reduce){.er *{animation:none!important;transition:none!important}}
