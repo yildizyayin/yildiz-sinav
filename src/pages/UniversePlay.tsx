@@ -14,6 +14,7 @@ import { Reflection } from '../components/universe/Personal';
 export function UniversePlay() {
   const [q] = useSearchParams();
   const outcomeId = q.get('outcome') || '', templateCode = q.get('template') || 'LU_CHOICE';
+  const style = q.get('style') === 'mystery' ? 'mystery' : null;
   const [mode, setMode] = useState<'PRACTICE' | 'REVIEW'>(q.get('mode') === 'REVIEW' ? 'REVIEW' : 'PRACTICE');
   const [data, setData] = useState<any>(null);
   const [result, setResult] = useState<any>(null);
@@ -21,7 +22,7 @@ export function UniversePlay() {
   const key = useRef(`pl-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`);
   useEffect(() => {
     setData(null); setError(null); setResult(null);
-    api<any>('/api/student-standard/universe/sessions', { method: 'POST', body: JSON.stringify({ outcomeId, templateCode, mode, clientKey: `${key.current}-${mode}` }) })
+    api<any>('/api/student-standard/universe/sessions', { method: 'POST', body: JSON.stringify({ outcomeId, templateCode, mode, clientKey: `${key.current}-${mode}`, ...(style ? { itemCount: 3 } : {}) }) })
       .then((r) => r.session.status === 'SUBMITTED' ? setResult(r) : setData(r))
       .catch((e: any) => setError({ message: e.message, data: e.details || null }));
   }, [outcomeId, templateCode, mode]);
@@ -34,7 +35,7 @@ export function UniversePlay() {
   if (!data) return <div className="panel">Hazırlanıyor…</div>;
   return <>
     <div style={{ maxWidth: 760, margin: '0 auto 12px' }}><BreakReminder /></div>
-    <div className="page-head" style={{ maxWidth: 760, margin: '0 auto' }}><div><span className="eyebrow">{data.session.template.title}{data.session.mode === 'REVIEW' ? ' · tekrar' : ''}</span><h1 style={{ fontSize: 'clamp(18px,3vw,24px)' }}>{data.session.outcome.code} · {data.session.outcome.title}</h1></div></div>
-    {arcadeGame(data) ? <div style={{ marginTop: 12 }}><UniverseArcade data={data} onDone={setResult} /></div> : <UniversePlayer data={data} onDone={setResult} />}
+    <div className="page-head" style={{ maxWidth: 760, margin: '0 auto' }}><div><span className="eyebrow">{style === 'mystery' ? 'Gizem Dosyası' : data.session.template.title}{data.session.mode === 'REVIEW' ? ' · tekrar' : ''}</span><h1 style={{ fontSize: 'clamp(18px,3vw,24px)' }}>{data.session.outcome.code} · {data.session.outcome.title}</h1></div></div>
+    {arcadeGame(data, style) ? <div style={{ marginTop: 12 }}><UniverseArcade data={data} onDone={setResult} style={style} /></div> : <UniversePlayer data={data} onDone={setResult} />}
   </>;
 }
