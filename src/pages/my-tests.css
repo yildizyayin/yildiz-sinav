@@ -69,3 +69,5 @@
 .mt-big:disabled{opacity:.6;cursor:wait}
 .mt-reuse{display:flex;flex-direction:column;gap:12px;padding:14px;border-radius:16px;background:#F7F8FC}
 .mt-reuse strong{display:block;margin-bottom:6px;font-size:14px}
+.mt-title{color:inherit!important;text-decoration:none}.mt-title:hover{text-decoration:underline}
+.mt-results{align-self:flex-start;margin-top:4px;font-weight:700;color:var(--blue)!important;text-decoration:none;min-height:32px;display:inline-flex;align-items:center}

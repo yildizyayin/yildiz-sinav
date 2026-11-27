@@ -97,6 +97,10 @@ export default {
       const advanced = await handleAdvancedPlatformApi(request, env, user);
       if (advanced) return advanced;
 
+      // Testlerim (27 Nov 2026): "Ödev ver" posted to a route nothing served (404). Only this one route of platform-ops is
+      // wired here; its question-generation route stays off (question-generation agents are off by owner decision).
+      const homeworkMatch=url.pathname.match(/^\/api\/platform\/studio\/([^/]+)\/publish-homework$/);
+      if(homeworkMatch&&request.method==='POST'){const {publishStudioHomework}=await import('./lib/studio-homework-publish');return publishStudioHomework(request,env,user,decodeURIComponent(homeworkMatch[1]));}
       const response = await handlePlatformApi(request, env, user);
       if (!response) return json({ ok: false, error: { code: 'NOT_FOUND', message: 'Platform API yolu bulunamadı.' } }, 404);
       if(url.pathname==='/api/platform/exam-center/catalog'&&request.method==='GET')return enrichCatalogIds(response,env);

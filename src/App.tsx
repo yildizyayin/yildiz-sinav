@@ -113,6 +113,7 @@ const AppearanceSettings=lazy(()=>import('./pages/AppearanceSettings').then(modu
 const SmartBoard=lazy(()=>import('./pages/SmartBoard').then(module=>({default:module.SmartBoard})));
 const QuestionPoolHome=lazy(()=>import('./pages/QuestionPoolHome').then(module=>({default:module.QuestionPoolHome})));
 const TestLibrary=lazy(()=>import('./pages/TestLibrary').then(module=>({default:module.TestLibrary})));
+const TestDetail=lazy(()=>import('./pages/TestDetail').then(module=>({default:module.TestDetail})));
 const PhysicalLink=lazy(()=>import('./pages/PhysicalLink').then(module=>({default:module.PhysicalLink})));
 const AttendanceCenter=lazy(()=>import('./pages/AttendanceCenter').then(module=>({default:module.AttendanceCenter})));
 const AssignmentsCenter=lazy(()=>import('./pages/AssignmentsCenter').then(module=>({default:module.AssignmentsCenter})));
@@ -162,6 +163,7 @@ function AppContent(){
   <Route path="settings" element={<RoleGate allowed={ALL_ROLES}><AppearanceSettings/></RoleGate>}/>
   <Route path="soru-havuzu" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER']}><FeatureGate feature="STUDIO"><QuestionPoolHome/></FeatureGate></RoleGate>}/>
   <Route path="soru-havuzu/testlerim" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER']}><FeatureGate feature="STUDIO"><TestLibrary/></FeatureGate></RoleGate>}/>
+  <Route path="soru-havuzu/testlerim/:testId" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER']}><FeatureGate feature="STUDIO"><TestDetail/></FeatureGate></RoleGate>}/>
   <Route path="testlerim" element={<Navigate to="/soru-havuzu/testlerim" replace/>}/>
   <Route path="board/:documentId" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER']}><SmartBoard/></RoleGate>}/>
   <Route path="k/:key" element={<RoleGate allowed={ALL_ROLES}><PhysicalLink/></RoleGate>}/>

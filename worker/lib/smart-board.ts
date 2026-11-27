@@ -72,7 +72,8 @@ async function lesson(env: Env, doc: any) {
       topicVideo: topic ? { url: `/api/board/${encodeURIComponent(doc.id)}/topic/${encodeURIComponent(outcome!.id)}`, seconds: topic.duration_seconds || null } : null,
     };
   });
-  return json({ ok: true, test: { id: doc.id, title: doc.title, gradeLevel: doc.grade_level }, items });
+  const { lastCheck } = await import('./teacher-tests');
+  return json({ ok: true, test: { id: doc.id, title: doc.title, gradeLevel: doc.grade_level }, checked: !!(await lastCheck(env, doc.id)), items });
 }
 
 /** Streams a stored file with HTTP byte ranges (seeking, instant start, Safari/iPad need it). */

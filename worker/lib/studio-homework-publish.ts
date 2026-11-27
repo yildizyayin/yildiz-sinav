@@ -17,13 +17,16 @@ export async function publishStudioHomework(request:Request,env:Env,user:AuthUse
  if(!doc.institution_id||(user.role!=='SUPER_ADMIN'&&user.institution_id!==doc.institution_id))return forbidden();
  if(user.role==='TEACHER'&&doc.created_by!==user.id)return forbidden();
  const prev=await one<any>(env.DB.prepare("SELECT external_id FROM studio_delivery_links WHERE document_id=? AND institution_id=? AND delivery_kind='HOMEWORK' AND publication_revision=1").bind(documentId,doc.institution_id));
- if(prev)return json({ok:true,assignmentId:prev.external_id,reused:true});
- if(doc.status!=='READY'||!resolveStudioDeliveryKind(doc.document_type,'HOMEWORK').ok)
+ // Testlerim (27 Nov 2026): "Başka sınıfa ödev ver" sends the same test again as a new round; a plain retry still reuses round 1
+ const nextRound=input.round==='NEXT'&&!!prev;
+ if(prev&&!nextRound)return json({ok:true,assignmentId:prev.external_id,reused:true});
+ const revision=nextRound?Number((await one<any>(env.DB.prepare("SELECT MAX(publication_revision) r FROM studio_delivery_links WHERE document_id=? AND institution_id=? AND delivery_kind='HOMEWORK'").bind(documentId,doc.institution_id)))?.r||1)+1:1;
+ if(!(doc.status==='READY'||(nextRound&&doc.status==='PUBLISHED'))||!resolveStudioDeliveryKind(doc.document_type,'HOMEWORK').ok)
   return badRequest('Belge yayıma hazır bir çalışma föyü değil.','STUDIO_NOT_READY');
  const questions=await all<any>(env.DB.prepare(`SELECT i.question_id,q.review_status,q.copyright_status,q.subject_id FROM studio_document_items i
  JOIN question_bank q ON q.id=i.question_id WHERE i.document_id=? AND i.booklet_code='A' ORDER BY i.sort_order`).bind(documentId));
  const ids:string[]=questions.map(q=>q.question_id);
- const plan=planStudioDelivery({documentId,institutionId:doc.institution_id,publicationRevision:1,kind:'HOMEWORK',approved:true,questionIds:ids});
+ const plan=planStudioDelivery({documentId,institutionId:doc.institution_id,publicationRevision:revision,kind:'HOMEWORK',approved:true,questionIds:ids});
  if(!plan.ok)return badRequest(plan.reason,'INVALID_STUDIO_ITEMS');
  if(questions.some(q=>q.review_status!=='APPROVED'||!['OWNED','LICENSED','PUBLIC_DOMAIN'].includes(q.copyright_status)))return badRequest('Onaysız soru yayımlanamaz.','QUESTION_NOT_APPROVED');
  const invalid=await one<{n:number}>(env.DB.prepare(`SELECT COUNT(*) n FROM studio_document_items i JOIN question_bank q ON q.id=i.question_id
@@ -48,15 +51,15 @@ export async function publishStudioHomework(request:Request,env:Env,user:AuthUse
   env.DB.prepare("INSERT INTO assignments(id,institution_id,created_by,assignment_type,title,status,due_at,answer_reveal) VALUES(?,?,?,'TEACHER',?,'ASSIGNED',?,?)").bind(assignmentId,doc.institution_id,user.id,doc.title,dueAt,input.answerReveal==='AFTER_SUBMIT'?'AFTER_SUBMIT':'AFTER_DUE'),
   ...ids.map((id,i)=>env.DB.prepare("INSERT INTO assignment_items(id,assignment_id,item_type,reference_id,payload_json,sort_order) VALUES(?,?,'QUESTION',?,'{}',?)").bind(uuid('asi'),assignmentId,id,i+1)),
   ...studentIds.map(id=>env.DB.prepare("INSERT INTO assignment_recipients(assignment_id,student_id,status) VALUES(?,?,'ASSIGNED')").bind(assignmentId,id)),
-  env.DB.prepare("INSERT INTO studio_delivery_links(id,document_id,institution_id,publication_revision,delivery_kind,destination,external_id,idempotency_key) VALUES(?,?,?,1,'HOMEWORK','ASSIGNMENTS',?,?)").bind(uuid('sdl'),documentId,doc.institution_id,assignmentId,plan.plan.idempotencyKey),
+  env.DB.prepare("INSERT INTO studio_delivery_links(id,document_id,institution_id,publication_revision,delivery_kind,destination,external_id,idempotency_key) VALUES(?,?,?,?,'HOMEWORK','ASSIGNMENTS',?,?)").bind(uuid('sdl'),documentId,doc.institution_id,revision,assignmentId,plan.plan.idempotencyKey),
   env.DB.prepare("UPDATE studio_documents SET status='PUBLISHED',updated_at=CURRENT_TIMESTAMP WHERE id=? AND status='READY'").bind(documentId)
  ];
  try{await env.DB.batch(ops);}catch{
   // Competing submissions may lose the unique delivery-key race. D1 batch
   // rolls back the losing writes; return the winner rather than a false error.
   const winner=await one<{external_id:string}>(env.DB.prepare(
-   "SELECT external_id FROM studio_delivery_links WHERE document_id=? AND institution_id=? AND delivery_kind='HOMEWORK' AND publication_revision=1"
-  ).bind(documentId,doc.institution_id));
+   "SELECT external_id FROM studio_delivery_links WHERE document_id=? AND institution_id=? AND delivery_kind='HOMEWORK' AND publication_revision=?"
+  ).bind(documentId,doc.institution_id,revision));
   if(winner)return json({ok:true,assignmentId:winner.external_id,reused:true});
   return json({ok:false,error:{code:'HOMEWORK_PUBLICATION_FAILED',message:'Ödev kaydı oluşturulamadı.'}},409);
  }
