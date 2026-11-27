@@ -7,9 +7,12 @@
  */
 import type { AuthUser, Env } from '../types';
 import { all, audit, json, uuid } from './db';
+import { sha256 } from './question-team-policy';
 
 export const IMPORT_ACADEMIC_YEAR = '2027-2028';
 export const IMPORT_MAX_ROWS = 500;
+const MAX_IMAGE_BYTES = 192 * 1024;
+const MAX_TOTAL_IMAGE_BYTES = 24 * 1024 * 1024;
 const COPYRIGHTS = ['OWNED', 'LICENSED', 'PUBLIC_DOMAIN', 'USER_PROVIDED', 'RESTRICTED'] as const;
 const LABELS = ['A', 'B', 'C', 'D', 'E'];
 const fail = (status: number, code: string, message: string) => json({ ok: false, error: { code, message } }, status);
@@ -23,8 +26,32 @@ export function stemSimilarity(a: string, b: string) {
 }
 export const SIMILAR_AT = 0.7; // a warning only, so a false alarm costs little
 
-export type ImportRow = { sourceLabel?: unknown; gradeLevel?: unknown; outcomeCode?: unknown; stem?: unknown; optionA?: unknown; optionB?: unknown; optionC?: unknown; optionD?: unknown; optionE?: unknown; correctAnswer?: unknown; solution?: unknown; difficultyLevel?: unknown; copyrightStatus?: unknown };
-type Clean = { sourceLabel: string; gradeLevel: number; outcomeCode: string; stem: string; options: { label: string; text: string }[]; correctAnswer: string; solution: string | null; difficultyLevel: number; copyrightStatus: string };
+export type ImportRow = { sourceLabel?: unknown; gradeLevel?: unknown; outcomeCode?: unknown; stem?: unknown; optionA?: unknown; optionB?: unknown; optionC?: unknown; optionD?: unknown; optionE?: unknown; correctAnswer?: unknown; solution?: unknown; difficultyLevel?: unknown; copyrightStatus?: unknown; imageBase64?: unknown; imageAlt?: unknown; imageRequired?: unknown };
+type Clean = { sourceLabel: string; gradeLevel: number; outcomeCode: string; stem: string; options: { label: string; text: string }[]; correctAnswer: string; solution: string | null; difficultyLevel: number; copyrightStatus: string; image?: { data: Uint8Array<ArrayBuffer>; alt: string } };
+
+function questionImage(base64: unknown, altText: unknown, errors: string[]): Clean['image'] {
+  const raw = str(base64);
+  if (!raw) return undefined;
+  const alt = str(altText);
+  if (!alt || alt.length > 250) {
+    errors.push('Görsel için 1–250 karakterlik açıklama gerekir.');
+    return undefined;
+  }
+  if (raw.length > Math.ceil(MAX_IMAGE_BYTES / 3) * 4 || !/^[A-Za-z0-9+/]+={0,2}$/.test(raw)) {
+    errors.push('Soru görseli en fazla 192 KB boyutunda JPEG olmalıdır.');
+    return undefined;
+  }
+  try {
+    const bytes = Uint8Array.from(atob(raw), value => value.charCodeAt(0));
+    if (bytes.length > MAX_IMAGE_BYTES || bytes.length < 16 ||
+        bytes[0] !== 255 || bytes[1] !== 216 || bytes[2] !== 255 ||
+        bytes.at(-2) !== 255 || bytes.at(-1) !== 217) throw new Error();
+    return { data: bytes, alt };
+  } catch {
+    errors.push('JPEG soru görseli okunamadı.');
+    return undefined;
+  }
+}
 
 /** Shape checks that need no database. */
 export function checkRow(r: ImportRow): { row?: Clean; errors: string[] } {
@@ -43,13 +70,17 @@ export function checkRow(r: ImportRow): { row?: Clean; errors: string[] } {
   const solution = str(r.solution) || null; if (solution && solution.length > 4000) errors.push('Çözüm en çok 4000 karakter olabilir.');
   const d = str(r.difficultyLevel); const difficultyLevel = d ? Number(d) : 3; if (!Number.isInteger(difficultyLevel) || difficultyLevel < 1 || difficultyLevel > 6) errors.push('Zorluk 1–6 arasında olmalı.');
   const copyrightStatus = str(r.copyrightStatus).toUpperCase(); if (!(COPYRIGHTS as readonly string[]).includes(copyrightStatus)) errors.push(`Telif durumu zorunlu: ${COPYRIGHTS.join(', ')}.`);
-  return errors.length ? { errors } : { row: { sourceLabel, gradeLevel, outcomeCode, stem, options, correctAnswer, solution, difficultyLevel, copyrightStatus }, errors };
+  const image = questionImage(r.imageBase64, r.imageAlt, errors);
+  const imageRequired = r.imageRequired === true || str(r.imageRequired).toLowerCase() === 'true';
+  if (imageRequired && !image && !errors.length)
+    errors.push('Görseli zorunlu olarak işaretlenen soru, soru kökü görseliyle birlikte aktarılmalıdır.');
+  return errors.length ? { errors } : { row: { sourceLabel, gradeLevel, outcomeCode, stem, options, correctAnswer, solution, difficultyLevel, copyrightStatus, ...(image && { image }) }, errors };
 }
 
 const optionKey = (options: { label: string; text: string }[]) => JSON.stringify(options.map((o) => normalizedStem(o.text)));
 const bankOptions = (raw: string | null) => { try { const v = JSON.parse(raw || '[]'); return Array.isArray(v) ? v.map((o: any, i: number) => ({ label: LABELS[i], text: String(typeof o === 'string' ? o : o?.text ?? '') })) : []; } catch { return []; } };
 
-type Planned = { line: number; status: 'READY' | 'DUPLICATE' | 'INVALID'; errors: string[]; warnings: string[]; row?: Clean; outcome?: any; duplicateOf?: string };
+type Planned = { line: number; status: 'READY' | 'MEDIA_READY' | 'DUPLICATE' | 'INVALID'; errors: string[]; warnings: string[]; row?: Clean; outcome?: any; duplicateOf?: string };
 
 async function plan(env: Env, rows: ImportRow[]): Promise<Planned[]> {
   const out: Planned[] = []; const seen = new Map<string, number>();
@@ -68,10 +99,23 @@ async function plan(env: Env, rows: ImportRow[]): Promise<Planned[]> {
     const key = `${r.gradeLevel}|${outcome.subject_id}|${normalizedStem(r.stem)}|${optionKey(r.options)}`;
     if (seen.has(key)) { out.push({ line, status: 'INVALID', errors: [`Dosyada ${seen.get(key)}. satırla aynı soru.`], warnings }); continue; }
     seen.set(key, line);
-    const candidates = await all<any>(env.DB.prepare(`SELECT q.id,q.stem_text,q.options_json FROM question_bank q WHERE q.grade_level=? AND q.subject_id=? AND q.question_type='MULTIPLE_CHOICE' AND q.review_status<>'ARCHIVED'
-      AND (lower(trim(q.stem_text))=lower(trim(?)) OR EXISTS(SELECT 1 FROM question_learning_links l WHERE l.question_id=q.id AND l.node_id=?)) ORDER BY q.created_at DESC LIMIT 300`).bind(r.gradeLevel, outcome.subject_id, r.stem, `ln_${outcome.id}`));
+    const candidates = await all<any>(env.DB.prepare(`SELECT q.id,q.stem_text,q.options_json,q.owner_type,q.origin_kind,q.copyright_status,q.review_status,q.content_mode,q.academic_year,q.correct_answer,
+      EXISTS(SELECT 1 FROM question_learning_links l WHERE l.question_id=q.id AND l.node_id=?) outcome_linked,
+      EXISTS(SELECT 1 FROM question_assets a WHERE a.question_id=q.id AND a.asset_type='IMAGE' AND a.placement='STEM') has_stem_image
+      FROM question_bank q WHERE q.grade_level=? AND q.subject_id=? AND q.question_type='MULTIPLE_CHOICE' AND q.review_status<>'ARCHIVED'
+      AND (lower(trim(q.stem_text))=lower(trim(?)) OR EXISTS(SELECT 1 FROM question_learning_links l WHERE l.question_id=q.id AND l.node_id=?)) ORDER BY q.created_at DESC LIMIT 300`).bind(`ln_${outcome.id}`, r.gradeLevel, outcome.subject_id, r.stem, `ln_${outcome.id}`));
     const exact = candidates.find((q) => normalizedStem(q.stem_text) === normalizedStem(r.stem) && optionKey(bankOptions(q.options_json)) === optionKey(r.options));
-    if (exact) { out.push({ line, status: 'DUPLICATE', errors, warnings: ['Bu soru havuzda zaten var; tekrar eklenmeyecek.'], row: r, outcome, duplicateOf: exact.id }); continue; }
+    if (exact) {
+      const addImage = r.image && exact.owner_type === 'PLATFORM' && exact.origin_kind === 'IMPORT' &&
+        exact.copyright_status === 'OWNED' && r.copyrightStatus === 'OWNED' &&
+        ['REVIEW', 'APPROVED'].includes(exact.review_status) && exact.academic_year === IMPORT_ACADEMIC_YEAR &&
+        exact.correct_answer === r.correctAnswer && exact.content_mode === 'TEXT' &&
+        Number(exact.outcome_linked) === 1 && Number(exact.has_stem_image) === 0;
+      out.push({ line, status: addImage ? 'MEDIA_READY' : 'DUPLICATE', errors, warnings:
+        [addImage ? 'Mevcut soruya görsel eklenecek; soru yeniden incelemeye alınacak.' : 'Bu soru havuzda zaten var; tekrar eklenmeyecek.'],
+        row: r, outcome, duplicateOf: exact.id });
+      continue;
+    }
     const similar = candidates.filter((q) => stemSimilarity(q.stem_text, r.stem) >= SIMILAR_AT).slice(0, 3);
     if (similar.length) warnings.push(`Havuzda benzer soru var: ${similar.map((q) => q.id).join(', ')}. İncelemede kontrol edin.`);
     out.push({ line, status: 'READY', errors, warnings, row: r, outcome });
@@ -79,8 +123,8 @@ async function plan(env: Env, rows: ImportRow[]): Promise<Planned[]> {
   return out;
 }
 
-const view = (p: Planned) => ({ line: p.line, status: p.status, errors: p.errors, warnings: p.warnings, outcome: p.outcome ? { code: p.outcome.code, title: p.outcome.title, gradeLevel: p.outcome.grade_level } : null, duplicateOf: p.duplicateOf ?? null });
-const summary = (ps: Planned[]) => ({ total: ps.length, ready: ps.filter((p) => p.status === 'READY').length, duplicates: ps.filter((p) => p.status === 'DUPLICATE').length, invalid: ps.filter((p) => p.status === 'INVALID').length, warnings: ps.filter((p) => p.warnings.length && p.status === 'READY').length });
+const view = (p: Planned) => ({ line: p.line, status: p.status, errors: p.errors, warnings: p.warnings, hasImage: Boolean(p.row?.image), outcome: p.outcome ? { code: p.outcome.code, title: p.outcome.title, gradeLevel: p.outcome.grade_level } : null, duplicateOf: p.duplicateOf ?? null });
+const summary = (ps: Planned[]) => ({ total: ps.length, ready: ps.filter((p) => p.status === 'READY').length, mediaReady: ps.filter((p) => p.status === 'MEDIA_READY').length, duplicates: ps.filter((p) => p.status === 'DUPLICATE').length, invalid: ps.filter((p) => p.status === 'INVALID').length, warnings: ps.filter((p) => p.warnings.length && p.status === 'READY').length });
 
 export async function handleQuestionImport(request: Request, env: Env): Promise<Response | null> {
   const url = new URL(request.url);
@@ -96,13 +140,52 @@ export async function handleQuestionImport(request: Request, env: Env): Promise<
   const rows = Array.isArray(body?.rows) ? body.rows : null;
   if (!rows || !rows.length) return fail(400, 'ROWS_REQUIRED', 'Aktarılacak en az bir satır gerekli.');
   if (rows.length > IMPORT_MAX_ROWS) return fail(400, 'TOO_MANY_ROWS', `Bir seferde en çok ${IMPORT_MAX_ROWS} satır aktarılabilir.`);
+  if (rows.reduce((size: number, row: ImportRow) => size + (typeof row?.imageBase64 === 'string' ? row.imageBase64.length : 0), 0) > MAX_TOTAL_IMAGE_BYTES * 4 / 3)
+    return fail(413, 'QUESTION_IMPORT_MEDIA_LIMIT', 'Bir aktarımda toplam görsel boyutu 24 MB sınırını aşamaz.');
   const fileName = str(body.fileName).slice(0, 200) || null;
   const planned = await plan(env, rows);
   if (m[1] === 'preview') return json({ ok: true, academicYear: IMPORT_ACADEMIC_YEAR, summary: summary(planned), rows: planned.map(view) });
   if (body.confirm !== true) return fail(400, 'CONFIRMATION_REQUIRED', 'Aktarımı onaylayın.');
   const ready = planned.filter((p) => p.status === 'READY');
+  const mediaUpdates = planned.filter((p) => p.status === 'MEDIA_READY');
+  const uploaded = new Map<string, string>();
+  const mediaRecords = new Map<number, { key: string; hash: string; size: number }>();
+  for (const p of [...ready, ...mediaUpdates]) {
+    const image = p.row!.image;
+    if (!image) continue;
+    const hash = await sha256(image.data.buffer);
+    let key = uploaded.get(hash);
+    if (!key) {
+      key = `question-media/immutable/${hash.slice(0, 2)}/${hash}`;
+      await env.FILES.put(key, image.data, { httpMetadata: { contentType: 'image/jpeg' }, customMetadata: { sha256: hash } });
+      const head = await env.FILES.head(key);
+      if (!head || head.size !== image.data.byteLength || head.customMetadata?.sha256 !== hash)
+        return fail(503, 'QUESTION_IMPORT_MEDIA_WRITE_FAILED', 'Soru görseli doğrulanamadı. Aktarım kaydedilmedi.');
+      uploaded.set(hash, key);
+    }
+    mediaRecords.set(p.line, { key, hash, size: image.data.byteLength });
+  }
   const importId = uuid('qimp'); const created: { line: number; id: string }[] = [];
   const stmts: D1PreparedStatement[] = [];
+  const attach = (p: Planned, questionId: string) => {
+    const media = mediaRecords.get(p.line);
+    if (!media) return;
+    const assetId = uuid('qa');
+    const row = p.row!;
+    stmts.push(env.DB.prepare(`INSERT INTO question_assets(id,question_id,asset_type,r2_key,title,approved,placement,sort_order,alt_text,mime_type,rights_status,byte_sha256,byte_size,sealed_at)
+      SELECT ?,q.id,'IMAGE',?, ?,1,'STEM',0,?,'image/jpeg','DECLARED',?,?,CURRENT_TIMESTAMP FROM question_bank q
+      WHERE q.id=? AND q.review_status IN ('REVIEW','APPROVED') AND q.content_mode='TEXT' AND q.owner_type='PLATFORM' AND q.origin_kind='IMPORT'
+        AND q.academic_year=? AND q.copyright_status=? AND q.correct_answer=? AND q.stem_text=? AND q.options_json=?
+        AND EXISTS(SELECT 1 FROM question_learning_links l WHERE l.question_id=q.id AND l.node_id=?)
+        AND NOT EXISTS(SELECT 1 FROM question_assets a WHERE a.question_id=q.id AND a.asset_type='IMAGE' AND a.placement='STEM')`)
+      .bind(assetId, media.key, row.image!.alt, row.image!.alt, media.hash, media.size, questionId,
+        IMPORT_ACADEMIC_YEAR, row.copyrightStatus, row.correctAnswer, row.stem, JSON.stringify(row.options), `ln_${p.outcome.id}`));
+    stmts.push(env.DB.prepare(`UPDATE question_bank SET content_mode='MIXED',review_status='REVIEW',reviewed_by=NULL,
+      reviewed_at=NULL,review_checks_json=NULL,updated_at=CURRENT_TIMESTAMP WHERE id=?
+      AND EXISTS(SELECT 1 FROM question_assets a WHERE a.id=? AND a.question_id=question_bank.id)`).bind(questionId, assetId));
+    attached.push({ line: p.line, id: questionId, assetId });
+  };
+  const attached: { line: number; id: string; assetId: string }[] = [];
   for (const p of ready) {
     const r = p.row!, o = p.outcome, id = uuid('q');
     // the NOT EXISTS repeats the exact-copy check inside the write, so two simultaneous uploads cannot both add it
@@ -113,10 +196,23 @@ export async function handleQuestionImport(request: Request, env: Env): Promise<
         r.gradeLevel, o.subject_id, r.stem, JSON.stringify(r.options)));
     stmts.push(env.DB.prepare(`INSERT INTO question_learning_links(question_id,node_id) SELECT ?,? WHERE EXISTS(SELECT 1 FROM question_bank WHERE id=?)`).bind(id, `ln_${o.id}`, id));
     created.push({ line: p.line, id });
+    attach(p, id);
   }
+  for (const p of mediaUpdates) attach(p, p.duplicateOf!);
   if (stmts.length) await env.DB.batch(stmts);
-  const ids = created.length ? (await all<any>(env.DB.prepare(`SELECT id FROM question_bank WHERE id IN (${created.map(() => '?').join(',')})`).bind(...created.map((c) => c.id)))).map((r) => r.id) : [];
-  const added = created.filter((c) => ids.includes(c.id));
-  await audit(env.DB, user.id, null, 'QUESTION_IMPORT_COMMITTED', 'question_import', importId, { fileName, total: planned.length, added: added.length, duplicates: planned.filter((p) => p.status === 'DUPLICATE').length + (created.length - added.length), invalid: planned.filter((p) => p.status === 'INVALID').length, sources: [...new Set(ready.map((p) => p.row!.sourceLabel))].slice(0, 20) });
-  return json({ ok: true, importId, academicYear: IMPORT_ACADEMIC_YEAR, summary: { ...summary(planned), added: added.length, skippedAsCopy: created.length - added.length }, added, rows: planned.map(view) });
+  async function selectIds(table: 'question_bank' | 'question_assets', values: string[]) {
+    const ids = new Set<string>();
+    for (let i = 0; i < values.length; i += 80) {
+      const chunk = values.slice(i, i + 80);
+      const rows = await all<{ id: string }>(env.DB.prepare(`SELECT id FROM ${table} WHERE id IN (${chunk.map(() => '?').join(',')})`).bind(...chunk));
+      for (const row of rows) ids.add(row.id);
+    }
+    return ids;
+  }
+  const ids = await selectIds('question_bank', created.map((row) => row.id));
+  const assetIds = await selectIds('question_assets', attached.map((row) => row.assetId));
+  const added = created.filter((c) => ids.has(c.id));
+  const mediaAdded = attached.filter((row) => assetIds.has(row.assetId));
+  await audit(env.DB, user.id, null, 'QUESTION_IMPORT_COMMITTED', 'question_import', importId, { fileName, total: planned.length, added: added.length, mediaAdded: mediaAdded.length, duplicates: planned.filter((p) => p.status === 'DUPLICATE').length + (created.length - added.length), invalid: planned.filter((p) => p.status === 'INVALID').length, sources: [...new Set(ready.map((p) => p.row!.sourceLabel))].slice(0, 20) });
+  return json({ ok: true, importId, academicYear: IMPORT_ACADEMIC_YEAR, summary: { ...summary(planned), added: added.length, mediaAdded: mediaAdded.length, skippedAsCopy: created.length - added.length }, added, mediaAdded, rows: planned.map(view) });
 }
