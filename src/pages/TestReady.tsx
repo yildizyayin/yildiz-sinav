@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, Check, Download, KeyRound, MonitorPlay, Printer, RefreshCw, Send, ShieldCheck, X } from 'lucide-react';
+import { ArrowLeft, Check, Download, KeyRound, MonitorPlay, Plus, Printer, RefreshCw, Scissors, Send, ShieldCheck, X } from 'lucide-react';
 import { api } from '../api';
 import { TestCheckDialog } from '../components/TestCheckDialog';
 import { LogoUpload, PaperPreview, useBrand, type Brand } from '../components/InstitutionLogo';
 import './test-prepare.css';
+import '../components/test-check-dialog.css';
 
 /**
  * "Testin hazır" (owner, 27 Nov 2026). The questions as the students will see them; a question the teacher does not
@@ -39,6 +40,7 @@ export function TestReady() {
   const [flash, setFlash] = useState('');
   const [ask, setAsk] = useState<Sheet | 'BOARD' | ''>('');
   const [sheet, setSheet] = useState<Sheet>('');
+  const [addOpen, setAddOpen] = useState(false);
   const { brand, reload: reloadBrand } = useBrand();
 
   const loadTest = () => api<any>(`/api/teacher-tests/${id}`).then((r) => { setTest(r.test); setChecked(r.checked); setDeliveries(r.deliveries || []); }).catch((e) => setError(e?.message || 'Test açılamadı.'));
@@ -86,6 +88,7 @@ export function TestReady() {
         {items.length > 1 && <button type="button" className="tr-remove" disabled={!!busy} aria-label={`${q.position}. soruyu çıkar`} onClick={() => void remove(q)}>Çıkar</button>}
       </div>}
     </li>)}</ol>}
+    {items && !locked && <button type="button" className="tr-add" onClick={() => setAddOpen(true)}><Plus size={20} aria-hidden="true" /> Soru ekle (PDF ya da fotoğraftan)</button>}
 
     <div className="tp-bar"><div className="tp-bar-in tr-bar">
       <span className={`tr-checkline${checked ? ' ok' : ''}`}>{checked ? <><ShieldCheck size={16} aria-hidden="true" /> Sorular uygun bulundu · {checked.by}</> : 'Göndermeden önce bir kez “sorular uygun” onayı istenir.'}</span>
@@ -95,6 +98,7 @@ export function TestReady() {
     </div></div>
 
     {ask && <TestCheckDialog testId={testId} onCancel={() => setAsk('')} onReview={() => setAsk('')} onConfirmed={() => { const what = ask; setAsk(''); void loadTest(); setChecked({ by: 'Sen', at: '' }); if (what === 'BOARD') navigate(`/board/${id}`); else setSheet(what as Sheet); }} />}
+    {addOpen && test && <AddFromFile test={test} count={items?.length || 0} onClose={() => setAddOpen(false)} onMoved={(qid) => navigate(`/quick-tests/${encodeURIComponent(qid)}`)} />}
     {sheet === 'PRINT' && test && <PrintSheet test={test} brand={brand} onBrand={reloadBrand} onClose={() => setSheet('')} onChanged={() => void loadTest()} />}
     {sheet === 'HOMEWORK' && test && <HomeworkSheet test={test} again={deliveries.length > 0} onClose={() => setSheet('')} onSent={() => void loadTest()} />}
   </div>;
@@ -108,6 +112,36 @@ function SheetFrame({ title, onClose, children }: { title: string; onClose: () =
       {children}
     </div>
   </div>;
+}
+
+/**
+ * "+ Soru ekle (PDF ya da fotoğraftan)" (owner, 27 Nov 2026: "Testi Hızlı Test'e taşı"). The test moves to Hızlı
+ * Test with its questions, where the teacher crops more from a PDF or a photo. Cropped questions stay in the
+ * institution; the teacher declares the right to use them (a declaration is not an editorial approval).
+ */
+function AddFromFile({ test, count, onClose, onMoved }: { test: any; count: number; onClose: () => void; onMoved: (id: string) => void }) {
+  const [rights, setRights] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState('');
+  const move = async () => {
+    setBusy(true); setError('');
+    try { const r = await api<any>(`/api/quick-tests/from-studio/${encodeURIComponent(test.id)}`, { method: 'POST', body: JSON.stringify({ addCrops: true, rightsDeclared: true }) }); onMoved(r.id); }
+    catch (e: any) { setError(e?.message || 'Test taşınamadı.'); setBusy(false); }
+  };
+  return <SheetFrame title="PDF ya da fotoğraftan soru ekle" onClose={onClose}>
+    <div className="add">
+      <ol className="add-steps">
+        <li><span><Scissors size={18} aria-hidden="true" /></span><div><b>Kırp</b>PDF’ini ya da sorunun fotoğrafını aç, soruyu çerçevele.</div></li>
+        <li><span><Check size={18} aria-hidden="true" /></span><div><b>Cevabına dokun</b>Doğru şıkkı işaretle; soru testin sonuna eklenir.</div></li>
+        <li><span><Printer size={18} aria-hidden="true" /></span><div><b>Yazdır ya da online ver</b>Optik form, cevap anahtarı, kurum adı ve logosu yine hazır.</div></li>
+      </ol>
+      <p className="add-note">Test, şimdiki {count} sorusuyla birlikte <b>Hızlı Test</b>’e taşınır ve Testlerim’de durur. Eklediğin sorular yalnız kurumunda kalır; ortak havuza girmez.</p>
+      <label className="tcd-check"><input type="checkbox" checked={rights} onChange={(e) => setRights(e.target.checked)} />Ekleyeceğim soruları kullanma hakkım var (kendi yazdığım ya da kurumumuzun materyali).</label>
+      <p className="tp-muted small">Bir yayınevinin kitabından ya da başka bir yerden alınan sorular telif hakkıyla korunur; izni olmadan çoğaltılamaz. Beyan senin sorumluluğundadır.</p>
+      {error && <div className="alert error" role="alert">{error}</div>}
+      <div className="tcd-actions"><button type="button" className="tcd-ghost" onClick={onClose}>Vazgeç</button><button type="button" className="tcd-go" disabled={!rights || busy} onClick={() => void move()}>{busy ? 'Taşınıyor…' : 'Devam et ve kırpmaya başla'}</button></div>
+    </div>
+  </SheetFrame>;
 }
 
 /** Yazdır: the paper as it will come out (institution name and logo top-left), then one tap per PDF. */

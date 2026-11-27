@@ -71,7 +71,15 @@ async function list(env: Env, user: AuthUser) {
       doc: { id: r.id, title: r.title, document_type: r.document_type, grade_level: r.grade_level, subject_id: r.subject_id, subject_name: r.subject_name, status: r.status, config_json: r.config_json, created_at: r.created_at, question_count: Number(r.question_count || 0) },
     };
   });
-  return json({ ok: true, tests, scope: user.role === 'TEACHER' ? 'OWN' : 'INSTITUTION' });
+  // Hızlı Testler (PDF / fotoğraftan kırpılan sorularla) stand next to them, so a teacher finds every test in one place.
+  const quick = await all<any>(env.DB.prepare(`SELECT t.id,t.title,t.grade_level,t.subject_label,t.updated_at,t.created_by,u.display_name teacher_name,
+      (SELECT COUNT(*) FROM quick_test_questions q WHERE q.test_id=t.id) questions,
+      (SELECT COUNT(*) FROM quick_test_questions q WHERE q.test_id=t.id AND q.correct_answer IS NULL) unanswered,
+      (SELECT COUNT(*) FROM quick_test_attempts a WHERE a.test_id=t.id AND a.submitted_at IS NOT NULL) results
+    FROM quick_tests t LEFT JOIN users u ON u.id=t.created_by
+    WHERE t.status='ACTIVE' AND (? IS NULL OR t.institution_id=?) AND (?<>'TEACHER' OR t.created_by=?) ORDER BY t.updated_at DESC LIMIT 200`).bind(scope, scope, user.role, user.id)).catch(() => [] as any[]);
+  const quickTests = quick.map((q) => ({ id: q.id, title: q.title, gradeLevel: q.grade_level, subject: q.subject_label || null, questionCount: Number(q.questions || 0), unanswered: Number(q.unanswered || 0), results: Number(q.results || 0), updatedAt: q.updated_at, mine: q.created_by === user.id, teacher: { id: q.created_by, name: q.teacher_name || 'Öğretmen' } }));
+  return json({ ok: true, tests, quickTests, scope: user.role === 'TEACHER' ? 'OWN' : 'INSTITUTION' });
 }
 
 async function remove(env: Env, user: AuthUser, id: string) {
