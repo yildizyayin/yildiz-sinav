@@ -607,6 +607,50 @@ function drawQr(page: PDFPage, text: string, x: number, y: number, size: number)
   for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) if (qr.isDark(r, c)) page.drawRectangle({ x: x + c * m, y: y + size - (r + 1) * m, width: m + 0.02, height: m + 0.02, color: INK });
 }
 
+/**
+ * "Cevap anahtarı ve çözüm QR'ları" (owner, 27 Nov 2026): the sheet handed to students after the test. Each question:
+ * its number, the right answer, the outcome it measures and a QR that opens its solution video at
+ * <origin>/c/<code> without an account. A question without a public video gets its answer and no QR.
+ */
+export async function renderSolutionSheet(env: Env, documentId: string, booklet: string, branding: StudioBranding, origin: string, rows: Array<{ answer: string; code: string | null; outcome: { code: string; title: string } | null }>): Promise<ArrayBuffer> {
+  const doc = await one<any>(env.DB.prepare('SELECT * FROM studio_documents WHERE id=?').bind(documentId)); if (!doc) throw new Error('STUDIO_NOT_FOUND');
+  if (!rows.length) throw new StudioPrintError('BOOKLET_EMPTY', 'Bu kitapçıkta soru yok.');
+  rows.forEach((r, i) => { if (!LABELS.includes(r.answer)) throw new StudioPrintError('PRINT_ANSWER_KEY_INVALID', `Soru ${i + 1}: cevap anahtarı geçersiz.`); });
+  const pdf = await PDFDocument.create();
+  pdf.setTitle(`${doc.title} - Cevap anahtarı ve çözüm videoları`); pdf.setCreator('ANUNEX Studio');
+  const fonts = await loadFonts(pdf);
+  const title = normalizePrintText(doc.title); assertPrintable(fonts, title, 'Belge başlığı');
+  const logo = branding.institutionLogo ? await embedLogo(pdf, branding.institutionLogo) : null;
+  const host = origin.replace(/^https?:\/\//, '');
+  const cols = 2, gap = 12, cardW = (PAGE_W - 2 * MARGIN - gap) / cols, cardH = 92, qr = 72;
+  let page = pdf.addPage([PAGE_W, PAGE_H]);
+  const top = drawKeyHeader(page, fonts, title, `Cevap anahtarı ve çözüm videoları · Kitapçık ${booklet} · Sınavdan sonra dağıtılır`, { name: branding.institutionName, logo });
+  page.drawText('Telefon kamerasıyla QR’ı okut; o sorunun çözüm videosu açılır. Giriş gerekmez.', { x: MARGIN, y: top - 22, size: 9.5, font: fonts.bold, color: INK, maxWidth: PAGE_W - 2 * MARGIN });
+  let y = top - 36;
+  rows.forEach((r, i) => {
+    const col = i % cols;
+    if (col === 0 && y - cardH < BOTTOM) { page = pdf.addPage([PAGE_W, PAGE_H]); page.drawText(`${title} · Kitapçık ${booklet}`, { x: MARGIN, y: TOP - 9, size: 8, font: fonts.regular, color: MUTED, maxWidth: PAGE_W - 2 * MARGIN }); y = TOP - 22; }
+    const x = MARGIN + col * (cardW + gap), yTop = y;
+    page.drawRectangle({ x, y: yTop - cardH, width: cardW, height: cardH, borderColor: RULE, borderWidth: 0.7 });
+    page.drawText(`${i + 1}.`, { x: x + 10, y: yTop - 24, size: 14, font: fonts.bold, color: MUTED });
+    page.drawText(r.answer, { x: x + 10, y: yTop - 58, size: 30, font: fonts.bold, color: INK });
+    const textX = x + 52, textW = cardW - 52 - (r.code ? qr + 16 : 10);
+    if (r.outcome) {
+      page.drawText(normalizePrintText(r.outcome.code), { x: textX, y: yTop - 20, size: 8.5, font: fonts.bold, color: MUTED, maxWidth: textW });
+      wrapText(fonts.regular, normalizePrintText(r.outcome.title), 8.5, textW).slice(0, 4).forEach((line, k) => page.drawText(line, { x: textX, y: yTop - 33 - k * 11, size: 8.5, font: fonts.regular, color: INK }));
+    }
+    if (r.code) {
+      drawQr(page, `${origin}/c/${r.code}`, x + cardW - qr - 8, yTop - qr - 6, qr);
+      page.drawText(`${host}/c/${r.code}`, { x: textX, y: yTop - cardH + 9, size: 7.5, font: fonts.regular, color: MUTED, maxWidth: textW });
+    } else page.drawText('Bu sorunun videosu henüz yok.', { x: textX, y: yTop - cardH + 9, size: 7.5, font: fonts.regular, color: MUTED, maxWidth: textW });
+    if (col === cols - 1 || i === rows.length - 1) y -= cardH + gap;
+  });
+  const total = pdf.getPageCount();
+  pdf.getPages().forEach((p, i) => { const l = `ANUNEX · Kodlar kalıcıdır: video güncellense de QR aynı sayfayı açar · ${i + 1}/${total}`; p.drawText(l, { x: PAGE_W / 2 - fonts.regular.widthOfTextAtSize(l, 7) / 2, y: MARGIN - 6, size: 7, font: fonts.regular, color: MUTED }); });
+  const bytes = await pdf.save();
+  return bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) as ArrayBuffer;
+}
+
 export type DejavuSection = { heading: string; note: string | null; items: Array<{ questionId: string; solutionUrl: string | null }> };
 export type DejavuPrint = { title: string; studentName: string; classLine: string; institutionName: string | null; dateLabel: string; bookUrl: string | null; sections: DejavuSection[]; answerKey: 'APPEND' | 'NONE' };
 

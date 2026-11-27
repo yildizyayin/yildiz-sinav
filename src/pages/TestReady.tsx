@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, Check, Download, KeyRound, MonitorPlay, Plus, Printer, RefreshCw, Scissors, Send, ShieldCheck, X } from 'lucide-react';
+import { ArrowLeft, Check, Download, KeyRound, MonitorPlay, Plus, Printer, QrCode, RefreshCw, Scissors, Send, ShieldCheck, X } from 'lucide-react';
 import { api } from '../api';
 import { TestCheckDialog } from '../components/TestCheckDialog';
 import { LogoUpload, PaperPreview, useBrand, type Brand } from '../components/InstitutionLogo';
@@ -175,6 +175,7 @@ export function PrintSheet({ test, brand, onBrand, onClose, onChanged }: { test:
         <div className="pr-buttons">
           {codes.map((c) => <button key={c} type="button" className="pr-btn main" disabled={!!busy} onClick={() => void get(c, `/api/platform/studio/${id}/pdf?booklet=${c}`, `${name}-${c}.pdf`)}><Download size={18} aria-hidden="true" /> {busy === c ? 'Hazırlanıyor…' : codes.length > 1 ? `Kitapçık ${c} (PDF)` : 'Test kâğıdı (PDF)'}</button>)}
           <button type="button" className="pr-btn" disabled={!!busy} onClick={() => void get('KEY', `/api/platform/studio/${id}/answer-key`, `${name}-cevap-anahtari.pdf`)}><KeyRound size={18} aria-hidden="true" /> {busy === 'KEY' ? 'Hazırlanıyor…' : 'Cevap anahtarı (öğretmene)'}</button>
+          {codes.map((c) => <button key={`qr-${c}`} type="button" className="pr-qr" disabled={!!busy} onClick={() => void get(`QR${c}`, `/api/teacher-tests/${id}/solution-sheet?booklet=${c}`, `${name}-${c}-cozum-videolari.pdf`)}><QrCode size={18} aria-hidden="true" /> {busy === `QR${c}` ? 'Hazırlanıyor…' : `Cevaplar ve çözüm QR’ları${codes.length > 1 ? ` · ${c}` : ''} (öğrenciye, sınavdan sonra)`}</button>)}
         </div>
         <p className="tp-muted small">Kâğıdın sonunda telefonla okutulan optik form var; sonuçlar karneye kendiliğinden işlenir.</p>
         {error && <div className="alert error" role="alert">{error}</div>}
