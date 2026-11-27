@@ -818,7 +818,7 @@ export function studioBrandingPrefs(value:unknown):{showAnunex:boolean;showNibir
   const v:any=value&&typeof value==='object'?value:{};
   return {showAnunex:v.showAnunex!==false,showNibiru:v.showNibiru!==false,useInstitution:v.useInstitution!==false};
 }
-async function studioBranding(env:Env,document:any):Promise<StudioBranding>{
+export async function studioBranding(env:Env,document:any):Promise<StudioBranding>{
   let config:any={};try{config=JSON.parse(document.config_json||'{}')}catch{}
   const prefs=studioBrandingPrefs(config.branding);
   let institutionName:string|null=null,institutionLogo:Uint8Array|null=null;

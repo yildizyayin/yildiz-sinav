@@ -140,3 +140,5 @@
 .mt-quick{display:flex;flex-direction:column;gap:12px}
 .mt-quick h2{margin:6px 0 0;font-family:"Space Grotesk",Inter,sans-serif;font-size:22px;display:flex;align-items:center;gap:8px}
 .mt-link{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;color:#fff!important}
+.pr-qr{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:56px;padding:8px 18px;border-radius:16px;border:1.5px solid #C9CEF5;background:#F3F4FF;color:#2732C9;font:inherit;font-weight:700;font-size:15px;line-height:1.3;text-align:center;cursor:pointer}
+.pr-qr:disabled{opacity:.55;cursor:not-allowed}

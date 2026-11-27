@@ -203,6 +203,29 @@ async function brandingLogo(env: Env, user: AuthUser, url: URL) {
   return new Response(bytes, { headers: { 'Content-Type': type, 'Cache-Control': 'private, max-age=300', 'X-Content-Type-Options': 'nosniff' } });
 }
 
+/**
+ * "Cevap anahtarı ve çözüm QR'ları" (owner, 27 Nov 2026): the student sheet after the test, one QR per question that
+ * opens its solution video without an account (only approved questions with an approved video get a QR).
+ */
+async function solutionSheet(request: Request, env: Env, user: AuthUser, id: string, url: URL) {
+  const doc = await ownTest(env, user, id); if (doc instanceof Response) return doc;
+  const booklet = (url.searchParams.get('booklet') || 'A').toUpperCase();
+  if (!['A', 'B'].includes(booklet)) return badRequest('Kitapçık A veya B olmalı.', 'INVALID_BOOKLET');
+  const { bookletVideoCodes, videoOrigin } = await import('./public-video');
+  const { renderSolutionSheet, StudioPrintError } = await import('./studio-pdf');
+  const { studioBranding } = await import('./platform-expansion');
+  const rows = await bookletVideoCodes(env, id, booklet);
+  try {
+    const bytes = await renderSolutionSheet(env, id, booklet, await studioBranding(env, doc), videoOrigin(env, request), rows);
+    await audit(env.DB, user.id, doc.institution_id, 'STUDIO_SOLUTION_SHEET_DOWNLOADED', 'studio_document', id, { booklet, withVideo: rows.filter((r) => r.code).length, questions: rows.length });
+    const name = `${String(doc.title || 'test')}-${booklet}-cozum-videolari.pdf`.replace(/[^\p{L}\p{N} ._-]/gu, '_');
+    return new Response(bytes, { headers: { 'Content-Type': 'application/pdf', 'Content-Disposition': `attachment; filename*=UTF-8''${encodeURIComponent(name)}`, 'Cache-Control': 'private, no-store', 'X-Anunex-Videos': String(rows.filter((r) => r.code).length) } });
+  } catch (e: any) {
+    if (e instanceof StudioPrintError) return json({ ok: false, error: { code: e.code, message: e.message } }, 409);
+    throw e;
+  }
+}
+
 /** One test: what it is, who solved it and how each question and outcome went. */
 async function detail(env: Env, user: AuthUser, id: string) {
   const doc = await ownTest(env, user, id); if (doc instanceof Response) return doc;
@@ -246,7 +269,7 @@ async function detail(env: Env, user: AuthUser, id: string) {
 
 export async function handleTeacherTests(request: Request, env: Env): Promise<Response | null> {
   const url = new URL(request.url);
-  const m = url.pathname.match(/^\/api\/teacher-tests(?:\/([^/]+)(?:\/(copy|check|remove-question|print|logo))?)?$/);
+  const m = url.pathname.match(/^\/api\/teacher-tests(?:\/([^/]+)(?:\/(copy|check|remove-question|print|logo|solution-sheet))?)?$/);
   if (!m) return null;
   const { getAuthUser } = await import('./auth');
   const user: AuthUser | null = await getAuthUser(env, request);
@@ -257,6 +280,7 @@ export async function handleTeacherTests(request: Request, env: Env): Promise<Re
   const [, id, action] = m;
   if (id === 'branding' && request.method === 'GET') return action === 'logo' ? brandingLogo(env, user, url) : !action ? branding(env, user, url) : json({ ok: false, error: { code: 'NOT_FOUND', message: 'Bulunamadı.' } }, 404);
   if (id && action === 'remove-question' && request.method === 'POST') return removeQuestion(request, env, user, decodeURIComponent(id));
+  if (id && action === 'solution-sheet' && request.method === 'GET') return solutionSheet(request, env, user, decodeURIComponent(id), url);
   if (id && action === 'print' && request.method === 'PUT') return printChoices(request, env, user, decodeURIComponent(id));
   if (!id && request.method === 'GET') return list(env, user);
   if (id && !action && request.method === 'GET') return detail(env, user, decodeURIComponent(id));

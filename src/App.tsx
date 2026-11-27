@@ -114,6 +114,7 @@ const SmartBoard=lazy(()=>import('./pages/SmartBoard').then(module=>({default:mo
 const QuestionPoolHome=lazy(()=>import('./pages/QuestionPoolHome').then(module=>({default:module.QuestionPoolHome})));
 const TestLibrary=lazy(()=>import('./pages/TestLibrary').then(module=>({default:module.TestLibrary})));
 const TestDetail=lazy(()=>import('./pages/TestDetail').then(module=>({default:module.TestDetail})));
+const PublicVideo=lazy(()=>import('./pages/PublicVideo').then(module=>({default:module.PublicVideo})));
 const BoardRemote=lazy(()=>import('./pages/BoardRemote').then(module=>({default:module.BoardRemote})));
 const TestPrepare=lazy(()=>import('./pages/TestPrepare').then(module=>({default:module.TestPrepare})));
 const TestReady=lazy(()=>import('./pages/TestReady').then(module=>({default:module.TestReady})));
@@ -149,6 +150,8 @@ function AppContent(){
  const isMarketingHost=hostname==='anunex.com'||hostname==='www.anunex.com'||isMarketingPreview||new URLSearchParams(location.search).get('site')==='marketing';
  if(isResultHost)return <ResultPortal/>;
  if(isMarketingHost)return <MarketingHome/>;
+ // video.anunex.com (owner, 27 Nov 2026): a QR on the answer sheet opens the solution video with no account.
+ if(hostname==='video.anunex.com'||location.pathname.startsWith('/c/'))return <Suspense fallback={<div className="boot">Video yükleniyor…</div>}><Routes><Route path="/c/:code" element={<PublicVideo/>}/><Route path="*" element={<PublicVideo/>}/></Routes></Suspense>;
  // S044: the online exam page needs no account (students join with the code their teacher gives).
  if(location.pathname==='/sinav'||location.pathname.startsWith('/sinav/'))return <Suspense fallback={<div className="boot">Sınav yükleniyor…</div>}><Routes><Route path="/sinav" element={<QuickExamTake/>}/><Route path="/sinav/:code" element={<QuickExamTake/>}/></Routes></Suspense>;
  if(loading)return <div className="boot">Anunex yükleniyor…</div>;

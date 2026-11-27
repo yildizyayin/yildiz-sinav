@@ -77,12 +77,12 @@ async function lesson(env: Env, doc: any) {
 }
 
 /** Streams a stored file with HTTP byte ranges (seeking, instant start, Safari/iPad need it). */
-async function stream(env: Env, request: Request, key: string, mime: string) {
+export async function stream(env: Env, request: Request, key: string, mime: string, cacheControl = 'private, max-age=86400') {
   const head = await env.FILES.head(key);
   if (!head) return notFound('Dosya bulunamadı.');
   const size = head.size;
   const range = request.headers.get('Range');
-  const base: Record<string, string> = { 'Content-Type': mime || head.httpMetadata?.contentType || 'application/octet-stream', 'Accept-Ranges': 'bytes', 'Cache-Control': 'private, max-age=86400', 'X-Content-Type-Options': 'nosniff' };
+  const base: Record<string, string> = { 'Content-Type': mime || head.httpMetadata?.contentType || 'application/octet-stream', 'Accept-Ranges': 'bytes', 'Cache-Control': cacheControl, 'X-Content-Type-Options': 'nosniff' };
   const m = range && /^bytes=(\d*)-(\d*)$/.exec(range.trim());
   if (m && (m[1] || m[2])) {
     let start = m[1] ? Number(m[1]) : Math.max(0, size - Number(m[2]));
