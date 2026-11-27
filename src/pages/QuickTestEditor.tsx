@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { ArrowDown, ArrowLeft, ArrowUp, Camera, CheckCircle2, Copy, Download, FileText, Globe2, ListChecks, Printer, RefreshCw, Trash2, TriangleAlert } from 'lucide-react';
+import { ArrowDown, ArrowLeft, ArrowUp, Camera, CheckCircle2, Copy, Download, FileText, Globe2, ListChecks, Printer, RefreshCw, Send, Trash2, TriangleAlert } from 'lucide-react';
 import { api } from '../api';
 import { PrintCheckPanel } from '../components/StudioPrintCheck';
 import '../components/studio-print-check.css';
@@ -64,6 +64,7 @@ export function QuickTestEditor() {
 function QuestionsStep({ t, qs, base, busy, run, reload, next, setNotice }: any) {
   const letters = LETTERS.slice(0, t.option_count);
   const [bulk, setBulk] = useState('');
+  const [suggest, setSuggest] = useState<any>(null);
   const setAnswer = (q: any, a: string | null) => run(async () => { await api(`${base}/questions/${q.id}`, { method: 'PATCH', body: JSON.stringify({ correctAnswer: a }) }); await reload(); });
   const move = (i: number, d: number) => run(async () => { const ids = qs.map((q: any) => q.id); const j = i + d; if (j < 0 || j >= ids.length) return; [ids[i], ids[j]] = [ids[j], ids[i]]; await api(`${base}/order`, { method: 'PUT', body: JSON.stringify({ ids }) }); await reload(); });
   const remove = (q: any) => run(async () => { await api(`${base}/questions/${q.id}`, { method: 'DELETE' }); await reload(); });
@@ -90,8 +91,37 @@ function QuestionsStep({ t, qs, base, busy, run, reload, next, setNotice }: any)
           <span className="qt-q-tools"><button type="button" aria-label="Yukarı" disabled={busy || i === 0} onClick={() => void move(i, -1)}><ArrowUp size={14} /></button><button type="button" aria-label="Aşağı" disabled={busy || i === qs.length - 1} onClick={() => void move(i, 1)}><ArrowDown size={14} /></button><button type="button" aria-label="Sil" disabled={busy} onClick={() => void remove(q)}><Trash2 size={14} /></button></span></div>
         {q.kind === 'IMAGE' ? <img src={`${base}/questions/${q.id}/image`} alt={`${i + 1}. soru`} loading="lazy" style={{ aspectRatio: `${q.width} / ${q.height}` }} /> : <div className="qt-text-q"><p>{q.stem}</p><ol type="A">{(q.options || []).map((o: string, j: number) => <li key={j}>{o}</li>)}</ol></div>}
         {!q.correctAnswer && <small className="qt-warn">Doğru cevabı seçin</small>}
+        {q.kind === 'IMAGE' && (q.suggestion ? <small className={`qt-sugg ${String(q.suggestion.status).toLowerCase()}`}>{q.suggestion.status === 'PENDING' ? 'Havuza önerildi · yayın ekibi inceliyor' : q.suggestion.status === 'ACCEPTED' ? 'Havuza kabul edildi · teşekkürler!' : `Havuza alınmadı${q.suggestion.note ? `: ${q.suggestion.note}` : ''}`}</small>
+          : <button type="button" className="qt-sugg-btn" disabled={busy} onClick={() => setSuggest({ q, no: i + 1 })}><Send size={14} aria-hidden="true" /> Havuza öner</button>)}
       </li>)}</ol>
     </aside>
+    {suggest && <SuggestDialog base={base} item={suggest} onClose={() => setSuggest(null)} onDone={async (m: string) => { setSuggest(null); await reload(); setNotice(m); }} />}
+  </div>;
+}
+
+/**
+ * "Havuza öner" (owner, 27 Nov 2026): a question the teacher wrote can be offered to every ANUNEX school. The teacher
+ * declares it is theirs (or the institution's); the editorial team decides. Until then it stays only in this test.
+ */
+function SuggestDialog({ base, item, onClose, onDone }: { base: string; item: any; onClose: () => void; onDone: (m: string) => void }) {
+  const [declared, setDeclared] = useState(false); const [note, setNote] = useState(''); const [busy, setBusy] = useState(false); const [error, setError] = useState('');
+  useEffect(() => { const esc = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); }; window.addEventListener('keydown', esc); return () => window.removeEventListener('keydown', esc); }, [onClose]);
+  const send = async () => {
+    setBusy(true); setError('');
+    try { await api(`${base}/questions/${item.q.id}/suggest`, { method: 'POST', body: JSON.stringify({ declared: true, note }) }); onDone(`${item.no}. soru havuza önerildi. Yayın ekibi inceleyince sonucu burada görürsün.`); }
+    catch (e: any) { setError(e?.message || 'Öneri gönderilemedi.'); setBusy(false); }
+  };
+  return <div className="qt-sugg-layer" onMouseDown={(e) => { if (e.target === e.currentTarget) onClose(); }}>
+    <div className="qt-sugg-dialog" role="dialog" aria-modal="true" aria-labelledby="qt-sugg-h">
+      <h2 id="qt-sugg-h">{item.no}. soruyu havuza öner</h2>
+      <img src={`${base}/questions/${item.q.id}/image`} alt={`${item.no}. soru`} />
+      <p>Önerdiğin soru yayın ekibimizce incelenir; uygun bulunursa bütün ANUNEX okullarının kullandığı ortak havuza alınır. O zamana kadar yalnız senin testinde kalır.</p>
+      <label className="qt-sugg-check"><input type="checkbox" checked={declared} onChange={(e) => setDeclared(e.target.checked)} />Bu soruyu ben yazdım ya da kurumumuza aittir; ANUNEX’in ortak soru havuzunda kullanmasına izin veriyorum.</label>
+      <p className="qt-sugg-warn">Bir yayınevinin kitabından ya da internetten alınan sorular önerilemez; telif hakkıyla korunurlar.</p>
+      <label className="qt-sugg-note">Not (isteğe bağlı)<textarea value={note} maxLength={400} rows={2} placeholder="Örn. kazanım FB.5.2.1, çözümünde dikkat edilecek nokta…" onChange={(e) => setNote(e.target.value)} /></label>
+      {error && <div className="alert error" role="alert">{error}</div>}
+      <div className="qt-sugg-actions"><button type="button" className="secondary" onClick={onClose}>Vazgeç</button><button type="button" className="primary" disabled={!declared || busy} onClick={() => void send()}>{busy ? 'Gönderiliyor…' : 'Öner'}</button></div>
+    </div>
   </div>;
 }
 

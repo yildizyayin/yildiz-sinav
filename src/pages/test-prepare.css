@@ -128,3 +128,15 @@
 .qph-brand p{margin:0 0 14px;color:#5A6385;line-height:1.5}
 @media(max-width:560px){.qph-brand{grid-template-columns:1fr}.qph-brand .paper{max-width:180px}}
 .qph-brand .paper{padding:8% 8% 10%}.qph-brand .paper-titles small{font-size:6.5px}.qph-brand .paper-titles strong{font-size:8px}.qph-brand .paper-anunex{font-size:6px}.qph-brand .paper-foot{font-size:5.5px}
+.tr-add{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:60px;border-radius:18px;border:2px dashed #B9BFDB;background:transparent;font:inherit;font-weight:700;font-size:16px;color:#3D4BFF;cursor:pointer}
+.tr-add:hover{border-color:#3D4BFF;background:#F3F4FF}
+.add{display:flex;flex-direction:column;gap:16px}
+.add-steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.add-steps li{display:flex;gap:12px;align-items:flex-start;padding:14px;border-radius:16px;background:#F7F8FC;font-size:14px;line-height:1.45;color:#5A6385}
+.add-steps li span{flex:0 0 36px;height:36px;border-radius:12px;background:#EEF0FF;color:#3D4BFF;display:inline-flex;align-items:center;justify-content:center}
+.add-steps b{display:block;color:#0E1330;font-size:15px}
+.add-note{margin:0;font-size:15px;line-height:1.55}
+/* Testlerim: Hızlı Testler */
+.mt-quick{display:flex;flex-direction:column;gap:12px}
+.mt-quick h2{margin:6px 0 0;font-family:"Space Grotesk",Inter,sans-serif;font-size:22px;display:flex;align-items:center;gap:8px}
+.mt-link{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;color:#fff!important}

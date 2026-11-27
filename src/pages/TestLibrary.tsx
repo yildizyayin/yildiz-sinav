@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, ClipboardList, MoreHorizontal, Plus } from 'lucide-react';
+import { ArrowLeft, ClipboardList, MoreHorizontal, Plus, Scissors } from 'lucide-react';
 import { api } from '../api';
 import { useAuth } from '../auth';
 import { StudioPreview } from '../components/StudioPreview';
@@ -9,6 +9,7 @@ import { StudioDownloads } from '../components/StudioDownloads';
 import { StudioHomeworkAssign } from '../components/StudioHomeworkAssign';
 import { TestCheckDialog } from '../components/TestCheckDialog';
 import './my-tests.css';
+import './test-prepare.css';
 
 /**
  * Testlerim inside Soru Havuzu (owner, 27 Nov 2026: "öğretmenlerimiz ... basit hızlı ve sonuç odaklı").
@@ -25,6 +26,7 @@ export function TestLibrary() {
   const { user } = useAuth();
   const manager = !!user && user.role !== 'TEACHER';
   const [tests, setTests] = useState<Test[] | null>(null);
+  const [quick, setQuick] = useState<any[]>([]);
   const [tab, setTab] = useState('ALL');
   const [teacher, setTeacher] = useState('');
   const [error, setError] = useState('');
@@ -38,7 +40,7 @@ export function TestLibrary() {
   const [busy, setBusy] = useState('');
   const [ask, setAsk] = useState('');
   const menuRef = useRef<HTMLDivElement | null>(null);
-  const load = () => api<{ tests: Test[] }>('/api/teacher-tests').then((r) => setTests(r.tests)).catch((e) => setError(e.message));
+  const load = () => api<{ tests: Test[]; quickTests?: any[] }>('/api/teacher-tests').then((r) => { setTests(r.tests); setQuick(Array.isArray(r.quickTests) ? r.quickTests : []); }).catch((e) => setError(e.message));
   useEffect(() => { void load(); }, []);
   useEffect(() => {
     if (!menu) return;
@@ -76,7 +78,7 @@ export function TestLibrary() {
     {error && <div className="alert error" role="alert">{error}</div>}
     {notice && <div className="alert success" role="status">{notice}</div>}
     {!tests && !error && <p className="mt-empty">Testler yükleniyor…</p>}
-    {tests && !shown.length && <div className="mt-empty-card"><ClipboardList size={28} aria-hidden="true" /><strong>{tests.length ? 'Burada test yok.' : 'Henüz bir test hazırlanmadı.'}</strong><Link className="mt-new" to="/soru-havuzu/hazirla"><Plus size={18} aria-hidden="true" /> Test Hazırla</Link></div>}
+    {tests && !shown.length && (tests.length > 0 || !quick.length) && <div className="mt-empty-card"><ClipboardList size={28} aria-hidden="true" /><strong>{tests.length ? 'Burada test yok.' : 'Henüz bir test hazırlanmadı.'}</strong><Link className="mt-new" to="/soru-havuzu/hazirla"><Plus size={18} aria-hidden="true" /> Test Hazırla</Link></div>}
     <div className="mt-grid">{shown.map((t) => {
       const pct = t.homework?.total ? Math.round((t.homework.done / t.homework.total) * 100) : null;
       const draft = !t.locked;
@@ -120,6 +122,15 @@ export function TestLibrary() {
         </div>}
       </article>;
     })}</div>
+    {/* Hızlı Testler: tests with questions cropped from a PDF or a photo (owner, 27 Nov 2026) */}
+    {quick.filter((q) => !teacher || q.teacher?.id === teacher).length > 0 && <section className="mt-quick" aria-labelledby="mt-quick-h">
+      <h2 id="mt-quick-h"><Scissors size={20} aria-hidden="true" /> PDF ya da fotoğraftan hazırlananlar</h2>
+      <div className="mt-grid">{quick.filter((q) => !teacher || q.teacher?.id === teacher).map((q) => <article key={q.id} className="mt-card">
+        <div className="mt-card-top"><span className={`mt-badge ${q.unanswered ? 'draft' : 'printed'}`}>{q.unanswered ? `${q.unanswered} sorunun cevabı eksik` : 'Hızlı Test'}</span></div>
+        <div className="mt-card-text"><h2>{q.title}</h2><p>{[manager ? q.teacher?.name : null, q.gradeLevel ? `${q.gradeLevel}. sınıf` : null, q.subject, `${q.questionCount} soru`, date(q.updatedAt)].filter(Boolean).join(' · ')}</p>{q.results > 0 && <p className="mt-sub">{q.results} sonuç</p>}</div>
+        <div className="mt-main-actions"><Link className="mt-big dark mt-link" to={`/quick-tests/${encodeURIComponent(q.id)}`}>Aç</Link></div>
+      </article>)}</div>
+    </section>}
     {ask && <TestCheckDialog testId={ask} onCancel={() => setAsk('')} onConfirmed={() => { const id = ask; setAsk(''); setTests((x) => (x || []).map((y) => (y.id === id ? { ...y, checked: true } : y))); setPanel(id); }} />}
     {preview && <StudioPreview document={preview} onClose={() => setPreview(null)} onChanged={() => void load()} />}
     {scan && <StudioOpticalScan document={scan} onClose={() => setScan(null)} />}

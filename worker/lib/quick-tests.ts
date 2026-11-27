@@ -89,7 +89,9 @@ async function createTest(request: Request, env: Env, user: AuthUser) {
 
 async function testDetail(env: Env, user: AuthUser, t: any) {
   const [questions, sessions] = await Promise.all([questionsOf(env, t.id), all<any>(env.DB.prepare(`SELECT s.*,(SELECT count(*) FROM quick_test_attempts a WHERE a.session_id=s.id) started,(SELECT count(*) FROM quick_test_attempts a WHERE a.session_id=s.id AND a.submitted_at IS NOT NULL) submitted FROM quick_test_sessions s WHERE s.test_id=? ORDER BY s.created_at DESC`).bind(t.id))]);
-  return json({ ok: true, test: { ...t, settings: settingsOf(t) }, questions: questions.map((q) => ({ id: q.id, kind: q.kind, correctAnswer: q.correct_answer, width: q.image_width, height: q.image_height, stem: q.kind === 'BANK' ? q.stem_text : undefined, options: q.kind === 'BANK' ? bankOptions(q.options_json) : undefined })), sessions });
+  const { suggestionsFor } = await import('./pool-suggestions');
+  const suggested = await suggestionsFor(env, questions.filter((q) => q.kind === 'IMAGE').map((q) => q.id));
+  return json({ ok: true, test: { ...t, settings: settingsOf(t) }, questions: questions.map((q) => ({ id: q.id, kind: q.kind, correctAnswer: q.correct_answer, width: q.image_width, height: q.image_height, stem: q.kind === 'BANK' ? q.stem_text : undefined, options: q.kind === 'BANK' ? bankOptions(q.options_json) : undefined, suggestion: suggested.get(q.id) || null })), sessions });
 }
 
 async function updateTest(request: Request, env: Env, user: AuthUser, t: any) {
@@ -212,7 +214,13 @@ async function questionImage(env: Env, testId: string, qid: string) {
  * user-provided material), pool ownership (platform or this institution), and media. Any lookup that fails stops
  * the switch; nothing is assumed to be "without media".
  */
-async function fromStudio(env: Env, user: AuthUser, docId: string) {
+async function fromStudio(env: Env, user: AuthUser, docId: string, request?: Request) {
+  // Test Hazırla "+ Soru ekle (PDF / fotoğraf)" (owner, 27 Nov 2026): the test moves to Hızlı Test with its pool
+  // questions so cropped ones can join them. The person declares the right to use what they will crop, as for any
+  // cropped test; the pool questions pass every gate below again. The Studio draft is archived, never edited.
+  const body: any = request ? await request.json().catch(() => ({})) : {};
+  const forCrops = body?.addCrops === true;
+  if (forCrops && body?.rightsDeclared !== true) return fail(400, 'RIGHTS_REQUIRED', 'Ekleyeceğiniz soruları kullanma hakkınız olduğunu onaylayın.');
   const doc = await one<any>(env.DB.prepare('SELECT * FROM studio_documents WHERE id=?').bind(docId));
   if (!doc) return fail(404, 'NOT_FOUND', 'Studio belgesi bulunamadı.');
   if (user.role !== 'SUPER_ADMIN' && doc.institution_id !== user.institution_id) return fail(403, 'FORBIDDEN', 'Bu belgeye erişiminiz yok.');
@@ -243,7 +251,7 @@ async function fromStudio(env: Env, user: AuthUser, docId: string) {
     k = items.findIndex((q) => shared.unapproved.includes(q.id));
     if (k >= 0) return fail(409, 'STEM_GROUP_NOT_APPROVED', `${at(k)} ortak kök metni henüz onaylanmadı; onaylanmayan metin online sınavda gösterilmez.`); }
   k = items.findIndex((q) => Number(q.assets) > 0 || Number(q.blocks) > 0);
-  if (k >= 0) return fail(409, 'VISUAL_QUESTION', `${at(k)} görsel, tablo veya grafik içeriyor; bu tür sorular şimdilik yalnız kâğıt (PDF) olarak verilir.`);
+  if (k >= 0) return fail(409, 'VISUAL_QUESTION', forCrops ? `${at(k)} görsel, tablo veya grafik içeriyor; bu tür sorular Hızlı Test’e taşınamaz. O soruyu “Başka soru” ile değiştirip tekrar deneyin.` : `${at(k)} görsel, tablo veya grafik içeriyor; bu tür sorular şimdilik yalnız kâğıt (PDF) olarak verilir.`);
   if (user.role === 'TEACHER') {
     const subjects = [...new Set(items.map((q) => q.subject_id).filter(Boolean))] as string[];
     if (subjects.length !== new Set(items.map((q) => q.subject_id || '')).size) return fail(403, 'SUBJECT_REQUIRED', 'Dersi belirtilmemiş soru var; branş yetkisi doğrulanamadı.');
@@ -254,6 +262,19 @@ async function fromStudio(env: Env, user: AuthUser, docId: string) {
   }
   const optionCount = items.some((q) => Number(q.option_count) === 5) ? 5 : 4;
   const id = uuid('qt');
+  if (forCrops) {
+    const reached = await one<any>(env.DB.prepare(`SELECT (SELECT COUNT(*) FROM studio_delivery_links WHERE document_id=?)+(SELECT COUNT(*) FROM assessment_runs WHERE source_type='QUESTION_BANK' AND source_id=?) n`).bind(docId, docId));
+    if (Number(reached?.n || 0) > 0) return fail(409, 'TEST_LOCKED', 'Bu test öğrencilere ulaştı; önce Testlerim’den “Kopyala ve düzenle” ile yeni bir test yapın.');
+    const subject = doc.subject_id ? await one<any>(env.DB.prepare('SELECT name FROM subjects WHERE id=?').bind(doc.subject_id)) : null;
+    await env.DB.batch([
+      env.DB.prepare(`INSERT INTO quick_tests(id,institution_id,created_by,title,grade_level,subject_label,option_count,source_kind,studio_document_id,rights_declared_by,rights_declared_at,layout_json) VALUES(?,?,?,?,?,?,?,'CROP',NULL,?,CURRENT_TIMESTAMP,?)`)
+        .bind(id, doc.institution_id, user.id, clean(doc.title, 140), doc.grade_level, subject?.name || null, optionCount, user.id, JSON.stringify({ columns: 0, wrongDivisor: 0 })),
+      ...items.map((q, i) => env.DB.prepare(`INSERT INTO quick_test_questions(id,test_id,sort_order,kind,question_bank_id,correct_answer) VALUES(?,?,?,'BANK',?,?)`).bind(uuid('qtq'), id, i + 1, q.id, LETTERS.includes(String(q.correct_answer || '').toUpperCase()) ? String(q.correct_answer).toUpperCase() : null)),
+      env.DB.prepare(`UPDATE studio_documents SET status='ARCHIVED',updated_at=CURRENT_TIMESTAMP WHERE id=?`).bind(docId),
+      env.DB.prepare('INSERT INTO audit_logs(id,actor_user_id,institution_id,action,entity_type,entity_id,details_json) VALUES(?,?,?,?,?,?,?)').bind(uuid('aud'), user.id, doc.institution_id, 'QUICK_TEST_FROM_STUDIO_FOR_CROPS', 'quick_test', id, JSON.stringify({ studioDocumentId: docId, poolQuestions: items.length, rightsDeclared: true })),
+    ]);
+    return json({ ok: true, id, moved: true }, 201);
+  }
   await env.DB.batch([
     env.DB.prepare(`INSERT INTO quick_tests(id,institution_id,created_by,title,grade_level,option_count,source_kind,studio_document_id,layout_json) VALUES(?,?,?,?,?,?,'POOL',?,?)`).bind(id, doc.institution_id, user.id, doc.title, doc.grade_level, optionCount, docId, JSON.stringify({ columns: 0, wrongDivisor: 0 })),
     ...items.map((q, i) => env.DB.prepare(`INSERT INTO quick_test_questions(id,test_id,sort_order,kind,question_bank_id,correct_answer) VALUES(?,?,?,'BANK',?,?)`).bind(uuid('qtq'), id, i + 1, q.id, LETTERS.includes(String(q.correct_answer || '').toUpperCase()) ? String(q.correct_answer).toUpperCase() : null)),
@@ -300,10 +321,13 @@ export async function quickPrintCheck(env: Env, t: any) {
     if (!t.rights_declared_by) blockers.push({ code: 'RIGHTS_NOT_DECLARED', message: 'Kırpılan materyali kullanma hakkınız olduğunu beyan edin.', questionId: null, target: 'RIGHTS' });
     // A rights declaration is not an editorial review: say so, never present cropped questions as approved.
     warnings.push({ code: 'NOT_EDITORIALLY_REVIEWED', message: 'Kırpılan sorular kuruma özeldir ve editoryal onaydan geçmemiştir; kullanım hakkı beyanı onay yerine geçmez.', questionId: null, target: 'APPROVAL' });
-  } else {
+  }
+  // Pool questions are checked whatever the test's source: a test moved from Test Hazırla keeps its pool questions
+  // next to the cropped ones, and each pool question must still be approved and cleared for print.
+  if (t.source_kind !== 'CROP' || questions.some((q) => q.question_bank_id)) {
     const bank = questions.filter((q) => q.question_bank_id).map((q) => q.question_bank_id);
     const rows = bank.length ? await all<any>(env.DB.prepare(`SELECT id,review_status,copyright_status FROM question_bank WHERE id IN (${bank.map(() => '?').join(',')})`).bind(...bank)) : [];
-    questions.forEach((q, i) => { const r = rows.find((x) => x.id === q.question_bank_id); if (!r) blockers.push({ code: 'QUESTION_MISSING', message: `${i + 1}. soru artık havuzda yok.`, questionId: q.id, target: 'CONTENT' }); else { if (r.review_status !== 'APPROVED') blockers.push({ code: 'NOT_APPROVED', message: `${i + 1}. soru onaylı değil.`, questionId: q.id, target: 'APPROVAL' }); if (!RIGHTS_OK.includes(String(r.copyright_status))) blockers.push({ code: 'RIGHTS_NOT_CLEARED', message: `${i + 1}. sorunun kullanım hakkı baskıya uygun değil.`, questionId: q.id, target: 'RIGHTS' }); } });
+    questions.forEach((q, i) => { if (t.source_kind === 'CROP' && !q.question_bank_id) return; const r = rows.find((x) => x.id === q.question_bank_id); if (!r) blockers.push({ code: 'QUESTION_MISSING', message: `${i + 1}. soru artık havuzda yok.`, questionId: q.id, target: 'CONTENT' }); else { if (r.review_status !== 'APPROVED') blockers.push({ code: 'NOT_APPROVED', message: `${i + 1}. soru onaylı değil.`, questionId: q.id, target: 'APPROVAL' }); if (!RIGHTS_OK.includes(String(r.copyright_status))) blockers.push({ code: 'RIGHTS_NOT_CLEARED', message: `${i + 1}. sorunun kullanım hakkı baskıya uygun değil.`, questionId: q.id, target: 'RIGHTS' }); } });
   }
   for (const [i, q] of questions.entries()) if (q.kind === 'IMAGE') {
     const obj = await env.FILES.get(q.image_key);
@@ -459,7 +483,7 @@ export async function handleQuickTests(request: Request, env: Env): Promise<Resp
   const p = url.pathname, m = request.method;
   if (p === '/api/quick-tests' && m === 'GET') return listTests(env, user, url);
   if (p === '/api/quick-tests' && m === 'POST') return createTest(request, env, user);
-  let x = p.match(/^\/api\/quick-tests\/from-studio\/([^/]+)$/); if (x && m === 'POST') return fromStudio(env, user, x[1]);
+  let x = p.match(/^\/api\/quick-tests\/from-studio\/([^/]+)$/); if (x && m === 'POST') return fromStudio(env, user, x[1], request);
   x = p.match(/^\/api\/quick-tests\/([^/]+)(?:\/(.+))?$/);
   if (!x) return fail(404, 'NOT_FOUND', 'Yol bulunamadı.');
   const t = await ownedTest(env, user, x[1]);
@@ -475,6 +499,7 @@ export async function handleQuickTests(request: Request, env: Env): Promise<Resp
   if (y && m === 'PATCH') return setAnswer(request, env, t, y[1]);
   if (y && m === 'DELETE') return deleteQuestion(env, t, y[1]);
   y = rest.match(/^questions\/([^/]+)\/image$/); if (y && m === 'GET') return questionImage(env, t.id, y[1]);
+  y = rest.match(/^questions\/([^/]+)\/suggest$/); if (y && m === 'POST') { const { suggestQuestion } = await import('./pool-suggestions'); return suggestQuestion(request, env, user, t, y[1]); }
   if (rest === 'sessions' && m === 'POST') return createSession(request, env, user, t);
   y = rest.match(/^sessions\/([^/]+)\/close$/); if (y && m === 'POST') return closeSession(env, t, y[1]);
   if (rest === 'results' && m === 'GET') return results(env, t, url);

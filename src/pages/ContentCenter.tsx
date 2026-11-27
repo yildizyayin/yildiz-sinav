@@ -7,6 +7,7 @@ import {QuestionContentEditor} from '../components/QuestionContentEditor';
 import {QuestionBatchReview,batchEligible} from '../components/QuestionBatchReview';
 import {QuestionImport} from '../components/QuestionImport';
 import {ContentPackageImport} from '../components/ContentPackageImport';
+import {PoolSuggestions} from '../components/PoolSuggestions';
 import {ScreeningTag,orderForReview} from '../components/QuestionScreening';
 import {StudioDownloads} from '../components/StudioDownloads';
 import {StudioOpticalScan} from '../components/StudioOpticalScan';
@@ -57,7 +58,7 @@ export function ContentCenter() {
   const { user } = useAuth();
   const [searchParams,setSearchParams]=useSearchParams();
   const features = useFeatures();
-  const [tab, setTab] = useState<'questions' | 'studio' | 'videos' | 'coverage'>('questions');
+  const [tab, setTab] = useState<'questions' | 'studio' | 'videos' | 'coverage' | 'suggestions'>('questions');
   const [questions, setQuestions] = useState<any[]>([]);
   const [selectedQuestion, setSelectedQuestion] = useState<any | null>(null);
   const [batchIds, setBatchIds] = useState<Set<string>>(new Set());
@@ -201,11 +202,13 @@ export function ContentCenter() {
     {user?.role==='SUPER_ADMIN'&&<Link to="/question-team">Soru havuzu ekibini yönet ↗</Link>}
     <div className="content-tabs" role="tablist" aria-label="İçerik modülleri">
       {user?.role === 'SUPER_ADMIN' && <button className={tab === 'coverage' ? 'active' : ''} onClick={() => setTab('coverage')}>Kazanım kapsamı</button>}
+      {user?.role === 'SUPER_ADMIN' && <button className={tab === 'suggestions' ? 'active' : ''} onClick={() => setTab('suggestions')}>Öğretmen önerileri</button>}
       <button className={tab === 'questions' ? 'active' : ''} onClick={() => setTab('questions')}><BookOpen size={16} /> Soru havuzu <span>{stats?.total ?? questions.length}</span></button>
       {features.has('STUDIO') && <button className={tab === 'studio' ? 'active' : ''} onClick={() => setTab('studio')}><WandSparkles size={16} /> Studio <span>{docs.length}</span></button>}
       {features.has('VIDEO_LIBRARY') && <button className={tab === 'videos' ? 'active' : ''} onClick={() => setTab('videos')}><PlaySquare size={16} /> Video <span>{videos.length}</span></button>}
     </div>
 
+    {tab === 'suggestions' && user?.role === 'SUPER_ADMIN' && <div className="module-stack"><PoolSuggestions /></div>}
     {tab === 'coverage' && user?.role === 'SUPER_ADMIN' && <QuestionPoolCoverage onDraftsReady={()=>void load()} key={JSON.stringify([user.id,user.role,user.institution_id])}/>}
     {tab === 'questions' && <>
       <div className="content-summary-grid"><div><span>Toplam soru</span><strong>{stats?.total ?? questions.length}</strong><small>arşiv dışı içerik</small></div><div><span>Onaylı</span><strong>{approvedCount}</strong><small>öğrenci akışına açık</small></div><div><span>Kitapta kullanılabilir</span><strong>{printableCount}</strong><small>telif filtresinden geçen</small></div><div><span>Aktif seviye</span><strong>6</strong><small>başlangıçtan olimpiyata</small></div></div>
