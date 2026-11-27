@@ -114,6 +114,7 @@ const SmartBoard=lazy(()=>import('./pages/SmartBoard').then(module=>({default:mo
 const QuestionPoolHome=lazy(()=>import('./pages/QuestionPoolHome').then(module=>({default:module.QuestionPoolHome})));
 const TestLibrary=lazy(()=>import('./pages/TestLibrary').then(module=>({default:module.TestLibrary})));
 const TestDetail=lazy(()=>import('./pages/TestDetail').then(module=>({default:module.TestDetail})));
+const BoardRemote=lazy(()=>import('./pages/BoardRemote').then(module=>({default:module.BoardRemote})));
 const TestPrepare=lazy(()=>import('./pages/TestPrepare').then(module=>({default:module.TestPrepare})));
 const TestReady=lazy(()=>import('./pages/TestReady').then(module=>({default:module.TestReady})));
 const PhysicalLink=lazy(()=>import('./pages/PhysicalLink').then(module=>({default:module.PhysicalLink})));
@@ -152,9 +153,11 @@ function AppContent(){
  if(location.pathname==='/sinav'||location.pathname.startsWith('/sinav/'))return <Suspense fallback={<div className="boot">Sınav yükleniyor…</div>}><Routes><Route path="/sinav" element={<QuickExamTake/>}/><Route path="/sinav/:code" element={<QuickExamTake/>}/></Routes></Suspense>;
  if(loading)return <div className="boot">Anunex yükleniyor…</div>;
  if((location.pathname==='/nibiru-direct'||(!user&&location.pathname==='/nibiru'))&&!user?.must_change_password)return <NibiruDirect/>;
+ // Tahta kumandası: a teacher who scans the board's QR before signing in comes back to the remote after login
+ if(!user&&location.pathname.startsWith('/kumanda')){try{sessionStorage.setItem('anunex.afterLogin',location.pathname)}catch{}}
  if(!user&&location.pathname!=='/login')return <Navigate to="/login" replace/>;
  if(user&&user.must_change_password&&location.pathname!=='/change-password')return <Navigate to="/change-password" replace/>;
- if(user&&location.pathname==='/login')return <Navigate to={user.role==='PARENT'?'/nibiru':'/'} replace/>;
+ if(user&&location.pathname==='/login'){let back='';try{back=sessionStorage.getItem('anunex.afterLogin')||''}catch{}if(back.startsWith('/kumanda')&&user.role!=='PARENT')return <Navigate to={back} replace/>;return <Navigate to={user.role==='PARENT'?'/nibiru':'/'} replace/>;}
  // owner, 24 Nov 2026: a parent opens ANUNEX into Nibiru, once per visit; the ANUNEX button leads on to the panel
  if(user?.role==='PARENT'&&location.pathname==='/'&&firstVisitOfSession())return <Navigate to="/nibiru" replace/>;
  return <Routes>
@@ -169,6 +172,8 @@ function AppContent(){
   <Route path="soru-havuzu/testlerim" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER']}><FeatureGate feature="STUDIO"><TestLibrary/></FeatureGate></RoleGate>}/>
   <Route path="soru-havuzu/testlerim/:testId" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER']}><FeatureGate feature="STUDIO"><TestDetail/></FeatureGate></RoleGate>}/>
   <Route path="testlerim" element={<Navigate to="/soru-havuzu/testlerim" replace/>}/>
+  <Route path="kumanda" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER']}><BoardRemote/></RoleGate>}/>
+  <Route path="kumanda/:code" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER']}><BoardRemote/></RoleGate>}/>
   <Route path="board/:documentId" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER']}><SmartBoard/></RoleGate>}/>
   <Route path="k/:key" element={<RoleGate allowed={ALL_ROLES}><PhysicalLink/></RoleGate>}/>
   <Route path="attendance" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER','STUDENT','PARENT']}><AttendanceCenter/></RoleGate>}/>

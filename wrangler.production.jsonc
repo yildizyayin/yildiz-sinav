@@ -31,6 +31,22 @@
       "migrations_dir": "migrations"
     }
   ],
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "BOARD_ROOM",
+        "class_name": "BoardRoom"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "board-room-v1",
+      "new_sqlite_classes": [
+        "BoardRoom"
+      ]
+    }
+  ],
   "r2_buckets": [
     {
       "binding": "FILES"
