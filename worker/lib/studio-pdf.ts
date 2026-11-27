@@ -1,6 +1,6 @@
 import qrcode from 'qrcode-generator';
 import fontkit from '@pdf-lib/fontkit';
-import { PDFDocument, PDFFont, PDFPage, rgb } from 'pdf-lib';
+import { PDFDocument, PDFFont, PDFImage, PDFPage, rgb } from 'pdf-lib';
 import type { Env } from '../types';
 import { all, one } from './db';
 import { DEFAULT_LAYOUT_SETTINGS, layoutModel, type LayoutModel, type LayoutPlan, type Placement, type PrintLayoutSettings } from './print-layout';
@@ -327,6 +327,8 @@ function footer(ctx: Ctx) {
   ctx.pages.forEach((page, i) => {
     const label = `Sayfa ${i + 1} / ${total}`;
     page.drawText(label, { x: ctx.L.pageW / 2 - ctx.fonts.regular.widthOfTextAtSize(label, 7.5) / 2, y: ctx.L.margin - 4, size: 7.5, font: ctx.fonts.regular, color: MUTED });
+    // Owner, 27 Nov 2026: the institution's name stays on every page of the printed booklet, not only the first.
+    if (ctx.branding.institutionName) page.drawText(ctx.branding.institutionName, { x: ctx.L.margin, y: ctx.L.margin - 4, size: 7.5, font: ctx.fonts.regular, color: MUTED, maxWidth: ctx.L.pageW / 2 - ctx.L.margin - 40 });
   });
 }
 
@@ -386,11 +388,21 @@ export function opticalPage(title: string, booklet: string, questionCount: numbe
 }
 
 const BLACK = rgb(0, 0, 0), LETTER = rgb(0.55, 0.58, 0.63);
-export function drawOpticalPage(pdf: PDFDocument, fonts: Fonts, layout: OpticalLayout) {
+/**
+ * Owner, 27 Nov 2026: the answer form carries the institution too — its name above the title and its logo in the
+ * free box between the title and the top-right corner square. Only text and the logo move; corner squares, the
+ * orientation disc and every bubble stay exactly where the camera expects them (the geometry is unchanged).
+ */
+export type PrintBrand = { name: string | null; logo: PDFImage | null };
+export const OPTICAL_LOGO_BOX = { x: 472, y: 768, size: 30 };
+export function drawOpticalPage(pdf: PDFDocument, fonts: Fonts, layout: OpticalLayout, brand?: PrintBrand) {
   const page = pdf.addPage([PAGE_W, PAGE_H]);
   for (const [x, y] of STUDIO_MARKERS) page.drawRectangle({ x, y, width: MARKER, height: MARKER, color: BLACK });
   page.drawCircle({ x: PROBE.x, y: PROBE.y, size: PROBE.r, color: BLACK });
-  page.drawText(layout.title, { x: 70, y: 800, size: 15, font: fonts.bold, color: INK, maxWidth: 400 });
+  const name = brand?.name || null, logo = brand?.logo || null;
+  if (logo) { const b = OPTICAL_LOGO_BOX, s = Math.min(b.size / logo.width, b.size / logo.height), w = logo.width * s, h = logo.height * s; page.drawImage(logo, { x: b.x + (b.size - w) / 2, y: b.y + (b.size - h) / 2, width: w, height: h }); }
+  if (name) page.drawText(name, { x: 70, y: 811, size: 8.5, font: fonts.bold, color: MUTED, maxWidth: logo ? 390 : 460 });
+  page.drawText(layout.title, { x: 70, y: name ? 797 : 800, size: 15, font: fonts.bold, color: INK, maxWidth: logo ? 390 : 400 });
   page.drawText(`Cevap Formu · Kitapçık ${layout.booklet} · ${layout.questionCount} soru`, { x: 70, y: 786, size: 9, font: fonts.regular, color: MUTED });
   page.drawText('Ad Soyad: ____________________________   Sınıf: ________', { x: 70, y: BOOKLET_Y - 3.5, size: 10, font: fonts.regular, color: INK });
   page.drawText('Kitapçık', { x: 418, y: BOOKLET_Y - 3.5, size: 10, font: fonts.bold, color: INK });
@@ -425,12 +437,7 @@ export async function layoutStudioBooklet(env: Env, documentId: string, booklet:
   const marks: Ctx['marks'] = {};
   if (branding.showAnunex) marks.anunex = await pdf.embedPng(b64(ANUNEX_MARK_PNG_BASE64));
   if (branding.showNibiru && items.some(q => q.ai)) marks.nibiru = await pdf.embedPng(b64(NIBIRU_MARK_PNG_BASE64));
-  if (branding.institutionLogo) {
-    const format = sniff(branding.institutionLogo);
-    if (!format) throw new StudioPrintError('PRINT_LOGO_FORMAT_UNSUPPORTED', 'Kurum logosu PNG veya JPEG olmalıdır.');
-    try { marks.logo = format === 'png' ? await pdf.embedPng(branding.institutionLogo) : await pdf.embedJpg(branding.institutionLogo); }
-    catch { throw new StudioPrintError('PRINT_LOGO_UNREADABLE', 'Kurum logosu okunamadı.'); }
-  }
+  if (branding.institutionLogo) marks.logo = await embedLogo(pdf, branding.institutionLogo);
   const L = layoutModel(settings);
   const ctx: Ctx = { pdf, fonts, images: new Map(), title, booklet, pages: [], branding, marks, L };
   await prepareImages(ctx, items);
@@ -460,22 +467,31 @@ export async function layoutStudioBooklet(env: Env, documentId: string, booklet:
   footer(ctx);
   let deliveryMode = 'PDF_OPTICAL'; try { deliveryMode = String(JSON.parse(doc.config_json || '{}').deliveryMode || 'PDF_OPTICAL').toUpperCase(); } catch {}
   const plan: LayoutPlan = { settings, model: L, pages: ctx.pages.length, placements };
-  return { doc, pdf, fonts, title, items, plan, deliveryMode, branding };
+  return { doc, pdf, fonts, title, items, plan, deliveryMode, branding, logo: (marks.logo ?? null) as PDFImage | null };
+}
+
+/** The institution's print logo (PNG/JPEG) embedded once per PDF; anything else stops printing with the reason. */
+export async function embedLogo(pdf: PDFDocument, bytes: Uint8Array): Promise<PDFImage> {
+  const format = sniff(bytes);
+  if (!format) throw new StudioPrintError('PRINT_LOGO_FORMAT_UNSUPPORTED', 'Kurum logosu PNG veya JPEG olmalıdır.');
+  try { return format === 'png' ? await pdf.embedPng(bytes) : await pdf.embedJpg(bytes); }
+  catch { throw new StudioPrintError('PRINT_LOGO_UNREADABLE', 'Kurum logosu okunamadı.'); }
 }
 
 export async function renderStudioPdf(env: Env, documentId: string, booklet: string, branding: StudioBranding = DEFAULT_BRANDING, settings: PrintLayoutSettings = DEFAULT_LAYOUT_SETTINGS): Promise<{ bytes: ArrayBuffer; metadata: Record<string, unknown>; questionCount: number; plan: LayoutPlan }> {
-  const { pdf, fonts, title, items, plan, deliveryMode } = await layoutStudioBooklet(env, documentId, booklet, branding, settings);
+  const { pdf, fonts, title, items, plan, deliveryMode, logo } = await layoutStudioBooklet(env, documentId, booklet, branding, settings);
+  const brand: PrintBrand = { name: branding.institutionName, logo };
   const withOptical = deliveryMode === 'PDF_OPTICAL';
   if (withOptical && items.length > STUDIO_OPTICAL_CAPACITY) throw new StudioPrintError('PRINT_OPTICAL_CAPACITY', `Bu optik form en fazla ${STUDIO_OPTICAL_CAPACITY} soruyu okutabilir; kitapçıkta ${items.length} soru var. Soru sayısını azaltın veya optiksiz PDF teslimini seçin.`);
   const optionCount = items.some(q => q.options.length >= 5) ? 5 : 4;
   const optical = withOptical ? opticalPage(title, booklet, items.length, optionCount) : null;
-  if (optical) drawOpticalPage(pdf, fonts, optical.layout);
+  if (optical) drawOpticalPage(pdf, fonts, optical.layout, brand);
   const bytes = await pdf.save();
   return { bytes: bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) as ArrayBuffer, metadata: { bookletCode: booklet, questionCount: items.length, optionCount, questionPages: plan.pages, layout: settings, branding: { showAnunex: branding.showAnunex, showNibiru: branding.showNibiru, institutionName: branding.institutionName, institutionLogo: !!branding.institutionLogo }, optical: optical?.geometry ?? null }, questionCount: items.length, plan };
 }
 
 /** Teacher-facing answer key: one table per booklet, derived from the same stored order as the booklets. */
-export async function renderStudioAnswerKey(env: Env, documentId: string): Promise<{ bytes: ArrayBuffer; booklets: Record<string, string[]> }> {
+export async function renderStudioAnswerKey(env: Env, documentId: string, branding: StudioBranding = DEFAULT_BRANDING): Promise<{ bytes: ArrayBuffer; booklets: Record<string, string[]> }> {
   const doc = await one<any>(env.DB.prepare('SELECT * FROM studio_documents WHERE id=?').bind(documentId)); if (!doc) throw new Error('STUDIO_NOT_FOUND');
   const rows = await all<{ booklet_code: string; sort_order: number; correct_answer: string | null }>(env.DB.prepare(`SELECT i.booklet_code,i.sort_order,q.correct_answer FROM studio_document_items i JOIN question_bank q ON q.id=i.question_id WHERE i.document_id=? ORDER BY i.booklet_code,i.sort_order`).bind(documentId));
   const booklets: Record<string, string[]> = {};
@@ -491,9 +507,8 @@ export async function renderStudioAnswerKey(env: Env, documentId: string): Promi
   const title = normalizePrintText(doc.title);
   assertPrintable(fonts, title, 'Belge başlığı');
   const page = pdf.addPage([PAGE_W, PAGE_H]);
-  page.drawText(title, { x: MARGIN, y: TOP - 14, size: 14, font: fonts.bold, color: INK, maxWidth: PAGE_W - 2 * MARGIN });
-  page.drawText('Cevap Anahtarı · Öğretmen kopyası · Öğrenciye dağıtmayın', { x: MARGIN, y: TOP - 32, size: 9, font: fonts.regular, color: MUTED });
-  let y = TOP - 60;
+  const top = drawKeyHeader(page, fonts, title, 'Cevap Anahtarı · Öğretmen kopyası · Öğrenciye dağıtmayın', { name: branding.institutionName, logo: branding.institutionLogo ? await embedLogo(pdf, branding.institutionLogo) : null });
+  let y = top - 28;
   for (const code of Object.keys(booklets).sort()) {
     const answers = booklets[code];
     page.drawText(`Kitapçık ${code}`, { x: MARGIN, y, size: 11, font: fonts.bold, color: INK }); y -= 18;
@@ -509,6 +524,26 @@ export async function renderStudioAnswerKey(env: Env, documentId: string): Promi
   }
   const bytes = await pdf.save();
   return { bytes: bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) as ArrayBuffer, booklets };
+}
+
+/**
+ * Answer-key header. Without an institution it is the original two lines (title, note); with one, the logo sits
+ * top-left and the institution's name above the title, as on the booklet. Returns the y of the header's last line.
+ */
+export function drawKeyHeader(page: PDFPage, fonts: Fonts, title: string, note: string, brand: PrintBrand): number {
+  if (brand.name) assertPrintable(fonts, brand.name, 'Kurum adı');
+  if (!brand.name && !brand.logo) {
+    page.drawText(title, { x: MARGIN, y: TOP - 14, size: 14, font: fonts.bold, color: INK, maxWidth: PAGE_W - 2 * MARGIN });
+    page.drawText(note, { x: MARGIN, y: TOP - 32, size: 9, font: fonts.regular, color: MUTED });
+    return TOP - 32;
+  }
+  let left = MARGIN;
+  if (brand.logo) { const s = Math.min(40 / brand.logo.width, 40 / brand.logo.height); page.drawImage(brand.logo, { x: left, y: TOP - 40 + (40 - brand.logo.height * s) / 2, width: brand.logo.width * s, height: brand.logo.height * s }); left += brand.logo.width * s + 10; }
+  const w = PAGE_W - MARGIN - left;
+  if (brand.name) page.drawText(brand.name, { x: left, y: TOP - 10, size: 9.5, font: fonts.bold, color: MUTED, maxWidth: w });
+  page.drawText(title, { x: left, y: TOP - (brand.name ? 26 : 16), size: 14, font: fonts.bold, color: INK, maxWidth: w });
+  page.drawText(note, { x: left, y: TOP - (brand.name ? 40 : 32), size: 9, font: fonts.regular, color: MUTED, maxWidth: w });
+  return TOP - 44;
 }
 
 /**

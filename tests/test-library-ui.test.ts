@@ -47,7 +47,7 @@ const card = (node: Element, title: string) => [...node.querySelectorAll('.mt-ca
 it('Soru Havuzu shows only the two choices, and how many tests wait', async () => {
   tests = base();
   const node = await mount(createElement(QuestionPoolHome));
-  expect([...node.querySelectorAll('a.qph-tile')].map((a) => [a.querySelector('strong')?.textContent, a.getAttribute('href')])).toEqual([['Test Hazırla', '/content-center'], ['Testlerim', '/soru-havuzu/testlerim']]);
+  expect([...node.querySelectorAll('a.qph-tile')].map((a) => [a.querySelector('strong')?.textContent, a.getAttribute('href')])).toEqual([['Test Hazırla', '/soru-havuzu/hazirla'], ['Testlerim', '/soru-havuzu/testlerim']]);
   expect(node.textContent).toContain('1 test yarım kaldı');
   role = 'INSTITUTION_MANAGER';
   for (const r of roots.splice(0)) await act(async () => r.unmount());

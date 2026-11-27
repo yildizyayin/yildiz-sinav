@@ -69,14 +69,14 @@ export function TestLibrary() {
       <div><h1>{manager ? 'Kurumun testleri' : 'Testlerim'}</h1><p className="mt-lead">{manager ? 'Bütün öğretmenlerin hazırladığı testler' : 'Hazırladığın testler ve sonuçları'}</p></div>
       <div className="mt-head-actions">
         {manager && teachers.length > 0 && <label className="mt-filter">Öğretmen<select value={teacher} onChange={(e) => setTeacher(e.target.value)}><option value="">Tüm öğretmenler</option>{teachers.map(([id, name]) => <option key={id} value={id}>{name}</option>)}</select></label>}
-        <Link className="mt-new" to="/content-center"><Plus size={18} aria-hidden="true" /> Test Hazırla</Link>
+        <Link className="mt-new" to="/soru-havuzu/hazirla"><Plus size={18} aria-hidden="true" /> Test Hazırla</Link>
       </div>
     </header>
     <div role="tablist" aria-label="Durum" className="mt-tabs">{TABS.map(([k, l]) => <button key={k} type="button" role="tab" aria-selected={tab === k} className={tab === k ? 'on' : ''} onClick={() => setTab(k)}>{l} <span>{tests ? scoped.filter((t) => inTab(t, k)).length : '…'}</span></button>)}</div>
     {error && <div className="alert error" role="alert">{error}</div>}
     {notice && <div className="alert success" role="status">{notice}</div>}
     {!tests && !error && <p className="mt-empty">Testler yükleniyor…</p>}
-    {tests && !shown.length && <div className="mt-empty-card"><ClipboardList size={28} aria-hidden="true" /><strong>{tests.length ? 'Burada test yok.' : 'Henüz bir test hazırlanmadı.'}</strong><Link className="mt-new" to="/content-center"><Plus size={18} aria-hidden="true" /> Test Hazırla</Link></div>}
+    {tests && !shown.length && <div className="mt-empty-card"><ClipboardList size={28} aria-hidden="true" /><strong>{tests.length ? 'Burada test yok.' : 'Henüz bir test hazırlanmadı.'}</strong><Link className="mt-new" to="/soru-havuzu/hazirla"><Plus size={18} aria-hidden="true" /> Test Hazırla</Link></div>}
     <div className="mt-grid">{shown.map((t) => {
       const pct = t.homework?.total ? Math.round((t.homework.done / t.homework.total) * 100) : null;
       const draft = !t.locked;
