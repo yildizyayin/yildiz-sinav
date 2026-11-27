@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ChevronLeft, ChevronRight, Eraser, Eye, EyeOff, Lightbulb, Maximize, Minimize, Pen, Play, RotateCcw, Timer, Trash2, Undo2, Video, X } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Eraser, Eye, EyeOff, Lightbulb, Maximize, Minimize, Pen, Play, RotateCcw, Smartphone, Timer, Trash2, Undo2, Video, X } from 'lucide-react';
+import qrcode from 'qrcode-generator';
+import { useBoardSocket, type BoardMsg } from '../lib/boardSocket';
 import { api } from '../api';
 import { TestCheckDialog } from '../components/TestCheckDialog';
 import './smart-board.css';
@@ -37,6 +39,9 @@ export function SmartBoard() {
   const [timer, setTimer] = useState<{ total: number; left: number; on: boolean } | null>(null);
   const [full, setFull] = useState(false);
   const [needsCheck, setNeedsCheck] = useState(false);
+  const [remote, setRemote] = useState<{ code: string; path: string } | null>(null);
+  const [remoteOpen, setRemoteOpen] = useState(false);
+  const [remoteError, setRemoteError] = useState('');
   const canvas = useRef<HTMLCanvasElement | null>(null);
   const stage = useRef<HTMLDivElement | null>(null);
   const drawing = useRef<Stroke | null>(null);
@@ -118,6 +123,40 @@ export function SmartBoard() {
   const undo = () => q && setInk((m) => ({ ...m, [q.id]: (m[q.id] || []).slice(0, -1) }));
   const clear = () => q && setInk((m) => ({ ...m, [q.id]: [] }));
 
+  // Tahta kumandası: the phone sends commands, the board answers with where the lesson stands.
+  const onRemote = (m: BoardMsg) => {
+    if (m.type === 'presence' && m.remotes > 0) setRemoteOpen(false);
+    if (m.type !== 'cmd' || !q) return;
+    const v = m.value;
+    switch (m.action) {
+      case 'next': go(k + 1); break;
+      case 'prev': go(k - 1); break;
+      case 'goto': if (Number.isInteger(v)) go(Number(v)); break;
+      case 'reveal': setRevealed(true); break;
+      case 'step': setRevealed(true); setSteps(Math.min(q.steps.length, steps + 1)); break;
+      case 'reset': setRevealed(false); setPicked(null); setSteps(0); break;
+      case 'video': if (q.solutionVideo) { setRevealed(true); setVideo({ url: q.solutionVideo.url, title: 'Çözüm videosu', link: q.solutionVideo.kind === 'LINK' }); } break;
+      case 'topic': if (q.topicVideo) setVideo({ url: q.topicVideo.url, title: `Konu anlatımı · ${q.outcome?.title || ''}` }); break;
+      case 'closeVideo': setVideo(null); break;
+      case 'options': setHideOptions((h) => !h); break;
+      case 'timer': if ([30, 60, 120].includes(Number(v))) setTimer({ total: Number(v), left: Number(v), on: true }); else setTimer(null); break;
+    }
+  };
+  const board = useBoardSocket(remote?.code || null, 'board', onRemote);
+  useEffect(() => {
+    if (!remote || !q) return;
+    board.send({ type: 'state', index: k, total: items.length, title: test?.title || '', stem: q.stem.slice(0, 280), options: q.options.map((o) => ({ label: o.label, text: o.text.slice(0, 120) })), answer: q.answer,
+      revealed, steps, stepsTotal: q.steps.length, hideOptions, hasVideo: !!q.solutionVideo, hasTopic: !!q.topicVideo, videoOpen: !!video, timer: timer ? { left: timer.left, on: timer.on } : null });
+  }, [remote, board.status, k, revealed, steps, hideOptions, video, timer?.left, timer?.on, items.length]);
+  const pair = async () => {
+    setRemoteOpen(true); setRemoteError('');
+    if (remote) return;
+    try { const r = await api<any>('/api/board-remote', { method: 'POST', body: JSON.stringify({ documentId }) }); setRemote({ code: r.code, path: r.path }); }
+    catch (e: any) { setRemoteError(e?.message || 'Kod oluşturulamadı.'); }
+  };
+  const remoteUrl = remote ? `${location.origin}${remote.path}` : '';
+  const qr = useMemo(() => { if (!remoteUrl) return ''; const x = qrcode(0, 'M'); x.addData(remoteUrl); x.make(); return x.createDataURL(6, 2); }, [remoteUrl]);
+
   const close = () => { if (document.fullscreenElement) void document.exitFullscreen().catch(() => undefined); if (window.history.length > 1) navigate(-1); else navigate('/soru-havuzu/testlerim'); };
 
   if (error) return <div className="sb sb-center" role="alert"><p>{error}</p><button type="button" className="sb-btn" onClick={close}>Geri dön</button></div>;
@@ -132,6 +171,7 @@ export function SmartBoard() {
       <div className="sb-top-right">
         {timer ? <button type="button" className={`sb-timer${timer.left <= 10 ? ' hot' : ''}${timer.left === 0 ? ' done' : ''}`} onClick={() => setTimer(timer.left === 0 ? null : { ...timer, on: !timer.on })} aria-live="polite" aria-label={`Süre ${timeTxt}`}>{timer.left === 0 ? 'Süre doldu' : timeTxt}</button>
           : <div className="sb-times" role="group" aria-label="Düşünme süresi"><Timer size={18} aria-hidden="true" />{TIMES.map((s) => <button key={s} type="button" onClick={() => setTimer({ total: s, left: s, on: true })}>{s < 60 ? `${s} sn` : `${s / 60} dk`}</button>)}</div>}
+        <button type="button" className={`sb-remote${board.presence.remotes > 0 ? ' on' : ''}`} onClick={() => void pair()} aria-label="Telefondan yönet"><Smartphone size={20} aria-hidden="true" />{board.presence.remotes > 0 ? 'Telefon bağlı' : 'Telefondan yönet'}</button>
         <button type="button" className="sb-icon" aria-label={full ? 'Tam ekrandan çık' : 'Tam ekran'} onClick={() => void toggleFull()}>{full ? <Minimize size={22} /> : <Maximize size={22} />}</button>
         <button type="button" className="sb-icon" aria-label="Tahtayı kapat" onClick={close}><X size={24} /></button>
       </div>
@@ -184,6 +224,23 @@ export function SmartBoard() {
       </aside>
     </main>
 
+    {remoteOpen && <div className="sb-layer" role="dialog" aria-modal="true" aria-label="Telefondan yönet" onClick={(e) => { if (e.target === e.currentTarget) setRemoteOpen(false); }}>
+      <div className="sb-pair">
+        <button type="button" className="sb-icon sb-pair-x" aria-label="Kapat" onClick={() => setRemoteOpen(false)}><X size={24} /></button>
+        <h2><Smartphone size={26} aria-hidden="true" /> Telefondan yönet</h2>
+        {remoteError ? <p className="sb-pair-err" role="alert">{remoteError}</p> : !remote ? <p>Kod hazırlanıyor…</p> : <>
+          <div className="sb-pair-body">
+            {qr && <img src={qr} alt="Kumanda için QR kod" className="sb-pair-qr" />}
+            <div className="sb-pair-text">
+              <span>Tahta kodu</span>
+              <strong className="sb-pair-code" aria-label={`Tahta kodu ${remote.code.split('').join(' ')}`}>{remote.code}</strong>
+              <ol><li>Telefonunla QR’ı okut ya da <b>{location.host}/kumanda</b> adresine girip kodu yaz.</li><li>Telefonda kendi ANUNEX hesabınla giriş yapmış ol; kod tek başına bir şey açmaz.</li></ol>
+            </div>
+          </div>
+          <p className="sb-pair-status">{board.status === 'open' ? (board.presence.remotes > 0 ? 'Telefon bağlandı.' : 'Telefon bekleniyor…') : 'Bağlanıyor…'}</p>
+        </>}
+      </div>
+    </div>}
     {needsCheck && <TestCheckDialog testId={documentId} onCancel={close} onConfirmed={() => setNeedsCheck(false)} />}
     {zoom && <div className="sb-layer" role="dialog" aria-modal="true" aria-label="Görsel" onClick={() => setZoom(null)}><img src={zoom.url} alt={zoom.alt} className="sb-zoom" /><button type="button" className="sb-icon sb-layer-close" aria-label="Kapat" onClick={() => setZoom(null)}><X size={26} /></button></div>}
     {video && <div className="sb-layer" role="dialog" aria-modal="true" aria-label={video.title}>

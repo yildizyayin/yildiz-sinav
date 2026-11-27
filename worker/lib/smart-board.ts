@@ -17,7 +17,7 @@ async function featureOn(env: Env, user: AuthUser, key: string) {
   const r = await one<any>(env.DB.prepare(`SELECT COALESCE(o.enabled,f.enabled_default) enabled FROM platform_features f LEFT JOIN institution_feature_overrides o ON o.feature_key=f.feature_key AND o.institution_id=? WHERE f.feature_key=?`).bind(user.institution_id, key));
   return Number(r?.enabled || 0) === 1;
 }
-async function boardDoc(env: Env, user: AuthUser, id: string) {
+export async function boardDoc(env: Env, user: AuthUser, id: string) {
   if (!STAFF.includes(user.role)) return forbidden('Tahta yalnız öğretmen ve yöneticiler içindir.');
   if (!(await featureOn(env, user, 'STUDIO'))) return json({ ok: false, error: { code: 'FEATURE_DISABLED', message: 'Bu özellik kurumunuz için henüz etkin değil.', feature: 'STUDIO' } }, 403);
   const doc = await one<any>(env.DB.prepare(`SELECT * FROM studio_documents WHERE id=? AND status<>'ARCHIVED'`).bind(id));
