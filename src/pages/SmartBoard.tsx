@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ChevronLeft, ChevronRight, Eraser, Eye, EyeOff, Lightbulb, Maximize, Minimize, Pen, Play, RotateCcw, Timer, Trash2, Undo2, Video, X } from 'lucide-react';
 import { api } from '../api';
+import { TestCheckDialog } from '../components/TestCheckDialog';
 import './smart-board.css';
 
 /**
@@ -35,13 +36,14 @@ export function SmartBoard() {
   const [ink, setInk] = useState<Record<string, Stroke[]>>({});
   const [timer, setTimer] = useState<{ total: number; left: number; on: boolean } | null>(null);
   const [full, setFull] = useState(false);
+  const [needsCheck, setNeedsCheck] = useState(false);
   const canvas = useRef<HTMLCanvasElement | null>(null);
   const stage = useRef<HTMLDivElement | null>(null);
   const drawing = useRef<Stroke | null>(null);
 
   useEffect(() => {
-    api<{ test: any; items: Item[] }>(`/api/board/${encodeURIComponent(documentId)}`).then((r) => {
-      setTest(r.test); setItems(r.items);
+    api<{ test: any; items: Item[]; checked?: boolean }>(`/api/board/${encodeURIComponent(documentId)}`).then((r) => {
+      setTest(r.test); setItems(r.items); setNeedsCheck(r.checked === false);
       // weak school internet: fetch every image and video once now, so the lesson does not wait later
       for (const q of r.items) {
         for (const m of [...q.images, ...q.options.map((o) => o.image).filter(Boolean) as Media[]]) { const im = new Image(); im.src = m.url; }
@@ -182,6 +184,7 @@ export function SmartBoard() {
       </aside>
     </main>
 
+    {needsCheck && <TestCheckDialog testId={documentId} onCancel={close} onConfirmed={() => setNeedsCheck(false)} />}
     {zoom && <div className="sb-layer" role="dialog" aria-modal="true" aria-label="Görsel" onClick={() => setZoom(null)}><img src={zoom.url} alt={zoom.alt} className="sb-zoom" /><button type="button" className="sb-icon sb-layer-close" aria-label="Kapat" onClick={() => setZoom(null)}><X size={26} /></button></div>}
     {video && <div className="sb-layer" role="dialog" aria-modal="true" aria-label={video.title}>
       <div className="sb-video">

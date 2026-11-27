@@ -7,6 +7,7 @@ import { StudioPreview } from '../components/StudioPreview';
 import { StudioOpticalScan } from '../components/StudioOpticalScan';
 import { StudioDownloads } from '../components/StudioDownloads';
 import { StudioHomeworkAssign } from '../components/StudioHomeworkAssign';
+import { TestCheckDialog } from '../components/TestCheckDialog';
 import './my-tests.css';
 
 /**
@@ -14,7 +15,7 @@ import './my-tests.css';
  * A teacher sees only their own tests, an institution manager every teacher's (with a teacher filter). Each card has
  * two big actions; the rest waits behind "⋯". A test that reached students is never edited in place.
  */
-type Test = { id: string; title: string; type: string; gradeLevel: number | null; subject: string | null; kind: 'DRAFT' | 'HOMEWORK' | 'ONLINE' | 'PRINTED'; status: string; questionCount: number; booklets: string[]; updatedAt: string; homework: { total: number; done: number; dueAt: string | null } | null; opticalResults: number; locked: boolean; mine: boolean; teacher?: { id: string; name: string }; doc: any };
+type Test = { checked?: boolean; id: string; title: string; type: string; gradeLevel: number | null; subject: string | null; kind: 'DRAFT' | 'HOMEWORK' | 'ONLINE' | 'PRINTED'; status: string; questionCount: number; booklets: string[]; updatedAt: string; homework: { total: number; done: number; dueAt: string | null } | null; opticalResults: number; locked: boolean; mine: boolean; teacher?: { id: string; name: string }; doc: any };
 const KIND: Record<Test['kind'], string> = { DRAFT: 'Yarım kaldı', HOMEWORK: 'Ödev verildi', ONLINE: 'Online sınav', PRINTED: 'Yazdırıldı' };
 const TABS: Array<[string, string]> = [['ALL', 'Tümü'], ['DRAFT', 'Yarım kalanlar'], ['SENT', 'Gönderilenler']];
 const date = (s: string) => { const d = new Date(String(s).includes('T') ? s : `${String(s).replace(' ', 'T')}Z`); return Number.isNaN(d.getTime()) ? '' : d.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long' }); };
@@ -35,6 +36,7 @@ export function TestLibrary() {
   const [preview, setPreview] = useState<any>(null);
   const [scan, setScan] = useState<any>(null);
   const [busy, setBusy] = useState('');
+  const [ask, setAsk] = useState('');
   const menuRef = useRef<HTMLDivElement | null>(null);
   const load = () => api<{ tests: Test[] }>('/api/teacher-tests').then((r) => setTests(r.tests)).catch((e) => setError(e.message));
   useEffect(() => { void load(); }, []);
@@ -94,17 +96,18 @@ export function TestLibrary() {
         </div>
         <div className="mt-card-main">
           <div className="mt-card-text">
-            <h2>{t.title}</h2>
+            <h2><Link className="mt-title" to={`/soru-havuzu/testlerim/${encodeURIComponent(t.id)}`}>{t.title}</Link></h2>
             <p>{[manager ? t.teacher?.name : null, t.gradeLevel ? `${t.gradeLevel}. sınıf` : null, t.subject, `${t.questionCount} soru`, date(t.updatedAt)].filter(Boolean).join(' · ')}</p>
             {t.homework && <p className="mt-sub">{t.homework.done}/{t.homework.total} öğrenci çözdü{t.homework.dueAt ? ` · son gün ${date(t.homework.dueAt)}` : ''}</p>}
             {t.opticalResults > 0 && <p className="mt-sub">{t.opticalResults} optik sonuç</p>}
+            {t.locked && <Link className="mt-results" to={`/soru-havuzu/testlerim/${encodeURIComponent(t.id)}`}>Sonuçları gör ›</Link>}
           </div>
           {pct !== null && <svg className="mt-ring" viewBox="0 0 36 36" role="img" aria-label={`${t.homework!.total} öğrenciden ${t.homework!.done} çözdü`}><circle cx="18" cy="18" r="15.5" className="track" /><circle cx="18" cy="18" r="15.5" className="fill" pathLength={100} strokeDasharray={`${pct} 100`} /><text x="18" y="21">%{pct}</text></svg>}
         </div>
         <div className="mt-main-actions">
           {draft ? <button type="button" className="mt-big dark" onClick={() => setPreview(t.doc)}>Devam et</button>
             : <button type="button" className="mt-big dark" disabled={busy === t.id} onClick={() => void copy(t)}>Kopyala ve düzenle</button>}
-          <button type="button" className={`mt-big${panel === t.id ? ' on' : ''}`} aria-expanded={panel === t.id} onClick={() => setPanel(panel === t.id ? '' : t.id)}>{draft ? 'Ödev ver / Yazdır' : 'Tekrar kullan'}</button>
+          <button type="button" className={`mt-big${panel === t.id ? ' on' : ''}`} aria-expanded={panel === t.id} onClick={() => (panel !== t.id && t.checked === false ? setAsk(t.id) : setPanel(panel === t.id ? '' : t.id))}>{draft ? 'Ödev ver / Yazdır' : 'Tekrar kullan'}</button>
         </div>
         {confirm === t.id && <div className="mt-confirm" role="alert">
           <span>{draft ? 'Bu test kalıcı olarak silinir.' : 'Test listeden kalkar; öğrenci sonuçları ve karneler korunur.'}</span>
@@ -113,10 +116,11 @@ export function TestLibrary() {
         </div>}
         {panel === t.id && <div className="mt-reuse">
           <div><strong>Yazdır</strong><div className="mt-panel"><StudioDownloads document={t.doc} onError={setError} /></div></div>
-          {t.type === 'WORKSHEET' && t.status === 'READY' && <div><strong>Ödev ver</strong><StudioHomeworkAssign documentId={t.id} onError={setError} onDone={(m) => { setNotice(m); setPanel(''); void load(); }} /></div>}
+          {t.type === 'WORKSHEET' && t.status === 'READY' && <div><strong>Ödev ver</strong><StudioHomeworkAssign documentId={t.id} round={t.locked && t.homework ? 'NEXT' : undefined} onError={setError} onDone={(m) => { setNotice(m); setPanel(''); void load(); }} /></div>}
         </div>}
       </article>;
     })}</div>
+    {ask && <TestCheckDialog testId={ask} onCancel={() => setAsk('')} onConfirmed={() => { const id = ask; setAsk(''); setTests((x) => (x || []).map((y) => (y.id === id ? { ...y, checked: true } : y))); setPanel(id); }} />}
     {preview && <StudioPreview document={preview} onClose={() => setPreview(null)} onChanged={() => void load()} />}
     {scan && <StudioOpticalScan document={scan} onClose={() => setScan(null)} />}
   </div>;

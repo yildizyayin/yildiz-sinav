@@ -1,0 +1,13 @@
+.tcd-layer{position:fixed;inset:0;z-index:2000;background:rgba(14,19,48,.55);display:flex;align-items:center;justify-content:center;padding:16px}
+.tcd{width:min(560px,100%);max-height:92vh;overflow:auto;background:#fff;color:#0E1330;border-radius:28px;padding:28px;box-sizing:border-box;display:flex;flex-direction:column;gap:14px;font-family:Inter,system-ui,sans-serif}
+.tcd-icon{width:56px;height:56px;border-radius:18px;background:#FFF4DC;color:#7A4F00;display:inline-flex;align-items:center;justify-content:center}
+.tcd h2{margin:0;font-family:"Space Grotesk",Inter,sans-serif;font-size:26px;line-height:1.2}
+.tcd-q{margin:0;font-size:16px;line-height:1.55}
+.tcd-note{margin:0;font-size:15px;line-height:1.55;color:#4A5275}
+.tcd-check{display:flex;gap:12px;align-items:flex-start;padding:14px;border-radius:16px;background:#F4F5FB;font-size:16px;font-weight:600;cursor:pointer;line-height:1.4}
+.tcd-check input{width:22px;height:22px;margin:0;flex:0 0 22px}
+.tcd-actions{display:flex;flex-wrap:wrap;gap:10px;justify-content:flex-end}
+.tcd-ghost,.tcd-go{min-height:52px;padding:0 20px;border-radius:14px;font:inherit;font-weight:700;cursor:pointer}
+.tcd-ghost{border:1.5px solid #D5D9EC;background:#fff;color:#0E1330}
+.tcd-go{border:0;background:#3D4BFF;color:#fff}
+.tcd-go:disabled{background:#C9CEE0;cursor:not-allowed}

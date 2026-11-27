@@ -51,6 +51,13 @@ async function list(env: Env, user: AuthUser) {
       (SELECT COUNT(*) FROM assignment_recipients ar WHERE l.delivery_kind='HOMEWORK' AND ar.assignment_id=l.external_id AND ar.status='COMPLETED') done,
       (SELECT a.due_at FROM assignments a WHERE l.delivery_kind='HOMEWORK' AND a.id=l.external_id) due_at
     FROM studio_delivery_links l WHERE l.document_id IN (${ids.map(() => '?').join(',')}) ORDER BY l.created_at`).bind(...ids)) : [];
+  // has the teacher confirmed this exact set of questions? (one query for the sets, one for the confirmations)
+  const sets = ids.length ? await all<any>(env.DB.prepare(`SELECT document_id,GROUP_CONCAT(question_id,'|') qs FROM (SELECT document_id,question_id FROM studio_document_items
+    WHERE booklet_code='A' AND document_id IN (${ids.map(() => '?').join(',')}) ORDER BY document_id,sort_order) GROUP BY document_id`).bind(...ids)) : [];
+  const checks = ids.length ? await all<any>(env.DB.prepare(`SELECT DISTINCT document_id,items_hash FROM teacher_test_checks WHERE document_id IN (${ids.map(() => '?').join(',')})`).bind(...ids)) : [];
+  const hex = async (t: string) => [...new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(t)))].map((b) => b.toString(16).padStart(2, '0')).join('');
+  const checked = new Set<string>();
+  for (const x of sets) { const h = await hex(String(x.qs || '')); if (checks.some((c) => c.document_id === x.document_id && c.items_hash === h)) checked.add(x.document_id); }
   const tests = rows.map((r) => {
     const own = links.filter((l) => l.document_id === r.id);
     const hw = own.filter((l) => l.delivery_kind === 'HOMEWORK');
@@ -59,7 +66,7 @@ async function list(env: Env, user: AuthUser) {
       id: r.id, title: r.title, type: r.document_type, gradeLevel: r.grade_level, subject: r.subject_name || r.subject_id, status: r.status, kind,
       questionCount: Number(r.question_count || 0), booklets: String(r.booklets || 'A').split(',').filter(Boolean).sort(), updatedAt: r.updated_at || r.created_at,
       homework: hw.length ? { total: hw.reduce((t, l) => t + Number(l.total || 0), 0), done: hw.reduce((t, l) => t + Number(l.done || 0), 0), dueAt: hw.at(-1)?.due_at || null } : null,
-      opticalResults: Number(r.optical_results || 0), locked: own.length > 0 || Number(r.optical_results) > 0, mine: r.created_by === user.id, teacher: { id: r.created_by, name: r.teacher_name || 'Öğretmen' },
+      opticalResults: Number(r.optical_results || 0), locked: own.length > 0 || Number(r.optical_results) > 0, mine: r.created_by === user.id, checked: checked.has(r.id), teacher: { id: r.created_by, name: r.teacher_name || 'Öğretmen' },
       // the Studio document itself, for the preview / download / optical tools the page reuses
       doc: { id: r.id, title: r.title, document_type: r.document_type, grade_level: r.grade_level, subject_id: r.subject_id, subject_name: r.subject_name, status: r.status, config_json: r.config_json, created_at: r.created_at, question_count: Number(r.question_count || 0) },
     };
@@ -99,9 +106,72 @@ async function copy(env: Env, user: AuthUser, id: string) {
   return json({ ok: true, id: copyId, title }, 201);
 }
 
+export const CHECK_STATEMENT = 'Soruları kontrol ettim, testi sınıfım için uygun buluyorum.';
+export async function itemsHash(env: Env, id: string) {
+  const rows = await all<any>(env.DB.prepare(`SELECT question_id FROM studio_document_items WHERE document_id=? AND booklet_code='A' ORDER BY sort_order`).bind(id));
+  const bytes = new TextEncoder().encode(rows.map((r) => r.question_id).join('|'));
+  return [...new Uint8Array(await crypto.subtle.digest('SHA-256', bytes))].map((b) => b.toString(16).padStart(2, '0')).join('');
+}
+export async function lastCheck(env: Env, id: string) {
+  const hash = await itemsHash(env, id);
+  const row = await one<any>(env.DB.prepare(`SELECT c.confirmed_at,u.display_name FROM teacher_test_checks c LEFT JOIN users u ON u.id=c.user_id WHERE c.document_id=? AND c.items_hash=? ORDER BY c.confirmed_at DESC LIMIT 1`).bind(id, hash));
+  return row ? { at: row.confirmed_at, by: row.display_name || 'Öğretmen' } : null;
+}
+
+/** The teacher's confirmation that the questions suit the class (asked once per set of questions). */
+async function check(request: Request, env: Env, user: AuthUser, id: string) {
+  const doc = await ownTest(env, user, id); if (doc instanceof Response) return doc;
+  const b: any = await request.json().catch(() => ({}));
+  if (b?.confirm !== true) return badRequest('Onay kutusu işaretlenmeden devam edilemez.', 'CHECK_REQUIRED');
+  await env.DB.prepare(`INSERT INTO teacher_test_checks(id,document_id,user_id,items_hash,statement) VALUES(?,?,?,?,?)`).bind(uuid('ttc'), id, user.id, await itemsHash(env, id), CHECK_STATEMENT).run();
+  await audit(env.DB, user.id, doc.institution_id, 'TEACHER_TEST_CHECKED', 'studio_document', id, {});
+  return json({ ok: true, checked: await lastCheck(env, id) });
+}
+
+/** One test: what it is, who solved it and how each question and outcome went. */
+async function detail(env: Env, user: AuthUser, id: string) {
+  const doc = await ownTest(env, user, id); if (doc instanceof Response) return doc;
+  const meta = await one<any>(env.DB.prepare(`SELECT s.name subject,u.display_name teacher FROM studio_documents d LEFT JOIN subjects s ON s.id=d.subject_id LEFT JOIN users u ON u.id=d.created_by WHERE d.id=?`).bind(id));
+  const items = await all<any>(env.DB.prepare(`SELECT i.question_id,i.sort_order,q.stem_text,
+      (SELECT o.title FROM question_learning_links l JOIN outcomes o ON l.node_id='ln_'||o.id WHERE l.question_id=i.question_id LIMIT 1) outcome
+    FROM studio_document_items i JOIN question_bank q ON q.id=i.question_id WHERE i.document_id=? AND i.booklet_code='A' ORDER BY i.sort_order`).bind(id));
+  const links = await all<any>(env.DB.prepare(`SELECT l.external_id,l.publication_revision,l.created_at,a.due_at FROM studio_delivery_links l LEFT JOIN assignments a ON a.id=l.external_id
+    WHERE l.document_id=? AND l.delivery_kind='HOMEWORK' ORDER BY l.publication_revision`).bind(id));
+  const deliveries = [] as any[];
+  const perQuestion = new Map<string, { right: number; total: number }>();
+  for (const l of links) {
+    const students = await all<any>(env.DB.prepare(`SELECT ar.student_id,ar.status,TRIM(COALESCE(se.first_name,'')||' '||COALESCE(se.last_name,'')) name,
+        (SELECT c.name FROM student_enrollments e JOIN classes c ON c.id=e.class_id WHERE e.student_id=ar.student_id AND e.status='ACTIVE' LIMIT 1) class_name,
+        (SELECT ROUND(100.0*SUM(COALESCE(t.score,0))/NULLIF(COUNT(*),0)) FROM assignment_attempts t WHERE t.assignment_id=ar.assignment_id AND t.student_id=ar.student_id) pct
+      FROM assignment_recipients ar LEFT JOIN student_entities se ON se.id=ar.student_id WHERE ar.assignment_id=? ORDER BY se.first_name,se.last_name`).bind(l.external_id));
+    const attempts = await all<any>(env.DB.prepare(`SELECT ai.reference_id question_id,t.score FROM assignment_attempts t JOIN assignment_items ai ON ai.id=t.item_id WHERE t.assignment_id=?`).bind(l.external_id));
+    for (const a of attempts) { const c = perQuestion.get(a.question_id) || { right: 0, total: 0 }; c.total++; if (Number(a.score) >= 1) c.right++; perQuestion.set(a.question_id, c); }
+    const done = students.filter((x) => x.status === 'COMPLETED');
+    const scores = done.map((x) => Number(x.pct)).filter((x) => Number.isFinite(x));
+    deliveries.push({
+      round: l.publication_revision, sentAt: l.created_at, dueAt: l.due_at || null,
+      classes: [...new Set(students.map((x) => x.class_name).filter(Boolean))],
+      total: students.length, done: done.length, average: scores.length ? Math.round(scores.reduce((t, x) => t + x, 0) / scores.length) : null,
+      students: students.map((x) => ({ name: x.name || 'Öğrenci', className: x.class_name || null, done: x.status === 'COMPLETED', percent: x.status === 'COMPLETED' && x.pct != null ? Number(x.pct) : null })),
+    });
+  }
+  const questions = items.map((q, n) => { const c = perQuestion.get(q.question_id); return { no: n + 1, outcome: q.outcome || null, stem: String(q.stem_text || '').slice(0, 140), correctRate: c && c.total ? Math.round((100 * c.right) / c.total) : null, answered: c?.total || 0 }; });
+  const outcomeMap = new Map<string, { right: number; total: number }>();
+  for (const q of items) { const c = perQuestion.get(q.question_id); if (!c || !q.outcome) continue; const o = outcomeMap.get(q.outcome) || { right: 0, total: 0 }; o.right += c.right; o.total += c.total; outcomeMap.set(q.outcome, o); }
+  const optical = await one<any>(env.DB.prepare(`SELECT COUNT(*) n, ROUND(100.0*AVG(score)) avg FROM assessment_runs WHERE source_type='QUESTION_BANK' AND source_id=?`).bind(id));
+  const r = await reached(env, id);
+  return json({ ok: true, test: {
+    id, title: doc.title, type: doc.document_type, gradeLevel: doc.grade_level, subject: meta?.subject || null, teacher: meta?.teacher || null, status: doc.status,
+    questionCount: items.length, locked: r.deliveries + r.results > 0, canAssign: doc.document_type === 'WORKSHEET' && ['READY', 'PUBLISHED'].includes(doc.status),
+    doc: { id, title: doc.title, document_type: doc.document_type, grade_level: doc.grade_level, subject_id: doc.subject_id, status: doc.status, config_json: doc.config_json },
+  }, checked: await lastCheck(env, id), deliveries, questions,
+  outcomes: [...outcomeMap.entries()].map(([title, c]) => ({ title, correctRate: c.total ? Math.round((100 * c.right) / c.total) : null })).sort((a, b) => (a.correctRate ?? 101) - (b.correctRate ?? 101)),
+  optical: { count: Number(optical?.n || 0), average: optical?.avg != null ? Number(optical.avg) : null } });
+}
+
 export async function handleTeacherTests(request: Request, env: Env): Promise<Response | null> {
   const url = new URL(request.url);
-  const m = url.pathname.match(/^\/api\/teacher-tests(?:\/([^/]+)(?:\/(copy))?)?$/);
+  const m = url.pathname.match(/^\/api\/teacher-tests(?:\/([^/]+)(?:\/(copy|check))?)?$/);
   if (!m) return null;
   const { getAuthUser } = await import('./auth');
   const user: AuthUser | null = await getAuthUser(env, request);
@@ -111,7 +181,9 @@ export async function handleTeacherTests(request: Request, env: Env): Promise<Re
   if (request.method !== 'GET' && request.headers.get('Origin') !== url.origin) return forbidden('İsteği ANUNEX üzerinden başlatın.');
   const [, id, action] = m;
   if (!id && request.method === 'GET') return list(env, user);
+  if (id && !action && request.method === 'GET') return detail(env, user, decodeURIComponent(id));
   if (id && !action && request.method === 'DELETE') return remove(env, user, decodeURIComponent(id));
+  if (id && action === 'check' && request.method === 'POST') return check(request, env, user, decodeURIComponent(id));
   if (id && action === 'copy' && request.method === 'POST') return copy(env, user, decodeURIComponent(id));
   return json({ ok: false, error: { code: 'METHOD_NOT_ALLOWED', message: 'Bu yöntem desteklenmiyor.' } }, 405);
 }
