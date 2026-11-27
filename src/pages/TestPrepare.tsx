@@ -55,7 +55,7 @@ export function TestPrepare() {
     api<any>(`/api/platform/studio/catalog?gradeLevel=${grade}`).then((r) => {
       const list: Subject[] = (r.subjects || []).map((s: any) => ({ id: s.id, name: s.name, approved: Number(s.approved || 0) }));
       setSubjects(list);
-      setSubjectId((cur) => (list.some((s) => s.id === cur) ? cur : (list.find((s) => s.approved > 0) || list[0])?.id || ''));
+      setSubjectId((cur: string) => (list.some((s) => s.id === cur) ? cur : (list.find((s) => s.approved > 0) || list[0])?.id || ''));
     }).catch((e) => { setSubjects([]); setError(e?.message || 'Dersler yüklenemedi.'); });
   }, [grade]);
   // units and outcomes of the subject (newest program first)
