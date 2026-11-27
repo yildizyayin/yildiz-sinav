@@ -150,8 +150,10 @@ function AppContent(){
  const isMarketingHost=hostname==='anunex.com'||hostname==='www.anunex.com'||isMarketingPreview||new URLSearchParams(location.search).get('site')==='marketing';
  if(isResultHost)return <ResultPortal/>;
  if(isMarketingHost)return <MarketingHome/>;
- // video.anunex.com (owner, 27 Nov 2026): a QR on the answer sheet opens the solution video with no account.
- if(hostname==='video.anunex.com'||location.pathname.startsWith('/c/'))return <Suspense fallback={<div className="boot">Video yükleniyor…</div>}><Routes><Route path="/c/:code" element={<PublicVideo/>}/><Route path="*" element={<PublicVideo/>}/></Routes></Suspense>;
+ // cozum.yildizyayin.com (owner, 27 Nov 2026): a QR on the answer sheet opens the solution video with no account —
+ // cozum.yildizyayin.com/KOD on the publisher's address, app.anunex.com/c/KOD on the app's own.
+ const isSolutionHost=hostname==='cozum.yildizyayin.com';
+ if(isSolutionHost||location.pathname.startsWith('/c/'))return <Suspense fallback={<div className="boot">Video yükleniyor…</div>}><Routes><Route path="/c/:code" element={<PublicVideo/>}/>{isSolutionHost&&<Route path="/:code" element={<PublicVideo/>}/>}<Route path="*" element={<PublicVideo/>}/></Routes></Suspense>;
  // S044: the online exam page needs no account (students join with the code their teacher gives).
  if(location.pathname==='/sinav'||location.pathname.startsWith('/sinav/'))return <Suspense fallback={<div className="boot">Sınav yükleniyor…</div>}><Routes><Route path="/sinav" element={<QuickExamTake/>}/><Route path="/sinav/:code" element={<QuickExamTake/>}/></Routes></Suspense>;
  if(loading)return <div className="boot">Anunex yükleniyor…</div>;

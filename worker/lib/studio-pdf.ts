@@ -610,9 +610,9 @@ function drawQr(page: PDFPage, text: string, x: number, y: number, size: number)
 /**
  * "Cevap anahtarı ve çözüm QR'ları" (owner, 27 Nov 2026): the sheet handed to students after the test. Each question:
  * its number, the right answer, the outcome it measures and a QR that opens its solution video at
- * <origin>/c/<code> without an account. A question without a public video gets its answer and no QR.
+ * <base>/<code> (cozum.yildizyayin.com/<code>, or /c/<code> on the app host) without an account. A question without a public video gets its answer and no QR.
  */
-export async function renderSolutionSheet(env: Env, documentId: string, booklet: string, branding: StudioBranding, origin: string, rows: Array<{ answer: string; code: string | null; outcome: { code: string; title: string } | null }>): Promise<ArrayBuffer> {
+export async function renderSolutionSheet(env: Env, documentId: string, booklet: string, branding: StudioBranding, base: string, rows: Array<{ answer: string; code: string | null; outcome: { code: string; title: string } | null }>): Promise<ArrayBuffer> {
   const doc = await one<any>(env.DB.prepare('SELECT * FROM studio_documents WHERE id=?').bind(documentId)); if (!doc) throw new Error('STUDIO_NOT_FOUND');
   if (!rows.length) throw new StudioPrintError('BOOKLET_EMPTY', 'Bu kitapçıkta soru yok.');
   rows.forEach((r, i) => { if (!LABELS.includes(r.answer)) throw new StudioPrintError('PRINT_ANSWER_KEY_INVALID', `Soru ${i + 1}: cevap anahtarı geçersiz.`); });
@@ -621,7 +621,7 @@ export async function renderSolutionSheet(env: Env, documentId: string, booklet:
   const fonts = await loadFonts(pdf);
   const title = normalizePrintText(doc.title); assertPrintable(fonts, title, 'Belge başlığı');
   const logo = branding.institutionLogo ? await embedLogo(pdf, branding.institutionLogo) : null;
-  const host = origin.replace(/^https?:\/\//, '');
+  const host = base.replace(/^https?:\/\//, '');
   const cols = 2, gap = 12, cardW = (PAGE_W - 2 * MARGIN - gap) / cols, cardH = 92, qr = 72;
   let page = pdf.addPage([PAGE_W, PAGE_H]);
   const top = drawKeyHeader(page, fonts, title, `Cevap anahtarı ve çözüm videoları · Kitapçık ${booklet} · Sınavdan sonra dağıtılır`, { name: branding.institutionName, logo });
@@ -640,8 +640,8 @@ export async function renderSolutionSheet(env: Env, documentId: string, booklet:
       wrapText(fonts.regular, normalizePrintText(r.outcome.title), 8.5, textW).slice(0, 4).forEach((line, k) => page.drawText(line, { x: textX, y: yTop - 33 - k * 11, size: 8.5, font: fonts.regular, color: INK }));
     }
     if (r.code) {
-      drawQr(page, `${origin}/c/${r.code}`, x + cardW - qr - 8, yTop - qr - 6, qr);
-      page.drawText(`${host}/c/${r.code}`, { x: textX, y: yTop - cardH + 9, size: 7.5, font: fonts.regular, color: MUTED, maxWidth: textW });
+      drawQr(page, `${base}/${r.code}`, x + cardW - qr - 8, yTop - qr - 6, qr);
+      page.drawText(`${host}/${r.code}`, { x: textX, y: yTop - cardH + 9, size: 7.5, font: fonts.regular, color: MUTED, maxWidth: textW });
     } else page.drawText('Bu sorunun videosu henüz yok.', { x: textX, y: yTop - cardH + 9, size: 7.5, font: fonts.regular, color: MUTED, maxWidth: textW });
     if (col === cols - 1 || i === rows.length - 1) y -= cardH + gap;
   });
