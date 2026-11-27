@@ -869,7 +869,7 @@ async function studioAnswerKey(env:Env,user:AuthUser,documentId:string):Promise<
   if(user.role!=='SUPER_ADMIN'&&document.institution_id!==user.institution_id)return forbidden();
   if(user.role==='TEACHER'&&document.created_by!==user.id)return forbidden('Öğretmen yalnızca kendi ürettiği sınavın anahtarını indirebilir.');
   try{
-    const rendered=await renderStudioAnswerKey(env,documentId);
+    const rendered=await renderStudioAnswerKey(env,documentId,await studioBranding(env,document));
     await audit(env.DB,user.id,document.institution_id,'STUDIO_ANSWER_KEY_DOWNLOADED','studio_document',documentId,{booklets:Object.keys(rendered.booklets)});
     return new Response(rendered.bytes,{headers:{'Content-Type':'application/pdf','Content-Disposition':`attachment; filename="${safeFileName(document.title)}-cevap-anahtari.pdf"`,'Cache-Control':'private, no-store','X-Content-Type-Options':'nosniff'}});
   }catch(error){if(error instanceof StudioPrintError)return json({ok:false,error:{code:error.code,message:error.message}},409);console.error('Studio answer key failed',error);return json({ok:false,error:{code:'PDF_GENERATION_FAILED',message:'Cevap anahtarı üretilemedi.'}},500)}

@@ -495,7 +495,7 @@ export async function handleQuickTests(request: Request, env: Env): Promise<Resp
     if (rest === 'optical-template') return json({ ok: true, template: pdf.quickTestOpticalTemplate(t, questions.length) });
     const branding = await pdf.brandingFor(env, t.institution_id);
     const ps = await printSettingsOf(t);
-    const out = rest === 'pdf' ? await pdf.renderQuickTestPdf(env, t, questions, branding, (url.searchParams.has('columns') ? (Number(url.searchParams.get('columns')) === 1 ? 1 : Number(url.searchParams.get('columns')) === 2 ? 2 : 0) : settingsOf(t).columns) as 0 | 1 | 2, ps.ok ? ps.value : undefined) : await pdf.renderQuickTestAnswerKey(t, answerKeyOf(questions));
+    const out = rest === 'pdf' ? await pdf.renderQuickTestPdf(env, t, questions, branding, (url.searchParams.has('columns') ? (Number(url.searchParams.get('columns')) === 1 ? 1 : Number(url.searchParams.get('columns')) === 2 ? 2 : 0) : settingsOf(t).columns) as 0 | 1 | 2, ps.ok ? ps.value : undefined) : await pdf.renderQuickTestAnswerKey(t, answerKeyOf(questions), branding);
     const name = `${t.title}${rest === 'pdf' ? '' : ' - Cevap Anahtari'}.pdf`.replace(/[^\p{L}\p{N} ._-]/gu, '_');
     return new Response(out, { headers: { 'Content-Type': 'application/pdf', 'Content-Disposition': `attachment; filename*=UTF-8''${encodeURIComponent(name)}`, 'Cache-Control': 'no-store' } });
   }

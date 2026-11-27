@@ -128,6 +128,73 @@ async function check(request: Request, env: Env, user: AuthUser, id: string) {
   return json({ ok: true, checked: await lastCheck(env, id) });
 }
 
+/**
+ * Test Hazırla (owner, 27 Nov 2026): "Çıkar" — the question leaves every booklet and the rest close ranks. Only while
+ * the test has not reached students; a question that shares a stem with others never leaves alone; the last question
+ * stays (delete the test instead). Printed copies are invalidated and the "sorular uygun" check is asked again.
+ */
+async function removeQuestion(request: Request, env: Env, user: AuthUser, id: string) {
+  const doc = await ownTest(env, user, id); if (doc instanceof Response) return doc;
+  const b: any = await request.json().catch(() => ({}));
+  const qid = typeof b?.questionId === 'string' ? b.questionId : '';
+  if (!qid) return badRequest('Çıkarılacak soru gerekli.', 'QUESTION_REQUIRED');
+  const r = await reached(env, id);
+  if (r.deliveries || r.results) return json({ ok: false, error: { code: 'TEST_LOCKED', message: 'Bu test öğrencilere ulaştı; soruları artık değişmez. “Kopyala ve düzenle” ile yeni bir test yapın.' } }, 409);
+  const rows = await all<any>(env.DB.prepare(`SELECT question_id,booklet_code,sort_order FROM studio_document_items WHERE document_id=? ORDER BY booklet_code,sort_order`).bind(id));
+  if (!rows.some((x) => x.question_id === qid)) return notFound('Soru bu testte değil.');
+  if (new Set(rows.map((x) => x.question_id)).size <= 1) return badRequest('Testte en az bir soru kalmalı. Testi istemiyorsan Testlerim’den silebilirsin.', 'LAST_QUESTION');
+  const grouped = await one<any>(env.DB.prepare(`SELECT stem_group_id FROM question_bank WHERE id=?`).bind(qid)).catch(() => null);
+  if (grouped?.stem_group_id) return json({ ok: false, error: { code: 'STEM_GROUP', message: 'Bu soru ortak bir metne bağlı; tek başına çıkarılamaz.' } }, 409);
+  const statements = [env.DB.prepare(`DELETE FROM studio_document_items WHERE document_id=? AND question_id=?`).bind(id, qid)];
+  for (const code of [...new Set(rows.map((x) => x.booklet_code))]) {
+    rows.filter((x) => x.booklet_code === code && x.question_id !== qid).forEach((x, i) => {
+      if (x.sort_order !== i + 1) statements.push(env.DB.prepare(`UPDATE studio_document_items SET sort_order=? WHERE document_id=? AND booklet_code=? AND question_id=?`).bind(i + 1, id, code, x.question_id));
+    });
+  }
+  statements.push(env.DB.prepare(`DELETE FROM studio_document_assets WHERE document_id=? AND asset_type='QUESTION_PDF'`).bind(id));
+  statements.push(env.DB.prepare(`UPDATE studio_documents SET pdf_r2_key=NULL,status=CASE WHEN status='READY' THEN 'DRAFT' ELSE status END,updated_at=CURRENT_TIMESTAMP WHERE id=?`).bind(id));
+  await env.DB.batch(statements);
+  await audit(env.DB, user.id, doc.institution_id, 'TEACHER_TEST_QUESTION_REMOVED', 'studio_document', id, { questionId: qid });
+  return json({ ok: true, questionCount: new Set(rows.map((x) => x.question_id)).size - 1 });
+}
+
+/** What the printed paper shows: the institution's name and logo top-left, ANUNEX top-right (both can be turned off). */
+async function printChoices(request: Request, env: Env, user: AuthUser, id: string) {
+  const doc = await ownTest(env, user, id); if (doc instanceof Response) return doc;
+  const b: any = await request.json().catch(() => ({}));
+  let config: any = {}; try { config = JSON.parse(doc.config_json || '{}'); } catch { config = {}; }
+  const cur = config.branding && typeof config.branding === 'object' ? config.branding : {};
+  const next = { showAnunex: typeof b?.showAnunex === 'boolean' ? b.showAnunex : cur.showAnunex !== false, showNibiru: cur.showNibiru !== false, useInstitution: typeof b?.useInstitution === 'boolean' ? b.useInstitution : cur.useInstitution !== false };
+  await env.DB.prepare(`UPDATE studio_documents SET config_json=?,updated_at=CURRENT_TIMESTAMP WHERE id=?`).bind(JSON.stringify({ ...config, branding: next }), id).run();
+  await audit(env.DB, user.id, doc.institution_id, 'TEACHER_TEST_PRINT_CHOICES', 'studio_document', id, next);
+  return json({ ok: true, branding: next });
+}
+
+/**
+ * The institution's print identity for the Test Hazırla screens: its name, whether a print logo is uploaded and who
+ * may upload one (the institution manager; a teacher is told to ask them). The logo itself is served for the
+ * on-screen paper preview only to staff of that institution.
+ */
+function brandInstitution(user: AuthUser, url: URL) {
+  return user.role === 'SUPER_ADMIN' ? url.searchParams.get('institutionId') || user.institution_id || null : user.institution_id || null;
+}
+async function branding(env: Env, user: AuthUser, url: URL) {
+  const inst = brandInstitution(user, url);
+  if (!inst) return json({ ok: true, institutionId: null, institutionName: null, hasLogo: false, canUpload: false });
+  const row = await one<any>(env.DB.prepare(`SELECT i.name,b.logo_r2_key,b.updated_at FROM institutions i LEFT JOIN campus_branding b ON b.institution_id=i.id WHERE i.id=?`).bind(inst));
+  return json({ ok: true, institutionId: inst, institutionName: row?.name || null, hasLogo: !!row?.logo_r2_key, logoVersion: row?.logo_r2_key ? String(row.updated_at || '') : null, canUpload: user.role === 'SUPER_ADMIN' || user.role === 'INSTITUTION_MANAGER' });
+}
+async function brandingLogo(env: Env, user: AuthUser, url: URL) {
+  const inst = brandInstitution(user, url);
+  const row = inst ? await one<any>(env.DB.prepare(`SELECT logo_r2_key FROM campus_branding WHERE institution_id=?`).bind(inst)) : null;
+  const obj = row?.logo_r2_key ? await env.FILES.get(row.logo_r2_key) : null;
+  if (!obj) return notFound('Kurum logosu yüklenmemiş.');
+  const bytes = new Uint8Array(await obj.arrayBuffer());
+  const type = bytes[0] === 0x89 && bytes[1] === 0x50 ? 'image/png' : bytes[0] === 0xff && bytes[1] === 0xd8 ? 'image/jpeg' : null;
+  if (!type) return notFound('Kurum logosu okunamadı.');
+  return new Response(bytes, { headers: { 'Content-Type': type, 'Cache-Control': 'private, max-age=300', 'X-Content-Type-Options': 'nosniff' } });
+}
+
 /** One test: what it is, who solved it and how each question and outcome went. */
 async function detail(env: Env, user: AuthUser, id: string) {
   const doc = await ownTest(env, user, id); if (doc instanceof Response) return doc;
@@ -171,7 +238,7 @@ async function detail(env: Env, user: AuthUser, id: string) {
 
 export async function handleTeacherTests(request: Request, env: Env): Promise<Response | null> {
   const url = new URL(request.url);
-  const m = url.pathname.match(/^\/api\/teacher-tests(?:\/([^/]+)(?:\/(copy|check))?)?$/);
+  const m = url.pathname.match(/^\/api\/teacher-tests(?:\/([^/]+)(?:\/(copy|check|remove-question|print|logo))?)?$/);
   if (!m) return null;
   const { getAuthUser } = await import('./auth');
   const user: AuthUser | null = await getAuthUser(env, request);
@@ -180,6 +247,9 @@ export async function handleTeacherTests(request: Request, env: Env): Promise<Re
   if (!(await studioOn(env, user))) return json({ ok: false, error: { code: 'FEATURE_DISABLED', message: 'Bu özellik kurumunuz için henüz etkin değil.', feature: 'STUDIO' } }, 403);
   if (request.method !== 'GET' && request.headers.get('Origin') !== url.origin) return forbidden('İsteği ANUNEX üzerinden başlatın.');
   const [, id, action] = m;
+  if (id === 'branding' && request.method === 'GET') return action === 'logo' ? brandingLogo(env, user, url) : !action ? branding(env, user, url) : json({ ok: false, error: { code: 'NOT_FOUND', message: 'Bulunamadı.' } }, 404);
+  if (id && action === 'remove-question' && request.method === 'POST') return removeQuestion(request, env, user, decodeURIComponent(id));
+  if (id && action === 'print' && request.method === 'PUT') return printChoices(request, env, user, decodeURIComponent(id));
   if (!id && request.method === 'GET') return list(env, user);
   if (id && !action && request.method === 'GET') return detail(env, user, decodeURIComponent(id));
   if (id && !action && request.method === 'DELETE') return remove(env, user, decodeURIComponent(id));

@@ -1,7 +1,7 @@
 import { PDFDocument, rgb } from 'pdf-lib';
 import type { Env } from '../types';
 import { one } from './db';
-import { assertPrintable, drawOpticalPage, loadFonts, normalizePrintText, opticalGeometry, opticalLayout, sniff, STUDIO_OPTICAL_CAPACITY, wrapText, type Fonts } from './studio-pdf';
+import { assertPrintable, drawKeyHeader, drawOpticalPage, loadFonts, normalizePrintText, opticalGeometry, opticalLayout, sniff, STUDIO_OPTICAL_CAPACITY, wrapText, type Fonts } from './studio-pdf';
 import { ANUNEX_MARK_PNG_BASE64 } from './fonts/brand-marks.generated';
 import { DEFAULT_LAYOUT_SETTINGS, layoutModel, type LayoutPlan, type Placement, type PrintLayoutSettings } from './print-layout';
 
@@ -121,25 +121,27 @@ export async function layoutQuickTest(env: Env, t: any, questions: any[], brandi
   }
   pages.forEach((page, i) => { const l = `Sayfa ${i + 1} / ${pages.length}`; page.drawText(l, { x: PAGE_W / 2 - fonts.regular.widthOfTextAtSize(l, 7.5) / 2, y: MARGIN - 4, size: 7.5, font: fonts.regular, color: MUTED }); });
   const plan: LayoutPlan = { settings, model: L, pages: pages.length, placements };
-  return { pdf, fonts, title, plan, overflow };
+  return { pdf, fonts, title, plan, overflow, logo };
 }
 
 export async function renderQuickTestPdf(env: Env, t: any, questions: any[], branding: Branding, requested: 0 | 1 | 2, settings: PrintLayoutSettings = { ...DEFAULT_LAYOUT_SETTINGS, columns: 'AUTO' }): Promise<ArrayBuffer> {
-  const { pdf, fonts, title } = await layoutQuickTest(env, t, questions, branding, settings, requested);
-  if (questions.length <= STUDIO_OPTICAL_CAPACITY) drawOpticalPage(pdf, fonts, opticalLayout(title, 'A', questions.length, t.option_count === 5 ? 5 : 4));
+  const { pdf, fonts, title, logo } = await layoutQuickTest(env, t, questions, branding, settings, requested);
+  // Owner, 27 Nov 2026: the answer form carries the institution's name and logo too (geometry unchanged).
+  if (questions.length <= STUDIO_OPTICAL_CAPACITY) drawOpticalPage(pdf, fonts, opticalLayout(title, 'A', questions.length, t.option_count === 5 ? 5 : 4), { name: branding.institutionName ? normalizePrintText(branding.institutionName) : null, logo });
   const bytes = await pdf.save();
   return bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) as ArrayBuffer;
 }
 
-export async function renderQuickTestAnswerKey(t: any, answers: string[]): Promise<ArrayBuffer> {
+export async function renderQuickTestAnswerKey(t: any, answers: string[], branding: Branding = { institutionName: null, logo: null }): Promise<ArrayBuffer> {
   const pdf = await PDFDocument.create();
   pdf.setTitle(`${t.title} - Cevap Anahtarı`); pdf.setCreator('ANUNEX Studio · Hızlı Test');
   const fonts = await loadFonts(pdf);
   const title = normalizePrintText(t.title);
   const page = pdf.addPage([PAGE_W, PAGE_H]);
-  page.drawText(title, { x: MARGIN, y: TOP - 14, size: 14, font: fonts.bold, color: INK, maxWidth: PAGE_W - 2 * MARGIN });
-  page.drawText('Cevap Anahtarı · Öğretmen kopyası · Öğrenciye dağıtmayın · X = iptal edilen soru', { x: MARGIN, y: TOP - 32, size: 9, font: fonts.regular, color: MUTED });
-  const perRow = 10, cellW = (PAGE_W - 2 * MARGIN) / perRow, cellH = 26, y0 = TOP - 56;
+  let logo: any = null;
+  if (branding.logo) { const f = sniff(branding.logo); try { logo = f === 'png' ? await pdf.embedPng(branding.logo) : f === 'jpg' ? await pdf.embedJpg(branding.logo) : null; } catch { logo = null; } }
+  const top = drawKeyHeader(page, fonts, title, 'Cevap Anahtarı · Öğretmen kopyası · Öğrenciye dağıtmayın · X = iptal edilen soru', { name: branding.institutionName ? normalizePrintText(branding.institutionName) : null, logo });
+  const perRow = 10, cellW = (PAGE_W - 2 * MARGIN) / perRow, cellH = 26, y0 = top - 24;
   answers.forEach((a, i) => {
     const r = Math.floor(i / perRow), c = i % perRow, x = MARGIN + c * cellW, cy = y0 - r * cellH;
     page.drawRectangle({ x, y: cy - cellH, width: cellW, height: cellH, borderColor: RULE, borderWidth: 0.6 });

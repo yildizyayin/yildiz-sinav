@@ -114,6 +114,8 @@ const SmartBoard=lazy(()=>import('./pages/SmartBoard').then(module=>({default:mo
 const QuestionPoolHome=lazy(()=>import('./pages/QuestionPoolHome').then(module=>({default:module.QuestionPoolHome})));
 const TestLibrary=lazy(()=>import('./pages/TestLibrary').then(module=>({default:module.TestLibrary})));
 const TestDetail=lazy(()=>import('./pages/TestDetail').then(module=>({default:module.TestDetail})));
+const TestPrepare=lazy(()=>import('./pages/TestPrepare').then(module=>({default:module.TestPrepare})));
+const TestReady=lazy(()=>import('./pages/TestReady').then(module=>({default:module.TestReady})));
 const PhysicalLink=lazy(()=>import('./pages/PhysicalLink').then(module=>({default:module.PhysicalLink})));
 const AttendanceCenter=lazy(()=>import('./pages/AttendanceCenter').then(module=>({default:module.AttendanceCenter})));
 const AssignmentsCenter=lazy(()=>import('./pages/AssignmentsCenter').then(module=>({default:module.AssignmentsCenter})));
@@ -162,6 +164,8 @@ function AppContent(){
   <Route path="theme-management" element={<RoleGate allowed={['SUPER_ADMIN']}><ThemeManagement/></RoleGate>}/>
   <Route path="settings" element={<RoleGate allowed={ALL_ROLES}><AppearanceSettings/></RoleGate>}/>
   <Route path="soru-havuzu" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER']}><FeatureGate feature="STUDIO"><QuestionPoolHome/></FeatureGate></RoleGate>}/>
+  <Route path="soru-havuzu/hazirla" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER']}><FeatureGate feature="STUDIO"><TestPrepare/></FeatureGate></RoleGate>}/>
+  <Route path="soru-havuzu/hazirla/:testId" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER']}><FeatureGate feature="STUDIO"><TestReady/></FeatureGate></RoleGate>}/>
   <Route path="soru-havuzu/testlerim" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER']}><FeatureGate feature="STUDIO"><TestLibrary/></FeatureGate></RoleGate>}/>
   <Route path="soru-havuzu/testlerim/:testId" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER']}><FeatureGate feature="STUDIO"><TestDetail/></FeatureGate></RoleGate>}/>
   <Route path="testlerim" element={<Navigate to="/soru-havuzu/testlerim" replace/>}/>
