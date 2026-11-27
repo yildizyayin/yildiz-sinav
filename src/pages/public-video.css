@@ -1,4 +1,4 @@
-/* video.anunex.com: one calm page, the video first. */
+/* cozum.yildizyayin.com: one calm page, the video first. */
 .pv{--ink:#0E1330;--muted:#5A6385;--blue:#3D4BFF;min-height:100vh;box-sizing:border-box;padding:max(16px,env(safe-area-inset-top)) 16px 24px;background:radial-gradient(120% 50% at 50% 0%,#E9ECFF 0%,#F4F5FB 60%);color:var(--ink);font-family:Inter,system-ui,sans-serif;display:flex;flex-direction:column;align-items:center;gap:16px}
 .pv *{box-sizing:border-box}
 .pv-top{width:min(860px,100%);display:flex;align-items:baseline;gap:10px}

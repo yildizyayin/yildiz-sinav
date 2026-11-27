@@ -4,7 +4,7 @@ import { Play, Video } from 'lucide-react';
 import './public-video.css';
 
 /**
- * video.anunex.com/c/<kod> (owner, 27 Nov 2026): what a student sees after scanning the QR next to a question on the
+ * cozum.yildizyayin.com/<kod> (owner, 27 Nov 2026; app.anunex.com/c/<kod> too): what a student sees after scanning the QR next to a question on the
  * answer sheet — the solution video at once, the outcome it teaches, and the topic video when there is one. No
  * account, no menu, nothing about the student; a code not yet public says so kindly.
  */
@@ -17,17 +17,18 @@ export function PublicVideo() {
   const [error, setError] = useState('');
   const [which, setWhich] = useState<'solution' | 'topic'>('solution');
   const [typed, setTyped] = useState('');
+  const publisher = typeof window !== 'undefined' && window.location.hostname === 'cozum.yildizyayin.com';
   useEffect(() => {
     setInfo(null); setError(''); setWhich('solution');
     if (!code) return;
     fetch(`/api/public/video/${encodeURIComponent(code)}`).then(async (r) => { const b: any = await r.json().catch(() => null); if (!r.ok) throw new Error(b?.error?.message || 'Video bulunamadı.'); setInfo(b.video); }).catch((e) => setError(e.message || 'Video bulunamadı.'));
   }, [code]);
   return <div className="pv">
-    <header className="pv-top"><span className="pv-logo">ANUNEX</span><span className="pv-sub">Çözüm videoları</span></header>
+    <header className="pv-top"><span className="pv-logo">{publisher ? 'Yıldız Yayın' : 'ANUNEX'}</span><span className="pv-sub">Çözüm videoları</span></header>
     {!code ? <section className="pv-card pv-join">
       <h1>Çözüm videosunu aç</h1>
       <p>Cevap kâğıdındaki QR’ı telefonunun kamerasıyla okut ya da QR’ın altındaki kodu yaz.</p>
-      <form onSubmit={(e) => { e.preventDefault(); const c = typed.trim().toUpperCase(); if (c) navigate(`/c/${c}`); }}>
+      <form onSubmit={(e) => { e.preventDefault(); const c = typed.trim().toUpperCase(); if (c) navigate(publisher ? `/${c}` : `/c/${c}`); }}>
         <input value={typed} onChange={(e) => setTyped(e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, ''))} maxLength={12} placeholder="KOD" aria-label="Video kodu" autoCapitalize="characters" spellCheck={false} />
         <button type="submit" disabled={!typed.trim()}>Aç</button>
       </form>

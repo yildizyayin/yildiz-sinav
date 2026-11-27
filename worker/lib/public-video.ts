@@ -1,5 +1,6 @@
 /**
- * video.anunex.com (owner, 27 Nov 2026: "QR'lar cevap anahtarında, girişsiz"). A student who scans the QR next to a
+ * cozum.yildizyayin.com (owner, 27 Nov 2026: "QR'lar cevap anahtarında, girişsiz"; the address is the publisher's own,
+ * "daha Türk bir şey olsun"). A student who scans the QR next to a
  * question on the printed answer sheet watches that question's solution video — no account, no login.
  *
  * Only what the editorial team has approved is public: the question must be APPROVED and its solution video approved
@@ -33,10 +34,14 @@ export async function bookletVideoCodes(env: Env, documentId: string, booklet: s
   return rows.map((r) => ({ answer: String(r.correct_answer || '').trim().toUpperCase(), code: r.video_code && r.review_status === 'APPROVED' && Number(r.has_video) ? String(r.video_code) : null, outcome: r.outcome_code ? { code: String(r.outcome_code), title: String(r.outcome_title || '') } : null }));
 }
 
-/** Where printed QR codes point: video.anunex.com once it is added to the Worker (VIDEO_PUBLIC_ORIGIN), else this host. */
+/**
+ * Where printed QR codes point. With the dedicated address set (VIDEO_PUBLIC_ORIGIN, e.g. https://cozum.yildizyayin.com,
+ * only once it is attached to the Worker) a code sits right after the host: cozum.yildizyayin.com/K7M2QPA. Until then
+ * the app's own host with /c/: app.anunex.com/c/K7M2QPA. Both addresses keep working for ever.
+ */
 export function videoOrigin(env: Env, request: Request) {
   const v = String((env as any).VIDEO_PUBLIC_ORIGIN || '').trim().replace(/\/+$/, '');
-  return /^https:\/\/[a-z0-9.-]+$/i.test(v) ? v : new URL(request.url).origin;
+  return /^https:\/\/[a-z0-9.-]+$/i.test(v) ? v : `${new URL(request.url).origin}/c`;
 }
 
 /** GET /api/public/video/:code (facts) and …/:code/solution | …/:code/topic (the stream, with byte ranges). */
