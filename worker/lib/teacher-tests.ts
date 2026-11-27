@@ -37,12 +37,12 @@ async function reached(env: Env, id: string) {
 
 async function list(env: Env, user: AuthUser) {
   const scope = user.role === 'SUPER_ADMIN' ? null : user.institution_id;
-  const rows = await all<any>(env.DB.prepare(`SELECT d.id,d.title,d.document_type,d.grade_level,d.subject_id,s.name subject_name,d.status,d.config_json,d.created_at,d.updated_at,d.created_by,
+  const rows = await all<any>(env.DB.prepare(`SELECT d.id,d.title,d.document_type,d.grade_level,d.subject_id,s.name subject_name,d.status,d.config_json,d.created_at,d.updated_at,d.created_by,u.display_name teacher_name,
       CASE WHEN d.pdf_r2_key IS NOT NULL OR EXISTS(SELECT 1 FROM studio_document_assets a WHERE a.document_id=d.id AND a.asset_type='QUESTION_PDF') THEN 1 ELSE 0 END printed,
       (SELECT COUNT(DISTINCT i.question_id) FROM studio_document_items i WHERE i.document_id=d.id) question_count,
       (SELECT GROUP_CONCAT(DISTINCT i.booklet_code) FROM studio_document_items i WHERE i.document_id=d.id) booklets,
       (SELECT COUNT(*) FROM assessment_runs r WHERE r.source_type='QUESTION_BANK' AND r.source_id=d.id) optical_results
-    FROM studio_documents d LEFT JOIN subjects s ON s.id=d.subject_id
+    FROM studio_documents d LEFT JOIN subjects s ON s.id=d.subject_id LEFT JOIN users u ON u.id=d.created_by
     WHERE d.status<>'ARCHIVED' AND (? IS NULL OR d.institution_id=?) AND (?<>'TEACHER' OR d.created_by=?)
     ORDER BY d.updated_at DESC, d.created_at DESC LIMIT 300`).bind(scope, scope, user.role, user.id));
   const ids = rows.map((r) => r.id);
@@ -59,12 +59,12 @@ async function list(env: Env, user: AuthUser) {
       id: r.id, title: r.title, type: r.document_type, gradeLevel: r.grade_level, subject: r.subject_name || r.subject_id, status: r.status, kind,
       questionCount: Number(r.question_count || 0), booklets: String(r.booklets || 'A').split(',').filter(Boolean).sort(), updatedAt: r.updated_at || r.created_at,
       homework: hw.length ? { total: hw.reduce((t, l) => t + Number(l.total || 0), 0), done: hw.reduce((t, l) => t + Number(l.done || 0), 0), dueAt: hw.at(-1)?.due_at || null } : null,
-      opticalResults: Number(r.optical_results || 0), locked: own.length > 0 || Number(r.optical_results) > 0, mine: r.created_by === user.id,
+      opticalResults: Number(r.optical_results || 0), locked: own.length > 0 || Number(r.optical_results) > 0, mine: r.created_by === user.id, teacher: { id: r.created_by, name: r.teacher_name || 'Öğretmen' },
       // the Studio document itself, for the preview / download / optical tools the page reuses
       doc: { id: r.id, title: r.title, document_type: r.document_type, grade_level: r.grade_level, subject_id: r.subject_id, subject_name: r.subject_name, status: r.status, config_json: r.config_json, created_at: r.created_at, question_count: Number(r.question_count || 0) },
     };
   });
-  return json({ ok: true, tests });
+  return json({ ok: true, tests, scope: user.role === 'TEACHER' ? 'OWN' : 'INSTITUTION' });
 }
 
 async function remove(env: Env, user: AuthUser, id: string) {

@@ -111,7 +111,8 @@ const CompletionCenter=lazy(()=>import('./pages/CompletionCenter').then(module=>
 const ThemeManagement=lazy(()=>import('./pages/ThemeManagement').then(module=>({default:module.ThemeManagement})));
 const AppearanceSettings=lazy(()=>import('./pages/AppearanceSettings').then(module=>({default:module.AppearanceSettings})));
 const BoardMode=lazy(()=>import('./pages/BoardMode').then(module=>({default:module.BoardMode})));
-const MyTests=lazy(()=>import('./pages/MyTests').then(module=>({default:module.MyTests})));
+const QuestionPoolHome=lazy(()=>import('./pages/QuestionPoolHome').then(module=>({default:module.QuestionPoolHome})));
+const TestLibrary=lazy(()=>import('./pages/TestLibrary').then(module=>({default:module.TestLibrary})));
 const PhysicalLink=lazy(()=>import('./pages/PhysicalLink').then(module=>({default:module.PhysicalLink})));
 const AttendanceCenter=lazy(()=>import('./pages/AttendanceCenter').then(module=>({default:module.AttendanceCenter})));
 const AssignmentsCenter=lazy(()=>import('./pages/AssignmentsCenter').then(module=>({default:module.AssignmentsCenter})));
@@ -159,7 +160,9 @@ function AppContent(){
   <Route path="standard-readiness" element={<RoleGate allowed={['SUPER_ADMIN']}><StandardReadiness/></RoleGate>}/>
   <Route path="theme-management" element={<RoleGate allowed={['SUPER_ADMIN']}><ThemeManagement/></RoleGate>}/>
   <Route path="settings" element={<RoleGate allowed={ALL_ROLES}><AppearanceSettings/></RoleGate>}/>
-  <Route path="testlerim" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER']}><FeatureGate feature="STUDIO"><MyTests/></FeatureGate></RoleGate>}/>
+  <Route path="soru-havuzu" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER']}><FeatureGate feature="STUDIO"><QuestionPoolHome/></FeatureGate></RoleGate>}/>
+  <Route path="soru-havuzu/testlerim" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER']}><FeatureGate feature="STUDIO"><TestLibrary/></FeatureGate></RoleGate>}/>
+  <Route path="testlerim" element={<Navigate to="/soru-havuzu/testlerim" replace/>}/>
   <Route path="board/:documentId" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER']}><BoardMode/></RoleGate>}/>
   <Route path="k/:key" element={<RoleGate allowed={ALL_ROLES}><PhysicalLink/></RoleGate>}/>
   <Route path="attendance" element={<RoleGate allowed={['SUPER_ADMIN','INSTITUTION_MANAGER','TEACHER','GUIDANCE_TEACHER','STUDENT','PARENT']}><AttendanceCenter/></RoleGate>}/>
